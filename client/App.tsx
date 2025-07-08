@@ -12,6 +12,7 @@ import Checkout from "@/pages/Checkout";
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
 import AdminProducts from "@/pages/admin/Products";
+import ProductEdit from "@/pages/admin/ProductEdit";
 import Categories from "@/pages/admin/Categories";
 import Orders from "@/pages/admin/Orders";
 import Customers from "@/pages/admin/Customers";
@@ -41,8 +42,8 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<AdminProducts />} />
-            <Route path="products/new" element={<AdminProducts />} />
-            <Route path="products/:id/edit" element={<AdminProducts />} />
+            <Route path="products/new" element={<ProductEdit />} />
+            <Route path="products/:id/edit" element={<ProductEdit />} />
             <Route path="categories" element={<Categories />} />
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
