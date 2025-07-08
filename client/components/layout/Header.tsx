@@ -31,13 +31,31 @@ export function Header() {
   }, []);
 
   async function fetchCategories() {
-    const { data } = await supabase
-      .from("product_categories")
-      .select("*")
+    // First try to get menu items from database
+    const { data: menuItems } = await supabase
+      .from("menu_items")
+      .select("*, product_categories(*)")
       .eq("is_active", true)
+      .is("parent_id", null)
       .order("sort_order");
 
-    if (data) setCategories(data);
+    if (menuItems && menuItems.length > 0) {
+      // Use menu items if available
+      const categoriesFromMenu = menuItems
+        .filter((item) => item.product_categories)
+        .map((item) => item.product_categories);
+      setCategories(categoriesFromMenu);
+    } else {
+      // Fallback to categories with show_in_menu = true
+      const { data: categoriesData } = await supabase
+        .from("product_categories")
+        .select("*")
+        .eq("is_active", true)
+        .eq("show_in_menu", true)
+        .order("sort_order");
+
+      if (categoriesData) setCategories(categoriesData);
+    }
   }
 
   return (
