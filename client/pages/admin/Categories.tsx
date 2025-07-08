@@ -671,7 +671,7 @@ export default function AdminCategories() {
                       <SelectValue placeholder="Select parent (optional)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">
+                      <SelectItem value="none">
                         Main Category (No Parent)
                       </SelectItem>
                       {parentCategories
