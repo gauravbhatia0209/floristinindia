@@ -21,6 +21,14 @@ export function Footer() {
   const [footerSections, setFooterSections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Dynamic column configuration - can be easily changed to support more columns
+  const MAX_COLUMNS = 6; // Can be increased to 8, 10, etc. for more columns
+  const COMPANY_COLUMN = 1; // Column 1 is always reserved for company info
+  const DYNAMIC_COLUMNS = Array.from(
+    { length: MAX_COLUMNS - 1 },
+    (_, i) => i + 2,
+  ); // [2, 3, 4, 5, 6]
+
   useEffect(() => {
     fetchFooterData();
 
@@ -297,7 +305,9 @@ export function Footer() {
 
       {/* Main Footer Content */}
       <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${Math.min(MAX_COLUMNS, 6)} gap-8`}
+        >
           {/* Company Info - Column 1 (Always show) */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -414,7 +424,7 @@ export function Footer() {
           </div>
 
           {/* Dynamic Footer Sections - Organized by columns */}
-          {[2, 3, 4].map((columnPosition) => {
+          {DYNAMIC_COLUMNS.map((columnPosition) => {
             const sectionsInColumn = footerSections.filter(
               (section) => section.column_position === columnPosition,
             );
