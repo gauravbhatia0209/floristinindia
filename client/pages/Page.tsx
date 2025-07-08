@@ -40,17 +40,24 @@ export default function Page() {
       setIsLoading(true);
       setNotFound(false);
 
+      // Handle help slug by trying help-center from database
+      let actualSlug = pageSlug;
+      if (pageSlug === "help") {
+        actualSlug = "help-center";
+      }
+
       const { data, error } = await supabase
         .from("pages")
         .select("*")
-        .eq("slug", pageSlug)
+        .eq("slug", actualSlug)
         .eq("is_active", true)
         .single();
 
       if (error || !data) {
         setNotFound(true);
       } else {
-        setPageData(data);
+        // Set the original slug for routing logic
+        setPageData({ ...data, slug: pageSlug });
       }
     } catch (error) {
       console.error("Failed to fetch page:", error);
