@@ -30,10 +30,22 @@ export default function AboutUsPage() {
 
   useEffect(() => {
     fetchAboutPage();
-  }, []);
+
+    // Fallback timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (isLoading) {
+        console.warn("AboutUsPage: Fetch timeout, showing default content");
+        setIsLoading(false);
+        setPageData(null);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
 
   async function fetchAboutPage() {
     try {
+      console.log("AboutUsPage: Fetching about page data...");
       const { data, error } = await supabase
         .from("pages")
         .select("*")
@@ -41,17 +53,26 @@ export default function AboutUsPage() {
         .eq("is_active", true)
         .single();
 
+      console.log("AboutUsPage: Query result:", { data, error });
+
       if (error && error.code === "PGRST116") {
         // No data found, create default record
+        console.log("AboutUsPage: No data found, creating default page...");
         await createDefaultAboutPage();
       } else if (error) {
-        console.error("Database error:", error);
+        console.error("AboutUsPage: Database error:", error);
+        // Continue with fallback content instead of failing
+        setPageData(null);
       } else if (data) {
+        console.log("AboutUsPage: Setting page data:", data);
         setPageData(data);
       }
     } catch (error) {
-      console.error("Failed to fetch about page:", error);
+      console.error("AboutUsPage: Failed to fetch about page:", error);
+      // Set pageData to null so component renders with default content
+      setPageData(null);
     } finally {
+      console.log("AboutUsPage: Setting loading to false");
       setIsLoading(false);
     }
   }
@@ -170,6 +191,11 @@ export default function AboutUsPage() {
       }
     });
   };
+
+  console.log("AboutUsPage: Rendering with state:", {
+    isLoading,
+    pageData: !!pageData,
+  });
 
   if (isLoading) {
     return (
