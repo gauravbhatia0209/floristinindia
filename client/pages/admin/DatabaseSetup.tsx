@@ -270,8 +270,27 @@ ON CONFLICT (key) DO NOTHING;`;
                 <li>3. Click "New Query"</li>
                 <li>4. Copy and paste each SQL block above</li>
                 <li>5. Run each query individually</li>
-                <li>6. Test the Contact Form on your website</li>
+                <li>6. Go to Admin → Pages to edit About page content</li>
+                <li>7. Test the Contact Form and About page</li>
               </ol>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-blue-200 bg-blue-50">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-blue-800">About Page Content:</h3>
+              <p className="mt-2 text-sm text-blue-700">
+                After running the Pages table SQL, a professional About page
+                will be automatically created. You can edit the content, add
+                images, and customize sections through the
+                <strong> Admin → Pages </strong> section using the content block
+                editor.
+              </p>
             </div>
           </div>
         </CardContent>
