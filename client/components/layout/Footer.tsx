@@ -73,6 +73,8 @@ export function Footer() {
       if (footerError) {
         console.error("Error fetching footer sections:", footerError);
       } else if (footerData) {
+        console.log("Footer sections fetched:", footerData);
+        console.log("Number of active footer sections:", footerData.length);
         setFooterSections(footerData);
       }
 
@@ -397,6 +399,16 @@ export function Footer() {
 
             // Count total active sections to determine if we should show fallback
             const totalActiveSections = footerSections.length;
+
+            // Debug logging
+            if (columnPosition === 2) {
+              console.log(
+                "Column 2 - Total active sections:",
+                totalActiveSections,
+              );
+              console.log("Sections in column 2:", sectionsInColumn.length);
+              console.log("Should show fallback:", totalActiveSections === 0);
+            }
 
             if (sectionsInColumn.length === 0) {
               // Show fallback content only when NO active sections exist at all
