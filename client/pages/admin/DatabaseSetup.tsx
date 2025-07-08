@@ -15,26 +15,486 @@ export default function DatabaseSetup() {
       setIsClearing(true);
       setClearSuccess(false);
 
-      // Delete all existing page records
+      // Delete specific page records
       const { error } = await supabase
         .from("pages")
         .delete()
-        .neq("id", "00000000-0000-0000-0000-000000000000"); // Delete all records
+        .in("slug", [
+          "about",
+          "help-center",
+          "returns",
+          "return-refunds",
+          "privacy",
+          "privacy-policy",
+          "terms",
+          "terms-conditions",
+          "delivery-info",
+        ]);
 
       if (error) {
         console.error("Error clearing pages:", error);
         alert("Error clearing pages: " + error.message);
       } else {
         setClearSuccess(true);
-        alert(
-          "All page records cleared! Now visit each page to trigger creation of new structured content.",
-        );
+        alert("Page records cleared! Now creating new structured content...");
+        // Automatically rebuild pages after clearing
+        await rebuildAllPages();
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Error clearing pages");
     } finally {
       setIsClearing(false);
+    }
+  };
+
+  const rebuildAllPages = async () => {
+    try {
+      const pages = [
+        {
+          title: "About Florist in India",
+          slug: "about",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "About Florist in India",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "Your trusted destination for premium flowers, cakes, and gifts delivered across India with love and care.",
+              },
+              {
+                type: "story_section",
+                title: "Our Story",
+                content:
+                  "Founded with a passion for bringing people closer through beautiful flowers, Florist in India has been serving customers across the nation with fresh, premium quality flowers and thoughtful gifts. We believe every occasion deserves to be celebrated with the perfect floral arrangement.",
+              },
+              {
+                type: "mission_section",
+                title: "Our Mission",
+                content:
+                  "To make every celebration special by delivering fresh, beautiful flowers and gifts that express your emotions perfectly. We strive to connect hearts and spread joy through our carefully curated floral arrangements.",
+              },
+              {
+                type: "values_section",
+                title: "Our Values",
+                content:
+                  "Quality, freshness, and customer satisfaction are at the heart of everything we do. We source our flowers from the finest gardens and ensure they reach you in perfect condition.",
+              },
+            ],
+          },
+          meta_title: "About Florist in India – Premium Flower Delivery",
+          meta_description:
+            "Learn about Florist in India, your trusted partner for fresh flower delivery across 100+ Indian cities.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 1,
+        },
+        {
+          title: "Help Center",
+          slug: "help-center",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "Help Center",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "Find answers to your questions and get the support you need",
+              },
+              {
+                type: "faq_category",
+                category: "Ordering & Payment",
+                items: [
+                  {
+                    question: "How do I place an order?",
+                    answer:
+                      "Simply browse our collection, select your preferred flowers, add to cart, and proceed to checkout. Enter delivery details and make payment to confirm your order.",
+                  },
+                  {
+                    question: "What payment methods do you accept?",
+                    answer:
+                      "We accept all major credit/debit cards, UPI, net banking, and digital wallets including Google Pay, PhonePe, and Paytm.",
+                  },
+                  {
+                    question: "Is my payment information secure?",
+                    answer:
+                      "Yes, all payments are processed through secure payment gateways with SSL encryption to protect your financial information.",
+                  },
+                ],
+              },
+              {
+                type: "faq_category",
+                category: "Delivery Information",
+                items: [
+                  {
+                    question: "Do you offer same-day delivery?",
+                    answer:
+                      "Yes, we offer same-day delivery for orders placed before 12 PM, subject to availability in your area.",
+                  },
+                  {
+                    question: "Which areas do you deliver to?",
+                    answer:
+                      "We deliver to 100+ cities across India. Enter your pincode during checkout to check delivery availability.",
+                  },
+                  {
+                    question: "What are your delivery timings?",
+                    answer:
+                      "We deliver between 9:00 AM to 9:00 PM on all days. For specific time slots, please contact our customer support.",
+                  },
+                ],
+              },
+              {
+                type: "faq_category",
+                category: "Products & Quality",
+                items: [
+                  {
+                    question: "How do you ensure flower freshness?",
+                    answer:
+                      "Our flowers are sourced daily from trusted gardens and stored in temperature-controlled environments. We guarantee freshness for at least 3-5 days.",
+                  },
+                  {
+                    question: "Can I customize my flower arrangement?",
+                    answer:
+                      "Yes, we offer custom arrangements. Contact our support team with your requirements, and we'll create something special for you.",
+                  },
+                ],
+              },
+            ],
+          },
+          meta_title: "Help Center - Customer Support & FAQ",
+          meta_description:
+            "Get help with flower delivery orders. FAQs about ordering, payment, delivery and more.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 2,
+        },
+        {
+          title: "Return & Refunds Policy",
+          slug: "return-refunds",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "Return & Refunds Policy",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "Your satisfaction is our priority. Learn about our fair and transparent refund policies.",
+              },
+              {
+                type: "policy_section",
+                section_id: "eligibility",
+                title: "Refund Eligibility",
+                intro: "We offer refunds under the following circumstances:",
+                points: [
+                  "Flowers delivered are significantly different from the order",
+                  "Flowers are damaged or wilted upon delivery",
+                  "Order was not delivered on the specified date",
+                  "Wrong arrangement or incorrect delivery address (our error)",
+                  "Quality issues reported within 6 hours of delivery",
+                ],
+              },
+              {
+                type: "policy_section",
+                section_id: "process",
+                title: "Refund Process",
+                intro: "Steps to request a refund:",
+                points: [
+                  "Contact us within 24 hours of delivery",
+                  "Provide order details and photos of the issue",
+                  "Our team will review your request within 24 hours",
+                  "Approved refunds are processed within 5-7 business days",
+                  "Refund amount will be credited to original payment method",
+                ],
+              },
+              {
+                type: "policy_section",
+                section_id: "replacement",
+                title: "Replacement Policy",
+                intro: "For quality issues, we offer free replacements:",
+                points: [
+                  "Report issues within 6 hours of delivery",
+                  "Replacement flowers delivered within 24 hours",
+                  "No additional charges for replacement orders",
+                  "Replacement guaranteed to meet quality standards",
+                ],
+              },
+            ],
+          },
+          meta_title: "Return & Refunds Policy",
+          meta_description:
+            "Fair refund and replacement policies for flower delivery orders.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 3,
+        },
+        {
+          title: "Privacy Policy",
+          slug: "privacy-policy",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "Privacy Policy",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "Your privacy matters to us. Learn how we collect, use, and protect your personal information.",
+              },
+              {
+                type: "privacy_section",
+                section_id: "collection",
+                title: "Information We Collect",
+                intro:
+                  "We collect information you provide directly to us when using our services:",
+                points: [
+                  "Personal details: Name, email, phone number, address",
+                  "Payment information: Card details, billing address (securely processed)",
+                  "Order information: Delivery details, preferences, special instructions",
+                  "Communication records: Support conversations, feedback",
+                  "Usage data: Website interactions, device information, IP address",
+                ],
+              },
+              {
+                type: "privacy_section",
+                section_id: "usage",
+                title: "How We Use Your Information",
+                intro: "Your information is used to:",
+                points: [
+                  "Process and deliver your orders",
+                  "Communicate about your orders and account",
+                  "Provide customer support and assistance",
+                  "Improve our products and services",
+                  "Send promotional offers (with your consent)",
+                  "Comply with legal obligations",
+                ],
+              },
+              {
+                type: "privacy_section",
+                section_id: "security",
+                title: "Data Security",
+                intro:
+                  "We implement appropriate security measures to protect your personal information:",
+                points: [
+                  "SSL encryption for all data transmission",
+                  "Secure payment gateways for financial information",
+                  "Regular security audits and updates",
+                  "Limited access to personal data on a need-to-know basis",
+                  "Industry-standard security protocols",
+                ],
+              },
+              {
+                type: "privacy_section",
+                section_id: "rights",
+                title: "Your Rights",
+                intro:
+                  "You have the following rights regarding your personal data:",
+                points: [
+                  "Access your personal information",
+                  "Correct inaccurate information",
+                  "Delete your account and data",
+                  "Opt out of marketing communications",
+                  "Request data portability",
+                  "Withdraw consent at any time",
+                ],
+              },
+            ],
+          },
+          meta_title: "Privacy Policy - Data Protection",
+          meta_description:
+            "How we collect, use, and protect your personal information.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 4,
+        },
+        {
+          title: "Terms & Conditions",
+          slug: "terms-conditions",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "Terms & Conditions",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "These terms govern your use of our services. Please read them carefully.",
+              },
+              {
+                type: "section",
+                section_id: "acceptance",
+                title: "Acceptance of Terms",
+                intro:
+                  "By accessing our website and placing orders, you accept and agree to be bound by these Terms & Conditions.",
+                points: [
+                  "These terms apply to all users and customers",
+                  "By placing an order, you confirm acceptance of these terms",
+                  "If you disagree with any terms, please discontinue use",
+                  "We may update terms periodically with notice",
+                ],
+              },
+              {
+                type: "section",
+                section_id: "services",
+                title: "Our Services",
+                intro:
+                  "Florist in India provides fresh flower delivery services across India. Our services include:",
+                points: [
+                  "Fresh flower bouquets and arrangements",
+                  "Same-day and scheduled delivery",
+                  "Custom floral arrangements",
+                  "Gift combinations with flowers",
+                  "Flowers for occasions and events",
+                  "Customer support and assistance",
+                ],
+              },
+              {
+                type: "section",
+                section_id: "ordering",
+                title: "Ordering & Payment",
+                intro:
+                  "Order placement and payment terms that govern your transactions:",
+                points: [
+                  "Orders are confirmed upon payment completion",
+                  "Prices include applicable taxes unless specified",
+                  "Delivery charges are additional unless noted",
+                  "We reserve the right to modify prices without prior notice",
+                  "Payment must be made at the time of ordering",
+                  "All transactions are subject to verification",
+                ],
+              },
+              {
+                type: "section",
+                section_id: "delivery",
+                title: "Delivery Terms",
+                intro: "Important delivery terms and conditions:",
+                points: [
+                  "Delivery times are estimates and may vary due to external factors",
+                  "Same-day delivery requires orders placed before 12 PM",
+                  "Delivery address must be accurate and accessible",
+                  "Additional charges may apply for remote areas",
+                  "We are not responsible for delays due to recipient unavailability",
+                  "Weather conditions may affect delivery schedules",
+                ],
+              },
+              {
+                type: "section",
+                section_id: "liability",
+                title: "Limitation of Liability",
+                intro: "Our liability limitations and disclaimers:",
+                points: [
+                  "Our liability is limited to the value of the order",
+                  "We are not responsible for indirect or consequential damages",
+                  "Natural product variations are not grounds for liability",
+                  "Force majeure events are beyond our control",
+                  "Customer satisfaction is our priority within reasonable limits",
+                ],
+              },
+            ],
+          },
+          meta_title: "Terms & Conditions",
+          meta_description: "Service terms and conditions for flower delivery.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 5,
+        },
+        {
+          title: "Delivery Information",
+          slug: "delivery-info",
+          content: {
+            blocks: [
+              {
+                type: "hero_title",
+                content: "Delivery Information",
+              },
+              {
+                type: "hero_description",
+                content:
+                  "Everything you need to know about our delivery services across India",
+              },
+              {
+                type: "delivery_section",
+                section_id: "coverage",
+                title: "Delivery Coverage",
+                intro: "We deliver fresh flowers across India:",
+                points: [
+                  "100+ cities covered nationwide",
+                  "Metro cities: Same-day delivery available",
+                  "Tier-2 cities: Next-day delivery guaranteed",
+                  "Remote areas: 2-3 days delivery time",
+                  "Check pincode availability at checkout",
+                ],
+              },
+              {
+                type: "delivery_section",
+                section_id: "timings",
+                title: "Delivery Timings",
+                intro: "Our standard delivery schedule:",
+                points: [
+                  "Standard delivery: 9:00 AM to 9:00 PM",
+                  "Morning slot: 9:00 AM to 1:00 PM",
+                  "Afternoon slot: 1:00 PM to 5:00 PM",
+                  "Evening slot: 5:00 PM to 9:00 PM",
+                  "Midnight delivery available in select cities",
+                ],
+              },
+              {
+                type: "delivery_section",
+                section_id: "charges",
+                title: "Delivery Charges",
+                intro: "Transparent pricing for delivery:",
+                points: [
+                  "Free delivery on orders above ₹999",
+                  "Standard delivery: ₹99 within city limits",
+                  "Express delivery: ₹199 (same-day)",
+                  "Remote area delivery: ₹149 additional",
+                  "Midnight delivery: ₹299 surcharge",
+                ],
+              },
+              {
+                type: "delivery_section",
+                section_id: "tracking",
+                title: "Order Tracking",
+                intro: "Stay updated on your delivery:",
+                points: [
+                  "SMS notifications at each delivery stage",
+                  "Real-time tracking link via email",
+                  "Delivery partner contact details shared",
+                  "Photo confirmation upon delivery",
+                  "24/7 customer support for queries",
+                ],
+              },
+            ],
+          },
+          meta_title: "Delivery Information - Coverage & Timings",
+          meta_description:
+            "Complete delivery information including coverage areas, timings, charges and tracking.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 6,
+        },
+      ];
+
+      // Insert all pages
+      const { error } = await supabase.from("pages").insert(pages);
+
+      if (error) {
+        console.error("Error creating pages:", error);
+        alert("Error creating pages: " + error.message);
+      } else {
+        alert("All 6 pages rebuilt successfully with professional layouts!");
+      }
+    } catch (error) {
+      console.error("Error rebuilding pages:", error);
+      alert("Error rebuilding pages");
     }
   };
 
