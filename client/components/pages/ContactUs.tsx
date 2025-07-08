@@ -207,7 +207,12 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
       const parsed = JSON.parse(hours);
       if (typeof parsed === "object") {
         return Object.entries(parsed)
-          .map(([day, time]) => `${day}: ${time}`)
+          .map(([day, time]) => {
+            // Capitalize the first letter of the day name
+            const capitalizedDay =
+              day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+            return `${capitalizedDay}: ${time}`;
+          })
           .join("\n");
       }
     } catch {
