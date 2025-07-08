@@ -225,6 +225,80 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
     return hours;
   }
 
+  // Render structured content blocks
+  const renderContentBlocks = (content: any) => {
+    if (!content) {
+      return null;
+    }
+
+    // Handle string content (legacy HTML)
+    if (typeof content === "string") {
+      return (
+        <div
+          className="prose prose-lg max-w-none text-center"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      );
+    }
+
+    // Handle structured content with blocks
+    if (content.blocks && Array.isArray(content.blocks)) {
+      return content.blocks.map((block: any, index: number) => {
+        switch (block.type) {
+          case "heading":
+            return (
+              <h2 key={index} className="text-2xl font-bold text-center mb-6">
+                {block.content}
+              </h2>
+            );
+          case "text":
+          case "paragraph":
+            return (
+              <p key={index} className="text-lg text-gray-600 text-center mb-4">
+                {block.content}
+              </p>
+            );
+          case "image":
+            return (
+              <img
+                key={index}
+                src={block.url || block.content}
+                alt={block.alt || ""}
+                className="w-full max-w-2xl mx-auto rounded-lg mb-6"
+              />
+            );
+          case "form":
+            // For form blocks, we'll use our existing contact form
+            // but could be extended to render custom forms from block.form_config
+            return (
+              <div key={index} className="text-center mb-6">
+                <h3 className="text-lg font-semibold mb-2">
+                  {block.title || "Contact Form"}
+                </h3>
+                <p className="text-gray-600">
+                  {block.description ||
+                    "Use the contact form below to get in touch with us."}
+                </p>
+              </div>
+            );
+          default:
+            return (
+              <div key={index} className="text-center mb-4">
+                {block.content || ""}
+              </div>
+            );
+        }
+      });
+    }
+
+    // Fallback for other object types
+    return (
+      <div className="text-center text-gray-600">
+        <p>Contact information will be updated soon.</p>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
