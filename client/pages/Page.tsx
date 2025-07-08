@@ -73,8 +73,18 @@ export default function Page() {
         .single();
 
       if (error || !data) {
+        console.log(
+          "Page component: No data found or error for slug:",
+          pageSlug,
+          error,
+        );
         setNotFound(true);
       } else {
+        console.log(
+          "Page component: Setting page data for slug:",
+          pageSlug,
+          data,
+        );
         // Set the original slug for routing logic
         setPageData({ ...data, slug: pageSlug });
       }
