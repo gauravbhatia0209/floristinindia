@@ -276,14 +276,24 @@ export default function PrivacyPolicyPage() {
         <div className="relative container mx-auto px-4 text-center">
           <Shield className="h-16 w-16 mx-auto mb-6 opacity-90" />
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Privacy Policy
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_title",
+            )?.content ||
+              pageData?.title ||
+              "Privacy Policy"}
           </h1>
           <p className="text-xl md:text-2xl max-w-4xl mx-auto opacity-90">
-            We are committed to protecting your privacy and personal information
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_description",
+            )?.content ||
+              "We are committed to protecting your privacy and personal information"}
           </p>
           <div className="mt-8 bg-white/10 rounded-xl p-4 max-w-md mx-auto backdrop-blur-sm">
             <p className="text-sm opacity-90">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated:{" "}
+              {pageData?.updated_at
+                ? new Date(pageData.updated_at).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </p>
           </div>
         </div>
