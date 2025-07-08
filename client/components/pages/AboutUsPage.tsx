@@ -41,7 +41,10 @@ export default function AboutUsPage() {
         .eq("is_active", true)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code === "PGRST116") {
+        // No data found, create default record
+        await createDefaultAboutPage();
+      } else if (error) {
         console.error("Database error:", error);
       } else if (data) {
         setPageData(data);
@@ -50,6 +53,63 @@ export default function AboutUsPage() {
       console.error("Failed to fetch about page:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function createDefaultAboutPage() {
+    try {
+      const defaultContent = {
+        blocks: [
+          {
+            type: "hero_title",
+            content: "About Florist in India",
+          },
+          {
+            type: "hero_description",
+            content:
+              "Your trusted destination for premium flowers, cakes, and gifts delivered across India with love and care.",
+          },
+          {
+            type: "story_section",
+            title: "Our Story",
+            content:
+              "Founded with a passion for bringing people closer through beautiful flowers, Florist in India has been serving customers across the nation with fresh, premium quality flowers and thoughtful gifts. We believe every occasion deserves to be celebrated with the perfect floral arrangement.",
+          },
+          {
+            type: "mission_section",
+            title: "Our Mission",
+            content:
+              "To make every celebration special by delivering fresh, beautiful flowers and gifts that express your emotions perfectly. We strive to connect hearts and spread joy through our carefully curated floral arrangements.",
+          },
+          {
+            type: "contact_info",
+            phone: "+91 98765 43210",
+            email: "care@floristinindia.com",
+          },
+        ],
+      };
+
+      const { data, error } = await supabase
+        .from("pages")
+        .insert({
+          title: "About Florist in India",
+          slug: "about",
+          content: defaultContent,
+          meta_title: "About Florist in India – Premium Flower Delivery",
+          meta_description:
+            "Learn about Florist in India, your trusted partner for fresh flower delivery across 100+ Indian cities.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 1,
+        })
+        .select()
+        .single();
+
+      if (data && !error) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.error("Failed to create default about page:", error);
     }
   }
 
@@ -144,11 +204,17 @@ export default function AboutUsPage() {
         </div>
         <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-            About Florist in India
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_title",
+            )?.content ||
+              pageData?.title ||
+              "About Florist in India"}
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Your trusted destination for premium flowers, cakes, and gifts
-            delivered across India with love and care.
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_description",
+            )?.content ||
+              "Your trusted destination for premium flowers, cakes, and gifts delivered across India with love and care."}
           </p>
         </div>
       </div>
