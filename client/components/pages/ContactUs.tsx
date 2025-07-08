@@ -272,10 +272,39 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
                 </p>
               </div>
             );
+          case "contact_info":
+            // Handle contact info block with object data
+            if (typeof block.content === "object" && block.content) {
+              return (
+                <div key={index} className="text-center mb-6">
+                  {block.content.email && (
+                    <p className="mb-2">
+                      <strong>Email:</strong> {block.content.email}
+                    </p>
+                  )}
+                  {block.content.phone && (
+                    <p className="mb-2">
+                      <strong>Phone:</strong> {block.content.phone}
+                    </p>
+                  )}
+                  {block.content.address && (
+                    <p className="mb-2">
+                      <strong>Address:</strong> {block.content.address}
+                    </p>
+                  )}
+                  {block.content.hours && (
+                    <p className="mb-2">
+                      <strong>Hours:</strong> {block.content.hours}
+                    </p>
+                  )}
+                </div>
+              );
+            }
+            return null;
           default:
             return (
               <div key={index} className="text-center mb-4">
-                {block.content || ""}
+                {typeof block.content === "string" ? block.content : ""}
               </div>
             );
         }
