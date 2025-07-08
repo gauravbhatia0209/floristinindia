@@ -21,13 +21,12 @@ export function Footer() {
   const [footerSections, setFooterSections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Dynamic column configuration - can be easily changed to support more columns
-  const MAX_COLUMNS = 6; // Can be increased to 8, 10, etc. for more columns
+  // Dynamic column configuration - loaded from database
+  const [MAX_COLUMNS, setMaxColumns] = useState(6); // Default value
   const COMPANY_COLUMN = 1; // Column 1 is always reserved for company info
-  const DYNAMIC_COLUMNS = Array.from(
-    { length: MAX_COLUMNS - 1 },
-    (_, i) => i + 2,
-  ); // [2, 3, 4, 5, 6]
+  const [DYNAMIC_COLUMNS, setDynamicColumns] = useState<number[]>([
+    2, 3, 4, 5, 6,
+  ]);
 
   useEffect(() => {
     fetchFooterData();
@@ -62,6 +61,24 @@ export function Footer() {
       window.removeEventListener("focus", handleFocus);
     };
   }, []);
+
+  async function loadFooterConfig() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "footer_max_columns")
+        .single();
+
+      if (!error && data) {
+        const maxCols = parseInt(data.value) || 6;
+        setMaxColumns(maxCols);
+        setDynamicColumns(Array.from({ length: maxCols - 1 }, (_, i) => i + 2));
+      }
+    } catch (error) {
+      console.log("Using default footer configuration");
+    }
+  }
 
   async function fetchFooterData() {
     try {
