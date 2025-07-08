@@ -104,8 +104,8 @@ export default function Index() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-rose-100">
-              Experience the joy of premium flower delivery across India.
-              Same-day delivery available in 100+ cities.
+              {content?.description ||
+                "Experience the joy of premium flower delivery across India. Same-day delivery available in 100+ cities."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button

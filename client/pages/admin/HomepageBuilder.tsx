@@ -62,6 +62,8 @@ const sectionTemplates: SectionTemplate[] = [
     icon: Image,
     description: "Large banner with title, subtitle, and call-to-action",
     defaultContent: {
+      description:
+        "Experience the joy of premium flower delivery across India. Same-day delivery available in 100+ cities.",
       background_image: "",
       button_text: "Shop Now",
       button_link: "/products",
@@ -612,6 +614,25 @@ function EditSectionForm({
           placeholder="Section subtitle"
         />
       </div>
+
+      {/* Hero Section Specific Fields */}
+      {section.type === "hero" && (
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            value={(formData.content as any)?.description || ""}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                content: { ...formData.content, description: e.target.value },
+              })
+            }
+            placeholder="Hero section description text"
+            rows={3}
+          />
+        </div>
+      )}
 
       <div>
         <Label htmlFor="content">Content (JSON)</Label>
