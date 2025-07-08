@@ -95,7 +95,7 @@ export default function Page() {
   }
 
   if (notFound || !pageData) {
-    return <Navigate to="/404" replace />;
+    return <NotFound />;
   }
 
   // Handle specialized page types
