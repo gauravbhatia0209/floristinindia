@@ -43,7 +43,10 @@ export default function ReturnRefundPage() {
         .eq("is_active", true)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code === "PGRST116") {
+        // No data found, create default record
+        await createDefaultRefundPage();
+      } else if (error) {
         console.error("Database error:", error);
       } else if (data) {
         setPageData(data);
@@ -52,6 +55,63 @@ export default function ReturnRefundPage() {
       console.error("Failed to fetch refund page:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function createDefaultRefundPage() {
+    try {
+      const defaultContent = {
+        blocks: [
+          {
+            type: "hero_title",
+            content: "Return & Refunds Policy",
+          },
+          {
+            type: "hero_description",
+            content:
+              "Fair refund and replacement policies for flower delivery orders",
+          },
+          {
+            type: "policy_section",
+            title: "Refund Eligibility",
+            content:
+              "We offer refunds for orders that don't meet our quality standards or delivery commitments. Refunds are processed within 5-7 business days.",
+          },
+          {
+            type: "policy_section",
+            title: "Replacement Policy",
+            content:
+              "If you receive damaged or poor quality flowers, we'll provide a free replacement within 6 hours of delivery notification.",
+          },
+          {
+            type: "contact_info",
+            phone: "+91 98765 43210",
+            email: "refunds@floristinindia.com",
+          },
+        ],
+      };
+
+      const { data, error } = await supabase
+        .from("pages")
+        .insert({
+          title: "Return & Refunds Policy",
+          slug: "return-refunds",
+          content: defaultContent,
+          meta_title: "Return & Refunds Policy",
+          meta_description:
+            "Fair refund and replacement policies for flower delivery orders.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 3,
+        })
+        .select()
+        .single();
+
+      if (data && !error) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.error("Failed to create default refund page:", error);
     }
   }
 
