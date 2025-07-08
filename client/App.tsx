@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import Layout from "@/components/layout/Layout";
@@ -32,6 +33,31 @@ import DatabaseTest from "@/pages/admin/DatabaseTest";
 import FooterEditor from "@/pages/admin/FooterEditor";
 
 function App() {
+  // Add error handling for navigation issues
+  React.useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      console.error("App Error:", event.error);
+      if (event.error?.message?.includes("IP address could not be found")) {
+        console.warn("URL Resolution Error - may be due to malformed URLs");
+      }
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error("Unhandled Promise Rejection:", event.reason);
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
+    };
+  }, []);
+
   return (
     <CartProvider>
       <Router>
