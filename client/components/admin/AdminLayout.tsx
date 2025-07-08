@@ -12,6 +12,7 @@ import {
   Home,
   Settings,
   UserCog,
+  Mail,
   LogOut,
   Menu,
   X,
