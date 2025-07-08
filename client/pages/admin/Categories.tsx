@@ -509,14 +509,7 @@ export default function AdminCategories() {
                               View Products
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={(e) => {
-                                e.preventDefault();
-                                console.log(
-                                  "Edit clicked for category:",
-                                  category,
-                                );
-                                startEditing(category);
-                              }}
+                              onClick={() => startEditing(category)}
                             >
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
