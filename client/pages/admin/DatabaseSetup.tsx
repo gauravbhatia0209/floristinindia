@@ -872,6 +872,39 @@ ON CONFLICT (key) DO NOTHING;`;
         </Card>
       </div>
 
+      {/* RLS Fix Section */}
+      <Card className="border-red-200 bg-red-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-red-800">
+            <AlertTriangle className="h-5 w-5" />
+            Fix RLS Policy Error
+            <Badge variant="outline" className="bg-red-100">
+              If Getting RLS Errors
+            </Badge>
+          </CardTitle>
+          <p className="text-sm text-red-700">
+            If you get "row-level security policy" errors when rebuilding pages,
+            run this SQL first
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-48">
+              <code>{rlsFixSQL}</code>
+            </pre>
+            <Button
+              variant="outline"
+              size="sm"
+              className="absolute top-2 right-2"
+              onClick={() => copyToClipboard(rlsFixSQL, "rls")}
+            >
+              <Copy className="h-4 w-4 mr-1" />
+              {copied === "rls" ? "Copied!" : "Copy"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Clear Old Pages */}
       <Card className="border-orange-200 bg-orange-50">
         <CardHeader>
