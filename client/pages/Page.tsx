@@ -7,6 +7,7 @@ import HelpCenterPage from "@/components/pages/HelpCenterPage";
 import ReturnRefundPage from "@/components/pages/ReturnRefundPage";
 import PrivacyPolicyPage from "@/components/pages/PrivacyPolicyPage";
 import TermsConditionsPage from "@/components/pages/TermsConditionsPage";
+import DeliveryInfoPage from "@/components/pages/DeliveryInfoPage";
 import NotFound from "@/pages/NotFound";
 
 interface PageData {
@@ -124,6 +125,8 @@ export default function Page() {
       return <PrivacyPolicyPage />;
     case "terms-conditions":
       return <TermsConditionsPage />;
+    case "delivery-info":
+      return <DeliveryInfoPage />;
     case "contact-us":
     case "contact":
       return <ContactUs pageContent={pageData.content} />;
