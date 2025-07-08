@@ -9,6 +9,7 @@ export default function DatabaseSetup() {
   const [copied, setCopied] = useState<string | null>(null);
   const [isClearing, setIsClearing] = useState(false);
   const [clearSuccess, setClearSuccess] = useState(false);
+  const [isCreatingFooter, setIsCreatingFooter] = useState(false);
 
   const rlsFixSQL = `-- Fix RLS policies for pages table (run this if you get RLS errors)
 -- This allows public read access and authenticated user full access
@@ -557,6 +558,7 @@ CREATE POLICY "Allow authenticated full access" ON pages
 
   const createSampleFooterSections = async () => {
     try {
+      setIsCreatingFooter(true);
       // Sample footer sections
       const footerSections = [
         {
@@ -612,6 +614,8 @@ CREATE POLICY "Allow authenticated full access" ON pages
     } catch (error) {
       console.error("Error creating footer sections:", error);
       alert("Error creating footer sections");
+    } finally {
+      setIsCreatingFooter(false);
     }
   };
 
@@ -1032,6 +1036,41 @@ ON CONFLICT (key) DO NOTHING;`;
           <p className="text-xs text-orange-600 mt-2">
             ⚠️ This will delete all existing page content. New structured
             content will be created when you visit each page.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Sample Footer Sections */}
+      <Card className="border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-800">
+            <Database className="h-5 w-5" />
+            Create Sample Footer Sections
+            <Badge variant="outline" className="bg-blue-100">
+              Optional
+            </Badge>
+          </CardTitle>
+          <p className="text-sm text-blue-700">
+            Create sample footer sections to get started with the Footer Editor
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={createSampleFooterSections}
+              disabled={isCreatingFooter}
+              variant="default"
+              size="sm"
+            >
+              <Database className="h-4 w-4 mr-2" />
+              {isCreatingFooter
+                ? "Creating..."
+                : "Create Sample Footer Sections"}
+            </Button>
+          </div>
+          <p className="text-xs text-blue-600 mt-2">
+            📋 Creates: Quick Links, Popular Categories, Customer Support
+            sections
           </p>
         </CardContent>
       </Card>
