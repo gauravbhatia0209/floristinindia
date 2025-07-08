@@ -70,8 +70,11 @@ export default function ProductEdit() {
       if (data) {
         setCategories(data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch categories:", error);
+      const errorMessage =
+        error?.message || error?.error_description || "Unknown error";
+      console.error("Categories fetch error details:", errorMessage);
     }
   }
 
@@ -110,9 +113,11 @@ export default function ProductEdit() {
           weight: data.weight?.toString() || "",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch product:", error);
-      alert("Failed to load product");
+      const errorMessage =
+        error?.message || error?.error_description || "Unknown error";
+      alert(`Failed to load product: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -184,9 +189,11 @@ export default function ProductEdit() {
       }
 
       navigate("/admin/products");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save product:", error);
-      alert("Failed to save product");
+      const errorMessage =
+        error?.message || error?.error_description || "Unknown error";
+      alert(`Failed to save product: ${errorMessage}`);
     } finally {
       setIsSaving(false);
     }
