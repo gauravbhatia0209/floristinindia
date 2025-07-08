@@ -50,6 +50,14 @@ export default function DatabaseSetup() {
 
   const rebuildAllPages = async () => {
     try {
+      // First, try to fix RLS policies if needed
+      try {
+        await supabase.rpc("create_pages_policy", {});
+      } catch (rpcError) {
+        // RPC might not exist, continue with normal insert
+        console.log("RPC call failed, continuing with direct insert");
+      }
+
       const pages = [
         {
           title: "About Florist in India",
