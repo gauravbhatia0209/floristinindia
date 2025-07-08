@@ -84,6 +84,11 @@ const navigation = [
     href: "/admin/contact-submissions",
     icon: Mail,
   },
+  {
+    name: "Database Setup",
+    href: "/admin/database-setup",
+    icon: Settings,
+  },
 ];
 
 export default function AdminLayout() {
