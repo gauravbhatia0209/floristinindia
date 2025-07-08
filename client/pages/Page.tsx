@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import ContactUs from "@/components/pages/ContactUs";
+import AboutUsPage from "@/components/pages/AboutUsPage";
+import HelpCenterPage from "@/components/pages/HelpCenterPage";
+import ReturnRefundPage from "@/components/pages/ReturnRefundPage";
+import PrivacyPolicyPage from "@/components/pages/PrivacyPolicyPage";
+import TermsConditionsPage from "@/components/pages/TermsConditionsPage";
 import NotFound from "@/pages/NotFound";
 
 interface PageData {
