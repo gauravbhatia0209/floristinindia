@@ -509,7 +509,7 @@ export default function AdminCategories() {
                               View Products
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => openEditModal(category)}
+                              onClick={() => startEditing(category)}
                             >
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
