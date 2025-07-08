@@ -12,6 +12,7 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminCategories from "./pages/admin/Categories";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="products" element={<Products />} />
               <Route path="category/:slug" element={<Products />} />
               <Route path="product/:slug" element={<ProductDetail />} />
+              <Route path="checkout" element={<Checkout />} />
               <Route
                 path="cart"
                 element={
@@ -54,14 +56,6 @@ const App = () => (
                 element={
                   <div className="container py-12">
                     <h1>My Account - Coming Soon</h1>
-                  </div>
-                }
-              />
-              <Route
-                path="checkout"
-                element={
-                  <div className="container py-12">
-                    <h1>Checkout - Coming Soon</h1>
                   </div>
                 }
               />
