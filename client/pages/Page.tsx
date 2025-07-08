@@ -116,27 +116,90 @@ export default function Page() {
         <main className="prose prose-lg max-w-none">
           {(() => {
             // Handle different content formats
-            let htmlContent = "";
-
             if (typeof pageData.content === "string") {
-              htmlContent = pageData.content;
+              return (
+                <div
+                  dangerouslySetInnerHTML={{ __html: pageData.content }}
+                  className="break-words"
+                />
+              );
             } else if (
               typeof pageData.content === "object" &&
-              pageData.content
+              pageData.content &&
+              pageData.content.blocks
             ) {
-              htmlContent =
-                pageData.content.body ||
-                pageData.content.html ||
-                pageData.content.content ||
-                JSON.stringify(pageData.content);
+              // Handle structured content with blocks
+              return pageData.content.blocks.map(
+                (block: any, index: number) => {
+                  switch (block.type) {
+                    case "heading":
+                      return (
+                        <h1 key={index} className="text-2xl font-bold mb-4">
+                          {block.content}
+                        </h1>
+                      );
+                    case "text":
+                    case "paragraph":
+                      return (
+                        <p key={index} className="text-base text-gray-700 mb-2">
+                          {block.content}
+                        </p>
+                      );
+                    case "image":
+                      return (
+                        <img
+                          key={index}
+                          src={block.url || block.content}
+                          alt={block.alt || ""}
+                          className="w-full max-w-md mx-auto rounded-lg mb-4"
+                        />
+                      );
+                    case "button":
+                      return (
+                        <a
+                          key={index}
+                          href={block.url || "#"}
+                          className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors mb-4"
+                        >
+                          {block.content || block.text}
+                        </a>
+                      );
+                    case "list":
+                      return (
+                        <ul key={index} className="list-disc list-inside mb-4">
+                          {(block.items || []).map(
+                            (item: string, itemIndex: number) => (
+                              <li
+                                key={itemIndex}
+                                className="text-base text-gray-700 mb-1"
+                              >
+                                {item}
+                              </li>
+                            ),
+                          )}
+                        </ul>
+                      );
+                    default:
+                      return (
+                        <div
+                          key={index}
+                          className="text-base text-gray-700 mb-2"
+                        >
+                          {block.content || ""}
+                        </div>
+                      );
+                  }
+                },
+              );
+            } else {
+              return (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">
+                    Page content is being updated. Please check back soon.
+                  </p>
+                </div>
+              );
             }
-
-            return (
-              <div
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-                className="break-words"
-              />
-            );
           })()}
         </main>
       </div>
