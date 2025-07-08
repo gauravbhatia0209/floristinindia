@@ -48,7 +48,10 @@ export default function TermsConditionsPage() {
         .eq("is_active", true)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code === "PGRST116") {
+        // No data found, create default record
+        await createDefaultTermsPage();
+      } else if (error) {
         console.error("Database error:", error);
       } else if (data) {
         setPageData(data);
@@ -57,6 +60,88 @@ export default function TermsConditionsPage() {
       console.error("Failed to fetch terms page:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function createDefaultTermsPage() {
+    try {
+      const defaultContent = {
+        blocks: [
+          {
+            type: "hero_title",
+            content: "Terms & Conditions",
+          },
+          {
+            type: "hero_description",
+            content:
+              "These terms govern your use of our services. Please read them carefully.",
+          },
+          {
+            type: "section",
+            section_id: "acceptance",
+            title: "Acceptance of Terms",
+            intro:
+              "By accessing our website and placing orders, you accept and agree to be bound by these Terms & Conditions.",
+            points: [
+              "These terms apply to all users and customers",
+              "By placing an order, you confirm acceptance of these terms",
+              "If you disagree with any terms, please discontinue use",
+              "We may update terms periodically with notice",
+            ],
+          },
+          {
+            type: "section",
+            section_id: "services",
+            title: "Our Services",
+            intro:
+              "Florist in India provides fresh flower delivery services across India. Our services include:",
+            points: [
+              "Fresh flower bouquets and arrangements",
+              "Same-day and scheduled delivery",
+              "Custom floral arrangements",
+              "Gift combinations with flowers",
+              "Flowers for occasions and events",
+              "Customer support and assistance",
+            ],
+          },
+          {
+            type: "section",
+            section_id: "ordering",
+            title: "Ordering & Payment",
+            intro:
+              "Order placement and payment terms that govern your transactions:",
+            points: [
+              "Orders are confirmed upon payment completion",
+              "Prices include applicable taxes unless specified",
+              "Delivery charges are additional unless noted",
+              "We reserve the right to modify prices without prior notice",
+              "Payment must be made at the time of ordering",
+              "All transactions are subject to verification",
+            ],
+          },
+        ],
+      };
+
+      const { data, error } = await supabase
+        .from("pages")
+        .insert({
+          title: "Terms & Conditions",
+          slug: "terms-conditions",
+          content: defaultContent,
+          meta_title: "Terms & Conditions",
+          meta_description: "Service terms and conditions for flower delivery.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 5,
+        })
+        .select()
+        .single();
+
+      if (data && !error) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.error("Failed to create default terms page:", error);
     }
   }
 
@@ -78,7 +163,8 @@ export default function TermsConditionsPage() {
     metaDesc.setAttribute("content", description);
   }, [pageData]);
 
-  const termsSections = [
+  // Default sections structure for fallback
+  const defaultTermsSections = [
     {
       id: "acceptance",
       title: "Acceptance of Terms",
@@ -177,6 +263,40 @@ export default function TermsConditionsPage() {
     },
   ];
 
+  // Parse content from database and merge with default sections
+  const getTermsSections = () => {
+    if (!pageData?.content?.blocks) {
+      return defaultTermsSections;
+    }
+
+    const blocks = pageData.content.blocks;
+    const parsedSections = [];
+
+    // Try to find section-specific content from database
+    blocks.forEach((block: any, index: number) => {
+      if (block.type === "section" && block.section_id) {
+        const defaultSection = defaultTermsSections.find(
+          (s) => s.id === block.section_id,
+        );
+        if (defaultSection) {
+          parsedSections.push({
+            ...defaultSection,
+            title: block.title || defaultSection.title,
+            content: {
+              intro: block.intro || defaultSection.content.intro,
+              points: block.points || defaultSection.content.points,
+            },
+          });
+        }
+      }
+    });
+
+    // If no sections found in database, use defaults
+    return parsedSections.length > 0 ? parsedSections : defaultTermsSections;
+  };
+
+  const termsSections = getTermsSections();
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -210,15 +330,24 @@ export default function TermsConditionsPage() {
         <div className="relative container mx-auto px-4 text-center">
           <Scale className="h-16 w-16 mx-auto mb-6 opacity-90" />
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Terms & Conditions
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_title",
+            )?.content ||
+              pageData?.title ||
+              "Terms & Conditions"}
           </h1>
           <p className="text-xl md:text-2xl max-w-4xl mx-auto opacity-90">
-            These terms govern your use of our services. Please read them
-            carefully.
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_description",
+            )?.content ||
+              "These terms govern your use of our services. Please read them carefully."}
           </p>
           <div className="mt-8 bg-white/10 rounded-xl p-4 max-w-md mx-auto backdrop-blur-sm">
             <p className="text-sm opacity-90">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated:{" "}
+              {pageData?.updated_at
+                ? new Date(pageData.updated_at).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </p>
           </div>
         </div>
