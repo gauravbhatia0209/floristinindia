@@ -41,6 +41,8 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
+            {/* Dynamic pages from CMS - must be last */}
+            <Route path=":slug" element={<Page />} />
           </Route>
 
           {/* Admin routes */}
