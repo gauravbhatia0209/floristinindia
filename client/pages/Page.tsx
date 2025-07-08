@@ -109,6 +109,7 @@ export default function Page() {
     case "about":
       return <AboutUsPage />;
     case "help-center":
+    case "help":
       return <HelpCenterPage />;
     case "return-refunds":
       return <ReturnRefundPage />;
