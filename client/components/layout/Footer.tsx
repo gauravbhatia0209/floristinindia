@@ -103,6 +103,28 @@ export function Footer() {
 
   const currentYear = new Date().getFullYear();
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <footer className="bg-muted/50 border-t">
+        <div className="container py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-4">
+                <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   function renderFooterSection(section: any) {
     // Safe content parsing with fallbacks
     const content = section.content || {};
