@@ -30,8 +30,11 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
+  console.log("Page component: slug =", slug);
+
   useEffect(() => {
     if (slug) {
+      console.log("Page component: Fetching page for slug:", slug);
       fetchPage(slug);
     }
   }, [slug]);
@@ -116,23 +119,32 @@ export default function Page() {
   }
 
   // Handle specialized page types with professional UI
+  console.log("Page component: Routing to component for slug:", pageData.slug);
+
   switch (pageData.slug) {
     case "about":
+      console.log("Page component: Rendering AboutUsPage");
       return <AboutUsPage />;
     case "help-center":
     case "help":
+      console.log("Page component: Rendering HelpCenterPage");
       return <HelpCenterPage />;
     case "return-refunds":
+      console.log("Page component: Rendering ReturnRefundPage");
       return <ReturnRefundPage />;
     case "privacy-policy":
+      console.log("Page component: Rendering PrivacyPolicyPage");
       return <PrivacyPolicyPage />;
     case "terms-conditions":
     case "terms":
+      console.log("Page component: Rendering TermsConditionsPage");
       return <TermsConditionsPage />;
     case "delivery-info":
+      console.log("Page component: Rendering DeliveryInfoPage");
       return <DeliveryInfoPage />;
     case "contact-us":
     case "contact":
+      console.log("Page component: Rendering ContactUs");
       return <ContactUs pageContent={pageData.content} />;
   }
 
