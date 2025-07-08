@@ -53,6 +53,14 @@ export default function FooterEditor() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Dynamic column configuration - easy to expand
+  const MAX_COLUMNS = 6; // Can be increased to support more columns
+  const COMPANY_COLUMN = 1; // Reserved for company info
+  const AVAILABLE_COLUMNS = Array.from(
+    { length: MAX_COLUMNS - 1 },
+    (_, i) => i + 2,
+  ); // [2, 3, 4, 5, 6]
+
   useEffect(() => {
     fetchFooterSections();
   }, []);
@@ -81,11 +89,13 @@ export default function FooterEditor() {
   }
 
   async function fixColumn1Sections(sections: FooterSection[]) {
-    const column1Sections = sections.filter((s) => s.column_position === 1);
+    const column1Sections = sections.filter(
+      (s) => s.column_position === COMPANY_COLUMN,
+    );
 
     if (column1Sections.length > 0) {
       console.log(
-        "Found sections in column 1, moving to column 2:",
+        `Found sections in reserved column ${COMPANY_COLUMN}, moving to column ${AVAILABLE_COLUMNS[0]}:`,
         column1Sections,
       );
 
@@ -93,14 +103,17 @@ export default function FooterEditor() {
         try {
           const { error } = await supabase
             .from("footer_sections")
-            .update({ column_position: 2 })
+            .update({ column_position: AVAILABLE_COLUMNS[0] }) // Move to first available column
             .eq("id", section.id);
 
           if (error) {
-            console.error("Error moving section from column 1:", error);
+            console.error(
+              `Error moving section from column ${COMPANY_COLUMN}:`,
+              error,
+            );
           } else {
             // Update local data
-            section.column_position = 2;
+            section.column_position = AVAILABLE_COLUMNS[0];
           }
         } catch (error) {
           console.error("Error updating section:", error);
@@ -529,9 +542,11 @@ export default function FooterEditor() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="2">Column 2</SelectItem>
-                        <SelectItem value="3">Column 3</SelectItem>
-                        <SelectItem value="4">Column 4</SelectItem>
+                        {AVAILABLE_COLUMNS.map((colNum) => (
+                          <SelectItem key={colNum} value={colNum.toString()}>
+                            Column {colNum}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
