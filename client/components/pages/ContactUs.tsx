@@ -153,7 +153,6 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
         throw new Error("No data returned from database. Please try again.");
       }
 
-      console.log("Successfully submitted:", data);
       setSubmitMessage(
         "✅ Thank you! Your message has been received. We'll get back to you soon.",
       );
