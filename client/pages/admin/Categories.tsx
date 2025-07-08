@@ -151,9 +151,10 @@ export default function AdminCategories() {
     }
   }
 
-  function openEditModal(category?: ProductCategory) {
+  function startEditing(category?: ProductCategory) {
     if (category) {
       setEditingCategory(category);
+      setIsCreating(false);
       setFormData({
         name: category.name,
         slug: category.slug,
@@ -168,6 +169,7 @@ export default function AdminCategories() {
       });
     } else {
       setEditingCategory(null);
+      setIsCreating(true);
       const nextSortOrder =
         categories.length > 0
           ? Math.max(...categories.map((c) => c.sort_order)) + 1
@@ -185,7 +187,6 @@ export default function AdminCategories() {
         meta_description: "",
       });
     }
-    setIsModalOpen(true);
   }
 
   function cancelEditing() {
