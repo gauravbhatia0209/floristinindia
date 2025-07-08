@@ -35,6 +35,8 @@ import FooterEditor from "@/pages/admin/FooterEditor";
 // Test wrapper for debugging about route
 function AboutTestWrapper() {
   console.log("AboutTestWrapper: About route reached!");
+  console.log("Current URL:", window.location.pathname);
+  console.log("Page component available:", !!Page);
   return <Page />;
 }
 
