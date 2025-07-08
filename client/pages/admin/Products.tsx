@@ -52,22 +52,36 @@ export default function AdminProducts() {
 
   async function fetchData() {
     try {
-      const [{ data: productsData }, { data: categoriesData }] =
-        await Promise.all([
-          supabase.from("products").select("*").order("created_at", {
-            ascending: false,
-          }),
-          supabase
-            .from("product_categories")
-            .select("*")
-            .eq("is_active", true)
-            .order("name"),
-        ]);
+      console.log("Fetching products and categories...");
 
-      if (productsData) setProducts(productsData);
-      if (categoriesData) setCategories(categoriesData);
+      const results = await Promise.allSettled([
+        supabase.from("products").select("*").order("created_at", {
+          ascending: false,
+        }),
+        supabase
+          .from("product_categories")
+          .select("*")
+          .eq("is_active", true)
+          .order("name"),
+      ]);
+
+      const productsData =
+        results[0].status === "fulfilled" ? results[0].value.data || [] : [];
+      const categoriesData =
+        results[1].status === "fulfilled" ? results[1].value.data || [] : [];
+
+      console.log("Fetched:", {
+        products: productsData.length,
+        categories: categoriesData.length,
+      });
+
+      setProducts(productsData);
+      setCategories(categoriesData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+      // Set empty arrays on error
+      setProducts([]);
+      setCategories([]);
     } finally {
       setIsLoading(false);
     }
