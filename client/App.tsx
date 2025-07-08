@@ -11,6 +11,7 @@ import About from "@/pages/About";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import Page from "@/pages/Page";
+import NotFound from "@/pages/NotFound";
 
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
