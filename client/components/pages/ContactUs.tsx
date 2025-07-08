@@ -237,9 +237,17 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
       return content.blocks.map((block: any, index: number) => {
         switch (block.type) {
           case "heading":
+            const headingContent =
+              typeof block.content === "string"
+                ? block.content
+                : typeof block.content === "object" && block.content
+                  ? block.content.text ||
+                    block.content.title ||
+                    JSON.stringify(block.content)
+                  : "";
             return (
               <h2 key={index} className="text-2xl font-bold text-center mb-6">
-                {block.content}
+                {headingContent}
               </h2>
             );
           case "text":
