@@ -29,6 +29,7 @@ import Users from "@/pages/admin/Users";
 import ContactSubmissions from "@/pages/admin/ContactSubmissions";
 import DatabaseSetup from "@/pages/admin/DatabaseSetup";
 import DatabaseTest from "@/pages/admin/DatabaseTest";
+import FooterEditor from "@/pages/admin/FooterEditor";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <Route path="coupons" element={<Coupons />} />
             <Route path="shipping" element={<Shipping />} />
             <Route path="pages" element={<Pages />} />
+            <Route path="footer-editor" element={<FooterEditor />} />
             <Route path="homepage" element={<HomepageBuilder />} />
             <Route path="settings" element={<Settings />} />
             <Route path="users" element={<Users />} />
