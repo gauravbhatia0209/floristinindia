@@ -852,14 +852,12 @@ export default function AdminCategories() {
         </CardContent>
       </Card>
 
-      {/* Inline Edit/Add Category Form */}
-      {(editingCategory || isCreating) && (
+      {/* Add New Category Form */}
+      {isCreating && (
         <Card className="border-primary/20 bg-primary/5">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>
-                {editingCategory ? "Edit Category" : "Add New Category"}
-              </span>
+              <span>Add New Category</span>
               <Button variant="outline" size="sm" onClick={cancelEditing}>
                 Cancel
               </Button>
@@ -945,13 +943,11 @@ export default function AdminCategories() {
                       <SelectItem value="none">
                         Main Category (No Parent)
                       </SelectItem>
-                      {parentCategories
-                        .filter((cat) => cat.id !== editingCategory?.id)
-                        .map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
+                      {parentCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -1053,11 +1049,7 @@ export default function AdminCategories() {
                 Cancel
               </Button>
               <Button onClick={saveCategory} disabled={isSaving}>
-                {isSaving
-                  ? "Saving..."
-                  : editingCategory
-                    ? "Update Category"
-                    : "Create Category"}
+                {isSaving ? "Saving..." : "Create Category"}
               </Button>
             </div>
           </CardContent>
