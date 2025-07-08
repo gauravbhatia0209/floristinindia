@@ -41,10 +41,13 @@ export default function Page() {
       setIsLoading(true);
       setNotFound(false);
 
-      // Handle help slug by trying help-center from database
+      // Handle slug mappings for database lookup
       let actualSlug = pageSlug;
       if (pageSlug === "help") {
         actualSlug = "help-center";
+      }
+      if (pageSlug === "terms") {
+        actualSlug = "terms-conditions";
       }
 
       const { data, error } = await supabase
@@ -124,6 +127,7 @@ export default function Page() {
     case "privacy-policy":
       return <PrivacyPolicyPage />;
     case "terms-conditions":
+    case "terms":
       return <TermsConditionsPage />;
     case "delivery-info":
       return <DeliveryInfoPage />;
