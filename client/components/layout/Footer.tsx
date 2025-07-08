@@ -86,6 +86,17 @@ export function Footer() {
       } else if (footerData) {
         console.log("Footer sections fetched:", footerData);
         console.log("Number of active footer sections:", footerData.length);
+
+        // Debug: Show details of each section
+        footerData.forEach((section, index) => {
+          console.log(`Section ${index + 1}:`, {
+            title: section.title,
+            column_position: section.column_position,
+            sort_order: section.sort_order,
+            is_active: section.is_active,
+          });
+        });
+
         setFooterSections(footerData);
       }
 
