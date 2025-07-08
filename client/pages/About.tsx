@@ -89,14 +89,39 @@ export default function About() {
 
   // If page data exists from database, use it
   if (pageData && pageData.content) {
+    // Handle different content formats
+    let htmlContent = "";
+
+    if (typeof pageData.content === "string") {
+      // If content is already a string, use it directly
+      htmlContent = pageData.content;
+    } else if (typeof pageData.content === "object") {
+      // If content is an object (JSONB), try to extract HTML
+      htmlContent =
+        pageData.content.body ||
+        pageData.content.html ||
+        pageData.content.content ||
+        JSON.stringify(pageData.content); // fallback to string representation
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-6xl mx-auto">
-            <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: pageData.content }}
-            />
+            {htmlContent && htmlContent !== "[object Object]" ? (
+              <div
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+              />
+            ) : (
+              <div className="text-center py-12">
+                <h1 className="text-3xl font-bold mb-4">About Us</h1>
+                <p className="text-lg text-gray-600">
+                  Content is being loaded. Please edit the About page in the
+                  Admin Panel to add content.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
