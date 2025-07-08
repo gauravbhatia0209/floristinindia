@@ -16,6 +16,7 @@ import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminCategories from "./pages/admin/Categories";
+import DatabaseTest from "./pages/admin/DatabaseTest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -82,6 +83,7 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="categories" element={<AdminCategories />} />
+              <Route path="database-test" element={<DatabaseTest />} />
               <Route
                 path="orders"
                 element={
