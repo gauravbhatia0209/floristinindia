@@ -68,11 +68,15 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="category/:slug" element={<Products />} />
             <Route path="product/:slug" element={<ProductDetail />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="checkout" element={<Checkout />} />
+            {/* Specific static routes - must come before dynamic route */}
             <Route path="about" element={<Page />} />
             <Route path="help" element={<Page />} />
             <Route path="terms" element={<Page />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} />
+            <Route path="privacy-policy" element={<Page />} />
+            <Route path="return-refunds" element={<Page />} />
+            <Route path="delivery-info" element={<Page />} />
             {/* Dynamic pages from CMS - must be last */}
             <Route path=":slug" element={<Page />} />
           </Route>
