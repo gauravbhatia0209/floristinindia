@@ -515,12 +515,10 @@ CREATE POLICY "Allow authenticated full access" ON pages
 
       for (const page of pages) {
         try {
-          const { error } = await supabase
-            .from("pages")
-            .upsert(page, {
-              onConflict: 'slug',
-              ignoreDuplicates: false
-            });
+          const { error } = await supabase.from("pages").upsert(page, {
+            onConflict: "slug",
+            ignoreDuplicates: false,
+          });
 
           if (error) {
             console.error(`Error creating page ${page.slug}:`, error);
@@ -537,12 +535,18 @@ CREATE POLICY "Allow authenticated full access" ON pages
       }
 
       if (errorCount === 0) {
-        alert(`All ${successCount} pages rebuilt successfully with professional layouts!`);
+        alert(
+          `All ${successCount} pages rebuilt successfully with professional layouts!`,
+        );
       } else if (successCount > 0) {
-        alert(`${successCount} pages created successfully, ${errorCount} failed. Check console for details.`);
+        alert(
+          `${successCount} pages created successfully, ${errorCount} failed. Check console for details.`,
+        );
         console.error("Page creation errors:", errors);
       } else {
-        alert(`Failed to create pages. This might be an RLS issue. Try running the RLS fix SQL above first, then try again.`);
+        alert(
+          `Failed to create pages. This might be an RLS issue. Try running the RLS fix SQL above first, then try again.`,
+        );
         console.error("All page creation failed:", errors);
       }
     } catch (error) {
@@ -564,22 +568,22 @@ CREATE POLICY "Allow authenticated full access" ON pages
               { text: "Help Center", url: "/help" },
               { text: "Delivery Info", url: "/delivery-info" },
               { text: "Track Order", url: "/track-order" },
-              { text: "Gift Cards", url: "/gift-cards" }
-            ]
+              { text: "Gift Cards", url: "/gift-cards" },
+            ],
           },
           column_position: 2,
           is_active: true,
-          sort_order: 1
+          sort_order: 1,
         },
         {
           title: "Popular Categories",
           content: {
             type: "category_links",
-            show_count: 6
+            show_count: 6,
           },
           column_position: 3,
           is_active: true,
-          sort_order: 1
+          sort_order: 1,
         },
         {
           title: "Customer Support",
@@ -587,17 +591,17 @@ CREATE POLICY "Allow authenticated full access" ON pages
             type: "contact",
             phone: "+91 98765 43210",
             email: "support@floristinindia.com",
-            address: "Available 24/7 for assistance"
+            address: "Available 24/7 for assistance",
           },
           column_position: 4,
           is_active: true,
-          sort_order: 1
-        }
+          sort_order: 1,
+        },
       ];
 
       const { error } = await supabase
         .from("footer_sections")
-        .upsert(footerSections, { onConflict: 'title' });
+        .upsert(footerSections, { onConflict: "title" });
 
       if (error) {
         console.error("Error creating footer sections:", error);
@@ -608,10 +612,6 @@ CREATE POLICY "Allow authenticated full access" ON pages
     } catch (error) {
       console.error("Error creating footer sections:", error);
       alert("Error creating footer sections");
-    }
-    } catch (error) {
-      console.error("Error rebuilding pages:", error);
-      alert("Error rebuilding pages");
     }
   };
 
