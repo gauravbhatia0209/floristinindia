@@ -27,6 +27,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
@@ -35,6 +50,22 @@ export default function AdminCategories() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] =
+    useState<ProductCategory | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    slug: "",
+    description: "",
+    parent_id: "",
+    is_active: true,
+    show_in_menu: true,
+    sort_order: "",
+    image_url: "",
+    meta_title: "",
+    meta_description: "",
+  });
 
   useEffect(() => {
     fetchCategories();
@@ -122,6 +153,157 @@ export default function AdminCategories() {
       setCategories(categories.filter((cat) => cat.id !== categoryId));
     } catch (error) {
       console.error("Failed to delete category:", error);
+    }
+  }
+
+  function openEditModal(category?: ProductCategory) {
+    if (category) {
+      setEditingCategory(category);
+      setFormData({
+        name: category.name,
+        slug: category.slug,
+        description: category.description || "",
+        parent_id: category.parent_id || "",
+        is_active: category.is_active,
+        show_in_menu: category.show_in_menu,
+        sort_order: category.sort_order.toString(),
+        image_url: category.image_url || "",
+        meta_title: category.meta_title || "",
+        meta_description: category.meta_description || "",
+      });
+    } else {
+      setEditingCategory(null);
+      const nextSortOrder =
+        categories.length > 0
+          ? Math.max(...categories.map((c) => c.sort_order)) + 1
+          : 1;
+      setFormData({
+        name: "",
+        slug: "",
+        description: "",
+        parent_id: "",
+        is_active: true,
+        show_in_menu: true,
+        sort_order: nextSortOrder.toString(),
+        image_url: "",
+        meta_title: "",
+        meta_description: "",
+      });
+    }
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    setEditingCategory(null);
+    setFormData({
+      name: "",
+      slug: "",
+      description: "",
+      parent_id: "",
+      is_active: true,
+      show_in_menu: true,
+      sort_order: "",
+      image_url: "",
+      meta_title: "",
+      meta_description: "",
+    });
+  }
+
+  // Auto-generate slug from name
+  function handleNameChange(name: string) {
+    setFormData((prev) => ({
+      ...prev,
+      name,
+      slug: name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, ""),
+    }));
+  }
+
+  async function validateForm(): Promise<string | null> {
+    if (!formData.name.trim()) {
+      return "Category name is required";
+    }
+
+    if (!formData.slug.trim()) {
+      return "Category slug is required";
+    }
+
+    // Check for duplicate names (excluding current category if editing)
+    const existingCategory = categories.find(
+      (cat) =>
+        cat.name.toLowerCase() === formData.name.toLowerCase() &&
+        cat.id !== editingCategory?.id,
+    );
+
+    if (existingCategory) {
+      return "A category with this name already exists";
+    }
+
+    // Check for duplicate slugs
+    const existingSlug = categories.find(
+      (cat) => cat.slug === formData.slug && cat.id !== editingCategory?.id,
+    );
+
+    if (existingSlug) {
+      return "A category with this slug already exists";
+    }
+
+    return null;
+  }
+
+  async function saveCategory() {
+    const validationError = await validateForm();
+    if (validationError) {
+      alert(validationError);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const categoryData = {
+        name: formData.name.trim(),
+        slug: formData.slug.trim(),
+        description: formData.description.trim() || null,
+        parent_id: formData.parent_id || null,
+        is_active: formData.is_active,
+        show_in_menu: formData.show_in_menu,
+        sort_order: parseInt(formData.sort_order),
+        image_url: formData.image_url.trim() || null,
+        meta_title: formData.meta_title.trim() || null,
+        meta_description: formData.meta_description.trim() || null,
+      };
+
+      if (editingCategory) {
+        // Update existing category
+        const { error } = await supabase
+          .from("product_categories")
+          .update(categoryData)
+          .eq("id", editingCategory.id);
+
+        if (error) throw error;
+
+        alert("Category updated successfully!");
+      } else {
+        // Create new category
+        const { error } = await supabase
+          .from("product_categories")
+          .insert(categoryData);
+
+        if (error) throw error;
+
+        alert("Category created successfully!");
+      }
+
+      fetchCategories();
+      closeModal();
+    } catch (error: any) {
+      console.error("Failed to save category:", error);
+      alert(`Failed to save category: ${error.message}`);
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -330,7 +512,9 @@ export default function AdminCategories() {
                               <Eye className="h-4 w-4 mr-2" />
                               View Products
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openEditModal(category)}
+                            >
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
@@ -400,6 +584,214 @@ export default function AdminCategories() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit/Add Category Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingCategory ? "Edit Category" : "Add New Category"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            {/* Basic Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name">Category Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    placeholder="e.g., Birthday Flowers"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="slug">URL Slug *</Label>
+                  <Input
+                    id="slug"
+                    value={formData.slug}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, slug: e.target.value }))
+                    }
+                    placeholder="birthday-flowers"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  placeholder="Beautiful flowers perfect for birthday celebrations..."
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input
+                  id="image_url"
+                  value={formData.image_url}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      image_url: e.target.value,
+                    }))
+                  }
+                  placeholder="https://example.com/category-image.jpg"
+                />
+              </div>
+            </div>
+
+            {/* Category Settings */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Category Settings</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="parent_id">Parent Category</Label>
+                  <Select
+                    value={formData.parent_id}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, parent_id: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select parent (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">
+                        Main Category (No Parent)
+                      </SelectItem>
+                      {parentCategories
+                        .filter((cat) => cat.id !== editingCategory?.id)
+                        .map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="sort_order">Sort Order</Label>
+                  <Input
+                    id="sort_order"
+                    type="number"
+                    value={formData.sort_order}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sort_order: e.target.value,
+                      }))
+                    }
+                    placeholder="1"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="is_active">Active Status</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Active categories are visible to customers
+                    </p>
+                  </div>
+                  <Switch
+                    id="is_active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, is_active: checked }))
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="show_in_menu">Show in Menu</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display this category in the navigation menu
+                    </p>
+                  </div>
+                  <Switch
+                    id="show_in_menu"
+                    checked={formData.show_in_menu}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        show_in_menu: checked,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* SEO Settings */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">SEO Settings</h3>
+
+              <div>
+                <Label htmlFor="meta_title">Meta Title</Label>
+                <Input
+                  id="meta_title"
+                  value={formData.meta_title}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_title: e.target.value,
+                    }))
+                  }
+                  placeholder="Birthday Flowers - Fresh Delivery | Florist in India"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="meta_description">Meta Description</Label>
+                <Textarea
+                  id="meta_description"
+                  value={formData.meta_description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_description: e.target.value,
+                    }))
+                  }
+                  placeholder="Order beautiful birthday flowers with same-day delivery across India..."
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Actions */}
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button onClick={saveCategory} disabled={isSaving}>
+              {isSaving
+                ? "Saving..."
+                : editingCategory
+                  ? "Update Category"
+                  : "Create Category"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
