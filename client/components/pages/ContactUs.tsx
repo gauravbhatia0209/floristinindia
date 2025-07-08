@@ -155,214 +155,273 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
     );
   }
 
+  // Format business hours properly
+  function formatBusinessHours(hours: string): string {
+    try {
+      // Try to parse if it's JSON
+      const parsed = JSON.parse(hours);
+      if (typeof parsed === "object") {
+        return Object.entries(parsed)
+          .map(([day, time]) => `${day}: ${time}`)
+          .join("\n");
+      }
+    } catch {
+      // If not JSON, return as is
+    }
+    return hours;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Page Content from CMS */}
-        {pageContent && (
-          <div className="mb-12">
-            <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: pageContent }}
-            />
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Contact Us
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              We'd love to hear from you! Get in touch and we'll respond as soon
+              as possible.
+            </p>
           </div>
-        )}
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
-              <p className="text-muted-foreground mb-8">
-                We'd love to hear from you! Send us a message and we'll get back
-                to you as soon as possible.
-              </p>
+          {/* Page Content from CMS */}
+          {pageContent && (
+            <div className="mb-12 max-w-4xl mx-auto">
+              <div
+                className="prose prose-lg max-w-none text-center"
+                dangerouslySetInnerHTML={{ __html: pageContent }}
+              />
             </div>
+          )}
 
-            <div className="space-y-4">
-              {siteSettings.business_name && (
-                <Card>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg">
-                      {siteSettings.business_name}
-                    </h3>
-                  </CardContent>
-                </Card>
-              )}
-
-              {siteSettings.phone && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Phone</p>
-                        <a
-                          href={`tel:${siteSettings.phone}`}
-                          className="text-muted-foreground hover:text-primary"
-                        >
-                          {siteSettings.phone}
-                        </a>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {siteSettings.email && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Email</p>
-                        <a
-                          href={`mailto:${siteSettings.email}`}
-                          className="text-muted-foreground hover:text-primary"
-                        >
-                          {siteSettings.email}
-                        </a>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {siteSettings.address && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-primary mt-1" />
-                      <div>
-                        <p className="font-medium">Address</p>
-                        <p className="text-muted-foreground">
-                          {siteSettings.address}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Section - Contact Information */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* Business Hours */}
               {siteSettings.business_hours && (
                 <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <Clock className="h-5 w-5 text-primary mt-1" />
-                      <div>
-                        <p className="font-medium">Business Hours</p>
-                        <p className="text-muted-foreground">
-                          {siteSettings.business_hours}
-                        </p>
-                      </div>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-primary" />
+                      Business Hours
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="whitespace-pre-line text-gray-700">
+                      {formatBusinessHours(siteSettings.business_hours)}
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Store Address */}
+              {siteSettings.contact_address && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      Store Address
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 leading-relaxed">
+                      {siteSettings.contact_address}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Contact Numbers */}
+              {(siteSettings.contact_phone || siteSettings.contact_phone_2) && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Phone className="h-5 w-5 text-primary" />
+                      Contact Numbers
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {siteSettings.contact_phone && (
+                      <div>
+                        <a
+                          href={`tel:${siteSettings.contact_phone}`}
+                          className="text-lg font-medium text-primary hover:underline"
+                        >
+                          {siteSettings.contact_phone}
+                        </a>
+                        <p className="text-sm text-gray-500">Primary</p>
+                      </div>
+                    )}
+                    {siteSettings.contact_phone_2 && (
+                      <div>
+                        <a
+                          href={`tel:${siteSettings.contact_phone_2}`}
+                          className="text-lg font-medium text-primary hover:underline"
+                        >
+                          {siteSettings.contact_phone_2}
+                        </a>
+                        <p className="text-sm text-gray-500">Secondary</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Email */}
+              {siteSettings.contact_email && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Mail className="h-5 w-5 text-primary" />
+                      Email ID
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <a
+                      href={`mailto:${siteSettings.contact_email}`}
+                      className="text-lg font-medium text-primary hover:underline"
+                    >
+                      {siteSettings.contact_email}
+                    </a>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Google Maps */}
+              {siteSettings.google_maps_embed && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Find Us</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div
+                      className="w-full h-64 rounded-b-lg overflow-hidden"
+                      dangerouslySetInnerHTML={{
+                        __html: siteSettings.google_maps_embed,
+                      }}
+                    />
                   </CardContent>
                 </Card>
               )}
             </div>
 
-            {/* Google Maps */}
-            {siteSettings.google_maps_embed && (
+            {/* Right Section - Contact Form */}
+            <div className="lg:col-span-2">
               <Card>
-                <CardContent className="p-0">
-                  <div
-                    className="w-full h-64 rounded-lg overflow-hidden"
-                    dangerouslySetInnerHTML={{
-                      __html: siteSettings.google_maps_embed,
-                    }}
-                  />
+                <CardHeader>
+                  <CardTitle className="text-2xl">Send us a Message</CardTitle>
+                  <p className="text-gray-600">
+                    Fill out the form below and we'll get back to you within 24
+                    hours.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Full Name *
+                        </label>
+                        <Input
+                          placeholder="Enter your full name"
+                          value={formData.name}
+                          onChange={(e) =>
+                            setFormData({ ...formData, name: e.target.value })
+                          }
+                          className="h-12"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Email Address *
+                        </label>
+                        <Input
+                          type="email"
+                          placeholder="Enter your email address"
+                          value={formData.email}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
+                          className="h-12"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phone Number
+                        </label>
+                        <Input
+                          type="tel"
+                          placeholder="Enter your phone number"
+                          value={formData.phone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Subject
+                        </label>
+                        <Input
+                          placeholder="Enter message subject"
+                          value={formData.subject}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              subject: e.target.value,
+                            })
+                          }
+                          className="h-12"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Message *
+                      </label>
+                      <Textarea
+                        placeholder="Enter your message here..."
+                        rows={6}
+                        value={formData.message}
+                        onChange={(e) =>
+                          setFormData({ ...formData, message: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-lg"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Sending Message..." : "Send Message"}
+                    </Button>
+
+                    {submitMessage && (
+                      <div
+                        className={`p-4 rounded-lg font-medium ${
+                          submitMessage.includes("✅")
+                            ? "bg-green-50 text-green-800 border border-green-200"
+                            : "bg-red-50 text-red-800 border border-red-200"
+                        }`}
+                      >
+                        {submitMessage}
+                      </div>
+                    )}
+                  </form>
                 </CardContent>
               </Card>
-            )}
-          </div>
-
-          {/* Contact Form */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>Send us a Message</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Input
-                        placeholder="Your Name"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="email"
-                        placeholder="Your Email"
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Input
-                      placeholder="Phone Number"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <Input
-                      placeholder="Subject"
-                      value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Textarea
-                      placeholder="Your Message"
-                      rows={5}
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                  </Button>
-
-                  {submitMessage && (
-                    <div
-                      className={`mt-4 p-3 rounded ${
-                        submitMessage.includes("Thank you")
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-red-50 text-red-700 border border-red-200"
-                      }`}
-                    >
-                      {submitMessage}
-                    </div>
-                  )}
-                </form>
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
       </div>
