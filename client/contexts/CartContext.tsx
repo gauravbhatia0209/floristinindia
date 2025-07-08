@@ -25,22 +25,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  // Load cart from localStorage on mount
+  // Initialize cart (session-based, no localStorage)
   useEffect(() => {
-    const saved = localStorage.getItem("florist-cart");
-    if (saved) {
-      try {
-        setItems(JSON.parse(saved));
-      } catch (error) {
-        console.error("Failed to parse cart from localStorage:", error);
-      }
-    }
+    // Future enhancement: Load cart from database for logged-in users
+    // For now, each session starts with an empty cart
   }, []);
-
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("florist-cart", JSON.stringify(items));
-  }, [items]);
 
   const addItem = (
     newItem: Omit<CartItem, "quantity"> & { quantity?: number },
