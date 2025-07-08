@@ -69,8 +69,7 @@ CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);
 CREATE INDEX IF NOT EXISTS idx_pages_active ON pages(is_active);
 CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);`;
 
-  const siteSettingsSQL = `
--- Create site_settings table
+  const siteSettingsSQL = `-- Create site_settings table
 CREATE TABLE IF NOT EXISTS site_settings (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   key TEXT UNIQUE NOT NULL,
@@ -104,8 +103,7 @@ INSERT INTO site_settings (key, value, type, description) VALUES
   ('contact_address', '', 'text', 'Business address'),
   ('business_hours', 'Monday - Sunday: 9:00 AM - 9:00 PM', 'text', 'Business operating hours'),
   ('google_maps_embed', '', 'text', 'Google Maps embed code')
-ON CONFLICT (key) DO NOTHING;
-`.trim();
+ON CONFLICT (key) DO NOTHING;`;
 
   function copyToClipboard(text: string, type: string) {
     navigator.clipboard.writeText(text);
