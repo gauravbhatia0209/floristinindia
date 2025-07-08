@@ -165,11 +165,17 @@ export default function ReturnRefundPage() {
         <div className="relative container mx-auto px-4 text-center">
           <Shield className="h-16 w-16 mx-auto mb-6 opacity-90" />
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Return & Refunds Policy
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_title",
+            )?.content ||
+              pageData?.title ||
+              "Return & Refunds Policy"}
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
-            Your satisfaction is our priority. Learn about our fair and
-            transparent refund policies.
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_description",
+            )?.content ||
+              "Your satisfaction is our priority. Learn about our fair and transparent refund policies."}
           </p>
         </div>
       </div>
