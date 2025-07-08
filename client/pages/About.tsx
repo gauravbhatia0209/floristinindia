@@ -33,14 +33,22 @@ export default function About() {
 
   async function fetchAboutPage() {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("pages")
         .select("*")
         .eq("slug", "about")
         .eq("is_active", true)
         .single();
 
-      if (data) {
+      if (error) {
+        console.error("Database error:", error);
+        // If no page found, that's okay, we'll use fallback content
+        if (error.code !== "PGRST116") {
+          // PGRST116 is "no rows returned"
+          console.error("Unexpected database error:", error);
+        }
+      } else if (data) {
+        console.log("About page data loaded:", data);
         setPageData(data);
       }
     } catch (error) {
