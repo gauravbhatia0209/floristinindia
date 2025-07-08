@@ -8,11 +8,12 @@ import { supabase } from "@/lib/supabase";
 
 interface SiteSettings {
   business_name?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  contact_address?: string;
   business_hours?: string;
   google_maps_embed?: string;
+  contact_phone_2?: string;
 }
 
 interface ContactFormData {
