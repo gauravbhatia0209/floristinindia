@@ -27,6 +27,7 @@ import HomepageBuilder from "@/pages/admin/HomepageBuilder";
 import Settings from "@/pages/admin/Settings";
 import Users from "@/pages/admin/Users";
 import ContactSubmissions from "@/pages/admin/ContactSubmissions";
+import DatabaseSetup from "@/pages/admin/DatabaseSetup";
 import DatabaseTest from "@/pages/admin/DatabaseTest";
 
 function App() {
