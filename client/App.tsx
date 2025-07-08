@@ -61,6 +61,10 @@ function App() {
             <Route path="homepage" element={<HomepageBuilder />} />
             <Route path="settings" element={<Settings />} />
             <Route path="users" element={<Users />} />
+            <Route
+              path="contact-submissions"
+              element={<ContactSubmissions />}
+            />
             <Route path="database-test" element={<DatabaseTest />} />
           </Route>
         </Routes>
