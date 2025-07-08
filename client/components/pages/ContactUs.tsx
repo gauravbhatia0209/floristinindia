@@ -48,9 +48,10 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
         .select("key, value")
         .in("key", [
           "business_name",
-          "phone",
-          "email",
-          "address",
+          "contact_phone",
+          "contact_phone_2",
+          "contact_email",
+          "contact_address",
           "business_hours",
           "google_maps_embed",
         ]);
