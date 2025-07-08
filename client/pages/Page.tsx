@@ -98,6 +98,11 @@ export default function Page() {
     return <Navigate to="/404" replace />;
   }
 
+  // Handle specialized page types
+  if (pageData.slug === "contact-us" || pageData.slug === "contact") {
+    return <ContactUs pageContent={pageData.content} />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
