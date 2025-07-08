@@ -35,6 +35,7 @@ export function Footer() {
           table: "footer_sections",
         },
         () => {
+          console.log("Footer sections changed - refetching...");
           fetchFooterData();
         },
       )
