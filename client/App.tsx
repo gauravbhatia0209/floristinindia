@@ -37,7 +37,25 @@ function AboutTestWrapper() {
   console.log("AboutTestWrapper: About route reached!");
   console.log("Current URL:", window.location.pathname);
   console.log("Page component available:", !!Page);
-  return <Page />;
+
+  // Test fallback to ensure route is working
+  try {
+    return (
+      <div>
+        <h1>About Route Test</h1>
+        <p>If you see this, the route is working!</p>
+        <Page />
+      </div>
+    );
+  } catch (error) {
+    console.error("Error in AboutTestWrapper:", error);
+    return (
+      <div>
+        <h1>Route Error</h1>
+        <p>Error: {error.message}</p>
+      </div>
+    );
+  }
 }
 
 function App() {
