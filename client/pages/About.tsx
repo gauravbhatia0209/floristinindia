@@ -71,45 +71,10 @@ export default function About() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl font-bold mb-4">About Us</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Welcome to our flower shop! We are passionate about bringing beauty
-            and joy to your life through our carefully curated selection of
-            fresh flowers.
+          <p className="text-lg text-muted-foreground">
+            This page content is managed through the admin panel. Please create
+            an "About" page with the slug "about" in the Pages section.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 text-left">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Our Story</h2>
-              <p className="text-muted-foreground mb-4">
-                Founded with love and dedication, our florist shop has been
-                serving the community with the freshest and most beautiful
-                flowers. We believe every moment deserves to be celebrated with
-                nature's finest creations.
-              </p>
-              <p className="text-muted-foreground">
-                From birthday celebrations to wedding arrangements, from
-                sympathy flowers to just-because bouquets, we are here to help
-                you express your feelings through the language of flowers.
-              </p>
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Our Promise</h2>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• Fresh flowers sourced daily</li>
-                <li>• Expert floral arrangements</li>
-                <li>• Same-day delivery available</li>
-                <li>• Customer satisfaction guaranteed</li>
-                <li>• Competitive pricing</li>
-                <li>• Personalized service</li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
-            <p className="text-muted-foreground">
-              Visit our shop or get in touch to learn more about our services
-              and how we can help make your special moments even more beautiful.
-            </p>
-          </div>
         </div>
       </div>
     );
