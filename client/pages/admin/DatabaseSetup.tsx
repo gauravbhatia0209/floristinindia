@@ -10,6 +10,23 @@ export default function DatabaseSetup() {
   const [isClearing, setIsClearing] = useState(false);
   const [clearSuccess, setClearSuccess] = useState(false);
 
+  const rlsFixSQL = `-- Fix RLS policies for pages table (run this if you get RLS errors)
+-- This allows public read access and authenticated user full access
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Allow public read access for active pages" ON pages;
+DROP POLICY IF EXISTS "Allow authenticated full access" ON pages;
+
+-- Create new policies
+CREATE POLICY "Allow public read access for active pages" ON pages
+  FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Allow authenticated full access" ON pages
+  FOR ALL USING (auth.role() = 'authenticated');
+
+-- Alternative: Temporarily disable RLS for setup (re-enable after)
+-- ALTER TABLE pages DISABLE ROW LEVEL SECURITY;`;
+
   const clearOldPages = async () => {
     try {
       setIsClearing(true);
