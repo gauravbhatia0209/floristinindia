@@ -326,7 +326,7 @@ export default function AdminCategories() {
             Organize your flower catalog with categories and subcategories
           </p>
         </div>
-        <Button>
+        <Button onClick={() => openEditModal()}>
           <Plus className="h-4 w-4 mr-2" />
           Add Category
         </Button>
