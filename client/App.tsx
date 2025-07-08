@@ -43,6 +43,7 @@ function App() {
             <Route path="product/:slug" element={<ProductDetail />} />
             <Route path="about" element={<Page />} />
             <Route path="help" element={<Page />} />
+            <Route path="terms" element={<Page />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             {/* Dynamic pages from CMS - must be last */}
