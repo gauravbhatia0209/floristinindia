@@ -71,7 +71,15 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             {/* Specific static routes - must come before dynamic route */}
-            <Route path="about" element={<Page />} />
+            <Route
+              path="about"
+              element={
+                <div>
+                  {console.log("App.tsx: About route matched!")}
+                  <Page />
+                </div>
+              }
+            />
             <Route path="help" element={<Page />} />
             <Route path="terms" element={<Page />} />
             <Route path="privacy-policy" element={<Page />} />
