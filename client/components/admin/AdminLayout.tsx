@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   X,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -63,6 +64,11 @@ const navigation = [
     name: "Pages",
     href: "/admin/pages",
     icon: FileText,
+  },
+  {
+    name: "Footer Editor",
+    href: "/admin/footer-editor",
+    icon: Layers,
   },
   {
     name: "Homepage",
