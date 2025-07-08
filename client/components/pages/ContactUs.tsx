@@ -275,15 +275,23 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
           case "form":
             // For form blocks, we'll use our existing contact form
             // but could be extended to render custom forms from block.form_config
+            const formTitle =
+              typeof block.title === "string"
+                ? block.title
+                : typeof block.content === "object" && block.content?.title
+                  ? block.content.title
+                  : "Contact Form";
+            const formDescription =
+              typeof block.description === "string"
+                ? block.description
+                : typeof block.content === "object" &&
+                    block.content?.description
+                  ? block.content.description
+                  : "Use the contact form below to get in touch with us.";
             return (
               <div key={index} className="text-center mb-6">
-                <h3 className="text-lg font-semibold mb-2">
-                  {block.title || "Contact Form"}
-                </h3>
-                <p className="text-gray-600">
-                  {block.description ||
-                    "Use the contact form below to get in touch with us."}
-                </p>
+                <h3 className="text-lg font-semibold mb-2">{formTitle}</h3>
+                <p className="text-gray-600">{formDescription}</p>
               </div>
             );
           case "contact_info":
