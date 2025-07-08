@@ -24,7 +24,7 @@ interface ContactFormData {
   message: string;
 }
 
-export default function ContactUs({ pageContent }: { pageContent: string }) {
+export default function ContactUs({ pageContent }: { pageContent: any }) {
   const [siteSettings, setSiteSettings] = useState<SiteSettings>({});
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<ContactFormData>({
