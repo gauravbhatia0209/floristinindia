@@ -41,8 +41,17 @@ export function Footer() {
       )
       .subscribe();
 
+    // Also fetch data when window gets focus (to catch changes made in admin)
+    const handleFocus = () => {
+      console.log("Window focused - refetching footer data...");
+      fetchFooterData();
+    };
+
+    window.addEventListener("focus", handleFocus);
+
     return () => {
       supabase.removeChannel(footerSubscription);
+      window.removeEventListener("focus", handleFocus);
     };
   }, []);
 
