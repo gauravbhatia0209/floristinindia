@@ -54,17 +54,37 @@ export default function FooterEditor() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Dynamic column configuration - easy to expand
-  const MAX_COLUMNS = 6; // Can be increased to support more columns
+  // Dynamic column configuration - loaded from database
+  const [MAX_COLUMNS, setMaxColumns] = useState(6); // Default, loaded from database
   const COMPANY_COLUMN = 1; // Reserved for company info
-  const AVAILABLE_COLUMNS = Array.from(
-    { length: MAX_COLUMNS - 1 },
-    (_, i) => i + 2,
-  ); // [2, 3, 4, 5, 6]
+  const [AVAILABLE_COLUMNS, setAvailableColumns] = useState<number[]>([
+    2, 3, 4, 5, 6,
+  ]);
 
   useEffect(() => {
+    loadFooterConfig();
     fetchFooterSections();
   }, []);
+
+  async function loadFooterConfig() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "footer_max_columns")
+        .single();
+
+      if (!error && data) {
+        const maxCols = parseInt(data.value) || 6;
+        setMaxColumns(maxCols);
+        setAvailableColumns(
+          Array.from({ length: maxCols - 1 }, (_, i) => i + 2),
+        );
+      }
+    } catch (error) {
+      console.log("Using default footer configuration");
+    }
+  }
 
   async function fetchFooterSections() {
     try {
