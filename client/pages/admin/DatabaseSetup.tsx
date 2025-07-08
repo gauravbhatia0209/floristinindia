@@ -37,8 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_contact_submissions_submitted_at
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_is_read
   ON contact_submissions(is_read);`;
 
-  const pagesTableSQL = `
--- Create pages table
+  const pagesTableSQL = `-- Create pages table
 CREATE TABLE IF NOT EXISTS pages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
@@ -68,8 +67,7 @@ CREATE POLICY "Allow authenticated full access" ON pages
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);
 CREATE INDEX IF NOT EXISTS idx_pages_active ON pages(is_active);
-CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);
-`.trim();
+CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);`;
 
   const siteSettingsSQL = `
 -- Create site_settings table
