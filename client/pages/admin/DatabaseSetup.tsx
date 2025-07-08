@@ -67,7 +67,39 @@ CREATE POLICY "Allow authenticated full access" ON pages
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);
 CREATE INDEX IF NOT EXISTS idx_pages_active ON pages(is_active);
-CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);`;
+CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);
+
+-- Insert default About page
+INSERT INTO pages (title, slug, content, meta_title, meta_description, is_active, sort_order) VALUES
+(
+  'About Florist in India',
+  'about',
+  '<div class="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <div class="relative bg-gradient-to-r from-rose-500 to-pink-600 text-white py-20">
+      <div class="absolute inset-0 bg-black opacity-20"></div>
+      <div class="relative container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">About Florist in India</h1>
+        <p class="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">Your trusted destination for premium flowers, cakes, and gifts delivered across India with love and care.</p>
+      </div>
+    </div>
+    <div class="container mx-auto px-4 py-16 max-w-6xl space-y-16">
+      <section class="text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Who We Are</h2>
+        <div class="max-w-4xl mx-auto">
+          <p class="text-lg text-gray-600 leading-relaxed mb-8">Florist in India is your trusted destination for premium flower, cake, and gift delivery services across India. With a strong presence in over 100+ cities including Delhi NCR, Mumbai, Bangalore, and Jalandhar, we ensure every celebration feels special—no matter the distance.</p>
+        </div>
+      </section>
+    </div>
+  </div>',
+  'About Florist in India – Premium Flower Delivery Across India',
+  'Florist in India offers premium flowers, cakes, and gifts delivered across 100+ Indian cities with love, care, and speed. Learn more about our story.',
+  TRUE,
+  1
+)
+ON CONFLICT (slug) DO UPDATE SET
+  meta_title = EXCLUDED.meta_title,
+  meta_description = EXCLUDED.meta_description,
+  updated_at = NOW();`;
 
   const siteSettingsSQL = `-- Create site_settings table
 CREATE TABLE IF NOT EXISTS site_settings (
