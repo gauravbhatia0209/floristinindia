@@ -78,6 +78,11 @@ const navigation = [
     href: "/admin/users",
     icon: UserCog,
   },
+  {
+    name: "Contact Forms",
+    href: "/admin/contact-submissions",
+    icon: Mail,
+  },
 ];
 
 export default function AdminLayout() {
