@@ -387,6 +387,45 @@ ON CONFLICT (key) DO NOTHING;`;
         </Card>
       </div>
 
+      {/* Clear Old Pages */}
+      <Card className="border-orange-200 bg-orange-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-orange-800">
+            <Trash2 className="h-5 w-5" />
+            Clear Old Page Data
+            <Badge variant="outline" className="bg-orange-100">
+              Maintenance Tool
+            </Badge>
+          </CardTitle>
+          <p className="text-sm text-orange-700">
+            If pages are showing old content format, clear existing records to
+            trigger creation of new structured content
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={clearOldPages}
+              disabled={isClearing}
+              variant="destructive"
+              size="sm"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isClearing ? "Clearing..." : "Clear All Page Records"}
+            </Button>
+            {clearSuccess && (
+              <Badge variant="outline" className="bg-green-100 text-green-800">
+                ✓ Cleared! Visit pages to create new content
+              </Badge>
+            )}
+          </div>
+          <p className="text-xs text-orange-600 mt-2">
+            ⚠️ This will delete all existing page content. New structured
+            content will be created when you visit each page.
+          </p>
+        </CardContent>
+      </Card>
+
       <Card className="border-green-200 bg-green-50">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
