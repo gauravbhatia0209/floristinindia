@@ -116,6 +116,8 @@ export default function ProductEdit() {
           meta_description: data.meta_description || "",
           weight: data.weight?.toString() || "",
         });
+      } else {
+        throw new Error("Product not found");
       }
     } catch (error: any) {
       console.error("Failed to fetch product:", error);
