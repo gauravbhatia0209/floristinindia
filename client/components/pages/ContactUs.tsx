@@ -74,15 +74,26 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
     if (!formData.name.trim()) {
       return "Name is required";
     }
+    if (formData.name.trim().length < 2) {
+      return "Name must be at least 2 characters long";
+    }
     if (!formData.email.trim()) {
       return "Email is required";
     }
-    if (!formData.email.includes("@")) {
+
+    // Better email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
       return "Please enter a valid email address";
     }
+
     if (!formData.message.trim()) {
       return "Message is required";
     }
+    if (formData.message.trim().length < 10) {
+      return "Message must be at least 10 characters long";
+    }
+
     return null;
   }
 
