@@ -29,6 +29,8 @@ export function Footer() {
   ]);
 
   useEffect(() => {
+    // Load configuration and fetch data
+    loadFooterConfig();
     fetchFooterData();
 
     // Set up real-time subscription for footer sections
