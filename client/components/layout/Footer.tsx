@@ -70,15 +70,18 @@ export function Footer() {
         .from("site_settings")
         .select("value")
         .eq("key", "footer_max_columns")
-        .single();
+        .maybeSingle(); // Use maybeSingle() to handle when no records exist
 
       if (!error && data) {
         const maxCols = parseInt(data.value) || 6;
         setMaxColumns(maxCols);
         setDynamicColumns(Array.from({ length: maxCols - 1 }, (_, i) => i + 2));
+        console.log("Footer config loaded:", maxCols, "columns");
+      } else {
+        console.log("Using default footer configuration - no setting found");
       }
     } catch (error) {
-      console.log("Using default footer configuration");
+      console.log("Footer config error, using defaults:", error);
     }
   }
 
