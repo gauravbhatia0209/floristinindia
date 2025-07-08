@@ -410,7 +410,7 @@ export default function AdminCategories() {
                   ? "Try adjusting your search"
                   : "Get started by adding your first category"}
               </p>
-              <Button>
+              <Button onClick={() => openEditModal()}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Category
               </Button>
