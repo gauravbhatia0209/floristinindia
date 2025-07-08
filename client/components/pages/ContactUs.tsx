@@ -235,6 +235,10 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
     // Handle structured content with blocks
     if (content.blocks && Array.isArray(content.blocks)) {
       return content.blocks.map((block: any, index: number) => {
+        // Safety check - ensure block exists and has proper structure
+        if (!block || typeof block !== "object") {
+          return null;
+        }
         switch (block.type) {
           case "heading":
             const headingContent =
