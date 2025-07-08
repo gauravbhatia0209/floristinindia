@@ -70,24 +70,57 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
     }
   }
 
+  function validateForm(): string | null {
+    if (!formData.name.trim()) {
+      return "Name is required";
+    }
+    if (!formData.email.trim()) {
+      return "Email is required";
+    }
+    if (!formData.email.includes("@")) {
+      return "Please enter a valid email address";
+    }
+    if (!formData.message.trim()) {
+      return "Message is required";
+    }
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    // Validate form
+    const validationError = validateForm();
+    if (validationError) {
+      setSubmitMessage(validationError);
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitMessage("");
 
     try {
-      const { error } = await supabase.from("contact_submissions").insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        subject: formData.subject,
-        message: formData.message,
-        submitted_at: new Date().toISOString(),
-      });
+      // Insert into contact_submissions table
+      const { data, error } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim() || null,
+          subject: formData.subject.trim() || "Contact Form Submission",
+          message: formData.message.trim(),
+          submitted_at: new Date().toISOString(),
+          is_read: false,
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error:", error);
+        throw new Error(`Failed to submit: ${error.message}`);
+      }
 
-      setSubmitMessage("Thank you! Your message has been sent successfully.");
+      console.log("Successfully submitted:", data);
+      setSubmitMessage("✅ Thank you! Your message has been received.");
       setFormData({
         name: "",
         email: "",
@@ -95,10 +128,10 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
         subject: "",
         message: "",
       });
-    } catch (error) {
-      console.error("Failed to submit contact form:", error);
+    } catch (error: any) {
+      console.error("Form submission error:", error);
       setSubmitMessage(
-        "Sorry, there was an error sending your message. Please try again.",
+        `❌ Sorry, there was an error: ${error.message || "Please try again."}`,
       );
     } finally {
       setIsSubmitting(false);
