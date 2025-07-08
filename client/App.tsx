@@ -16,6 +16,7 @@ import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminCategories from "./pages/admin/Categories";
+import HomepageBuilder from "./pages/admin/HomepageBuilder";
 import DatabaseTest from "./pages/admin/DatabaseTest";
 import NotFound from "./pages/NotFound";
 
@@ -83,6 +84,7 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="categories" element={<AdminCategories />} />
+              <Route path="homepage" element={<HomepageBuilder />} />
               <Route path="database-test" element={<DatabaseTest />} />
               <Route
                 path="orders"
@@ -130,16 +132,6 @@ const App = () => (
                   <div className="p-8">
                     <h1 className="text-2xl font-bold">
                       Pages Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="homepage"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Homepage Builder - Coming Soon
                     </h1>
                   </div>
                 }
