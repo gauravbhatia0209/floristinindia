@@ -244,9 +244,15 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
             );
           case "text":
           case "paragraph":
+            const textContent =
+              typeof block.content === "string"
+                ? block.content
+                : typeof block.content === "object" && block.content
+                  ? JSON.stringify(block.content)
+                  : "";
             return (
               <p key={index} className="text-lg text-gray-600 text-center mb-4">
-                {block.content}
+                {textContent}
               </p>
             );
           case "image":
