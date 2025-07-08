@@ -48,7 +48,10 @@ export default function PrivacyPolicyPage() {
         .eq("is_active", true)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code === "PGRST116") {
+        // No data found, create default record
+        await createDefaultPrivacyPage();
+      } else if (error) {
         console.error("Database error:", error);
       } else if (data) {
         setPageData(data);
@@ -57,6 +60,69 @@ export default function PrivacyPolicyPage() {
       console.error("Failed to fetch privacy page:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function createDefaultPrivacyPage() {
+    try {
+      const defaultContent = {
+        blocks: [
+          {
+            type: "hero_title",
+            content: "Privacy Policy",
+          },
+          {
+            type: "hero_description",
+            content:
+              "How we collect, use, and protect your personal information",
+          },
+          {
+            type: "privacy_section",
+            title: "Information We Collect",
+            content:
+              "We collect personal details like name, email, phone, and address to process your orders. Payment information is securely handled by our payment partners.",
+          },
+          {
+            type: "privacy_section",
+            title: "How We Use Information",
+            content:
+              "Your information helps us process orders, provide customer support, improve our services, and send promotional offers with your consent.",
+          },
+          {
+            type: "privacy_section",
+            title: "Data Security",
+            content:
+              "We use encryption and secure systems to protect your information. We do not sell your data to third parties.",
+          },
+          {
+            type: "contact_info",
+            phone: "+91 98765 43210",
+            email: "privacy@floristinindia.com",
+          },
+        ],
+      };
+
+      const { data, error } = await supabase
+        .from("pages")
+        .insert({
+          title: "Privacy Policy",
+          slug: "privacy-policy",
+          content: defaultContent,
+          meta_title: "Privacy Policy - Data Protection",
+          meta_description:
+            "How we collect, use, and protect your personal information.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 4,
+        })
+        .select()
+        .single();
+
+      if (data && !error) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.error("Failed to create default privacy page:", error);
     }
   }
 
