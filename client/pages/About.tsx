@@ -97,45 +97,109 @@ export default function About() {
     );
   }
 
-  // If page data exists from database, use it
-  if (pageData && pageData.content) {
-    // Handle different content formats
-    let htmlContent = "";
-
-    if (typeof pageData.content === "string") {
-      // If content is already a string, use it directly
-      htmlContent = pageData.content;
-    } else if (typeof pageData.content === "object") {
-      // If content is an object (JSONB), try to extract HTML
-      htmlContent =
-        pageData.content.body ||
-        pageData.content.html ||
-        pageData.content.content ||
-        JSON.stringify(pageData.content); // fallback to string representation
+  const renderContentBlocks = (content: any) => {
+    if (!content || !content.blocks || !Array.isArray(content.blocks)) {
+      return (
+        <div className="text-center py-12">
+          <h1 className="text-3xl font-bold mb-4">About Us</h1>
+          <p className="text-lg text-gray-600">
+            About Us content is being updated. Please check back soon.
+          </p>
+        </div>
+      );
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-6xl mx-auto">
-            {htmlContent && htmlContent !== "[object Object]" ? (
-              <div
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-              />
-            ) : (
-              <div className="text-center py-12">
-                <h1 className="text-3xl font-bold mb-4">About Us</h1>
-                <p className="text-lg text-gray-600">
-                  Content is being loaded. Please edit the About page in the
-                  Admin Panel to add content.
+      <div className="max-w-6xl mx-auto">
+        {content.blocks.map((block: any, index: number) => {
+          switch (block.type) {
+            case "heading":
+              return (
+                <h1 key={index} className="text-4xl font-bold mb-8 text-center">
+                  {block.content}
+                </h1>
+              );
+            case "text":
+            case "paragraph":
+              return (
+                <p
+                  key={index}
+                  className="text-lg text-gray-700 mb-6 leading-relaxed"
+                >
+                  {block.content}
                 </p>
-              </div>
-            )}
-          </div>
-        </div>
+              );
+            case "image":
+              return (
+                <img
+                  key={index}
+                  src={block.url || block.content}
+                  alt={block.alt || ""}
+                  className="w-full max-w-4xl mx-auto rounded-lg mb-8"
+                />
+              );
+            case "button":
+              return (
+                <div key={index} className="text-center mb-8">
+                  <a
+                    href={block.url || "#"}
+                    className="inline-block bg-rose-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-rose-600 transition-colors"
+                  >
+                    {block.content || block.text}
+                  </a>
+                </div>
+              );
+            case "list":
+              return (
+                <ul key={index} className="list-disc list-inside mb-8 text-lg">
+                  {(block.items || []).map(
+                    (item: string, itemIndex: number) => (
+                      <li key={itemIndex} className="text-gray-700 mb-2">
+                        {item}
+                      </li>
+                    ),
+                  )}
+                </ul>
+              );
+            default:
+              return (
+                <div key={index} className="text-lg text-gray-700 mb-6">
+                  {block.content || ""}
+                </div>
+              );
+          }
+        })}
       </div>
     );
+  };
+
+  // If page data exists from database, use it
+  if (pageData && pageData.content) {
+    // Handle different content formats
+    if (typeof pageData.content === "string") {
+      // If content is a string, render as HTML
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+          <div className="container mx-auto px-4 py-12">
+            <div className="max-w-6xl mx-auto">
+              <div
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: pageData.content }}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      // If content is an object with blocks, render using block renderer
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+          <div className="container mx-auto px-4 py-12">
+            {renderContentBlocks(pageData.content)}
+          </div>
+        </div>
+      );
+    }
   }
 
   // Fallback content if no database content exists
