@@ -152,14 +152,10 @@ export default function AdminCategories() {
   }
 
   function startEditing(category?: ProductCategory) {
-    console.log("startEditing called with:", category);
-
     if (category) {
-      console.log("Setting up edit mode for category:", category.name);
       setEditingCategory(category);
       setIsCreating(false);
-
-      const formValues = {
+      setFormData({
         name: category.name,
         slug: category.slug,
         description: category.description || "",
@@ -170,12 +166,8 @@ export default function AdminCategories() {
         image_url: category.image_url || "",
         meta_title: category.meta_title || "",
         meta_description: category.meta_description || "",
-      };
-
-      console.log("Form data being set:", formValues);
-      setFormData(formValues);
+      });
     } else {
-      console.log("Setting up create mode");
       setEditingCategory(null);
       setIsCreating(true);
       const nextSortOrder =
