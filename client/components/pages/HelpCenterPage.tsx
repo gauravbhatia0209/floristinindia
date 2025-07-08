@@ -157,7 +157,8 @@ export default function HelpCenterPage() {
     metaDesc.setAttribute("content", description);
   }, [pageData]);
 
-  const faqCategories = [
+  // Default FAQ categories for fallback
+  const defaultFaqCategories = [
     {
       id: "ordering",
       title: "Ordering & Payment",
@@ -258,6 +259,49 @@ export default function HelpCenterPage() {
     },
   ];
 
+  // Parse FAQ categories from database or use defaults
+  const getFaqCategories = () => {
+    if (!pageData?.content?.blocks) {
+      return defaultFaqCategories;
+    }
+
+    const faqBlocks = pageData.content.blocks.filter(
+      (block: any) => block.type === "faq_category",
+    );
+    if (faqBlocks.length === 0) {
+      return defaultFaqCategories;
+    }
+
+    return faqBlocks.map((block: any) => ({
+      id: block.category.toLowerCase().replace(/\s+/g, "-"),
+      title: block.category,
+      icon: getIconForCategory(block.category),
+      questions: block.items || [],
+    }));
+  };
+
+  const getIconForCategory = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    if (categoryLower.includes("order") || categoryLower.includes("payment")) {
+      return <ShoppingCart className="h-5 w-5" />;
+    }
+    if (categoryLower.includes("delivery")) {
+      return <Truck className="h-5 w-5" />;
+    }
+    if (
+      categoryLower.includes("product") ||
+      categoryLower.includes("quality")
+    ) {
+      return <Package className="h-5 w-5" />;
+    }
+    if (categoryLower.includes("account") || categoryLower.includes("help")) {
+      return <User className="h-5 w-5" />;
+    }
+    return <HelpCircle className="h-5 w-5" />;
+  };
+
+  const faqCategories = getFaqCategories();
+
   // Filter FAQs based on search query
   const filteredCategories = faqCategories.map((category) => ({
     ...category,
@@ -300,9 +344,18 @@ export default function HelpCenterPage() {
         </div>
         <div className="relative container mx-auto px-4 text-center">
           <HelpCircle className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Help Center</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_title",
+            )?.content ||
+              pageData?.title ||
+              "Help Center"}
+          </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
-            Find answers to your questions and get the support you need
+            {pageData?.content?.blocks?.find(
+              (b: any) => b.type === "hero_description",
+            )?.content ||
+              "Find answers to your questions and get the support you need"}
           </p>
         </div>
       </div>
