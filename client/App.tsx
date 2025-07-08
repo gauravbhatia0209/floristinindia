@@ -1,169 +1,61 @@
-import "./global.css";
-
-import { Toaster } from "@/components/ui/toaster";
-import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
-import { Layout } from "@/components/layout/Layout";
+import Layout from "@/components/layout/Layout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import Index from "./pages/Index";
-import Products from "./pages/Products";
-import ProductDetail from "./pages/ProductDetail";
-import Checkout from "./pages/Checkout";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminProducts from "./pages/admin/Products";
-import AdminCategories from "./pages/admin/Categories";
-import HomepageBuilder from "./pages/admin/HomepageBuilder";
-import DatabaseTest from "./pages/admin/DatabaseTest";
-import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Public pages
+import Index from "@/pages/Index";
+import Products from "@/pages/Products";
+import ProductDetail from "@/pages/ProductDetail";
+import Checkout from "@/pages/Checkout";
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+// Admin pages
+import Dashboard from "@/pages/admin/Dashboard";
+import AdminProducts from "@/pages/admin/Products";
+import Categories from "@/pages/admin/Categories";
+import Orders from "@/pages/admin/Orders";
+import Customers from "@/pages/admin/Customers";
+import Coupons from "@/pages/admin/Coupons";
+import Shipping from "@/pages/admin/Shipping";
+import Pages from "@/pages/admin/Pages";
+import HomepageBuilder from "@/pages/admin/HomepageBuilder";
+import Settings from "@/pages/admin/Settings";
+import Users from "@/pages/admin/Users";
+import DatabaseTest from "@/pages/admin/DatabaseTest";
+
+function App() {
+  return (
     <CartProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Index />} />
-              <Route path="products" element={<Products />} />
-              <Route path="category/:slug" element={<Products />} />
-              <Route path="product/:slug" element={<ProductDetail />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route
-                path="cart"
-                element={
-                  <div className="container py-12">
-                    <h1>Shopping Cart - Coming Soon</h1>
-                  </div>
-                }
-              />
-              <Route
-                path="wishlist"
-                element={
-                  <div className="container py-12">
-                    <h1>Wishlist - Coming Soon</h1>
-                  </div>
-                }
-              />
-              <Route
-                path="account"
-                element={
-                  <div className="container py-12">
-                    <h1>My Account - Coming Soon</h1>
-                  </div>
-                }
-              />
-              <Route
-                path="about"
-                element={
-                  <div className="container py-12">
-                    <h1>About Us - Coming Soon</h1>
-                  </div>
-                }
-              />
-              <Route
-                path="contact"
-                element={
-                  <div className="container py-12">
-                    <h1>Contact Us - Coming Soon</h1>
-                  </div>
-                }
-              />
-            </Route>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Index />} />
+            <Route path="products" element={<Products />} />
+            <Route path="category/:slug" element={<Products />} />
+            <Route path="product/:slug" element={<ProductDetail />} />
+            <Route path="checkout" element={<Checkout />} />
+          </Route>
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="homepage" element={<HomepageBuilder />} />
-              <Route path="database-test" element={<DatabaseTest />} />
-              <Route
-                path="orders"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Orders Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="customers"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Customers Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="coupons"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Coupons Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="shipping"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Shipping Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="pages"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Pages Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="settings"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      Site Settings - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-              <Route
-                path="users"
-                element={
-                  <div className="p-8">
-                    <h1 className="text-2xl font-bold">
-                      User Management - Coming Soon
-                    </h1>
-                  </div>
-                }
-              />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+          {/* Admin routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="coupons" element={<Coupons />} />
+            <Route path="shipping" element={<Shipping />} />
+            <Route path="pages" element={<Pages />} />
+            <Route path="homepage" element={<HomepageBuilder />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="users" element={<Users />} />
+            <Route path="database-test" element={<DatabaseTest />} />
+          </Route>
+        </Routes>
+      </Router>
     </CartProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
-createRoot(document.getElementById("root")!).render(<App />);
+export default App;
