@@ -104,9 +104,21 @@ export default function Page() {
     return <NotFound />;
   }
 
-  // Handle specialized page types
-  if (pageData.slug === "contact-us" || pageData.slug === "contact") {
-    return <ContactUs pageContent={pageData.content} />;
+  // Handle specialized page types with professional UI
+  switch (pageData.slug) {
+    case "about":
+      return <AboutUsPage />;
+    case "help-center":
+      return <HelpCenterPage />;
+    case "return-refunds":
+      return <ReturnRefundPage />;
+    case "privacy-policy":
+      return <PrivacyPolicyPage />;
+    case "terms-conditions":
+      return <TermsConditionsPage />;
+    case "contact-us":
+    case "contact":
+      return <ContactUs pageContent={pageData.content} />;
   }
 
   return (
