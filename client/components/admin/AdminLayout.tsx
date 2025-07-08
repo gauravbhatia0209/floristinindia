@@ -80,7 +80,7 @@ const navigation = [
   },
 ];
 
-export function AdminLayout() {
+export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
