@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { FooterSection } from "@shared/database.types";
+import FooterConfig from "@/components/admin/FooterConfig";
 
 interface FooterSectionForm {
   id?: string;
@@ -606,6 +607,15 @@ export default function FooterEditor() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Footer Configuration */}
+      <FooterConfig
+        currentMaxColumns={MAX_COLUMNS}
+        onConfigChange={(newMaxColumns) => {
+          // Update local state if needed
+          console.log("Footer config changed to:", newMaxColumns);
+        }}
+      />
 
       <div className="grid gap-4">
         {footerSections.map((section) => (
