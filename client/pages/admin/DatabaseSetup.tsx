@@ -271,7 +271,7 @@ ON CONFLICT (key) DO NOTHING;`;
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-orange-500" />
                 <span className="text-sm">
-                  Run this SQL in Supabase → SQL Editor → New Query
+                  Run this SQL in Supabase ��� SQL Editor → New Query
                 </span>
               </div>
               <div className="relative">
@@ -383,13 +383,16 @@ ON CONFLICT (key) DO NOTHING;`;
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
             <div>
-              <h3 className="font-medium text-blue-800">About Page Content:</h3>
+              <h3 className="font-medium text-blue-800">Complete Page Set:</h3>
               <p className="mt-2 text-sm text-blue-700">
-                After running the Pages table SQL, a professional About page
-                will be automatically created. You can edit the content, add
-                images, and customize sections through the
-                <strong> Admin → Pages </strong> section using the content block
-                editor.
+                After running the Pages table SQL, comprehensive pages will be
+                created:
+                <strong>
+                  About Us, Help Center, Return & Refunds, Privacy Policy, and
+                  Terms & Conditions
+                </strong>
+                . All content is fully editable through{" "}
+                <strong>Admin → Pages</strong> using the content block editor.
               </p>
             </div>
           </div>
