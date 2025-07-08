@@ -363,7 +363,7 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
           {/* Page Content from CMS */}
           {pageContent && (
             <div className="mb-12 max-w-4xl mx-auto">
-              {renderContentBlocks(pageContent)}
+              <p />
             </div>
           )}
 
