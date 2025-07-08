@@ -355,6 +355,9 @@ function PageForm({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    // Convert content blocks to HTML string for storage
+    const htmlContent = convertBlocksToHtml(formData.content);
+
     onSave({
       title: formData.title,
       slug: formData.slug,
@@ -365,8 +368,47 @@ function PageForm({
       footer_column: formData.show_in_footer
         ? parseInt(formData.footer_column)
         : null,
-      content: formData.content,
+      content: htmlContent,
     });
+  }
+
+  function convertBlocksToHtml(blocks: any[]): string {
+    return blocks
+      .map((block) => {
+        switch (block.type) {
+          case "heading":
+            const level = block.content.level || 2;
+            return `<h${level}>${block.content.text || ""}</h${level}>`;
+          case "paragraph":
+            return `<p>${block.content.text || ""}</p>`;
+          case "image":
+            const alt = block.content.alt || "";
+            const caption = block.content.caption;
+            let html = `<img src="${block.content.url || ""}" alt="${alt}" />`;
+            if (caption) {
+              html = `<figure>${html}<figcaption>${caption}</figcaption></figure>`;
+            }
+            return html;
+          case "button":
+            const style =
+              block.content.style === "secondary"
+                ? 'class="btn-secondary"'
+                : 'class="btn-primary"';
+            return `<a href="${block.content.url || "#"}" ${style}>${block.content.text || "Button"}</a>`;
+          case "list":
+            const items = (block.content.items || [])
+              .map((item: string) => `<li>${item}</li>`)
+              .join("");
+            return block.content.ordered
+              ? `<ol>${items}</ol>`
+              : `<ul>${items}</ul>`;
+          case "separator":
+            return "<hr />";
+          default:
+            return "";
+        }
+      })
+      .join("\n");
   }
 
   function addContentBlock(type: PageContent["type"]) {
