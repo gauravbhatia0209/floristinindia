@@ -376,8 +376,26 @@ export default function Settings() {
                   onChange={(e) =>
                     handleInputChange("business_hours", e.target.value)
                   }
-                  placeholder="Mon-Sun: 8:00 AM - 10:00 PM"
+                  placeholder="Monday - Sunday: 9:00 AM - 9:00 PM"
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="google_maps_embed">
+                  Google Maps Embed Code
+                </Label>
+                <Textarea
+                  id="google_maps_embed"
+                  value={settings.google_maps_embed}
+                  onChange={(e) =>
+                    handleInputChange("google_maps_embed", e.target.value)
+                  }
+                  placeholder='<iframe src="https://www.google.com/maps/embed?..." width="100%" height="300" frameborder="0"></iframe>'
+                  rows={4}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Paste the Google Maps embed iframe code here
+                </p>
               </div>
 
               <Separator />
