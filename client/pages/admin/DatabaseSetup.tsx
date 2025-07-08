@@ -508,14 +508,46 @@ CREATE POLICY "Allow authenticated full access" ON pages
         },
       ];
 
-      // Insert all pages
-      const { error } = await supabase.from("pages").insert(pages);
+      // Insert pages one by one with upsert to handle conflicts and RLS
+      let successCount = 0;
+      let errorCount = 0;
+      const errors = [];
 
-      if (error) {
-        console.error("Error creating pages:", error);
-        alert("Error creating pages: " + error.message);
+      for (const page of pages) {
+        try {
+          const { error } = await supabase.from("pages").upsert(page, {
+            onConflict: "slug",
+            ignoreDuplicates: false,
+          });
+
+          if (error) {
+            console.error(`Error creating page ${page.slug}:`, error);
+            errors.push(`${page.slug}: ${error.message}`);
+            errorCount++;
+          } else {
+            successCount++;
+          }
+        } catch (err) {
+          console.error(`Exception creating page ${page.slug}:`, err);
+          errors.push(`${page.slug}: ${err.message}`);
+          errorCount++;
+        }
+      }
+
+      if (errorCount === 0) {
+        alert(
+          `All ${successCount} pages rebuilt successfully with professional layouts!`,
+        );
+      } else if (successCount > 0) {
+        alert(
+          `${successCount} pages created successfully, ${errorCount} failed. Check console for details.`,
+        );
+        console.error("Page creation errors:", errors);
       } else {
-        alert("All 6 pages rebuilt successfully with professional layouts!");
+        alert(
+          `Failed to create pages. This might be an RLS issue. Try running the RLS fix SQL above first, then try again.`,
+        );
+        console.error("All page creation failed:", errors);
       }
     } catch (error) {
       console.error("Error rebuilding pages:", error);
@@ -642,7 +674,7 @@ INSERT INTO pages (title, slug, content, meta_title, meta_description, is_active
     {"type": "heading", "content": "Return & Refunds Policy"},
     {"type": "text", "content": "Customer satisfaction is our priority. We stand behind our products and services."},
     {"type": "heading", "content": "Refund Eligibility"},
-    {"type": "text", "content": "• Flowers significantly different from order\\n• Delivery not completed on time\\n• Poor condition due to handling\\n• Wrong product delivered\\n• Order cancelled before preparation"},
+    {"type": "text", "content": "• Flowers significantly different from order\\n• Delivery not completed on time\\n��� Poor condition due to handling\\n• Wrong product delivered\\n• Order cancelled before preparation"},
     {"type": "heading", "content": "Refund Process"},
     {"type": "text", "content": "1. Contact support within 24 hours with order details\\n2. Our team reviews your request\\n3. Approved refunds processed in 5-7 business days"},
     {"type": "heading", "content": "Replacement Policy"},
