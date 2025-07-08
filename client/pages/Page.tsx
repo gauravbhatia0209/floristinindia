@@ -51,7 +51,23 @@ export default function Page() {
   useEffect(() => {
     if (actualSlug) {
       console.log("Page component: Fetching page for slug:", actualSlug);
-      fetchPage(actualSlug);
+      // For 'about' slug, skip database fetch since AboutUsPage handles its own content
+      if (actualSlug === "about") {
+        setIsLoading(false);
+        setPageData({
+          id: "about",
+          title: "About Florist in India",
+          slug: "about",
+          content: "",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 1,
+          created_at: "",
+          updated_at: "",
+        });
+      } else {
+        fetchPage(actualSlug);
+      }
     }
   }, [actualSlug]);
 
