@@ -51,7 +51,10 @@ export default function HelpCenterPage() {
         .eq("is_active", true)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code === "PGRST116") {
+        // No data found, create default record
+        await createDefaultHelpPage();
+      } else if (error) {
         console.error("Database error:", error);
       } else if (data) {
         setPageData(data);
@@ -60,6 +63,78 @@ export default function HelpCenterPage() {
       console.error("Failed to fetch help page:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function createDefaultHelpPage() {
+    try {
+      const defaultContent = {
+        blocks: [
+          {
+            type: "hero_title",
+            content: "Help Center",
+          },
+          {
+            type: "hero_description",
+            content:
+              "Find answers to your questions and get the support you need",
+          },
+          {
+            type: "faq_category",
+            category: "Ordering & Payment",
+            items: [
+              {
+                question: "How do I place an order?",
+                answer:
+                  "You can place an order through our website by selecting your desired flowers, choosing delivery date and time, and completing payment.",
+              },
+              {
+                question: "What payment methods do you accept?",
+                answer:
+                  "We accept all major credit cards, debit cards, net banking, UPI payments, and digital wallets.",
+              },
+            ],
+          },
+          {
+            type: "faq_category",
+            category: "Delivery Information",
+            items: [
+              {
+                question: "Do you offer same-day delivery?",
+                answer:
+                  "Yes, we offer same-day delivery for orders placed before 12 PM, subject to availability in your area.",
+              },
+              {
+                question: "Which areas do you deliver to?",
+                answer:
+                  "We deliver to 100+ cities across India. Enter your pincode during checkout to check delivery availability.",
+              },
+            ],
+          },
+        ],
+      };
+
+      const { data, error } = await supabase
+        .from("pages")
+        .insert({
+          title: "Help Center",
+          slug: "help-center",
+          content: defaultContent,
+          meta_title: "Help Center - Customer Support & FAQ",
+          meta_description:
+            "Get help with flower delivery orders. FAQs about ordering, payment, delivery and more.",
+          is_active: true,
+          show_in_footer: true,
+          sort_order: 2,
+        })
+        .select()
+        .single();
+
+      if (data && !error) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.error("Failed to create default help page:", error);
     }
   }
 
