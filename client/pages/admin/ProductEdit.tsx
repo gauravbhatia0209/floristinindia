@@ -80,11 +80,15 @@ export default function ProductEdit() {
 
   async function fetchProduct(productId: string) {
     try {
+      console.log("Fetching product with ID:", productId);
+
       const { data, error } = await supabase
         .from("products")
         .select("*")
         .eq("id", productId)
         .single();
+
+      console.log("Supabase response:", { data, error });
 
       if (error) throw error;
 
