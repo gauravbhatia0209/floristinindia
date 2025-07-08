@@ -8,6 +8,7 @@ import ReturnRefundPage from "@/components/pages/ReturnRefundPage";
 import PrivacyPolicyPage from "@/components/pages/PrivacyPolicyPage";
 import TermsConditionsPage from "@/components/pages/TermsConditionsPage";
 import DeliveryInfoPage from "@/components/pages/DeliveryInfoPage";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import NotFound from "@/pages/NotFound";
 
 interface PageData {
@@ -124,7 +125,11 @@ export default function Page() {
   switch (pageData.slug) {
     case "about":
       console.log("Page component: Rendering AboutUsPage");
-      return <AboutUsPage />;
+      return (
+        <ErrorBoundary>
+          <AboutUsPage />
+        </ErrorBoundary>
+      );
     case "help-center":
     case "help":
       console.log("Page component: Rendering HelpCenterPage");
