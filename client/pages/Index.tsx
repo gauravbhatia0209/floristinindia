@@ -4,6 +4,7 @@ import { ArrowRight, Star, Truck, Shield, HeartHandshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import {
   ProductCategory,
@@ -23,7 +24,7 @@ export default function Index() {
 
   async function fetchHomepageData() {
     try {
-      // Fetch homepage sections
+      // Fetch active homepage sections in order
       const { data: sectionsData } = await supabase
         .from("homepage_sections")
         .select("*")
@@ -35,14 +36,16 @@ export default function Index() {
         .from("product_categories")
         .select("*")
         .eq("is_active", true)
+        .eq("show_in_menu", true)
         .order("sort_order")
         .limit(8);
 
       // Fetch featured products
       const { data: productsData } = await supabase
         .from("products")
-        .select("*")
+        .select("*, product_categories(name)")
         .eq("is_active", true)
+        .eq("is_featured", true)
         .limit(12);
 
       if (sectionsData) setSections(sectionsData);
@@ -63,33 +66,66 @@ export default function Index() {
     );
   }
 
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-rose text-white overflow-hidden">
+  // Render individual section components
+  function renderSection(section: HomepageSection) {
+    switch (section.type) {
+      case "hero":
+        return renderHeroSection(section);
+      case "features":
+        return renderFeaturesSection(section);
+      case "category_grid":
+        return renderCategoryGrid(section);
+      case "product_carousel":
+        return renderProductCarousel(section);
+      case "testimonials":
+        return renderTestimonials(section);
+      case "newsletter":
+        return renderNewsletter(section);
+      default:
+        return null;
+    }
+  }
+
+  function renderHeroSection(section: HomepageSection) {
+    const content = section.content as any;
+    return (
+      <section
+        key={section.id}
+        className="relative bg-gradient-rose text-white overflow-hidden"
+      >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="container relative py-24 lg:py-32">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Fresh Flowers
+              {section.title || "Fresh Flowers"}
               <br />
-              <span className="text-peach">Delivered Daily</span>
+              <span className="text-peach">
+                {section.subtitle || "Delivered Daily"}
+              </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-rose-100">
               Experience the joy of premium flower delivery across India.
               Same-day delivery available in 100+ cities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
-                Shop Now
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-lg px-8"
+                asChild
+              >
+                <Link to={content?.button_link || "/products"}>
+                  {content?.button_text || "Shop Now"}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
+                asChild
               >
-                Explore Collections
+                <Link to="/products">Explore Collections</Link>
               </Button>
             </div>
           </div>
@@ -112,56 +148,99 @@ export default function Index() {
           🌻
         </div>
       </section>
+    );
+  }
 
-      {/* Features Section */}
-      <section className="py-16 bg-cream/30">
+  function renderFeaturesSection(section: HomepageSection) {
+    const content = section.content as any;
+    const features = content?.features || [
+      {
+        icon: "truck",
+        title: "Same Day Delivery",
+        description:
+          "Order before 2 PM and get fresh flowers delivered the same day",
+      },
+      {
+        icon: "shield",
+        title: "Fresh Guarantee",
+        description: "100% fresh flowers guaranteed or your money back",
+      },
+      {
+        icon: "heart",
+        title: "24/7 Support",
+        description: "Our customer care team is always here to help you",
+      },
+    ];
+
+    const getIcon = (iconName: string) => {
+      switch (iconName) {
+        case "truck":
+          return Truck;
+        case "shield":
+          return Shield;
+        case "heart":
+          return HeartHandshake;
+        default:
+          return Truck;
+      }
+    };
+
+    return (
+      <section key={section.id} className="py-16 bg-cream/30">
         <div className="container">
+          {section.title && (
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                {section.title}
+              </h2>
+              {section.subtitle && (
+                <p className="text-xl text-muted-foreground">
+                  {section.subtitle}
+                </p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-rose rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Same Day Delivery</h3>
-              <p className="text-muted-foreground">
-                Order before 2 PM and get fresh flowers delivered the same day
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-lavender rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Fresh Guarantee</h3>
-              <p className="text-muted-foreground">
-                100% fresh flowers guaranteed or your money back
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-sunset rounded-full flex items-center justify-center mx-auto mb-4">
-                <HeartHandshake className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
-              <p className="text-muted-foreground">
-                Our customer care team is always here to help you
-              </p>
-            </div>
+            {features.map((feature: any, index: number) => {
+              const IconComponent = getIcon(feature.icon);
+              return (
+                <div key={index} className="text-center">
+                  <div className="w-16 h-16 bg-gradient-rose rounded-full flex items-center justify-center mx-auto mb-4">
+                    <IconComponent className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
+    );
+  }
 
-      {/* Categories Section */}
-      <section className="py-20">
+  function renderCategoryGrid(section: HomepageSection) {
+    const content = section.content as any;
+    const showCount = content?.show_count || 8;
+
+    return (
+      <section key={section.id} className="py-20">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Shop by <span className="text-gradient-rose">Occasion</span>
+              {section.title || "Shop by"}{" "}
+              <span className="text-gradient-rose">Occasion</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Find the perfect flowers for every special moment in life
+              {section.subtitle ||
+                "Find the perfect flowers for every special moment in life"}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {categories.map((category) => (
+            {categories.slice(0, showCount).map((category) => (
               <Link
                 key={category.id}
                 to={`/category/${category.slug}`}
@@ -190,21 +269,29 @@ export default function Index() {
           </div>
         </div>
       </section>
+    );
+  }
 
-      {/* Featured Products */}
-      <section className="py-20 bg-muted/30">
+  function renderProductCarousel(section: HomepageSection) {
+    const content = section.content as any;
+    const showCount = content?.show_count || 8;
+
+    return (
+      <section key={section.id} className="py-20 bg-muted/30">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Bestselling <span className="text-gradient-rose">Flowers</span>
+              {section.title || "Bestselling"}{" "}
+              <span className="text-gradient-rose">Flowers</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Handpicked fresh flowers loved by thousands of customers
+              {section.subtitle ||
+                "Handpicked fresh flowers loved by thousands of customers"}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.slice(0, 8).map((product) => (
+            {featuredProducts.slice(0, showCount).map((product) => (
               <Link
                 key={product.id}
                 to={`/product/${product.slug}`}
@@ -270,40 +357,55 @@ export default function Index() {
           </div>
         </div>
       </section>
+    );
+  }
 
-      {/* Testimonials */}
-      <section className="py-20">
+  function renderTestimonials(section: HomepageSection) {
+    const content = section.content as any;
+    const testimonials = content?.testimonials || [
+      {
+        name: "Priya Sharma",
+        location: "Mumbai",
+        rating: 5,
+        review:
+          "Absolutely stunning flowers! Delivered fresh and on time. Made my anniversary perfect.",
+        image: "",
+      },
+      {
+        name: "Rajesh Kumar",
+        location: "Delhi",
+        rating: 5,
+        review:
+          "Best flower delivery service in India. Quality is amazing and customer service is excellent.",
+        image: "",
+      },
+      {
+        name: "Anita Patel",
+        location: "Bangalore",
+        rating: 5,
+        review:
+          "I've been ordering for years. Never disappointed! Fresh flowers every single time.",
+        image: "",
+      },
+    ];
+
+    return (
+      <section key={section.id} className="py-20">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              What Our <span className="text-gradient-rose">Customers Say</span>
+              {section.title || "What Our"}{" "}
+              <span className="text-gradient-rose">Customers Say</span>
             </h2>
+            {section.subtitle && (
+              <p className="text-xl text-muted-foreground">
+                {section.subtitle}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Priya Sharma",
-                city: "Mumbai",
-                review:
-                  "Absolutely stunning flowers! Delivered fresh and on time. Made my anniversary perfect.",
-                rating: 5,
-              },
-              {
-                name: "Rajesh Kumar",
-                city: "Delhi",
-                review:
-                  "Best flower delivery service in India. Quality is amazing and customer service is excellent.",
-                rating: 5,
-              },
-              {
-                name: "Anita Patel",
-                city: "Bangalore",
-                review:
-                  "I've been ordering for years. Never disappointed! Fresh flowers every single time.",
-                rating: 5,
-              },
-            ].map((testimonial, index) => (
+            {testimonials.map((testimonial: any, index: number) => (
               <Card key={index} className="border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-1 mb-4">
@@ -317,7 +419,7 @@ export default function Index() {
                   <div>
                     <p className="font-semibold">{testimonial.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {testimonial.city}
+                      {testimonial.location}
                     </p>
                   </div>
                 </CardContent>
@@ -326,8 +428,41 @@ export default function Index() {
           </div>
         </div>
       </section>
+    );
+  }
 
-      {/* CTA Section */}
+  function renderNewsletter(section: HomepageSection) {
+    const content = section.content as any;
+
+    return (
+      <section key={section.id} className="py-20 bg-gradient-rose text-white">
+        <div className="container text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {section.title || "Stay Blooming with Our Updates"}
+          </h2>
+          <p className="text-xl mb-8 text-rose-100 max-w-2xl mx-auto">
+            {section.subtitle ||
+              "Get exclusive offers, flower care tips, and be the first to know about new arrivals"}
+          </p>
+          <div className="flex gap-2 max-w-md mx-auto">
+            <Input
+              placeholder={content?.placeholder || "Enter your email"}
+              className="bg-white/10 border-white/20 text-white placeholder:text-rose-100"
+            />
+            <Button variant="secondary" className="whitespace-nowrap">
+              {content?.button_text || "Subscribe"}
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      {sections.map((section) => renderSection(section))}
+
+      {/* CTA Section - Always show at end */}
       <section className="py-20 bg-gradient-rose text-white">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -337,9 +472,16 @@ export default function Index() {
             Order now and let us deliver fresh, beautiful flowers to your loved
             ones
           </p>
-          <Button size="lg" variant="secondary" className="text-lg px-8">
-            Start Shopping
-            <ArrowRight className="ml-2 w-5 h-5" />
+          <Button
+            size="lg"
+            variant="secondary"
+            className="text-lg px-8"
+            asChild
+          >
+            <Link to="/products">
+              Start Shopping
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
           </Button>
         </div>
       </section>

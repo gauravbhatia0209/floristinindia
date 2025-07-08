@@ -11,6 +11,7 @@ import { Layout } from "@/components/layout/Layout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminCategories from "./pages/admin/Categories";
@@ -31,15 +32,7 @@ const App = () => (
               <Route index element={<Index />} />
               <Route path="products" element={<Products />} />
               <Route path="category/:slug" element={<Products />} />
-              {/* Placeholder routes for future implementation */}
-              <Route
-                path="product/:slug"
-                element={
-                  <div className="container py-12">
-                    <h1>Product Details - Coming Soon</h1>
-                  </div>
-                }
-              />
+              <Route path="product/:slug" element={<ProductDetail />} />
               <Route
                 path="cart"
                 element={
