@@ -111,14 +111,6 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
     setSubmitMessage("");
 
     try {
-      console.log("Submitting form data:", {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim() || null,
-        subject: formData.subject.trim() || "Contact Form Submission",
-        message: formData.message.trim(),
-      });
-
       // Insert into contact_submissions table
       const { data, error } = await supabase
         .from("contact_submissions")
