@@ -7,6 +7,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import Index from "@/pages/Index";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
+import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 
 // Admin pages
@@ -35,6 +36,7 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="category/:slug" element={<Products />} />
             <Route path="product/:slug" element={<ProductDetail />} />
+            <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
           </Route>
 
