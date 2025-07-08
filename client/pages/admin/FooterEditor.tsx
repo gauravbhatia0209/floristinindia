@@ -363,7 +363,11 @@ export default function FooterEditor() {
             <Label>Show Count</Label>
             <Input
               type="number"
-              value={editingSection.content?.show_count || ""}
+              value={
+                editingSection.content?.show_count
+                  ? editingSection.content.show_count.toString()
+                  : "6"
+              }
               onChange={(e) =>
                 setEditingSection({
                   ...editingSection,
@@ -511,7 +515,11 @@ export default function FooterEditor() {
                     <Input
                       id="sort-order"
                       type="number"
-                      value={editingSection.sort_order || ""}
+                      value={
+                        editingSection.sort_order
+                          ? editingSection.sort_order.toString()
+                          : "1"
+                      }
                       onChange={(e) =>
                         setEditingSection({
                           ...editingSection,
