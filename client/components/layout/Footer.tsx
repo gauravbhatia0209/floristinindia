@@ -395,9 +395,12 @@ export function Footer() {
               (section) => section.column_position === columnPosition,
             );
 
+            // Count total active sections to determine if we should show fallback
+            const totalActiveSections = footerSections.length;
+
             if (sectionsInColumn.length === 0) {
-              // Show fallback content for empty columns
-              if (columnPosition === 2 && footerSections.length === 0) {
+              // Show fallback content only when NO active sections exist at all
+              if (columnPosition === 2 && totalActiveSections === 0) {
                 return (
                   <div key={columnPosition}>
                     <h4 className="font-semibold mb-4">Popular Categories</h4>
@@ -416,7 +419,7 @@ export function Footer() {
                   </div>
                 );
               }
-              if (columnPosition === 3 && footerSections.length === 0) {
+              if (columnPosition === 3 && totalActiveSections === 0) {
                 return (
                   <div key={columnPosition}>
                     <h4 className="font-semibold mb-4">Quick Links</h4>
