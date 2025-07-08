@@ -67,6 +67,7 @@ function App() {
               path="contact-submissions"
               element={<ContactSubmissions />}
             />
+            <Route path="database-setup" element={<DatabaseSetup />} />
             <Route path="database-test" element={<DatabaseTest />} />
           </Route>
 
