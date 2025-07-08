@@ -39,7 +39,26 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
 
   useEffect(() => {
     fetchSiteSettings();
+    testContactSubmissionsTable();
   }, []);
+
+  async function testContactSubmissionsTable() {
+    try {
+      console.log("Testing contact_submissions table...");
+      const { data, error } = await supabase
+        .from("contact_submissions")
+        .select("*")
+        .limit(1);
+
+      if (error) {
+        console.error("contact_submissions table error:", error);
+      } else {
+        console.log("contact_submissions table exists and accessible:", data);
+      }
+    } catch (error) {
+      console.error("Error testing contact_submissions table:", error);
+    }
+  }
 
   async function fetchSiteSettings() {
     try {
