@@ -68,6 +68,9 @@ function App() {
             />
             <Route path="database-test" element={<DatabaseTest />} />
           </Route>
+
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </CartProvider>
