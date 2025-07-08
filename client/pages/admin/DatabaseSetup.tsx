@@ -7,8 +7,7 @@ import { Copy, Database, AlertTriangle } from "lucide-react";
 export default function DatabaseSetup() {
   const [copied, setCopied] = useState<string | null>(null);
 
-  const contactSubmissionsSQL = `
--- Create contact_submissions table
+  const contactSubmissionsSQL = `-- Create contact_submissions table
 CREATE TABLE IF NOT EXISTS contact_submissions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -32,12 +31,11 @@ CREATE POLICY "Allow public insert access" ON contact_submissions
   FOR INSERT WITH CHECK (true);
 
 -- Create index for performance
-CREATE INDEX IF NOT EXISTS idx_contact_submissions_submitted_at 
+CREATE INDEX IF NOT EXISTS idx_contact_submissions_submitted_at
   ON contact_submissions(submitted_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_contact_submissions_is_read 
-  ON contact_submissions(is_read);
-`.trim();
+CREATE INDEX IF NOT EXISTS idx_contact_submissions_is_read
+  ON contact_submissions(is_read);`;
 
   const pagesTableSQL = `
 -- Create pages table
@@ -74,7 +72,7 @@ CREATE INDEX IF NOT EXISTS idx_pages_footer ON pages(show_in_footer);
 `.trim();
 
   const siteSettingsSQL = `
--- Create site_settings table  
+-- Create site_settings table
 CREATE TABLE IF NOT EXISTS site_settings (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   key TEXT UNIQUE NOT NULL,
