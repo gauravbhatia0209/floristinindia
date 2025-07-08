@@ -498,9 +498,6 @@ export default function FooterEditor() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">
-                          Column 1 (Company info is here)
-                        </SelectItem>
                         <SelectItem value="2">Column 2</SelectItem>
                         <SelectItem value="3">Column 3</SelectItem>
                         <SelectItem value="4">Column 4</SelectItem>
