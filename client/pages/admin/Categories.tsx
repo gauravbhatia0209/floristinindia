@@ -27,12 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import {
   Select,
   SelectContent,
@@ -193,9 +188,9 @@ export default function AdminCategories() {
     setIsModalOpen(true);
   }
 
-  function closeModal() {
-    setIsModalOpen(false);
+  function cancelEditing() {
     setEditingCategory(null);
+    setIsCreating(false);
     setFormData({
       name: "",
       slug: "",
@@ -298,7 +293,7 @@ export default function AdminCategories() {
       }
 
       fetchCategories();
-      closeModal();
+      cancelEditing();
     } catch (error: any) {
       console.error("Failed to save category:", error);
       alert(`Failed to save category: ${error.message}`);
