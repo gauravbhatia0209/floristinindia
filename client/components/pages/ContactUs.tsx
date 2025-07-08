@@ -157,12 +157,18 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
         console.error("Supabase error details:", error);
 
         // Handle specific Supabase errors
-        if (error.code === "42P01") {
+        if (
+          error.code === "42P01" ||
+          error.message?.includes("relation") ||
+          error.message?.includes("does not exist")
+        ) {
           throw new Error(
-            "Database table not found. Please contact administrator.",
+            "Contact form is not set up yet. Please contact the administrator to enable the contact form functionality.",
           );
         } else if (error.code === "23505") {
           throw new Error("Duplicate submission detected. Please try again.");
+        } else if (error.code === "42501") {
+          throw new Error("Permission denied. Please contact administrator.");
         } else if (error.message) {
           throw new Error(`Database error: ${error.message}`);
         } else {
