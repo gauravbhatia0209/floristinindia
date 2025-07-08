@@ -124,6 +124,25 @@ export default function Pages() {
         </Button>
       </div>
 
+      {/* About Page Info */}
+      {!pages.find((p) => p.slug === "about") && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <FileText className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-blue-800">About Page Setup</h3>
+                <p className="text-sm text-blue-700 mt-1">
+                  Create an "About" page with slug "about" to customize your
+                  About Us page content. This will override the default About
+                  page with your custom content.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
