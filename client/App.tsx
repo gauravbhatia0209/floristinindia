@@ -8,8 +8,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Layout } from "@/components/layout/Layout";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/Products";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +25,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
               <Route path="products" element={<Products />} />
@@ -83,8 +87,105 @@ const App = () => (
                   </div>
                 }
               />
-              <Route path="*" element={<NotFound />} />
             </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route
+                path="categories"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Categories Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="orders"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Orders Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="customers"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Customers Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="coupons"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Coupons Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="shipping"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Shipping Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="pages"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Pages Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="homepage"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Homepage Builder - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      Site Settings - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+              <Route
+                path="users"
+                element={
+                  <div className="p-8">
+                    <h1 className="text-2xl font-bold">
+                      User Management - Coming Soon
+                    </h1>
+                  </div>
+                }
+              />
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
