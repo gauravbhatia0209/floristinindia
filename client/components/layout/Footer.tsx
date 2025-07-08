@@ -422,15 +422,12 @@ export function Footer() {
             // Count total active sections to determine if we should show fallback
             const totalActiveSections = footerSections.length;
 
-            // Debug logging
-            if (columnPosition === 2) {
-              console.log(
-                "Column 2 - Total active sections:",
-                totalActiveSections,
-              );
-              console.log("Sections in column 2:", sectionsInColumn.length);
-              console.log("Should show fallback:", totalActiveSections === 0);
-            }
+            // Debug logging for all columns
+            console.log(`Column ${columnPosition} processing:`, {
+              totalActiveSections,
+              sectionsInThisColumn: sectionsInColumn.length,
+              sectionTitles: sectionsInColumn.map((s) => s.title),
+            });
 
             if (sectionsInColumn.length === 0) {
               // When admin makes all sections inactive, show empty columns (no fallback)
