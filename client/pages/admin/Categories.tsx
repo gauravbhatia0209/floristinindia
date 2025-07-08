@@ -45,9 +45,9 @@ export default function AdminCategories() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] =
     useState<ProductCategory | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
