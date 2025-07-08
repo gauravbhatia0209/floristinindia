@@ -35,6 +35,10 @@ export default function Page() {
   const currentPath = window.location.pathname.replace(/^\//, "");
   const actualSlug = slug || currentPath;
 
+  console.log("Page component: useParams slug =", slug);
+  console.log("Page component: currentPath =", currentPath);
+  console.log("Page component: actualSlug =", actualSlug);
+
   console.log(
     "Page component: URL slug =",
     slug,
