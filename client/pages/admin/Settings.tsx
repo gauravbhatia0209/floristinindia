@@ -30,9 +30,11 @@ interface SettingsData {
 
   // Contact Info
   contact_phone: string;
+  contact_phone_2: string;
   contact_email: string;
   contact_address: string;
   business_hours: string;
+  google_maps_embed: string;
 
   // Social Media
   facebook_url: string;
