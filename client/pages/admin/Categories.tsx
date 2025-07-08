@@ -320,6 +320,13 @@ export default function AdminCategories() {
     );
   }
 
+  console.log(
+    "Render state - editingCategory:",
+    editingCategory,
+    "isCreating:",
+    isCreating,
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
