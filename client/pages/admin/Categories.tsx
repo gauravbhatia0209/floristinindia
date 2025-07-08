@@ -322,7 +322,7 @@ export default function AdminCategories() {
             Organize your flower catalog with categories and subcategories
           </p>
         </div>
-        <Button onClick={() => openEditModal()}>
+        <Button onClick={() => startEditing()}>
           <Plus className="h-4 w-4 mr-2" />
           Add Category
         </Button>
@@ -406,7 +406,7 @@ export default function AdminCategories() {
                   ? "Try adjusting your search"
                   : "Get started by adding your first category"}
               </p>
-              <Button onClick={() => openEditModal()}>
+              <Button onClick={() => startEditing()}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Category
               </Button>
