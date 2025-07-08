@@ -72,7 +72,7 @@ export default function FooterEditor() {
         .from("site_settings")
         .select("value")
         .eq("key", "footer_max_columns")
-        .single();
+        .maybeSingle(); // Use maybeSingle() to handle when no records exist
 
       if (!error && data) {
         const maxCols = parseInt(data.value) || 6;
