@@ -820,6 +820,8 @@ export type MenuItem = Database["public"]["Tables"]["menu_items"]["Row"];
 export type FooterSection =
   Database["public"]["Tables"]["footer_sections"]["Row"];
 export type SubUser = Database["public"]["Tables"]["sub_users"]["Row"];
+export type ContactSubmission =
+  Database["public"]["Tables"]["contact_submissions"]["Row"];
 
 // Extended types for frontend use
 export interface CartItem {
