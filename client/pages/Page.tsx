@@ -31,14 +31,25 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  console.log("Page component: slug =", slug);
+  // Determine the actual slug - either from URL params or from current path
+  const currentPath = window.location.pathname.replace(/^\//, "");
+  const actualSlug = slug || currentPath;
+
+  console.log(
+    "Page component: URL slug =",
+    slug,
+    "Current path =",
+    currentPath,
+    "Actual slug =",
+    actualSlug,
+  );
 
   useEffect(() => {
-    if (slug) {
-      console.log("Page component: Fetching page for slug:", slug);
-      fetchPage(slug);
+    if (actualSlug) {
+      console.log("Page component: Fetching page for slug:", actualSlug);
+      fetchPage(actualSlug);
     }
-  }, [slug]);
+  }, [actualSlug]);
 
   async function fetchPage(pageSlug: string) {
     try {
