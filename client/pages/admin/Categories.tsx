@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Search,
@@ -426,8 +426,8 @@ export default function AdminCategories() {
                 </TableHeader>
                 <TableBody>
                   {filteredCategories.map((category) => (
-                    <>
-                      <TableRow key={category.id}>
+                    <React.Fragment key={category.id}>
+                      <TableRow>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-cream to-peach/30 rounded-lg flex items-center justify-center">
@@ -795,7 +795,7 @@ export default function AdminCategories() {
                             </TableCell>
                           </TableRow>
                         )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>
