@@ -871,7 +871,7 @@ ON CONFLICT (key) DO NOTHING;`;
               size="sm"
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              {isClearing ? "Clearing..." : "Clear All Page Records"}
+              {isClearing ? "Rebuilding..." : "Rebuild All 6 Pages"}
             </Button>
             {clearSuccess && (
               <Badge variant="outline" className="bg-green-100 text-green-800">
