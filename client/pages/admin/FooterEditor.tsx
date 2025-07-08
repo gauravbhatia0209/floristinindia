@@ -363,13 +363,13 @@ export default function FooterEditor() {
             <Label>Show Count</Label>
             <Input
               type="number"
-              value={editingSection.content?.show_count || 6}
+              value={editingSection.content?.show_count || ""}
               onChange={(e) =>
                 setEditingSection({
                   ...editingSection,
                   content: {
                     ...editingSection.content,
-                    show_count: parseInt(e.target.value),
+                    show_count: parseInt(e.target.value) || 6,
                   },
                 })
               }
@@ -511,11 +511,11 @@ export default function FooterEditor() {
                     <Input
                       id="sort-order"
                       type="number"
-                      value={editingSection.sort_order}
+                      value={editingSection.sort_order || ""}
                       onChange={(e) =>
                         setEditingSection({
                           ...editingSection,
-                          sort_order: parseInt(e.target.value),
+                          sort_order: parseInt(e.target.value) || 1,
                         })
                       }
                       placeholder="1, 2, 3..."
