@@ -22,6 +22,8 @@ export default function DatabaseTest() {
     { name: "coupons", status: "loading", count: 0 },
     { name: "customers", status: "loading", count: 0 },
     { name: "orders", status: "loading", count: 0 },
+    { name: "contact_submissions", status: "loading", count: 0 },
+    { name: "pages", status: "loading", count: 0 },
   ]);
 
   useEffect(() => {
