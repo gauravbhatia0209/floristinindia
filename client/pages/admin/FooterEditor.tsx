@@ -69,12 +69,43 @@ export default function FooterEditor() {
       if (error) {
         console.error("Error fetching footer sections:", error);
       } else if (data) {
+        // Fix any sections that are incorrectly in column 1
+        await fixColumn1Sections(data);
         setFooterSections(data);
       }
     } catch (error) {
       console.error("Error:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function fixColumn1Sections(sections: FooterSection[]) {
+    const column1Sections = sections.filter((s) => s.column_position === 1);
+
+    if (column1Sections.length > 0) {
+      console.log(
+        "Found sections in column 1, moving to column 2:",
+        column1Sections,
+      );
+
+      for (const section of column1Sections) {
+        try {
+          const { error } = await supabase
+            .from("footer_sections")
+            .update({ column_position: 2 })
+            .eq("id", section.id);
+
+          if (error) {
+            console.error("Error moving section from column 1:", error);
+          } else {
+            // Update local data
+            section.column_position = 2;
+          }
+        } catch (error) {
+          console.error("Error updating section:", error);
+        }
+      }
     }
   }
 
