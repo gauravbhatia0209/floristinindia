@@ -114,10 +114,30 @@ export default function Page() {
         </header>
 
         <main className="prose prose-lg max-w-none">
-          <div
-            dangerouslySetInnerHTML={{ __html: pageData.content }}
-            className="break-words"
-          />
+          {(() => {
+            // Handle different content formats
+            let htmlContent = "";
+
+            if (typeof pageData.content === "string") {
+              htmlContent = pageData.content;
+            } else if (
+              typeof pageData.content === "object" &&
+              pageData.content
+            ) {
+              htmlContent =
+                pageData.content.body ||
+                pageData.content.html ||
+                pageData.content.content ||
+                JSON.stringify(pageData.content);
+            }
+
+            return (
+              <div
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                className="break-words"
+              />
+            );
+          })()}
         </main>
       </div>
     </div>
