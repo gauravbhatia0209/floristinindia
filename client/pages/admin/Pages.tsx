@@ -298,16 +298,47 @@ function PageForm({
     is_active: page?.is_active ?? true,
     show_in_footer: page?.show_in_footer ?? false,
     footer_column: page?.footer_column?.toString() || "1",
-    content: page?.content || [
-      {
-        type: "heading",
-        content: { level: 1, text: "Page Title" },
-      },
-      {
-        type: "paragraph",
-        content: { text: "Your page content goes here..." },
-      },
-    ],
+    content: (() => {
+      if (!page?.content) {
+        return [
+          {
+            type: "heading",
+            content: { level: 1, text: "Page Title" },
+          },
+          {
+            type: "paragraph",
+            content: { text: "Your page content goes here..." },
+          },
+        ];
+      }
+
+      // If content is already an array (content blocks), use it
+      if (Array.isArray(page.content)) {
+        return page.content;
+      }
+
+      // If content is a string (HTML), convert it to a single paragraph block
+      if (typeof page.content === "string") {
+        return [
+          {
+            type: "paragraph",
+            content: { text: page.content },
+          },
+        ];
+      }
+
+      // Fallback to default content
+      return [
+        {
+          type: "heading",
+          content: { level: 1, text: page?.title || "Page Title" },
+        },
+        {
+          type: "paragraph",
+          content: { text: "Your page content goes here..." },
+        },
+      ];
+    })(),
   });
 
   // Auto-generate slug from title
