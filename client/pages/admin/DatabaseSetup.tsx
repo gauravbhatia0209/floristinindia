@@ -2,10 +2,41 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Database, AlertTriangle } from "lucide-react";
+import { Copy, Database, AlertTriangle, Trash2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function DatabaseSetup() {
   const [copied, setCopied] = useState<string | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
+  const [clearSuccess, setClearSuccess] = useState(false);
+
+  const clearOldPages = async () => {
+    try {
+      setIsClearing(true);
+      setClearSuccess(false);
+
+      // Delete all existing page records
+      const { error } = await supabase
+        .from("pages")
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000"); // Delete all records
+
+      if (error) {
+        console.error("Error clearing pages:", error);
+        alert("Error clearing pages: " + error.message);
+      } else {
+        setClearSuccess(true);
+        alert(
+          "All page records cleared! Now visit each page to trigger creation of new structured content.",
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error clearing pages");
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   const contactSubmissionsSQL = `-- Create contact_submissions table
 CREATE TABLE IF NOT EXISTS contact_submissions (
