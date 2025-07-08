@@ -422,68 +422,11 @@ export function Footer() {
             }
 
             if (sectionsInColumn.length === 0) {
-              // Show fallback content only when NO active sections exist at all
-              if (columnPosition === 2 && totalActiveSections === 0) {
-                return (
-                  <div key={columnPosition}>
-                    <h4 className="font-semibold mb-4">Popular Categories</h4>
-                    <ul className="space-y-2">
-                      {categories.slice(0, 6).map((category) => (
-                        <li key={category.id}>
-                          <Link
-                            to={`/category/${category.slug}`}
-                            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                          >
-                            {category.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              }
-              if (columnPosition === 3 && totalActiveSections === 0) {
-                return (
-                  <div key={columnPosition}>
-                    <h4 className="font-semibold mb-4">Quick Links</h4>
-                    <ul className="space-y-2 text-sm">
-                      <li>
-                        <Link
-                          to="/about"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          About Us
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/help"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          Help Center
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/privacy-policy"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          Privacy Policy
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/terms"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          Terms & Conditions
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                );
-              }
-              return null; // Empty column
+              // When admin makes all sections inactive, show empty columns (no fallback)
+              console.log(
+                `Column ${columnPosition} - Showing empty (no fallback content)`,
+              );
+              return null; // Always show nothing when no sections in column
             }
 
             return (
