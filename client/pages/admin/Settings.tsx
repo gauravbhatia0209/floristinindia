@@ -318,7 +318,7 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="contact_phone">Contact Phone</Label>
+                  <Label htmlFor="contact_phone">Contact Phone (Primary)</Label>
                   <Input
                     id="contact_phone"
                     value={settings.contact_phone}
@@ -326,6 +326,19 @@ export default function Settings() {
                       handleInputChange("contact_phone", e.target.value)
                     }
                     placeholder="+91 98765 43210"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contact_phone_2">
+                    Contact Phone (Secondary)
+                  </Label>
+                  <Input
+                    id="contact_phone_2"
+                    value={settings.contact_phone_2}
+                    onChange={(e) =>
+                      handleInputChange("contact_phone_2", e.target.value)
+                    }
+                    placeholder="+91 98765 43211"
                   />
                 </div>
                 <div>
