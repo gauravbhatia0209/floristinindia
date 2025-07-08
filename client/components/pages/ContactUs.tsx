@@ -100,27 +100,56 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
     setSubmitMessage("");
 
     try {
+      console.log("Submitting form data:", {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        subject: formData.subject.trim() || "Contact Form Submission",
+        message: formData.message.trim(),
+      });
+
       // Insert into contact_submissions table
       const { data, error } = await supabase
         .from("contact_submissions")
-        .insert({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim() || null,
-          subject: formData.subject.trim() || "Contact Form Submission",
-          message: formData.message.trim(),
-          submitted_at: new Date().toISOString(),
-          is_read: false,
-        })
+        .insert([
+          {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            phone: formData.phone.trim() || null,
+            subject: formData.subject.trim() || "Contact Form Submission",
+            message: formData.message.trim(),
+            is_read: false,
+          },
+        ])
         .select();
 
       if (error) {
-        console.error("Database error:", error);
-        throw new Error(`Failed to submit: ${error.message}`);
+        console.error("Supabase error details:", error);
+
+        // Handle specific Supabase errors
+        if (error.code === "42P01") {
+          throw new Error(
+            "Database table not found. Please contact administrator.",
+          );
+        } else if (error.code === "23505") {
+          throw new Error("Duplicate submission detected. Please try again.");
+        } else if (error.message) {
+          throw new Error(`Database error: ${error.message}`);
+        } else {
+          throw new Error("Failed to save your message. Please try again.");
+        }
+      }
+
+      if (!data || data.length === 0) {
+        throw new Error("No data returned from database. Please try again.");
       }
 
       console.log("Successfully submitted:", data);
-      setSubmitMessage("✅ Thank you! Your message has been received.");
+      setSubmitMessage(
+        "✅ Thank you! Your message has been received. We'll get back to you soon.",
+      );
+
+      // Clear form after successful submission
       setFormData({
         name: "",
         email: "",
@@ -130,9 +159,17 @@ export default function ContactUs({ pageContent }: { pageContent: string }) {
       });
     } catch (error: any) {
       console.error("Form submission error:", error);
-      setSubmitMessage(
-        `❌ Sorry, there was an error: ${error.message || "Please try again."}`,
-      );
+
+      // Provide user-friendly error messages
+      let errorMessage = "Sorry, something went wrong. Please try again.";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.code) {
+        errorMessage = `Error ${error.code}: Please contact support.`;
+      }
+
+      setSubmitMessage(`❌ ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
