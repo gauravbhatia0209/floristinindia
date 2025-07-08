@@ -49,6 +49,8 @@ export default function About() {
         }
       } else if (data) {
         console.log("About page data loaded:", data);
+        console.log("Content type:", typeof data.content);
+        console.log("Content value:", data.content);
         setPageData(data);
       }
     } catch (error) {
