@@ -32,32 +32,6 @@ import DatabaseSetup from "@/pages/admin/DatabaseSetup";
 import DatabaseTest from "@/pages/admin/DatabaseTest";
 import FooterEditor from "@/pages/admin/FooterEditor";
 
-// Test wrapper for debugging about route
-function AboutTestWrapper() {
-  console.log("AboutTestWrapper: About route reached!");
-  console.log("Current URL:", window.location.pathname);
-  console.log("Page component available:", !!Page);
-
-  // Test fallback to ensure route is working
-  try {
-    return (
-      <div>
-        <h1>About Route Test</h1>
-        <p>If you see this, the route is working!</p>
-        <Page />
-      </div>
-    );
-  } catch (error) {
-    console.error("Error in AboutTestWrapper:", error);
-    return (
-      <div>
-        <h1>Route Error</h1>
-        <p>Error: {error.message}</p>
-      </div>
-    );
-  }
-}
-
 function App() {
   // Add error handling for navigation issues
   React.useEffect(() => {
@@ -97,7 +71,7 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             {/* Specific static routes - must come before dynamic route */}
-            <Route path="about" element={<AboutTestWrapper />} />
+            <Route path="about" element={<Page />} />
             <Route path="help" element={<Page />} />
             <Route path="terms" element={<Page />} />
             <Route path="privacy-policy" element={<Page />} />
