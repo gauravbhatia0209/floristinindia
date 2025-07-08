@@ -18,8 +18,17 @@ import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
 import { useCart } from "@/hooks/useCart";
 
+interface SiteSettingsMap {
+  site_name?: string;
+  site_tagline?: string;
+  logo_url?: string;
+  contact_phone?: string;
+  contact_email?: string;
+}
+
 export function Header() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [siteSettings, setSiteSettings] = useState<SiteSettingsMap>({});
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { items } = useCart();
@@ -28,6 +37,7 @@ export function Header() {
 
   useEffect(() => {
     fetchCategories();
+    fetchSiteSettings();
   }, []);
 
   async function fetchCategories() {
@@ -58,20 +68,49 @@ export function Header() {
     }
   }
 
+  async function fetchSiteSettings() {
+    try {
+      const { data: settingsData } = await supabase
+        .from("site_settings")
+        .select("*")
+        .in("key", [
+          "site_name",
+          "site_tagline",
+          "logo_url",
+          "contact_phone",
+          "contact_email",
+        ]);
+
+      if (settingsData) {
+        const settingsMap: SiteSettingsMap = {};
+        settingsData.forEach((setting) => {
+          settingsMap[setting.key as keyof SiteSettingsMap] = setting.value;
+        });
+        setSiteSettings(settingsMap);
+      }
+    } catch (error) {
+      console.error("Failed to fetch site settings:", error);
+    }
+  }
+
   return (
     <div className="bg-background border-b sticky top-0 z-50">
       {/* Top Bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container flex items-center justify-between py-2 text-sm">
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <Phone className="w-3 h-3" />
-              +91 98765 43210
-            </span>
-            <span className="flex items-center gap-1">
-              <Mail className="w-3 h-3" />
-              orders@floristinindia.com
-            </span>
+            {siteSettings.contact_phone && (
+              <span className="flex items-center gap-1">
+                <Phone className="w-3 h-3" />
+                {siteSettings.contact_phone}
+              </span>
+            )}
+            {siteSettings.contact_email && (
+              <span className="flex items-center gap-1">
+                <Mail className="w-3 h-3" />
+                {siteSettings.contact_email}
+              </span>
+            )}
           </div>
           <div className="hidden sm:block">
             🌸 Free Delivery on Orders Above ₹999 🌸
@@ -109,15 +148,23 @@ export function Header() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-rose rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">🌹</span>
-            </div>
+            {siteSettings.logo_url ? (
+              <img
+                src={siteSettings.logo_url}
+                alt={siteSettings.site_name || "Logo"}
+                className="w-10 h-10 object-contain"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-rose rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">🌹</span>
+              </div>
+            )}
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-gradient-rose">
-                Florist in India
+                {siteSettings.site_name || "Florist in India"}
               </h1>
               <p className="text-xs text-muted-foreground -mt-1">
-                Premium Flower Delivery
+                {siteSettings.site_tagline || "Premium Flower Delivery"}
               </p>
             </div>
           </Link>
