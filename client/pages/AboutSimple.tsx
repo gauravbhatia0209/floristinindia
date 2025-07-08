@@ -60,71 +60,111 @@ export default function AboutSimple() {
     );
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">About Florist in India</h1>
-
-        {/* Debug Info */}
-        <div className="bg-gray-100 p-4 rounded mb-8 text-sm">
-          <p>
-            <strong>Debug Info:</strong>
-          </p>
-          <p>Page Data: {pageData ? "Found" : "Not Found"}</p>
-          <p>Content Type: {typeof pageData?.content}</p>
-          <p>
-            Content Preview:{" "}
-            {JSON.stringify(pageData?.content).substring(0, 100)}...
+  const renderContentBlocks = (content: any) => {
+    if (!content || !content.blocks || !Array.isArray(content.blocks)) {
+      return (
+        <div className="max-w-3xl mx-auto p-4 text-center">
+          <p className="text-base text-gray-700 mb-2">
+            About Us content is being updated. Please check back soon.
           </p>
         </div>
+      );
+    }
 
-        {/* Content */}
+    return content.blocks.map((block: any, index: number) => {
+      switch (block.type) {
+        case "heading":
+          return (
+            <h1 key={index} className="text-2xl font-bold mb-4">
+              {block.content}
+            </h1>
+          );
+        case "text":
+        case "paragraph":
+          return (
+            <p key={index} className="text-base text-gray-700 mb-2">
+              {block.content}
+            </p>
+          );
+        case "image":
+          return (
+            <img
+              key={index}
+              src={block.url || block.content}
+              alt={block.alt || ""}
+              className="w-full max-w-md mx-auto rounded-lg mb-4"
+            />
+          );
+        case "button":
+          return (
+            <a
+              key={index}
+              href={block.url || "#"}
+              className="inline-block bg-rose-500 text-white px-6 py-3 rounded-lg hover:bg-rose-600 transition-colors mb-4"
+            >
+              {block.content || block.text}
+            </a>
+          );
+        case "list":
+          return (
+            <ul key={index} className="list-disc list-inside mb-4">
+              {(block.items || []).map((item: string, itemIndex: number) => (
+                <li key={itemIndex} className="text-base text-gray-700 mb-1">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          );
+        default:
+          return (
+            <div key={index} className="text-base text-gray-700 mb-2">
+              {block.content || ""}
+            </div>
+          );
+      }
+    });
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto p-4">
         {pageData?.content ? (
-          <div className="prose prose-lg max-w-none">
-            {typeof pageData.content === "string" ? (
-              <div dangerouslySetInnerHTML={{ __html: pageData.content }} />
-            ) : (
-              <div>
-                <p>Content is an object, not a string. Raw content:</p>
-                <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto">
-                  {JSON.stringify(pageData.content, null, 2)}
-                </pre>
-              </div>
-            )}
-          </div>
+          renderContentBlocks(pageData.content)
         ) : (
-          <div className="prose prose-lg max-w-none">
-            <h2>Welcome to Florist in India</h2>
-            <p>
+          <div>
+            <h1 className="text-2xl font-bold mb-4">About Florist in India</h1>
+            <p className="text-base text-gray-700 mb-2">
               We are your trusted destination for premium flower, cake, and gift
               delivery services across India. With a strong presence in over
               100+ cities including Delhi NCR, Mumbai, Bangalore, and Jalandhar,
               we ensure every celebration feels special—no matter the distance.
             </p>
 
-            <h3>Why Choose Us</h3>
-            <ul>
-              <li>🌸 Same Day Flower Delivery</li>
-              <li>📍 100+ Cities Covered</li>
-              <li>💬 24/7 Customer Support</li>
-              <li>💝 Custom Gift Combos</li>
-              <li>💳 Secure Payments</li>
+            <h2 className="text-2xl font-bold mb-4">Why Choose Us</h2>
+            <ul className="list-disc list-inside mb-4">
+              <li className="text-base text-gray-700 mb-1">
+                🌸 Same Day Flower Delivery
+              </li>
+              <li className="text-base text-gray-700 mb-1">
+                📍 100+ Cities Covered
+              </li>
+              <li className="text-base text-gray-700 mb-1">
+                💬 24/7 Customer Support
+              </li>
+              <li className="text-base text-gray-700 mb-1">
+                💝 Custom Gift Combos
+              </li>
+              <li className="text-base text-gray-700 mb-1">
+                💳 Secure Payments
+              </li>
             </ul>
 
-            <h3>Our Mission</h3>
-            <p>
+            <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
+            <p className="text-base text-gray-700 mb-2">
               We aim to connect emotions through fresh blooms. Whether it's a
               birthday, anniversary, wedding, or a simple "thinking of you"—we
               help you say it beautifully.
             </p>
-
-            <div className="bg-blue-50 p-4 rounded mt-8">
-              <p>
-                <strong>Note:</strong> This is the default content. To customize
-                this page, create an "About" page with slug "about" in the Admin
-                Panel → Pages section.
-              </p>
-            </div>
           </div>
         )}
       </div>
