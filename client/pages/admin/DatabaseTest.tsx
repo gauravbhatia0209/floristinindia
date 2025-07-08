@@ -40,6 +40,8 @@ export default function DatabaseTest() {
       "coupons",
       "customers",
       "orders",
+      "contact_submissions",
+      "pages",
     ];
 
     for (const tableName of tableNames) {
