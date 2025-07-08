@@ -59,7 +59,8 @@ export function Footer() {
     try {
       setIsLoading(true);
 
-      // Fetch footer sections with error handling
+      // Fetch footer sections with error handling (force fresh data)
+      console.log("Fetching footer sections at:", new Date().toISOString());
       const { data: footerData, error: footerError } = await supabase
         .from("footer_sections")
         .select("*")
