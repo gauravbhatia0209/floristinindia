@@ -495,12 +495,10 @@ export function ProductVariations({
                                     </div>
 
                                     <div>
-                                      {variant.image_url && (
-                                        <img
-                                          src={variant.image_url}
-                                          alt={variant.variation_value || ""}
-                                          className="w-12 h-12 object-cover rounded"
-                                        />
+                                      {variant.sku && (
+                                        <p className="text-xs text-muted-foreground">
+                                          SKU: {variant.sku}
+                                        </p>
                                       )}
                                     </div>
 
