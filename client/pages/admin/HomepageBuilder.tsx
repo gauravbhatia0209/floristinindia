@@ -793,6 +793,188 @@ function EditSectionForm({
             </div>
           </div>
 
+          {/* Trust Indicators / Features */}
+          <div className="space-y-4">
+            <h4 className="font-medium">Trust Indicators</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="feature_1">Feature 1</Label>
+                <Input
+                  id="feature_1"
+                  value={(formData.content as any)?.feature_1 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        feature_1: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Same Day Delivery"
+                />
+              </div>
+              <div>
+                <Label htmlFor="feature_2">Feature 2</Label>
+                <Input
+                  id="feature_2"
+                  value={(formData.content as any)?.feature_2 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        feature_2: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Fresh Guarantee"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Feature Box Content */}
+          <div className="space-y-4">
+            <h4 className="font-medium">Feature Box (Right Side)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="feature_box_emoji">Feature Box Emoji</Label>
+                <Input
+                  id="feature_box_emoji"
+                  value={(formData.content as any)?.feature_box_emoji || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        feature_box_emoji: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="🌺"
+                />
+              </div>
+              <div>
+                <Label htmlFor="feature_box_title">Feature Box Title</Label>
+                <Input
+                  id="feature_box_title"
+                  value={(formData.content as any)?.feature_box_title || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        feature_box_title: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Premium Quality"
+                />
+              </div>
+              <div>
+                <Label htmlFor="feature_box_description">
+                  Feature Box Description
+                </Label>
+                <Input
+                  id="feature_box_description"
+                  value={
+                    (formData.content as any)?.feature_box_description || ""
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        feature_box_description: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Hand-picked fresh flowers"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Emoji Elements */}
+          <div className="space-y-4">
+            <h4 className="font-medium">Floating Decorative Emojis</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="floating_emoji_1">Floating Emoji 1</Label>
+                <Input
+                  id="floating_emoji_1"
+                  value={(formData.content as any)?.floating_emoji_1 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        floating_emoji_1: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="🌸"
+                />
+              </div>
+              <div>
+                <Label htmlFor="floating_emoji_2">Floating Emoji 2</Label>
+                <Input
+                  id="floating_emoji_2"
+                  value={(formData.content as any)?.floating_emoji_2 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        floating_emoji_2: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="🌹"
+                />
+              </div>
+              <div>
+                <Label htmlFor="floating_emoji_3">Floating Emoji 3</Label>
+                <Input
+                  id="floating_emoji_3"
+                  value={(formData.content as any)?.floating_emoji_3 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        floating_emoji_3: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="🌻"
+                />
+              </div>
+              <div>
+                <Label htmlFor="floating_emoji_4">Floating Emoji 4</Label>
+                <Input
+                  id="floating_emoji_4"
+                  value={(formData.content as any)?.floating_emoji_4 || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      content: {
+                        ...formData.content,
+                        floating_emoji_4: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="🌷"
+                />
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Leave empty to hide specific floating emojis. These appear as
+              floating decorative elements on the right side (desktop only).
+            </p>
+          </div>
+
           {/* Background Image */}
           <div>
             <SingleImageUpload
