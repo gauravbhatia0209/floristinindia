@@ -226,8 +226,37 @@ export default function ProductDetail() {
       uploaded_file: uploadedFile || undefined,
     });
 
-    // Show success message or redirect
-    alert("Added to cart successfully!");
+    // Show enhanced success notification
+    const currentPrice = effectivePrice || product.price;
+    const currentSalePrice = effectiveSalePrice || product.sale_price;
+    const displayPrice =
+      currentSalePrice && currentSalePrice < currentPrice
+        ? currentSalePrice
+        : currentPrice;
+
+    // Create variation description if applicable
+    const variationText = Object.entries(selectedVariations)
+      .map(([type, variant]) => `${type}: ${variant.variation_value}`)
+      .join(", ");
+
+    toast({
+      title: "✅ Added to cart!",
+      description: (
+        <div className="space-y-2">
+          <div className="font-semibold text-base">{product.name}</div>
+          {variationText && (
+            <div className="text-sm text-muted-foreground">{variationText}</div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="text-sm">Quantity: {quantity}</span>
+            <span className="font-bold text-primary">
+              ₹{(displayPrice * quantity).toFixed(0)}
+            </span>
+          </div>
+        </div>
+      ),
+      duration: 4000,
+    });
   }
 
   function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
