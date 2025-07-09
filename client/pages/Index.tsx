@@ -71,7 +71,10 @@ export default function Index() {
         .order("sort_order");
 
       if (sectionsError) {
-        console.error("Homepage: Error fetching sections:", sectionsError);
+        console.error("🚨 Homepage: Error fetching sections:");
+        console.error("Error details:", JSON.stringify(sectionsError, null, 2));
+        console.error("Error message:", sectionsError.message);
+        console.error("Error code:", sectionsError.code);
         return;
       }
 
