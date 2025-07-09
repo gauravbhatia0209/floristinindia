@@ -202,8 +202,22 @@ export default function ProductEdit() {
       navigate("/admin/products");
     } catch (error: any) {
       console.error("Failed to save product:", error);
-      const errorMessage =
-        error?.message || error?.error_description || "Unknown error";
+      let errorMessage = "Unknown error";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error_description) {
+        errorMessage = error.error_description;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.code) {
+        errorMessage = `Error ${error.code}: ${error.hint || "Database error"}`;
+      } else {
+        errorMessage = JSON.stringify(error);
+      }
+
       alert(`Failed to save product: ${errorMessage}`);
     } finally {
       setIsSaving(false);
