@@ -113,14 +113,32 @@ export function ProductVariations({
 
       if (error) throw error;
 
-      // Group variants by type
+      // Group variants by type (extract from name if variation_type not available)
       const groups: { [key: string]: ProductVariant[] } = {};
       variants?.forEach((variant) => {
-        const type = variant.variation_type || "Default";
+        // Extract type from name if variation_type not available
+        const type =
+          variant.variation_type ||
+          (variant.name.includes(" - ")
+            ? variant.name.split(" - ")[0]
+            : "Default");
+
         if (!groups[type]) {
           groups[type] = [];
         }
-        groups[type].push(variant);
+
+        // Enhance variant with extracted info if needed
+        const enhancedVariant = {
+          ...variant,
+          variation_type: variant.variation_type || type,
+          variation_value:
+            variant.variation_value ||
+            (variant.name.includes(" - ")
+              ? variant.name.split(" - ")[1]
+              : variant.name),
+        };
+
+        groups[type].push(enhancedVariant);
       });
 
       const groupedVariations: VariationGroup[] = Object.entries(groups).map(
