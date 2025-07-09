@@ -137,7 +137,13 @@ export function Footer() {
       }
 
       if (categoriesError) {
-        console.error("Error fetching categories:", categoriesError);
+        console.error("🚨 Footer: Error fetching categories:");
+        console.error(
+          "Categories error details:",
+          JSON.stringify(categoriesError, null, 2),
+        );
+        console.error("Categories error message:", categoriesError?.message);
+        console.error("Categories error code:", categoriesError?.code);
       } else if (categoriesData) {
         setCategories(categoriesData);
       }
