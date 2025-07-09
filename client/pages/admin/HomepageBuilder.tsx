@@ -50,6 +50,7 @@ import {
   Product,
   ProductCategory,
 } from "@shared/database.types";
+import { SingleImageUpload } from "@/components/ui/single-image-upload";
 
 interface SectionTemplate {
   type: string;
