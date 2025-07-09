@@ -621,14 +621,15 @@ export function ProductVariations({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="price_override">
-                    Price Override (₹)
+                    Variation Price (₹) *
                     <span className="text-sm text-muted-foreground ml-1">
-                      (Leave empty to use base price: ₹{basePrice})
+                      (Stored in database 'price' field)
                     </span>
                   </Label>
                   <Input
                     id="price_override"
                     type="number"
+                    step="0.01"
                     value={formData.price_override}
                     onChange={(e) =>
                       setFormData({
@@ -636,20 +637,22 @@ export function ProductVariations({
                         price_override: e.target.value,
                       })
                     }
-                    placeholder={basePrice.toString()}
+                    placeholder="Enter price for this variation"
+                    required
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="sale_price_override">
-                    Sale Price Override (₹)
+                    Sale Price (₹)
                     <span className="text-sm text-muted-foreground ml-1">
-                      (Optional)
+                      (Optional - stored in 'sale_price' field)
                     </span>
                   </Label>
                   <Input
                     id="sale_price_override"
                     type="number"
+                    step="0.01"
                     value={formData.sale_price_override}
                     onChange={(e) =>
                       setFormData({
@@ -657,7 +660,7 @@ export function ProductVariations({
                         sale_price_override: e.target.value,
                       })
                     }
-                    placeholder={baseSalePrice?.toString() || ""}
+                    placeholder="Optional discounted price"
                   />
                 </div>
               </div>
