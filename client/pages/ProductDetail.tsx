@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
+import { ProductVariationSelector } from "@/components/ProductVariationSelector";
 import {
   Product,
   ProductVariant,
