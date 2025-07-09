@@ -184,6 +184,8 @@ export default function ProductEdit() {
         weight: formData.weight ? parseFloat(formData.weight) : null,
       };
 
+      console.log("Saving product data:", productData);
+
       if (isNew) {
         const { error } = await supabase.from("products").insert(productData);
 
