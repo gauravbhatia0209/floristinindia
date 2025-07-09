@@ -229,9 +229,22 @@ export function ProductVariations({
       fetchVariations();
     } catch (error) {
       console.error("Error saving variation:", error);
+
+      let errorMessage = "Failed to save variation.";
+
+      if (error && typeof error === "object") {
+        if ("message" in error && error.message) {
+          errorMessage = error.message;
+        } else if ("details" in error && error.details) {
+          errorMessage = error.details;
+        } else if ("hint" in error && error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
       toast({
         title: "Error",
-        description: "Failed to save variation.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
