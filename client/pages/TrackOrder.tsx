@@ -348,7 +348,7 @@ export default function TrackOrder() {
                   </div>
                   <Input
                     type="text"
-                    placeholder="FLR123456789"
+                    placeholder="FII00001"
                     value={orderNumber}
                     onChange={(e) =>
                       setOrderNumber(e.target.value.toUpperCase())
@@ -368,7 +368,7 @@ export default function TrackOrder() {
                       </p>
                       <p className="text-sm text-blue-700 mt-1">
                         Check your confirmation email or SMS for the order
-                        number (e.g., FLR123456789)
+                        number (e.g., FII00001)
                       </p>
                     </div>
                   </div>
