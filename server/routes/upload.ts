@@ -127,7 +127,10 @@ router.post("/images", upload.array("images", 5), (req, res) => {
 router.delete("/image/:filename", (req, res) => {
   try {
     const filename = req.params.filename;
-    const filePath = path.join(uploadsDir, filename);
+    const subdir = req.query.subdir as string;
+    const filePath = subdir
+      ? path.join(uploadsDir, subdir, filename)
+      : path.join(uploadsDir, filename);
 
     // Check if file exists
     if (fs.existsSync(filePath)) {
