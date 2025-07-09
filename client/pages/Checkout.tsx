@@ -12,7 +12,7 @@ import {
   Phone,
   Mail,
   FileText,
-  CheckCircle
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -237,9 +237,9 @@ export default function Checkout() {
       const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       // Create customer record
-      const nameParts = form.fullName.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
+      const nameParts = form.fullName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
 
       const { data: customer, error: customerError } = await supabase
         .from("customers")
@@ -318,10 +318,15 @@ export default function Checkout() {
           },
           delivery_date: form.deliveryDate || null,
           delivery_slot: form.deliverySlot || null,
-          special_instructions: [
-            form.specialInstructions,
-            form.orderMessage ? `Customer Message: ${form.orderMessage}` : null
-          ].filter(Boolean).join('\n\n') || null,
+          special_instructions:
+            [
+              form.specialInstructions,
+              form.orderMessage
+                ? `Customer Message: ${form.orderMessage}`
+                : null,
+            ]
+              .filter(Boolean)
+              .join("\n\n") || null,
           payment_method: form.paymentMethod,
           payment_status: "pending",
           coupon_code: appliedCoupon?.code || null,
@@ -376,7 +381,6 @@ export default function Checkout() {
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-8">
               <form onSubmit={handleSubmit} className="space-y-8">
-
                 {/* 1. Customer Information */}
                 <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                   <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
@@ -389,7 +393,10 @@ export default function Checkout() {
                   </CardHeader>
                   <CardContent className="p-6 space-y-6">
                     <div>
-                      <Label htmlFor="fullName" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="fullName"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Full Name *
                       </Label>
                       <Input
@@ -405,7 +412,10 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="email" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="email"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Email Address *
                       </Label>
                       <div className="relative">
@@ -425,13 +435,18 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="phone"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Phone Number *
                       </Label>
                       <div className="flex gap-3">
                         <Select
                           value={form.phoneCountryCode}
-                          onValueChange={(value) => setForm({ ...form, phoneCountryCode: value })}
+                          onValueChange={(value) =>
+                            setForm({ ...form, phoneCountryCode: value })
+                          }
                         >
                           <SelectTrigger className="w-24 py-3 border-2 border-gray-200 rounded-xl">
                             <SelectValue />
@@ -475,7 +490,10 @@ export default function Checkout() {
                   </CardHeader>
                   <CardContent className="p-6 space-y-6">
                     <div>
-                      <Label htmlFor="receiverName" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="receiverName"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Receiver's Name *
                       </Label>
                       <Input
@@ -491,7 +509,10 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="addressLine1" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="addressLine1"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Address Line 1 *
                       </Label>
                       <Input
@@ -507,7 +528,10 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="addressLine2" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="addressLine2"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Address Line 2 (Optional)
                       </Label>
                       <Input
@@ -523,7 +547,10 @@ export default function Checkout() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="city" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <Label
+                          htmlFor="city"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
                           City *
                         </Label>
                         <Input
@@ -538,7 +565,10 @@ export default function Checkout() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="state" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <Label
+                          htmlFor="state"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
                           State *
                         </Label>
                         <Input
@@ -555,7 +585,10 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="pincode" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="pincode"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Pincode *
                       </Label>
                       <Input
@@ -577,13 +610,21 @@ export default function Checkout() {
                     </div>
 
                     <div>
-                      <Label htmlFor="receiverPhone" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="receiverPhone"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Receiver's Phone Number *
                       </Label>
                       <div className="flex gap-3">
                         <Select
                           value={form.receiverPhoneCountryCode}
-                          onValueChange={(value) => setForm({ ...form, receiverPhoneCountryCode: value })}
+                          onValueChange={(value) =>
+                            setForm({
+                              ...form,
+                              receiverPhoneCountryCode: value,
+                            })
+                          }
                         >
                           <SelectTrigger className="w-24 py-3 border-2 border-gray-200 rounded-xl">
                             <SelectValue />
@@ -604,7 +645,10 @@ export default function Checkout() {
                             placeholder="9876543210"
                             value={form.receiverPhone}
                             onChange={(e) =>
-                              setForm({ ...form, receiverPhone: e.target.value })
+                              setForm({
+                                ...form,
+                                receiverPhone: e.target.value,
+                              })
                             }
                             className="pl-11 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
                             required
@@ -627,7 +671,10 @@ export default function Checkout() {
                   </CardHeader>
                   <CardContent className="p-6">
                     <div>
-                      <Label htmlFor="orderMessage" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      <Label
+                        htmlFor="orderMessage"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
                         Special Message (Optional)
                       </Label>
                       <Textarea
@@ -641,7 +688,8 @@ export default function Checkout() {
                         className="text-lg border-2 border-gray-200 rounded-xl focus:border-purple-500 resize-none"
                       />
                       <p className="text-sm text-gray-500 mt-2">
-                        This message will be included with your order for special occasions or delivery instructions.
+                        This message will be included with your order for
+                        special occasions or delivery instructions.
                       </p>
                     </div>
                   </CardContent>
@@ -676,7 +724,9 @@ export default function Checkout() {
                                   {selectedShippingMethod?.id === method.id && (
                                     <CheckCircle className="h-5 w-5 text-orange-600" />
                                   )}
-                                  <h4 className="font-bold text-lg text-gray-900">{method.name}</h4>
+                                  <h4 className="font-bold text-lg text-gray-900">
+                                    {method.name}
+                                  </h4>
                                 </div>
                                 <p className="text-gray-600 mb-2">
                                   {method.description}
@@ -690,9 +740,13 @@ export default function Checkout() {
                               </div>
                               <div className="text-right">
                                 <p className="text-2xl font-bold text-gray-900">
-                                  {method.price === 0 ? "FREE" : `₹${method.price}`}
+                                  {method.price === 0
+                                    ? "FREE"
+                                    : `₹${method.price}`}
                                 </p>
-                                <p className="text-sm text-gray-500">shipping</p>
+                                <p className="text-sm text-gray-500">
+                                  shipping
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -702,10 +756,15 @@ export default function Checkout() {
                       {selectedShippingMethod && (
                         <>
                           <div className="border-t pt-6">
-                            <h4 className="font-semibold text-gray-900 mb-4">Delivery Schedule</h4>
+                            <h4 className="font-semibold text-gray-900 mb-4">
+                              Delivery Schedule
+                            </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <Label htmlFor="deliveryDate" className="text-sm font-semibold text-gray-700 mb-2 block">
+                                <Label
+                                  htmlFor="deliveryDate"
+                                  className="text-sm font-semibold text-gray-700 mb-2 block"
+                                >
                                   Preferred Date
                                 </Label>
                                 <Input
@@ -713,14 +772,20 @@ export default function Checkout() {
                                   type="date"
                                   value={form.deliveryDate}
                                   onChange={(e) =>
-                                    setForm({ ...form, deliveryDate: e.target.value })
+                                    setForm({
+                                      ...form,
+                                      deliveryDate: e.target.value,
+                                    })
                                   }
                                   min={new Date().toISOString().split("T")[0]}
                                   className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
                                 />
                               </div>
                               <div>
-                                <Label htmlFor="deliverySlot" className="text-sm font-semibold text-gray-700 mb-2 block">
+                                <Label
+                                  htmlFor="deliverySlot"
+                                  className="text-sm font-semibold text-gray-700 mb-2 block"
+                                >
                                   Time Slot
                                 </Label>
                                 <Select
@@ -752,7 +817,10 @@ export default function Checkout() {
                           </div>
 
                           <div>
-                            <Label htmlFor="specialInstructions" className="text-sm font-semibold text-gray-700 mb-2 block">
+                            <Label
+                              htmlFor="specialInstructions"
+                              className="text-sm font-semibold text-gray-700 mb-2 block"
+                            >
                               Special Delivery Instructions
                             </Label>
                             <Textarea
@@ -798,10 +866,30 @@ export default function Checkout() {
                       </Label>
 
                       {[
-                        { value: "razorpay", label: "Credit/Debit Card", desc: "Visa, Mastercard, Rupay", icon: CreditCard },
-                        { value: "upi", label: "UPI Payment", desc: "PhonePe, Google Pay, Paytm", icon: Phone },
-                        { value: "netbanking", label: "Net Banking", desc: "All major banks supported", icon: Shield },
-                        { value: "cod", label: "Cash on Delivery", desc: "Pay when you receive", icon: Package }
+                        {
+                          value: "razorpay",
+                          label: "Credit/Debit Card",
+                          desc: "Visa, Mastercard, Rupay",
+                          icon: CreditCard,
+                        },
+                        {
+                          value: "upi",
+                          label: "UPI Payment",
+                          desc: "PhonePe, Google Pay, Paytm",
+                          icon: Phone,
+                        },
+                        {
+                          value: "netbanking",
+                          label: "Net Banking",
+                          desc: "All major banks supported",
+                          icon: Shield,
+                        },
+                        {
+                          value: "cod",
+                          label: "Cash on Delivery",
+                          desc: "Pay when you receive",
+                          icon: Package,
+                        },
                       ].map((method) => {
                         const IconComponent = method.icon;
                         return (
@@ -812,7 +900,9 @@ export default function Checkout() {
                                 ? "border-indigo-500 bg-indigo-50 shadow-lg ring-2 ring-indigo-200"
                                 : "border-gray-200 hover:border-indigo-300 bg-white"
                             }`}
-                            onClick={() => setForm({ ...form, paymentMethod: method.value })}
+                            onClick={() =>
+                              setForm({ ...form, paymentMethod: method.value })
+                            }
                           >
                             <div className="flex items-center gap-3">
                               {form.paymentMethod === method.value && (
@@ -820,8 +910,12 @@ export default function Checkout() {
                               )}
                               <IconComponent className="h-6 w-6 text-indigo-600" />
                               <div className="flex-1">
-                                <h4 className="font-semibold text-gray-900">{method.label}</h4>
-                                <p className="text-sm text-gray-600">{method.desc}</p>
+                                <h4 className="font-semibold text-gray-900">
+                                  {method.label}
+                                </h4>
+                                <p className="text-sm text-gray-600">
+                                  {method.desc}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -886,155 +980,160 @@ export default function Checkout() {
               </form>
             </div>
 
-          {/* Order Summary */}
-          <div className="space-y-6">
-            {/* Coupon */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Percent className="w-5 h-5" />
-                  Coupon Code
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter coupon code"
-                    value={couponCode}
-                    onChange={(e) =>
-                      setCouponCode(e.target.value.toUpperCase())
-                    }
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={validateCoupon}
-                    disabled={isValidatingCoupon || !couponCode.trim()}
-                  >
-                    {isValidatingCoupon ? "..." : "Apply"}
-                  </Button>
-                </div>
-                {errors.coupon && (
-                  <p className="text-red-600 text-sm mt-2">{errors.coupon}</p>
-                )}
-                {appliedCoupon && (
-                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded">
-                    <p className="text-green-800 text-sm">
-                      ✓ Coupon "{appliedCoupon.code}" applied!
-                      {appliedCoupon.discount_type === "flat"
-                        ? ` ₹${appliedCoupon.discount_value} off`
-                        : ` ${appliedCoupon.discount_value}% off`}
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Order Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Items */}
-                <div className="space-y-3">
-                  {items.map((item) => (
-                    <div
-                      key={`${item.product_id}-${item.variant_id}`}
-                      className="flex justify-between"
+            {/* Order Summary Sidebar */}
+            <div className="space-y-6">
+              {/* Coupon */}
+              <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Percent className="w-5 h-5" />
+                    Coupon Code
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter coupon code"
+                      value={couponCode}
+                      onChange={(e) =>
+                        setCouponCode(e.target.value.toUpperCase())
+                      }
+                      className="border-2 border-gray-200 rounded-xl"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={validateCoupon}
+                      disabled={isValidatingCoupon || !couponCode.trim()}
+                      className="border-2 border-gray-200 rounded-xl"
                     >
-                      <div className="flex-1">
-                        <p className="font-medium">{item.product.name}</p>
-                        {item.variant && (
+                      {isValidatingCoupon ? "..." : "Apply"}
+                    </Button>
+                  </div>
+                  {errors.coupon && (
+                    <p className="text-red-600 text-sm mt-2">{errors.coupon}</p>
+                  )}
+                  {appliedCoupon && (
+                    <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded">
+                      <p className="text-green-800 text-sm">
+                        ✓ Coupon "{appliedCoupon.code}" applied!
+                        {appliedCoupon.discount_type === "flat"
+                          ? ` ₹${appliedCoupon.discount_value} off`
+                          : ` ${appliedCoupon.discount_value}% off`}
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Order Summary */}
+              <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle>Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Items */}
+                  <div className="space-y-3">
+                    {items.map((item) => (
+                      <div
+                        key={`${item.product_id}-${item.variant_id}`}
+                        className="flex justify-between"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium">{item.product.name}</p>
+                          {item.variant && (
+                            <p className="text-sm text-muted-foreground">
+                              {item.variant.name}
+                            </p>
+                          )}
                           <p className="text-sm text-muted-foreground">
-                            {item.variant.name}
+                            Qty: {item.quantity}
                           </p>
-                        )}
-                        <p className="text-sm text-muted-foreground">
-                          Qty: {item.quantity}
-                        </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            ₹
+                            {(
+                              (item.variant?.sale_price ||
+                                item.variant?.price ||
+                                item.product.sale_price ||
+                                item.product.price) * item.quantity
+                            ).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium">
-                          ₹
-                          {(
-                            (item.variant?.sale_price ||
-                              item.variant?.price ||
-                              item.product.sale_price ||
-                              item.product.price) * item.quantity
-                          ).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
 
-                <hr />
-
-                {/* Totals */}
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal:</span>
-                    <span>₹{totals.subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Shipping:</span>
-                    <span>₹{totals.shipping.toFixed(2)}</span>
-                  </div>
-                  {totals.discount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Discount:</span>
-                      <span>-₹{totals.discount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span>Tax (18% GST):</span>
-                    <span>₹{totals.tax.toFixed(2)}</span>
-                  </div>
                   <hr />
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total:</span>
-                    <span>₹{totals.total.toFixed(2)}</span>
-                  </div>
-                </div>
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
-                  onClick={handleSubmit}
-                  disabled={
-                    isSubmitting ||
-                    !selectedShippingMethod ||
-                    !form.paymentMethod ||
-                    !form.acceptTerms
-                  }
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                      Processing Order...
+                  {/* Totals */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>₹{totals.subtotal.toFixed(2)}</span>
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <Shield className="h-5 w-5 mr-2" />
-                      Complete Secure Payment ₹{totals.total.toFixed(2)}
+                    <div className="flex justify-between">
+                      <span>Shipping:</span>
+                      <span>₹{totals.shipping.toFixed(2)}</span>
+                    </div>
+                    {totals.discount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Discount:</span>
+                        <span>-₹{totals.discount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span>Tax (18% GST):</span>
+                      <span>₹{totals.tax.toFixed(2)}</span>
+                    </div>
+                    <hr />
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total:</span>
+                      <span>₹{totals.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                    onClick={handleSubmit}
+                    disabled={
+                      isSubmitting ||
+                      !selectedShippingMethod ||
+                      !form.paymentMethod ||
+                      !form.acceptTerms
+                    }
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                        Processing Order...
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <Shield className="h-5 w-5 mr-2" />
+                        Complete Secure Payment ₹{totals.total.toFixed(2)}
+                      </div>
+                    )}
+                  </Button>
+
+                  {errors.submit && (
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                      <p className="text-red-700 font-medium">
+                        {errors.submit}
+                      </p>
                     </div>
                   )}
-                </Button>
-
-                {errors.submit && (
-                  <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
-                    <p className="text-red-700 font-medium">{errors.submit}</p>
-                  </div>
-                )}
-                {errors.terms && (
-                  <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
-                    <p className="text-red-700 font-medium">{errors.terms}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  {errors.terms && (
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                      <p className="text-red-700 font-medium">{errors.terms}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
