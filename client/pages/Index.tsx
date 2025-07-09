@@ -182,6 +182,7 @@ export default function Index() {
             "🎯 Product Showcase: Query error (if any):",
             productsError,
           );
+          console.log("🕐 Query executed at:", new Date().toISOString());
 
           if (productsError) {
             console.error(
