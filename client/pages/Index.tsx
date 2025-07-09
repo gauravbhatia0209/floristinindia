@@ -80,35 +80,155 @@ export default function Index() {
 
         // Fetch admin-selected products
         if (productSection?.content?.selected_products?.length > 0) {
+          const selectedProductIds = productSection.content.selected_products;
           console.log(
-            "Homepage: Loading selected products:",
-            productSection.content.selected_products,
+            "🎯 Product Showcase: Admin-selected product IDs:",
+            selectedProductIds,
           );
-          const { data: productsData } = await supabase
+          console.log(
+            "🎯 Product Showcase: Fetching products with query - product.id IN",
+            selectedProductIds,
+          );
+
+          const { data: productsData, error: productsError } = await supabase
             .from("products")
-            .select("*, product_categories(name)")
-            .in("id", productSection.content.selected_products)
+            .select(
+              `
+              id,
+              name,
+              slug,
+              price,
+              sale_price,
+              images,
+              is_active,
+              product_categories(name)
+            `,
+            )
+            .in("id", selectedProductIds)
             .eq("is_active", true);
 
-          if (productsData) {
-            // Sort products by the order they were selected
-            const sortedProducts = productSection.content.selected_products
+          console.log("🎯 Product Showcase: Raw query results:", productsData);
+          console.log(
+            "🎯 Product Showcase: Query error (if any):",
+            productsError,
+          );
+
+          if (productsError) {
+            console.error(
+              "🚨 Product Showcase: Database error:",
+              productsError,
+            );
+          }
+
+          if (productsData && productsData.length > 0) {
+            // Sort products by the order they were selected in admin
+            const sortedProducts = selectedProductIds
               .map((id: string) => productsData.find((prod) => prod.id === id))
-              .filter(Boolean);
-            console.log("Homepage: Loaded selected products:", sortedProducts);
+              .filter((product) => {
+                if (!product) {
+                  console.warn(
+                    "⚠️ Product Showcase: Product not found for ID:",
+                    id,
+                  );
+                  return false;
+                }
+                if (!product.images || product.images.length === 0) {
+                  console.warn(
+                    "⚠️ Product Showcase: Product has no images:",
+                    product.name,
+                  );
+                }
+                return true;
+              });
+
+            console.log(
+              "✅ Product Showcase: Final sorted products to render:",
+              sortedProducts,
+            );
+            console.log(
+              "📝 Product Showcase: Product titles to render:",
+              sortedProducts.map((p) => p.name),
+            );
+            console.log(
+              "🖼️ Product Showcase: Product images:",
+              sortedProducts.map((p) => ({
+                name: p.name,
+                hasImages: p.images && p.images.length > 0,
+                firstImage: p.images?.[0] || "No image",
+              })),
+            );
+
             setFeaturedProducts(sortedProducts);
+          } else {
+            console.warn(
+              "⚠️ Product Showcase: No products found for selected IDs, using fallback",
+            );
+            // If selected products not found, fall back to featured
+            const { data: fallbackData } = await supabase
+              .from("products")
+              .select(
+                `
+                id,
+                name,
+                slug,
+                price,
+                sale_price,
+                images,
+                is_active,
+                product_categories(name)
+              `,
+              )
+              .eq("is_active", true)
+              .eq("is_featured", true)
+              .limit(8);
+
+            if (fallbackData) {
+              console.log(
+                "🔄 Product Showcase: Using fallback featured products:",
+                fallbackData,
+              );
+              setFeaturedProducts(fallbackData);
+            }
           }
         } else {
-          console.log("Homepage: No selected products, using fallback");
-          // Fallback to featured products if none selected
-          const { data: productsData } = await supabase
+          console.log(
+            "🔄 Product Showcase: No admin-selected products, using fallback featured products",
+          );
+          // Fallback to featured products if none selected by admin
+          const { data: productsData, error: fallbackError } = await supabase
             .from("products")
-            .select("*, product_categories(name)")
+            .select(
+              `
+              id,
+              name,
+              slug,
+              price,
+              sale_price,
+              images,
+              is_active,
+              product_categories(name)
+            `,
+            )
             .eq("is_active", true)
             .eq("is_featured", true)
-            .limit(12);
+            .limit(8);
+
+          if (fallbackError) {
+            console.error(
+              "🚨 Product Showcase: Fallback query error:",
+              fallbackError,
+            );
+          }
+
           if (productsData) {
-            console.log("Homepage: Loaded fallback products:", productsData);
+            console.log(
+              "✅ Product Showcase: Loaded fallback featured products:",
+              productsData,
+            );
+            console.log(
+              "📝 Product Showcase: Fallback product titles:",
+              productsData.map((p) => p.name),
+            );
             setFeaturedProducts(productsData);
           }
         }
