@@ -142,4 +142,4 @@ router.use((error, req, res, next) => {
   res.status(400).json({ error: error.message });
 });
 
-module.exports = router;
+export default router;
