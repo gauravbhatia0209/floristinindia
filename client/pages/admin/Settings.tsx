@@ -86,6 +86,7 @@ export default function Settings() {
     enable_reviews: true,
     enable_wishlist: true,
     enable_file_upload: true,
+    enable_special_instructions: true,
     enable_guest_checkout: true,
     default_meta_title: "",
     default_meta_description: "",
