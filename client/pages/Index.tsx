@@ -31,26 +31,70 @@ export default function Index() {
         .eq("is_active", true)
         .order("sort_order");
 
-      // Fetch categories for category grid
-      const { data: categoriesData } = await supabase
-        .from("product_categories")
-        .select("*")
-        .eq("is_active", true)
-        .eq("show_in_menu", true)
-        .order("sort_order")
-        .limit(8);
+      if (sectionsData) {
+        setSections(sectionsData);
 
-      // Fetch featured products
-      const { data: productsData } = await supabase
-        .from("products")
-        .select("*, product_categories(name)")
-        .eq("is_active", true)
-        .eq("is_featured", true)
-        .limit(12);
+        // Extract selected category and product IDs from sections
+        const categorySection = sectionsData.find(
+          (s) => s.type === "category_grid",
+        );
+        const productSection = sectionsData.find(
+          (s) => s.type === "product_carousel",
+        );
 
-      if (sectionsData) setSections(sectionsData);
-      if (categoriesData) setCategories(categoriesData);
-      if (productsData) setFeaturedProducts(productsData);
+        // Fetch admin-selected categories
+        if (categorySection?.content?.selected_categories?.length > 0) {
+          const { data: categoriesData } = await supabase
+            .from("product_categories")
+            .select("*")
+            .in("id", categorySection.content.selected_categories)
+            .eq("is_active", true);
+
+          if (categoriesData) {
+            // Sort categories by the order they were selected
+            const sortedCategories = categorySection.content.selected_categories
+              .map((id: string) => categoriesData.find((cat) => cat.id === id))
+              .filter(Boolean);
+            setCategories(sortedCategories);
+          }
+        } else {
+          // Fallback to featured categories if none selected
+          const { data: categoriesData } = await supabase
+            .from("product_categories")
+            .select("*")
+            .eq("is_active", true)
+            .eq("show_in_menu", true)
+            .order("sort_order")
+            .limit(8);
+          if (categoriesData) setCategories(categoriesData);
+        }
+
+        // Fetch admin-selected products
+        if (productSection?.content?.selected_products?.length > 0) {
+          const { data: productsData } = await supabase
+            .from("products")
+            .select("*, product_categories(name)")
+            .in("id", productSection.content.selected_products)
+            .eq("is_active", true);
+
+          if (productsData) {
+            // Sort products by the order they were selected
+            const sortedProducts = productSection.content.selected_products
+              .map((id: string) => productsData.find((prod) => prod.id === id))
+              .filter(Boolean);
+            setFeaturedProducts(sortedProducts);
+          }
+        } else {
+          // Fallback to featured products if none selected
+          const { data: productsData } = await supabase
+            .from("products")
+            .select("*, product_categories(name)")
+            .eq("is_active", true)
+            .eq("is_featured", true)
+            .limit(12);
+          if (productsData) setFeaturedProducts(productsData);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch homepage data:", error);
     } finally {
