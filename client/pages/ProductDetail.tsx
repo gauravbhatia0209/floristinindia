@@ -60,6 +60,7 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingPincode, setIsCheckingPincode] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [settings, setSettings] = useState<any>(null);
 
   const { addItem } = useCart();
 
