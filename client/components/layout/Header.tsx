@@ -295,12 +295,7 @@ export function Header() {
                 item.product_categories.subcategories.length > 0;
 
               return hasSubcategories ? (
-                <div
-                  key={item.id}
-                  className="relative group"
-                  onMouseEnter={() => {}}
-                  onMouseLeave={() => {}}
-                >
+                <div key={item.id} className="relative group">
                   <Link
                     to={href}
                     target={item.target}
@@ -309,6 +304,9 @@ export function Header() {
                     {item.name}
                     <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
                   </Link>
+
+                  {/* Invisible hover bridge */}
+                  <div className="absolute top-full left-0 w-56 h-2 bg-transparent group-hover:block hidden"></div>
 
                   {/* Hover Dropdown */}
                   <div className="absolute top-full left-0 mt-2 w-56 hover-dropdown rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
