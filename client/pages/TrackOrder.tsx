@@ -794,15 +794,27 @@ export default function TrackOrder() {
                       key={index}
                       className="flex items-center space-x-4 p-6 bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-200 rounded-xl hover:shadow-lg transition-all duration-200"
                     >
-                      {item.image && (
-                        <div className="flex-shrink-0">
-                          <img
-                            src={item.image}
-                            alt={item.product_name}
-                            className="w-20 h-20 object-cover rounded-xl shadow-md"
-                          />
+                      <div className="flex-shrink-0">
+                        <div className="w-20 h-20 bg-gray-100 rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.product_name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                e.currentTarget.nextElementSibling.style.display =
+                                  "flex";
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 ${item.image ? "hidden" : "flex"}`}
+                          >
+                            <Package className="h-8 w-8 text-gray-400" />
+                          </div>
                         </div>
-                      )}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-gray-900 text-lg mb-1 truncate">
                           {item.product_name}
