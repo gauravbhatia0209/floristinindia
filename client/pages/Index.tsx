@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
+import { toast } from "@/hooks/use-toast";
 import {
   ProductCategory,
   Product,
@@ -226,7 +227,7 @@ export default function Index() {
             .in("id", selectedProductIds)
             .eq("is_active", true);
 
-          console.log("🎯 Product Showcase: Raw query results:", productsData);
+          console.log("��� Product Showcase: Raw query results:", productsData);
           console.log(
             "🎯 Product Showcase: Query error (if any):",
             productsError,
