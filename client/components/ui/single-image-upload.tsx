@@ -18,6 +18,7 @@ interface SingleImageUploadProps {
   acceptedTypes?: string[];
   label?: string;
   className?: string;
+  subdir?: string;
 }
 
 export function SingleImageUpload({
