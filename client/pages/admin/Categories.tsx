@@ -905,17 +905,15 @@ export default function AdminCategories() {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Image URL</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) =>
+                <SingleImageUpload
+                  imageUrl={formData.image_url}
+                  onImageChange={(imageUrl) =>
                     setFormData((prev) => ({
                       ...prev,
-                      image_url: e.target.value,
+                      image_url: imageUrl,
                     }))
                   }
-                  placeholder="https://example.com/category-image.jpg"
+                  label="Category Image"
                 />
               </div>
             </div>
