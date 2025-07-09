@@ -190,7 +190,15 @@ export default function Index() {
               "🚨 Product Showcase: Database error:",
               productsError,
             );
+            await loadFallbackProducts();
+            return;
           }
+
+          console.log(
+            "📊 Product Showcase: Query returned",
+            productsData?.length || 0,
+            "products",
+          );
 
           if (productsData && productsData.length > 0) {
             // Sort products by the order they were selected in admin
