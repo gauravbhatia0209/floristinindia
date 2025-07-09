@@ -282,13 +282,22 @@ export default function Cart() {
                     <div className="flex-1">
                       <h3 className="font-semibold">{item.product.name}</h3>
                       {item.variant && (
+                        <div className="space-y-1">
+                          <p className="text-sm text-muted-foreground">
+                            {item.variant.name}
+                          </p>
+                          {item.variant.sku && (
+                            <p className="text-sm text-muted-foreground">
+                              SKU: {item.variant.sku}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {!item.variant && (
                         <p className="text-sm text-muted-foreground">
-                          Variant: {item.variant.name}
+                          SKU: {item.product.sku || "N/A"}
                         </p>
                       )}
-                      <p className="text-sm text-muted-foreground">
-                        SKU: {item.product.sku || "N/A"}
-                      </p>
                       <div className="flex items-center gap-2 mt-2">
                         <span className="font-semibold text-primary">
                           ₹{getItemPrice(item)}
