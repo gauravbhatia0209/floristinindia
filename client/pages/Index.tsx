@@ -70,6 +70,25 @@ export default function Index() {
     }
   }
 
+  function handleAddToCart(product: Product, e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      addItem({
+        product_id: product.id,
+        variant_id: null, // No variant selected from product showcase
+        quantity: 1,
+      });
+
+      console.log("✅ Successfully added to cart:", product.name);
+      // Optional: Add a toast notification here
+    } catch (error) {
+      console.error("❌ Failed to add to cart:", error);
+      // Optional: Add error toast notification here
+    }
+  }
+
   async function fetchHomepageData() {
     try {
       console.log("🔍 Starting to fetch homepage sections...");
