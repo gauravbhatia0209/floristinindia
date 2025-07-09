@@ -171,7 +171,7 @@ export default function ProductEdit() {
           : [],
         is_active: formData.is_active,
         is_featured: formData.is_featured,
-        has_variations: formData.has_variations,
+        // has_variations: formData.has_variations, // TODO: Add after running database migration
         requires_file_upload: formData.requires_file_upload,
         upload_file_types: formData.upload_file_types
           ? formData.upload_file_types.split(",").map((t) => t.trim())
