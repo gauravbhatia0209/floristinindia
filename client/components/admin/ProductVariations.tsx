@@ -761,12 +761,19 @@ export function ProductVariations({
                 </div>
               </div>
 
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-sm text-amber-800">
-                  <strong>Note:</strong> Advanced features like variation images
-                  and weight tracking require a database schema update.
-                  Currently using simplified variation management.
+              <div>
+                <Label>Variation Image</Label>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Upload an image specific to this variation. This will override
+                  the main product image when the variation is selected.
                 </p>
+                <SingleImageUpload
+                  currentImage={formData.image_url}
+                  onImageChange={(url) =>
+                    setFormData({ ...formData, image_url: url })
+                  }
+                  uploadPath="products/variations"
+                />
               </div>
 
               <div className="flex items-center gap-2">
