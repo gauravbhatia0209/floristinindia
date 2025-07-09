@@ -125,6 +125,18 @@ export default function Index() {
 
   // Render individual section components
   function renderSection(section: HomepageSection) {
+    console.log(
+      `Homepage: Rendering section of type "${section.type}" with data:`,
+      section,
+    );
+
+    if (!section.is_active) {
+      console.log(
+        `Homepage: Section "${section.type}" is not active, skipping render`,
+      );
+      return null;
+    }
+
     switch (section.type) {
       case "hero":
         return renderHeroSection(section);
@@ -139,6 +151,7 @@ export default function Index() {
       case "newsletter":
         return renderNewsletter(section);
       default:
+        console.log(`Homepage: Unknown section type "${section.type}"`);
         return null;
     }
   }
