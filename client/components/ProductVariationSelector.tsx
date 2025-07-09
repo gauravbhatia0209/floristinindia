@@ -198,23 +198,13 @@ export function ProductVariationSelector({
               const effectivePrice = getEffectivePrice(variant);
               const effectiveSalePrice = getEffectiveSalePrice(variant);
 
-              // Calculate price difference from base price
+              // Calculate final price
               const finalPrice =
                 effectiveSalePrice !== null &&
                 effectivePrice !== null &&
                 effectiveSalePrice < effectivePrice
                   ? effectiveSalePrice
                   : effectivePrice;
-
-              const safeFinalPrice = finalPrice || 0;
-              const safeBasePrice = basePrice || 0;
-              const priceDifference = safeFinalPrice - safeBasePrice;
-
-              const formatPriceDifference = (diff: number) => {
-                if (Math.abs(diff) < 0.01) return "No Extra Cost";
-                if (diff > 0) return `+₹${Math.abs(diff).toFixed(0)}`;
-                return `-₹${Math.abs(diff).toFixed(0)}`;
-              };
 
               return (
                 <button
@@ -266,51 +256,13 @@ export function ProductVariationSelector({
                     >
                       {variant.variation_value || variant.name}
                     </h4>
-
-                    {/* Stock status */}
-                    {!inStock ? (
-                      <div className="inline-flex items-center gap-1">
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span className="text-sm text-red-600 font-medium">
-                          Out of Stock
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="inline-flex items-center gap-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm text-gray-600">
-                          {variant.stock_quantity} available
-                        </span>
-                      </div>
-                    )}
                   </div>
 
                   {/* Price information */}
                   <div className="mt-3 border-t border-gray-100 pt-2">
-                    <div
-                      className={`text-sm font-bold px-2 py-1 rounded-md inline-block ${
-                        Math.abs(priceDifference) < 0.01
-                          ? "bg-green-100 text-green-700 border border-green-200"
-                          : priceDifference > 0
-                            ? "bg-orange-100 text-orange-700 border border-orange-200"
-                            : "bg-green-100 text-green-700 border border-green-200"
-                      }`}
-                    >
-                      {formatPriceDifference(priceDifference)}
+                    <div className="text-lg font-bold text-gray-900">
+                      {formatPrice(finalPrice)}
                     </div>
-
-                    {effectiveSalePrice !== null &&
-                      effectivePrice !== null &&
-                      effectiveSalePrice < effectivePrice && (
-                        <div className="text-xs text-gray-500 mt-2 flex items-center gap-2">
-                          <span className="bg-gray-100 px-2 py-1 rounded line-through">
-                            ₹{effectivePrice.toFixed(0)}
-                          </span>
-                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded font-semibold">
-                            ₹{effectiveSalePrice.toFixed(0)}
-                          </span>
-                        </div>
-                      )}
                   </div>
 
                   {/* Hover effect overlay */}
