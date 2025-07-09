@@ -99,6 +99,38 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Function to generate sequential order number
+  async function generateOrderNumber(): Promise<string> {
+    try {
+      // Get the latest order number to determine the next sequence
+      const { data: latestOrder } = await supabase
+        .from("orders")
+        .select("order_number")
+        .like("order_number", "FII%")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      let nextNumber = 1;
+
+      if (latestOrder?.order_number) {
+        // Extract the number part from the latest order number
+        const numberPart = latestOrder.order_number.replace("FII", "");
+        const latestNumber = parseInt(numberPart);
+        if (!isNaN(latestNumber)) {
+          nextNumber = latestNumber + 1;
+        }
+      }
+
+      // Format with leading zeros (5 digits)
+      return `FII${nextNumber.toString().padStart(5, "0")}`;
+    } catch (error) {
+      console.error("Error generating order number:", error);
+      // Fallback to timestamp-based number if there's an error
+      return `FII${Date.now().toString().slice(-5)}`;
+    }
+  }
+
   useEffect(() => {
     if (items.length === 0) {
       navigate("/cart");
