@@ -32,6 +32,7 @@ export default function Index() {
         .order("sort_order");
 
       if (sectionsData) {
+        console.log("Homepage: Loaded sections from database:", sectionsData);
         setSections(sectionsData);
 
         // Extract selected category and product IDs from sections
@@ -41,6 +42,9 @@ export default function Index() {
         const productSection = sectionsData.find(
           (s) => s.type === "product_carousel",
         );
+
+        console.log("Homepage: Category section found:", categorySection);
+        console.log("Homepage: Product section found:", productSection);
 
         // Fetch admin-selected categories
         if (categorySection?.content?.selected_categories?.length > 0) {
@@ -496,7 +500,7 @@ export default function Index() {
                       {product.sale_price &&
                         product.sale_price < product.price && (
                           <span className="text-sm text-muted-foreground line-through">
-                            ₹{product.price.toFixed(2)}
+                            ��{product.price.toFixed(2)}
                           </span>
                         )}
                     </div>
