@@ -205,21 +205,24 @@ export function ProductVariationSelector({
 
                     {/* Show price if different from base */}
                     {(variant.price_override !== null ||
-                      variant.sale_price_override !== null) && (
+                      variant.sale_price_override !== null ||
+                      variant.price !== null ||
+                      variant.sale_price !== null) && (
                       <div className="text-xs">
-                        {effectiveSalePrice &&
+                        {effectiveSalePrice !== null &&
+                        effectivePrice !== null &&
                         effectiveSalePrice < effectivePrice ? (
                           <div className="flex flex-col items-center">
                             <span className="text-green-600 font-medium">
-                              ₹{effectiveSalePrice.toFixed(0)}
+                              {formatPrice(effectiveSalePrice)}
                             </span>
                             <span className="line-through text-muted-foreground">
-                              ₹{effectivePrice.toFixed(0)}
+                              {formatPrice(effectivePrice)}
                             </span>
                           </div>
                         ) : (
                           <span className="font-medium">
-                            ₹{effectivePrice.toFixed(0)}
+                            {formatPrice(effectivePrice)}
                           </span>
                         )}
                       </div>
