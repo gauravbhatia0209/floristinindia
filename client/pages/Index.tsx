@@ -391,8 +391,7 @@ export default function Index() {
                 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] animate-entrance"
                 style={{ animationDelay: "0.2s" }}
               >
-                <span className="block">{section.title || "Fresh"}</span>
-                <span className="block text-peach">Flowers</span>
+                {section.title || "Fresh Flowers"}
               </h1>
 
               {/* Description */}
