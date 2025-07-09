@@ -435,32 +435,28 @@ export default function Index() {
               </div>
 
               {/* Trust Indicators */}
-              <div
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4 animate-entrance"
-                style={{ animationDelay: "0.8s" }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-gold text-gold" />
-                    ))}
-                  </div>
-                  <span className="text-sm font-medium text-white/90">
-                    4.9/5 (2,500+ reviews)
-                  </span>
+              {(content?.feature_1 || content?.feature_2) && (
+                <div
+                  className="flex items-center gap-6 pt-4 animate-entrance"
+                  style={{ animationDelay: "0.8s" }}
+                >
+                  {content?.feature_1 && (
+                    <div className="flex items-center gap-2 text-sm text-white/80">
+                      <Truck className="w-4 h-4" />
+                      {content.feature_1}
+                    </div>
+                  )}
+                  {content?.feature_1 && content?.feature_2 && (
+                    <div className="w-px h-4 bg-white/30" />
+                  )}
+                  {content?.feature_2 && (
+                    <div className="flex items-center gap-2 text-sm text-white/80">
+                      <Shield className="w-4 h-4" />
+                      {content.feature_2}
+                    </div>
+                  )}
                 </div>
-                <div className="hidden sm:block w-px h-6 bg-white/30" />
-                <div className="flex items-center gap-4 text-sm text-white/80">
-                  <span className="flex items-center gap-2">
-                    <Truck className="w-4 h-4" />
-                    Same Day Delivery
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    Fresh Guarantee
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Visual Section - Right Side */}
@@ -766,7 +762,7 @@ export default function Index() {
               </p>
             </div>
             <div className="text-center py-12 bg-white rounded-xl shadow-lg">
-              <div className="text-6xl mb-4">🌺</div>
+              <div className="text-6xl mb-4">����</div>
               <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
                 Products Coming Soon
               </h3>
