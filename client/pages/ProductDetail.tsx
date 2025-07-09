@@ -44,6 +44,14 @@ export default function ProductDetail() {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null,
   );
+  const [selectedVariations, setSelectedVariations] = useState<
+    Record<string, ProductVariant>
+  >({});
+  const [effectivePrice, setEffectivePrice] = useState(0);
+  const [effectiveSalePrice, setEffectiveSalePrice] = useState<
+    number | undefined
+  >();
+  const [effectiveImage, setEffectiveImage] = useState<string | undefined>();
   const [quantity, setQuantity] = useState(1);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [specialInstructions, setSpecialInstructions] = useState("");
