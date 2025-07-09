@@ -1,11 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreditCard, MapPin, Package, User, Percent } from "lucide-react";
+import {
+  CreditCard,
+  MapPin,
+  Package,
+  User,
+  Percent,
+  MessageSquare,
+  Truck,
+  Shield,
+  Phone,
+  Mail,
+  FileText,
+  CheckCircle
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -20,17 +34,23 @@ import { ShippingZone, ShippingMethod, Coupon } from "@shared/database.types";
 
 interface CheckoutForm {
   // Customer Info
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
+  phoneCountryCode: string;
 
-  // Shipping Address
+  // Delivery Address
+  receiverName: string;
   addressLine1: string;
   addressLine2: string;
   city: string;
   state: string;
   pincode: string;
+  receiverPhone: string;
+  receiverPhoneCountryCode: string;
+
+  // Message with Order
+  orderMessage: string;
 
   // Delivery
   deliveryDate: string;
@@ -39,25 +59,33 @@ interface CheckoutForm {
 
   // Payment
   paymentMethod: string;
+
+  // Terms & Conditions
+  acceptTerms: boolean;
 }
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCart();
   const [form, setForm] = useState<CheckoutForm>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     phone: "",
+    phoneCountryCode: "+91",
+    receiverName: "",
     addressLine1: "",
     addressLine2: "",
     city: "",
     state: "",
     pincode: "",
+    receiverPhone: "",
+    receiverPhoneCountryCode: "+91",
+    orderMessage: "",
     deliveryDate: "",
     deliverySlot: "",
     specialInstructions: "",
     paymentMethod: "",
+    acceptTerms: false,
   });
 
   const [availableShippingMethods, setAvailableShippingMethods] = useState<
@@ -196,6 +224,11 @@ export default function Checkout() {
       return;
     }
 
+    if (!form.acceptTerms) {
+      setErrors({ terms: "Please accept the Terms & Conditions to continue" });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const totals = calculateTotal();
@@ -204,21 +237,27 @@ export default function Checkout() {
       const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       // Create customer record
+      const nameParts = form.fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
       const { data: customer, error: customerError } = await supabase
         .from("customers")
         .upsert(
           {
             email: form.email,
-            first_name: form.firstName,
-            last_name: form.lastName,
-            phone: form.phone,
+            first_name: firstName,
+            last_name: lastName,
+            phone: `${form.phoneCountryCode}${form.phone}`,
             addresses: [
               {
+                name: form.receiverName,
                 line1: form.addressLine1,
                 line2: form.addressLine2,
                 city: form.city,
                 state: form.state,
                 pincode: form.pincode,
+                phone: `${form.receiverPhoneCountryCode}${form.receiverPhone}`,
                 type: "shipping",
               },
             ],
@@ -260,22 +299,29 @@ export default function Checkout() {
             uploaded_file_url: item.uploaded_file ? "pending-upload" : null,
           })),
           shipping_address: {
+            name: form.receiverName,
             line1: form.addressLine1,
             line2: form.addressLine2,
             city: form.city,
             state: form.state,
             pincode: form.pincode,
+            phone: `${form.receiverPhoneCountryCode}${form.receiverPhone}`,
           },
           billing_address: {
+            name: form.fullName,
             line1: form.addressLine1,
             line2: form.addressLine2,
             city: form.city,
             state: form.state,
             pincode: form.pincode,
+            phone: `${form.phoneCountryCode}${form.phone}`,
           },
           delivery_date: form.deliveryDate || null,
           delivery_slot: form.deliverySlot || null,
-          special_instructions: form.specialInstructions || null,
+          special_instructions: [
+            form.specialInstructions,
+            form.orderMessage ? `Customer Message: ${form.orderMessage}` : null
+          ].filter(Boolean).join('\n\n') || null,
           payment_method: form.paymentMethod,
           payment_status: "pending",
           coupon_code: appliedCoupon?.code || null,
@@ -313,282 +359,532 @@ export default function Checkout() {
   }
 
   return (
-    <div className="container py-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
+      <div className="container py-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Secure Checkout
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Complete your order details below for fast and secure delivery
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Checkout Form */}
-          <div className="lg:col-span-2 space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Customer Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="w-5 h-5" />
-                    Customer Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name *</Label>
-                      <Input
-                        id="firstName"
-                        value={form.firstName}
-                        onChange={(e) =>
-                          setForm({ ...form, firstName: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
-                      <Input
-                        id="lastName"
-                        value={form.lastName}
-                        onChange={(e) =>
-                          setForm({ ...form, lastName: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={form.email}
-                      onChange={(e) =>
-                        setForm({ ...form, email: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={form.phone}
-                      onChange={(e) =>
-                        setForm({ ...form, phone: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Checkout Form */}
+            <div className="lg:col-span-2 space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
 
-              {/* Shipping Address */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5" />
-                    Delivery Address
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="addressLine1">Address Line 1 *</Label>
-                    <Input
-                      id="addressLine1"
-                      value={form.addressLine1}
-                      onChange={(e) =>
-                        setForm({ ...form, addressLine1: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="addressLine2">Address Line 2</Label>
-                    <Input
-                      id="addressLine2"
-                      value={form.addressLine2}
-                      onChange={(e) =>
-                        setForm({ ...form, addressLine2: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="city">City *</Label>
-                      <Input
-                        id="city"
-                        value={form.city}
-                        onChange={(e) =>
-                          setForm({ ...form, city: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="state">State *</Label>
-                      <Input
-                        id="state"
-                        value={form.state}
-                        onChange={(e) =>
-                          setForm({ ...form, state: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="pincode">Pincode *</Label>
-                    <Input
-                      id="pincode"
-                      value={form.pincode}
-                      onChange={(e) =>
-                        setForm({ ...form, pincode: e.target.value })
-                      }
-                      maxLength={6}
-                      required
-                    />
-                    {errors.pincode && (
-                      <p className="text-red-600 text-sm mt-1">
-                        {errors.pincode}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Shipping Method */}
-              {availableShippingMethods.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Package className="w-5 h-5" />
-                      Delivery Options
+                {/* 1. Customer Information */}
+                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                  <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <User className="w-6 h-6" />
+                      </div>
+                      Customer Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      {availableShippingMethods.map((method) => (
-                        <div
-                          key={method.id}
-                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                            selectedShippingMethod?.id === method.id
-                              ? "border-primary bg-primary/5"
-                              : "border-gray-200 hover:border-primary"
-                          }`}
-                          onClick={() => setSelectedShippingMethod(method)}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-semibold">{method.name}</h4>
-                              <p className="text-sm text-muted-foreground">
-                                {method.description}
-                              </p>
-                              <p className="text-sm font-medium text-primary">
-                                {method.delivery_time}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-semibold">₹{method.price}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                  <CardContent className="p-6 space-y-6">
+                    <div>
+                      <Label htmlFor="fullName" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Full Name *
+                      </Label>
+                      <Input
+                        id="fullName"
+                        placeholder="John Doe"
+                        value={form.fullName}
+                        onChange={(e) =>
+                          setForm({ ...form, fullName: e.target.value })
+                        }
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                        required
+                      />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="deliveryDate">Preferred Date</Label>
+                    <div>
+                      <Label htmlFor="email" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Email Address *
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <Input
-                          id="deliveryDate"
-                          type="date"
-                          value={form.deliveryDate}
+                          id="email"
+                          type="email"
+                          placeholder="john@example.com"
+                          value={form.email}
                           onChange={(e) =>
-                            setForm({ ...form, deliveryDate: e.target.value })
+                            setForm({ ...form, email: e.target.value })
                           }
-                          min={new Date().toISOString().split("T")[0]}
+                          className="pl-11 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                          required
                         />
-                      </div>
-                      <div>
-                        <Label htmlFor="deliverySlot">Time Slot</Label>
-                        <Select
-                          value={form.deliverySlot}
-                          onValueChange={(value) =>
-                            setForm({ ...form, deliverySlot: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select time" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="9am-12pm">
-                              9:00 AM - 12:00 PM
-                            </SelectItem>
-                            <SelectItem value="12pm-3pm">
-                              12:00 PM - 3:00 PM
-                            </SelectItem>
-                            <SelectItem value="3pm-6pm">
-                              3:00 PM - 6:00 PM
-                            </SelectItem>
-                            <SelectItem value="6pm-9pm">
-                              6:00 PM - 9:00 PM
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="specialInstructions">
-                        Special Instructions
+                      <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Phone Number *
                       </Label>
-                      <Textarea
-                        id="specialInstructions"
-                        placeholder="Any special delivery instructions..."
-                        value={form.specialInstructions}
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            specialInstructions: e.target.value,
-                          })
-                        }
-                        rows={3}
-                      />
+                      <div className="flex gap-3">
+                        <Select
+                          value={form.phoneCountryCode}
+                          onValueChange={(value) => setForm({ ...form, phoneCountryCode: value })}
+                        >
+                          <SelectTrigger className="w-24 py-3 border-2 border-gray-200 rounded-xl">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+91">+91</SelectItem>
+                            <SelectItem value="+1">+1</SelectItem>
+                            <SelectItem value="+44">+44</SelectItem>
+                            <SelectItem value="+971">+971</SelectItem>
+                            <SelectItem value="+65">+65</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="relative flex-1">
+                          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="9876543210"
+                            value={form.phone}
+                            onChange={(e) =>
+                              setForm({ ...form, phone: e.target.value })
+                            }
+                            className="pl-11 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
-              )}
 
-              {/* Payment Method */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5" />
-                    Payment Method
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Select
-                    value={form.paymentMethod}
-                    onValueChange={(value) =>
-                      setForm({ ...form, paymentMethod: value })
-                    }
-                    required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="razorpay">
-                        Credit/Debit Card
-                      </SelectItem>
-                      <SelectItem value="upi">UPI</SelectItem>
-                      <SelectItem value="netbanking">Net Banking</SelectItem>
-                      <SelectItem value="cod">Cash on Delivery</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </CardContent>
-              </Card>
-            </form>
-          </div>
+                {/* 2. Delivery Address */}
+                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                  <CardHeader className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <MapPin className="w-6 h-6" />
+                      </div>
+                      Delivery Address
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 space-y-6">
+                    <div>
+                      <Label htmlFor="receiverName" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Receiver's Name *
+                      </Label>
+                      <Input
+                        id="receiverName"
+                        placeholder="Name of person receiving the order"
+                        value={form.receiverName}
+                        onChange={(e) =>
+                          setForm({ ...form, receiverName: e.target.value })
+                        }
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="addressLine1" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Address Line 1 *
+                      </Label>
+                      <Input
+                        id="addressLine1"
+                        placeholder="House/Flat No., Building Name"
+                        value={form.addressLine1}
+                        onChange={(e) =>
+                          setForm({ ...form, addressLine1: e.target.value })
+                        }
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="addressLine2" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Address Line 2 (Optional)
+                      </Label>
+                      <Input
+                        id="addressLine2"
+                        placeholder="Street Name, Area, Landmark"
+                        value={form.addressLine2}
+                        onChange={(e) =>
+                          setForm({ ...form, addressLine2: e.target.value })
+                        }
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="city" className="text-sm font-semibold text-gray-700 mb-2 block">
+                          City *
+                        </Label>
+                        <Input
+                          id="city"
+                          placeholder="Mumbai"
+                          value={form.city}
+                          onChange={(e) =>
+                            setForm({ ...form, city: e.target.value })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="state" className="text-sm font-semibold text-gray-700 mb-2 block">
+                          State *
+                        </Label>
+                        <Input
+                          id="state"
+                          placeholder="Maharashtra"
+                          value={form.state}
+                          onChange={(e) =>
+                            setForm({ ...form, state: e.target.value })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="pincode" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Pincode *
+                      </Label>
+                      <Input
+                        id="pincode"
+                        placeholder="400001"
+                        value={form.pincode}
+                        onChange={(e) =>
+                          setForm({ ...form, pincode: e.target.value })
+                        }
+                        maxLength={6}
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                        required
+                      />
+                      {errors.pincode && (
+                        <p className="text-red-600 text-sm mt-2 bg-red-50 p-2 rounded">
+                          {errors.pincode}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="receiverPhone" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Receiver's Phone Number *
+                      </Label>
+                      <div className="flex gap-3">
+                        <Select
+                          value={form.receiverPhoneCountryCode}
+                          onValueChange={(value) => setForm({ ...form, receiverPhoneCountryCode: value })}
+                        >
+                          <SelectTrigger className="w-24 py-3 border-2 border-gray-200 rounded-xl">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+91">+91</SelectItem>
+                            <SelectItem value="+1">+1</SelectItem>
+                            <SelectItem value="+44">+44</SelectItem>
+                            <SelectItem value="+971">+971</SelectItem>
+                            <SelectItem value="+65">+65</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="relative flex-1">
+                          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                          <Input
+                            id="receiverPhone"
+                            type="tel"
+                            placeholder="9876543210"
+                            value={form.receiverPhone}
+                            onChange={(e) =>
+                              setForm({ ...form, receiverPhone: e.target.value })
+                            }
+                            className="pl-11 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 3. Message with Order */}
+                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                  <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <MessageSquare className="w-6 h-6" />
+                      </div>
+                      Message with Order
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div>
+                      <Label htmlFor="orderMessage" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Special Message (Optional)
+                      </Label>
+                      <Textarea
+                        id="orderMessage"
+                        placeholder="Add a personal message, special instructions, or occasion details..."
+                        value={form.orderMessage}
+                        onChange={(e) =>
+                          setForm({ ...form, orderMessage: e.target.value })
+                        }
+                        rows={4}
+                        className="text-lg border-2 border-gray-200 rounded-xl focus:border-purple-500 resize-none"
+                      />
+                      <p className="text-sm text-gray-500 mt-2">
+                        This message will be included with your order for special occasions or delivery instructions.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 4. Shipping Methods */}
+                {availableShippingMethods.length > 0 && (
+                  <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center gap-3 text-xl">
+                        <div className="bg-white/20 rounded-lg p-2">
+                          <Truck className="w-6 h-6" />
+                        </div>
+                        Shipping Methods
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      <div className="space-y-4">
+                        {availableShippingMethods.map((method) => (
+                          <div
+                            key={method.id}
+                            className={`p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                              selectedShippingMethod?.id === method.id
+                                ? "border-orange-500 bg-orange-50 shadow-lg ring-2 ring-orange-200"
+                                : "border-gray-200 hover:border-orange-300 bg-white"
+                            }`}
+                            onClick={() => setSelectedShippingMethod(method)}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  {selectedShippingMethod?.id === method.id && (
+                                    <CheckCircle className="h-5 w-5 text-orange-600" />
+                                  )}
+                                  <h4 className="font-bold text-lg text-gray-900">{method.name}</h4>
+                                </div>
+                                <p className="text-gray-600 mb-2">
+                                  {method.description}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                  <Package className="h-4 w-4 text-orange-600" />
+                                  <p className="text-sm font-semibold text-orange-600">
+                                    {method.delivery_time}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-2xl font-bold text-gray-900">
+                                  {method.price === 0 ? "FREE" : `₹${method.price}`}
+                                </p>
+                                <p className="text-sm text-gray-500">shipping</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {selectedShippingMethod && (
+                        <>
+                          <div className="border-t pt-6">
+                            <h4 className="font-semibold text-gray-900 mb-4">Delivery Schedule</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="deliveryDate" className="text-sm font-semibold text-gray-700 mb-2 block">
+                                  Preferred Date
+                                </Label>
+                                <Input
+                                  id="deliveryDate"
+                                  type="date"
+                                  value={form.deliveryDate}
+                                  onChange={(e) =>
+                                    setForm({ ...form, deliveryDate: e.target.value })
+                                  }
+                                  min={new Date().toISOString().split("T")[0]}
+                                  className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="deliverySlot" className="text-sm font-semibold text-gray-700 mb-2 block">
+                                  Time Slot
+                                </Label>
+                                <Select
+                                  value={form.deliverySlot}
+                                  onValueChange={(value) =>
+                                    setForm({ ...form, deliverySlot: value })
+                                  }
+                                >
+                                  <SelectTrigger className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500">
+                                    <SelectValue placeholder="Select time" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="9am-12pm">
+                                      9:00 AM - 12:00 PM
+                                    </SelectItem>
+                                    <SelectItem value="12pm-3pm">
+                                      12:00 PM - 3:00 PM
+                                    </SelectItem>
+                                    <SelectItem value="3pm-6pm">
+                                      3:00 PM - 6:00 PM
+                                    </SelectItem>
+                                    <SelectItem value="6pm-9pm">
+                                      6:00 PM - 9:00 PM
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="specialInstructions" className="text-sm font-semibold text-gray-700 mb-2 block">
+                              Special Delivery Instructions
+                            </Label>
+                            <Textarea
+                              id="specialInstructions"
+                              placeholder="Any special delivery instructions (e.g., ring doorbell, leave with security)..."
+                              value={form.specialInstructions}
+                              onChange={(e) =>
+                                setForm({
+                                  ...form,
+                                  specialInstructions: e.target.value,
+                                })
+                              }
+                              rows={3}
+                              className="text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500 resize-none"
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      {errors.shipping && (
+                        <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                          {errors.shipping}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* 5. Payment Methods */}
+                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                  <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <CreditCard className="w-6 h-6" />
+                      </div>
+                      Payment Methods
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+                        Choose your preferred payment method *
+                      </Label>
+
+                      {[
+                        { value: "razorpay", label: "Credit/Debit Card", desc: "Visa, Mastercard, Rupay", icon: CreditCard },
+                        { value: "upi", label: "UPI Payment", desc: "PhonePe, Google Pay, Paytm", icon: Phone },
+                        { value: "netbanking", label: "Net Banking", desc: "All major banks supported", icon: Shield },
+                        { value: "cod", label: "Cash on Delivery", desc: "Pay when you receive", icon: Package }
+                      ].map((method) => {
+                        const IconComponent = method.icon;
+                        return (
+                          <div
+                            key={method.value}
+                            className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                              form.paymentMethod === method.value
+                                ? "border-indigo-500 bg-indigo-50 shadow-lg ring-2 ring-indigo-200"
+                                : "border-gray-200 hover:border-indigo-300 bg-white"
+                            }`}
+                            onClick={() => setForm({ ...form, paymentMethod: method.value })}
+                          >
+                            <div className="flex items-center gap-3">
+                              {form.paymentMethod === method.value && (
+                                <CheckCircle className="h-5 w-5 text-indigo-600" />
+                              )}
+                              <IconComponent className="h-6 w-6 text-indigo-600" />
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-gray-900">{method.label}</h4>
+                                <p className="text-sm text-gray-600">{method.desc}</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 6. Terms & Conditions */}
+                <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                  <CardHeader className="bg-gradient-to-r from-gray-600 to-slate-700 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <FileText className="w-6 h-6" />
+                      </div>
+                      Terms & Conditions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-3">
+                      <Checkbox
+                        id="acceptTerms"
+                        checked={form.acceptTerms}
+                        onCheckedChange={(checked) =>
+                          setForm({ ...form, acceptTerms: !!checked })
+                        }
+                        className="mt-1 w-5 h-5"
+                        required
+                      />
+                      <div className="flex-1">
+                        <Label
+                          htmlFor="acceptTerms"
+                          className="text-sm text-gray-700 cursor-pointer leading-relaxed"
+                        >
+                          I accept the{" "}
+                          <a
+                            href="/terms"
+                            target="_blank"
+                            className="text-blue-600 hover:text-blue-800 underline font-medium"
+                          >
+                            Terms & Conditions
+                          </a>{" "}
+                          and{" "}
+                          <a
+                            href="/privacy-policy"
+                            target="_blank"
+                            className="text-blue-600 hover:text-blue-800 underline font-medium"
+                          >
+                            Privacy Policy
+                          </a>
+                        </Label>
+                        {errors.terms && (
+                          <p className="text-red-600 text-sm mt-2 bg-red-50 p-2 rounded">
+                            {errors.terms}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </form>
+            </div>
 
           {/* Order Summary */}
           <div className="space-y-6">
@@ -705,21 +1001,37 @@ export default function Checkout() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full"
+                  className="w-full py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
                   onClick={handleSubmit}
                   disabled={
                     isSubmitting ||
                     !selectedShippingMethod ||
-                    !form.paymentMethod
+                    !form.paymentMethod ||
+                    !form.acceptTerms
                   }
                 >
-                  {isSubmitting
-                    ? "Processing..."
-                    : `Pay ₹${totals.total.toFixed(2)}`}
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                      Processing Order...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <Shield className="h-5 w-5 mr-2" />
+                      Complete Secure Payment ₹{totals.total.toFixed(2)}
+                    </div>
+                  )}
                 </Button>
 
                 {errors.submit && (
-                  <p className="text-red-600 text-sm">{errors.submit}</p>
+                  <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                    <p className="text-red-700 font-medium">{errors.submit}</p>
+                  </div>
+                )}
+                {errors.terms && (
+                  <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                    <p className="text-red-700 font-medium">{errors.terms}</p>
+                  </div>
                 )}
               </CardContent>
             </Card>
