@@ -37,7 +37,9 @@ interface MenuItem {
   sort_order: number;
   target: "_self" | "_blank";
   parent_id?: string;
-  product_categories?: ProductCategory;
+  product_categories?: ProductCategory & {
+    subcategories?: ProductCategory[];
+  };
 }
 
 export function Header() {
