@@ -521,17 +521,50 @@ export default function Index() {
       section.subtitle ||
       "Handpicked fresh flowers loved by thousands of customers";
 
+    console.log(
+      "🎨 Product Carousel: Starting render with featuredProducts:",
+      featuredProducts,
+    );
+    console.log("🎨 Product Carousel: Display count set to:", showCount);
+
     // Filter out any invalid products and limit display count
     const validProducts = featuredProducts
-      .filter(
-        (product) =>
+      .filter((product) => {
+        const isValid =
           product &&
           product.id &&
           product.name &&
           product.slug &&
-          product.price,
-      )
+          product.price;
+
+        if (!isValid) {
+          console.warn(
+            "❌ Product Carousel: Invalid product filtered out:",
+            product,
+          );
+        }
+
+        return isValid;
+      })
       .slice(0, showCount);
+
+    console.log(
+      "✅ Product Carousel: Valid products to render:",
+      validProducts,
+    );
+    console.log(
+      "🏷️ Product Carousel: Product titles being rendered:",
+      validProducts.map((p) => p.name),
+    );
+    console.log(
+      "🖼️ Product Carousel: Image status for each product:",
+      validProducts.map((p) => ({
+        name: p.name,
+        hasImages: p.images && Array.isArray(p.images) && p.images.length > 0,
+        imageUrl: p.images?.[0] || "No image URL",
+        imageCount: p.images?.length || 0,
+      })),
+    );
 
     if (validProducts.length === 0) {
       return (
