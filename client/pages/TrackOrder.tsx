@@ -65,9 +65,19 @@ export default function TrackOrder() {
       return;
     }
 
-    // Validate order number format (should be alphanumeric)
-    if (!/^[A-Za-z0-9]+$/.test(orderNumber.trim())) {
-      setError("Order number should contain only letters and numbers");
+    // Validate order number format (should be alphanumeric, preferably starting with FII)
+    if (!/^[A-Za-z0-9\-]+$/.test(orderNumber.trim())) {
+      setError("Order number should contain only letters, numbers, and dashes");
+      return;
+    }
+
+    // Check if it's a valid FII format order number
+    const trimmedOrderNumber = orderNumber.trim().toUpperCase();
+    if (
+      !trimmedOrderNumber.startsWith("FII") &&
+      !trimmedOrderNumber.startsWith("ORD")
+    ) {
+      setError("Please enter a valid order number (e.g., FII00001)");
       return;
     }
 
