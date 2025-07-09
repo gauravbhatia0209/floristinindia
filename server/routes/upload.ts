@@ -78,7 +78,10 @@ router.post("/image", upload.single("image"), (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
+    const subdir = req.query.subdir as string;
+    const imageUrl = subdir
+      ? `/uploads/${subdir}/${req.file.filename}`
+      : `/uploads/${req.file.filename}`;
 
     res.json({
       success: true,
