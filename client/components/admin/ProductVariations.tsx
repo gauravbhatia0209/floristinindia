@@ -524,7 +524,20 @@ export function ProductVariations({
                                     <GripVertical className="w-4 h-4 text-muted-foreground" />
                                   </div>
 
-                                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                  {/* Variation Image */}
+                                  <div className="w-16 h-16 bg-gradient-to-br from-cream to-peach/30 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                    {variant.image_url ? (
+                                      <img
+                                        src={variant.image_url}
+                                        alt={variant.name}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <span className="text-xl">📷</span>
+                                    )}
+                                  </div>
+
+                                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                       <p className="font-semibold text-sm text-muted-foreground">
                                         Name
