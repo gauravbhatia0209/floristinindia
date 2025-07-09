@@ -11,6 +11,7 @@ import ProductDetail from "@/pages/ProductDetail";
 import About from "@/pages/About";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
+import TrackOrder from "@/pages/TrackOrder";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
 
@@ -70,6 +71,7 @@ function App() {
             <Route path="product/:slug" element={<ProductDetail />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="track-order" element={<TrackOrder />} />
             {/* Specific static routes - must come before dynamic route */}
             <Route path="about" element={<Page />} />
             <Route path="help" element={<Page />} />
