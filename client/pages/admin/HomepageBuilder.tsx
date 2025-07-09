@@ -692,9 +692,10 @@ function EditSectionForm({
 
       {/* Hero Section Specific Fields */}
       {section.type === "hero" && (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* Description */}
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Description Text</Label>
             <Textarea
               id="description"
               value={(formData.content as any)?.description || ""}
@@ -704,29 +705,137 @@ function EditSectionForm({
                   content: { ...formData.content, description: e.target.value },
                 })
               }
-              placeholder="Hero section description text"
+              placeholder="Enter a compelling description for your hero section"
               rows={3}
             />
+            <p className="text-sm text-muted-foreground mt-1">
+              This text appears below the main heading and subheading.
+            </p>
           </div>
 
+          {/* Primary CTA Button */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="button_text">Primary Button Text</Label>
+              <Input
+                id="button_text"
+                value={(formData.content as any)?.button_text || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      button_text: e.target.value,
+                    },
+                  })
+                }
+                placeholder="Shop Now"
+              />
+            </div>
+            <div>
+              <Label htmlFor="button_link">Primary Button URL</Label>
+              <Input
+                id="button_link"
+                value={(formData.content as any)?.button_link || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      button_link: e.target.value,
+                    },
+                  })
+                }
+                placeholder="/products"
+              />
+            </div>
+          </div>
+
+          {/* Secondary CTA Button (Optional) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="secondary_button_text">
+                Secondary Button Text (Optional)
+              </Label>
+              <Input
+                id="secondary_button_text"
+                value={(formData.content as any)?.secondary_button_text || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      secondary_button_text: e.target.value,
+                    },
+                  })
+                }
+                placeholder="Learn More"
+              />
+            </div>
+            <div>
+              <Label htmlFor="secondary_button_link">
+                Secondary Button URL
+              </Label>
+              <Input
+                id="secondary_button_link"
+                value={(formData.content as any)?.secondary_button_link || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      secondary_button_link: e.target.value,
+                    },
+                  })
+                }
+                placeholder="/about"
+              />
+            </div>
+          </div>
+
+          {/* Background Image */}
           <div>
             <SingleImageUpload
-              imageUrl={(formData.content as any)?.right_image_url || ""}
+              imageUrl={(formData.content as any)?.background_image || ""}
               onImageChange={(imageUrl) =>
                 setFormData({
                   ...formData,
-                  content: { ...formData.content, right_image_url: imageUrl },
+                  content: { ...formData.content, background_image: imageUrl },
                 })
               }
-              label="Right Side Image"
+              label="Background Image"
               acceptedTypes={[".png", ".webp", ".jpg", ".jpeg"]}
-              maxSizeMB={3}
+              maxSizeMB={5}
               subdir="hero"
             />
             <p className="text-sm text-muted-foreground mt-1">
-              This image will be displayed on the right side of the hero section
-              as a decorative element.
+              This image will be used as the background for the entire hero
+              section. High-quality landscape images work best. If no image is
+              uploaded, the default gradient background will be used.
             </p>
+          </div>
+
+          {/* Hero Section Settings */}
+          <div className="border-t pt-4">
+            <h4 className="font-medium mb-3">Section Settings</h4>
+            <div className="text-sm text-muted-foreground space-y-2">
+              <p>
+                • <strong>Height:</strong> Fixed at 500px on desktop, 450px on
+                mobile
+              </p>
+              <p>
+                • <strong>Layout:</strong> Centered content with background
+                image overlay
+              </p>
+              <p>
+                • <strong>Text:</strong> White text with dark overlay for
+                readability
+              </p>
+              <p>
+                • <strong>Responsive:</strong> Automatically adapts to all
+                screen sizes
+              </p>
+            </div>
           </div>
         </div>
       )}
