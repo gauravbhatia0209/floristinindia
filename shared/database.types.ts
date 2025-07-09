@@ -275,6 +275,7 @@ export interface Database {
           stock_quantity?: number;
           is_active?: boolean;
           is_featured?: boolean;
+          has_variations?: boolean;
           category_id: string;
           subcategory_id?: string | null;
           images?: string[];
