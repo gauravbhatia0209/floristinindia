@@ -301,37 +301,46 @@ export function Header() {
                 item.product_categories.subcategories.length > 0;
 
               return hasSubcategories ? (
-                <DropdownMenu key={item.id}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="px-3 py-2 h-auto font-normal hover:bg-accent hover:text-accent-foreground transition-colors"
-                    >
-                      {item.name}
-                      <ChevronDown className="w-4 h-4 ml-1" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="min-w-[200px]">
-                    <DropdownMenuItem asChild>
+                <div
+                  key={item.id}
+                  className="relative group"
+                  onMouseEnter={() => {}}
+                  onMouseLeave={() => {}}
+                >
+                  <Link
+                    to={href}
+                    target={item.target}
+                    className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors inline-flex items-center"
+                  >
+                    {item.name}
+                    <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
+                  </Link>
+
+                  {/* Hover Dropdown */}
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
+                    <div className="py-2">
                       <Link
                         to={href}
                         target={item.target}
-                        className="font-medium text-primary"
+                        className="block px-4 py-2 text-sm font-medium text-primary hover:bg-accent hover:text-accent-foreground transition-colors"
                       >
                         View All {item.name}
                       </Link>
-                    </DropdownMenuItem>
-                    {item.product_categories.subcategories?.map(
-                      (subcategory) => (
-                        <DropdownMenuItem key={subcategory.id} asChild>
-                          <Link to={`/category/${subcategory.slug}`}>
+                      <div className="border-t border-border my-1"></div>
+                      {item.product_categories.subcategories?.map(
+                        (subcategory) => (
+                          <Link
+                            key={subcategory.id}
+                            to={`/category/${subcategory.slug}`}
+                            className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                          >
                             {subcategory.name}
                           </Link>
-                        </DropdownMenuItem>
-                      ),
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <Link
                   key={item.id}
