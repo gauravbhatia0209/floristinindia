@@ -264,9 +264,12 @@ export default function Cart() {
                   >
                     {/* Product Image */}
                     <div className="w-20 h-20 bg-gradient-to-br from-cream to-peach/30 rounded-lg flex items-center justify-center overflow-hidden">
-                      {item.product.images.length > 0 ? (
+                      {item.variant?.image_url ||
+                      item.product.images.length > 0 ? (
                         <img
-                          src={item.product.images[0]}
+                          src={
+                            item.variant?.image_url || item.product.images[0]
+                          }
                           alt={item.product.name}
                           className="w-full h-full object-cover"
                         />
