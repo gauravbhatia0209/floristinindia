@@ -34,8 +34,7 @@ export default function Index() {
         price,
         sale_price,
         images,
-        is_active,
-        product_categories(name)
+        is_active
       `,
       )
       .eq("is_active", true)
@@ -626,7 +625,7 @@ export default function Index() {
     }
 
     console.log(
-      "🎨 Product Carousel: Rendering section with title:",
+      "��� Product Carousel: Rendering section with title:",
       displayTitle,
     );
     console.log(
