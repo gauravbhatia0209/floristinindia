@@ -360,7 +360,7 @@ export default function TrackOrder() {
                       setOrderNumber(e.target.value.toUpperCase())
                     }
                     className="text-lg py-6 pl-12 pr-4 text-center tracking-widest font-mono bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-rose-500 focus:ring-rose-500 transition-all duration-200"
-                    maxLength={20}
+                    maxLength={15}
                   />
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
