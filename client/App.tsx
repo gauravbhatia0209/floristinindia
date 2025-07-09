@@ -27,6 +27,7 @@ import Coupons from "@/pages/admin/Coupons";
 import Shipping from "@/pages/admin/Shipping";
 import Pages from "@/pages/admin/Pages";
 import HomepageBuilder from "@/pages/admin/HomepageBuilder";
+import MenuBar from "@/pages/admin/MenuBar";
 import Settings from "@/pages/admin/Settings";
 import Users from "@/pages/admin/Users";
 import ContactSubmissions from "@/pages/admin/ContactSubmissions";
