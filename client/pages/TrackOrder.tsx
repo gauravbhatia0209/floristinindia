@@ -156,14 +156,17 @@ export default function TrackOrder() {
       const productIds = orderData.items
         .map((item: any) => item.product_id)
         .filter(Boolean);
+      console.log("Track Order: Product IDs to fetch images for:", productIds);
       let productsData: any[] = [];
 
       if (productIds.length > 0) {
-        const { data: products } = await supabase
+        const { data: products, error: productsError } = await supabase
           .from("products")
           .select("id, images")
           .in("id", productIds);
 
+        console.log("Track Order: Products fetched:", products);
+        console.log("Track Order: Products error:", productsError);
         productsData = products || [];
       }
 
@@ -171,6 +174,12 @@ export default function TrackOrder() {
       const enhancedItems = orderData.items.map((item: any) => {
         const product = productsData.find((p) => p.id === item.product_id);
         const productImage = product?.images?.[0] || null;
+        console.log(
+          `Track Order: Item ${item.product_name} - Product:`,
+          product,
+          "Image:",
+          productImage,
+        );
 
         return {
           ...item,
