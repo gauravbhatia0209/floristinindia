@@ -570,6 +570,7 @@ export default function HomepageBuilder() {
           <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
             {editingSection && (
               <EditSectionFormContent
+                key={editingSection.id} // Force re-render when section changes
                 section={editingSection}
                 onDataChange={(formData) => {
                   // Store form data in a ref for saving
