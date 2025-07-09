@@ -357,8 +357,7 @@ export default function Index() {
       >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="container relative py-24 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-8 items-center min-h-[600px]">
-            <div className="max-w-3xl lg:max-w-none">
+          <div className="max-w-4xl relative z-20">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               {section.title || "Fresh Flowers"}
               <br />
@@ -366,7 +365,7 @@ export default function Index() {
                 {section.subtitle || "Delivered Daily"}
               </span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-rose-100">
+            <p className="text-xl md:text-2xl mb-8 text-rose-100 max-w-2xl">
               {content?.description ||
                 "Experience the joy of premium flower delivery across India. Same-day delivery available in 100+ cities."}
             </p>
@@ -390,11 +389,6 @@ export default function Index() {
               >
                 <Link to="/products">Explore Collections</Link>
               </Button>
-            </div>
-
-            {/* Second column - space for the image */}
-            <div className="hidden lg:block relative">
-              {/* This space is reserved for the absolutely positioned decorative image */}
             </div>
           </div>
         </div>
