@@ -12,6 +12,7 @@ import About from "@/pages/About";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import TrackOrder from "@/pages/TrackOrder";
+import OrderConfirmation from "@/pages/OrderConfirmation";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
 
@@ -72,6 +73,10 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="track-order" element={<TrackOrder />} />
+            <Route
+              path="order-confirmation/:orderId"
+              element={<OrderConfirmation />}
+            />
             {/* Specific static routes - must come before dynamic route */}
             <Route path="about" element={<Page />} />
             <Route path="help" element={<Page />} />
