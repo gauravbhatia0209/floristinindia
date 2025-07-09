@@ -557,19 +557,21 @@ export default function HomepageBuilder() {
         open={!!editingSection}
         onOpenChange={() => setEditingSection(null)}
       >
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-10">
             <DialogTitle>
               Edit {editingSection && getSectionName(editingSection.type)}
             </DialogTitle>
           </DialogHeader>
-          {editingSection && (
-            <EditSectionForm
-              section={editingSection}
-              onSave={(updates) => updateSection(editingSection.id, updates)}
-              onCancel={() => setEditingSection(null)}
-            />
-          )}
+          <div className="flex-1 overflow-y-auto px-6 py-4">
+            {editingSection && (
+              <EditSectionForm
+                section={editingSection}
+                onSave={(updates) => updateSection(editingSection.id, updates)}
+                onCancel={() => setEditingSection(null)}
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
