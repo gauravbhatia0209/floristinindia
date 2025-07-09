@@ -283,9 +283,9 @@ export default function ProductDetail() {
         {/* Product Images */}
         <div className="space-y-4">
           <div className="aspect-square bg-gradient-to-br from-cream to-peach/30 rounded-lg overflow-hidden">
-            {product.images.length > 0 ? (
+            {effectiveImage || product.images.length > 0 ? (
               <img
-                src={product.images[selectedImageIndex]}
+                src={effectiveImage || product.images[selectedImageIndex]}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
