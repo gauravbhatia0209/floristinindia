@@ -25,6 +25,7 @@ export default function Index() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { addItem } = useCart();
 
   useEffect(() => {
     fetchHomepageData();
