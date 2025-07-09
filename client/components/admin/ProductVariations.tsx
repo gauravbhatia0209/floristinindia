@@ -102,9 +102,16 @@ export function ProductVariations({
 
   useEffect(() => {
     if (productId) {
-      fetchVariations();
+      initializeComponent();
     }
   }, [productId]);
+
+  async function initializeComponent() {
+    // Check and apply migration if needed
+    await checkAndApplyVariationMigration();
+    // Then fetch variations
+    await fetchVariations();
+  }
 
   async function fetchVariations() {
     try {
