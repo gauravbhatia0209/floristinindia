@@ -946,12 +946,7 @@ export default function Index() {
                     <Button
                       size="sm"
                       className="w-full"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        // Add to cart functionality here
-                        console.log("Adding to cart:", product.name);
-                      }}
+                      onClick={(e) => handleAddToCart(product, e)}
                     >
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Add to Cart
