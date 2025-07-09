@@ -44,6 +44,7 @@ export default function ProductEdit() {
     tags: "",
     is_active: true,
     is_featured: false,
+    has_variations: false,
     requires_file_upload: false,
     upload_file_types: "",
     delivery_zones: "",
