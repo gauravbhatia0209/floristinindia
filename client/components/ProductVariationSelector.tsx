@@ -309,20 +309,6 @@ export function ProductVariationSelector({
           </div>
         </div>
       ))}
-
-      {/* Selected variations summary */}
-      {Object.keys(selectedVariations).length > 0 && (
-        <div className="pt-4 border-t">
-          <h4 className="text-sm font-medium mb-2">Selected Options:</h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(selectedVariations).map(([type, variant]) => (
-              <Badge key={type} variant="secondary">
-                {type}: {variant.variation_value}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
