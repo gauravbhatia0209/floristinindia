@@ -45,7 +45,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
-import { HomepageSection } from "@shared/database.types";
+import {
+  HomepageSection,
+  Product,
+  ProductCategory,
+} from "@shared/database.types";
 
 interface SectionTemplate {
   type: string;
