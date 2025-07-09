@@ -141,8 +141,14 @@ export interface Database {
           sale_price_override?: number | null;
           sku?: string | null;
           stock_quantity?: number;
+          image_url?: string | null;
+          weight?: number | null;
+          length?: number | null;
+          width?: number | null;
+          height?: number | null;
           is_active?: boolean;
           sort_order?: number;
+          display_order?: number;
           created_at?: string;
           updated_at?: string;
         };
