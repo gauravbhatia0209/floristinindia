@@ -732,7 +732,10 @@ export function ProductVariations({
                 <Button
                   onClick={saveVariation}
                   disabled={
-                    !formData.variation_type || !formData.variation_value
+                    !formData.variation_type ||
+                    !formData.variation_value ||
+                    !formData.price_override ||
+                    parseFloat(formData.price_override || "0") <= 0
                   }
                 >
                   <Save className="w-4 h-4 mr-2" />
