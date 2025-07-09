@@ -633,6 +633,10 @@ export default function Index() {
     );
   }
 
+  console.log("Homepage: Rendering with sections:", sections);
+  console.log("Homepage: Categories loaded:", categories);
+  console.log("Homepage: Products loaded:", featuredProducts);
+
   return (
     <div className="min-h-screen">
       {sections.map((section) => renderSection(section))}
