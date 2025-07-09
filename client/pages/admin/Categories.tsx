@@ -40,7 +40,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { SingleImageUpload } from "@/components/ui/single-image-upload";
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
