@@ -581,6 +581,24 @@ export default function Settings() {
 
               <div className="flex items-center justify-between">
                 <div>
+                  <Label htmlFor="enable_special_instructions">
+                    Enable Special Instructions
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Allow customers to add special instructions
+                  </p>
+                </div>
+                <Switch
+                  id="enable_special_instructions"
+                  checked={settings.enable_special_instructions}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("enable_special_instructions", checked)
+                  }
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
                   <Label htmlFor="enable_guest_checkout">
                     Enable Guest Checkout
                   </Label>
