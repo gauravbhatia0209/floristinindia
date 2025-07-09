@@ -343,22 +343,41 @@ export default function Index() {
   function renderProductCarousel(section: HomepageSection) {
     const content = section.content as any;
     const showCount = content?.show_count || 8;
+    const displayTitle = section.title || "Bestselling Flowers";
+    const displaySubtitle =
+      section.subtitle ||
+      "Handpicked fresh flowers loved by thousands of customers";
+
+    // Filter out any invalid products and limit display count
+    const validProducts = featuredProducts
+      .filter(
+        (product) =>
+          product &&
+          product.id &&
+          product.name &&
+          product.slug &&
+          product.price,
+      )
+      .slice(0, showCount);
+
+    if (validProducts.length === 0) {
+      return null; // Don't render section if no valid products
+    }
 
     return (
       <section key={section.id} className="py-20 bg-muted/30">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Bestselling Flowers
+              {displayTitle}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {section.subtitle ||
-                "Handpicked fresh flowers loved by thousands of customers"}
+              {displaySubtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.slice(0, showCount).map((product) => (
+            {validProducts.map((product) => (
               <Link
                 key={product.id}
                 to={`/product/${product.slug}`}
@@ -366,20 +385,32 @@ export default function Index() {
               >
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden">
                   <div className="aspect-square bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden">
-                    {product.images.length > 0 ? (
+                    {product.images && product.images.length > 0 ? (
                       <img
                         src={product.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover image-hover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const placeholder =
+                            e.currentTarget.parentElement?.querySelector(
+                              ".fallback-emoji",
+                            );
+                          if (placeholder) placeholder.style.display = "block";
+                        }}
                       />
-                    ) : (
-                      <span className="text-6xl animate-pulse">🌺</span>
-                    )}
-                    {product.sale_price && (
-                      <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
-                        SALE
-                      </Badge>
-                    )}
+                    ) : null}
+                    <span
+                      className={`fallback-emoji text-6xl animate-pulse ${product.images && product.images.length > 0 ? "hidden" : "block"}`}
+                    >
+                      🌺
+                    </span>
+                    {product.sale_price &&
+                      product.sale_price < product.price && (
+                        <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                          SALE
+                        </Badge>
+                      )}
                   </div>
                   <CardContent className="p-4">
                     <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
