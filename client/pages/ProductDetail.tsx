@@ -240,22 +240,46 @@ export default function ProductDetail() {
       .join(", ");
 
     toast({
-      title: "✅ Added to cart!",
+      title: (
+        <div className="flex items-center">
+          <span className="cart-toast-icon">🛒</span>
+          Added to cart!
+        </div>
+      ),
       description: (
-        <div className="space-y-2">
-          <div className="font-semibold text-base">{product.name}</div>
-          {variationText && (
-            <div className="text-sm text-muted-foreground">{variationText}</div>
-          )}
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Quantity: {quantity}</span>
-            <span className="font-bold text-primary">
-              ₹{(displayPrice * quantity).toFixed(0)}
-            </span>
+        <div className="space-y-3 pt-2">
+          <div className="flex items-start gap-3">
+            {(effectiveImage || product.images[0]) && (
+              <img
+                src={effectiveImage || product.images[0]}
+                alt={product.name}
+                className="w-12 h-12 rounded-lg object-cover border border-white/20"
+              />
+            )}
+            <div className="flex-1 space-y-1">
+              <div className="font-semibold text-white">{product.name}</div>
+              {variationText && (
+                <div className="text-sm text-white/80">{variationText}</div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-white/20">
+            <span className="text-sm text-white/90">Qty: {quantity}</span>
+            <div className="text-right">
+              <div className="font-bold text-white text-lg">
+                ₹{(displayPrice * quantity).toFixed(0)}
+              </div>
+              {quantity > 1 && (
+                <div className="text-xs text-white/70">
+                  ₹{displayPrice.toFixed(0)} each
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ),
-      duration: 4000,
+      duration: 5000,
+      className: "cart-success-toast",
     });
   }
 
