@@ -167,7 +167,13 @@ export function Footer() {
         setSettings(settingsMap);
       }
     } catch (error) {
-      console.error("Error fetching footer data:", error);
+      console.error("🚨 Footer: Error fetching footer data:");
+      console.error("General error details:", JSON.stringify(error, null, 2));
+      console.error("General error object:", error);
+      if (error instanceof Error) {
+        console.error("General error message:", error.message);
+        console.error("General error stack:", error.stack);
+      }
     } finally {
       setIsLoading(false);
     }
