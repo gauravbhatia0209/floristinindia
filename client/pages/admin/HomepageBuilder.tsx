@@ -704,6 +704,154 @@ function EditSectionForm({
         </div>
       )}
 
+      {/* Product Carousel Specific Fields */}
+      {section.type === "product_carousel" && (
+        <div className="space-y-4">
+          <div>
+            <Label>Display Count</Label>
+            <Input
+              type="number"
+              min="1"
+              max="20"
+              value={(formData.content as any)?.show_count || 8}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  content: {
+                    ...formData.content,
+                    show_count: parseInt(e.target.value),
+                  },
+                })
+              }
+            />
+          </div>
+
+          <div>
+            <Label>Select Products to Feature</Label>
+            {isLoadingData ? (
+              <div className="text-center py-4">Loading products...</div>
+            ) : (
+              <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+                {availableProducts.map((product) => {
+                  const isSelected =
+                    (formData.content as any)?.selected_products?.includes(
+                      product.id,
+                    ) || false;
+                  return (
+                    <div
+                      key={product.id}
+                      className={`flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50 ${
+                        isSelected ? "bg-blue-50 border-blue-300" : ""
+                      }`}
+                      onClick={() => toggleProductSelection(product.id)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleProductSelection(product.id)}
+                        className="rounded"
+                      />
+                      {product.images?.[0] && (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <div className="font-medium">{product.name}</div>
+                        <div className="text-sm text-gray-600">
+                          ₹{product.sale_price || product.price}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <p className="text-xs text-gray-600 mt-1">
+              Selected:{" "}
+              {(formData.content as any)?.selected_products?.length || 0}{" "}
+              products
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Category Grid Specific Fields */}
+      {section.type === "category_grid" && (
+        <div className="space-y-4">
+          <div>
+            <Label>Display Count</Label>
+            <Input
+              type="number"
+              min="1"
+              max="20"
+              value={(formData.content as any)?.show_count || 8}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  content: {
+                    ...formData.content,
+                    show_count: parseInt(e.target.value),
+                  },
+                })
+              }
+            />
+          </div>
+
+          <div>
+            <Label>Select Categories to Feature</Label>
+            {isLoadingData ? (
+              <div className="text-center py-4">Loading categories...</div>
+            ) : (
+              <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+                {availableCategories.map((category) => {
+                  const isSelected =
+                    (formData.content as any)?.selected_categories?.includes(
+                      category.id,
+                    ) || false;
+                  return (
+                    <div
+                      key={category.id}
+                      className={`flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50 ${
+                        isSelected ? "bg-blue-50 border-blue-300" : ""
+                      }`}
+                      onClick={() => toggleCategorySelection(category.id)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleCategorySelection(category.id)}
+                        className="rounded"
+                      />
+                      {category.image_url && (
+                        <img
+                          src={category.image_url}
+                          alt={category.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <div className="font-medium">{category.name}</div>
+                        <div className="text-sm text-gray-600">
+                          {category.slug}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <p className="text-xs text-gray-600 mt-1">
+              Selected:{" "}
+              {(formData.content as any)?.selected_categories?.length || 0}{" "}
+              categories
+            </p>
+          </div>
+        </div>
+      )}
+
       <div>
         <Label htmlFor="content">Content (JSON)</Label>
         <Textarea
