@@ -359,19 +359,29 @@ export function ProductVariations({
   }
 
   function editVariation(variation: ProductVariant) {
+    // Extract variation info from name if not available in separate fields
+    const nameParts = variation.name?.includes(" - ")
+      ? variation.name.split(" - ")
+      : ["", variation.name || ""];
+    const varType = variation.variation_type || nameParts[0] || "Size";
+    const varValue = variation.variation_value || nameParts[1] || "";
+
     setFormData({
       id: variation.id,
-      variation_type: variation.variation_type || "",
-      variation_value: variation.variation_value || "",
-      price_override: variation.price_override?.toString() || "",
-      sale_price_override: variation.sale_price_override?.toString() || "",
+      variation_type: varType,
+      variation_value: varValue,
+      price_override:
+        variation.price !== basePrice ? variation.price.toString() : "",
+      sale_price_override: variation.sale_price
+        ? variation.sale_price.toString()
+        : "",
       stock_quantity: variation.stock_quantity.toString(),
-      image_url: variation.image_url || "",
-      weight: variation.weight?.toString() || "",
+      image_url: "", // Not available in current schema
+      weight: "", // Not available in current schema
       sku: variation.sku || "",
       is_active: variation.is_active,
     });
-    setSelectedVariationType(variation.variation_type || "");
+    setSelectedVariationType(varType);
     setEditingVariation(variation);
   }
 
