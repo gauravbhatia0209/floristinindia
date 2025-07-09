@@ -258,32 +258,42 @@ export function ProductVariationSelector({
                   {/* Variation name */}
                   <div className="flex-1">
                     <h4
-                      className={`font-semibold text-lg mb-1 ${isSelected ? "text-primary" : "text-gray-900"}`}
+                      className={`font-bold text-lg mb-1 tracking-wide ${
+                        isSelected
+                          ? "text-primary"
+                          : "text-gray-900 group-hover:text-gray-700"
+                      }`}
                     >
                       {variant.variation_value || variant.name}
                     </h4>
 
                     {/* Stock status */}
                     {!inStock ? (
-                      <span className="text-sm text-red-500 font-medium">
-                        Out of Stock
-                      </span>
+                      <div className="inline-flex items-center gap-1">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <span className="text-sm text-red-600 font-medium">
+                          Out of Stock
+                        </span>
+                      </div>
                     ) : (
-                      <span className="text-sm text-gray-500">
-                        In Stock ({variant.stock_quantity})
-                      </span>
+                      <div className="inline-flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm text-gray-600">
+                          {variant.stock_quantity} available
+                        </span>
+                      </div>
                     )}
                   </div>
 
                   {/* Price information */}
-                  <div className="mt-2">
+                  <div className="mt-3 border-t border-gray-100 pt-2">
                     <div
-                      className={`text-sm font-medium ${
-                        priceDifference === 0
-                          ? "text-green-600"
+                      className={`text-sm font-bold px-2 py-1 rounded-md inline-block ${
+                        Math.abs(priceDifference) < 0.01
+                          ? "bg-green-100 text-green-700 border border-green-200"
                           : priceDifference > 0
-                            ? "text-orange-600"
-                            : "text-green-600"
+                            ? "bg-orange-100 text-orange-700 border border-orange-200"
+                            : "bg-green-100 text-green-700 border border-green-200"
                       }`}
                     >
                       {formatPriceDifference(priceDifference)}
@@ -292,11 +302,11 @@ export function ProductVariationSelector({
                     {effectiveSalePrice !== null &&
                       effectivePrice !== null &&
                       effectiveSalePrice < effectivePrice && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          <span className="line-through">
+                        <div className="text-xs text-gray-500 mt-2 flex items-center gap-2">
+                          <span className="bg-gray-100 px-2 py-1 rounded line-through">
                             ₹{effectivePrice.toFixed(0)}
                           </span>
-                          <span className="ml-1 text-green-600 font-medium">
+                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded font-semibold">
                             ₹{effectiveSalePrice.toFixed(0)}
                           </span>
                         </div>
