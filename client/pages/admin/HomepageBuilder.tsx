@@ -181,6 +181,7 @@ export default function HomepageBuilder() {
   );
   const [isAddingSection, setIsAddingSection] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const currentFormData = useRef<Partial<HomepageSection> | null>(null);
 
   useEffect(() => {
     fetchSections();
