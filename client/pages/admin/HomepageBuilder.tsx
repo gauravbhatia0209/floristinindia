@@ -657,9 +657,10 @@ function EditSectionFormContent({
     }
   }
 
-  function handleSave() {
-    onSave(formData);
-  }
+  // Sync form data changes with parent component
+  useEffect(() => {
+    onDataChange(formData);
+  }, [formData, onDataChange]);
 
   function toggleProductSelection(productId: string) {
     const content = formData.content as any;
