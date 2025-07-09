@@ -248,7 +248,10 @@ export function ProductVariations({
           .update(variationData)
           .eq("id", editingVariation.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Update error details:", error);
+          throw error;
+        }
 
         toast({
           title: "Success",
@@ -259,7 +262,10 @@ export function ProductVariations({
           .from("product_variants")
           .insert(variationData);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Insert error details:", error);
+          throw error;
+        }
 
         toast({
           title: "Success",
