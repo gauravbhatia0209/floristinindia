@@ -99,9 +99,16 @@ export default function ProductDetail() {
         .eq("id", productData.category_id)
         .single();
 
+      // Fetch settings
+      const { data: settingsData } = await supabase
+        .from("site_settings")
+        .select("*")
+        .single();
+
       setProduct(productData);
       setVariants(variantsData || []);
       setCategory(categoryData);
+      setSettings(settingsData);
 
       // Set default variant if available
       if (variantsData && variantsData.length > 0) {
