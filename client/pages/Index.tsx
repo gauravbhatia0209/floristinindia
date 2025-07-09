@@ -487,33 +487,49 @@ export default function Index() {
 
                 {/* Floating decorative elements */}
                 <div className="absolute -inset-20">
-                  <div
-                    className="absolute top-8 right-4 w-16 h-16 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
-                    style={{ animationDelay: "0s", animationDuration: "6s" }}
-                  >
-                    <span className="text-2xl">🌸</span>
-                  </div>
+                  {content?.floating_emoji_1 && (
+                    <div
+                      className="absolute top-8 right-4 w-16 h-16 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                      style={{ animationDelay: "0s", animationDuration: "6s" }}
+                    >
+                      <span className="text-2xl">
+                        {content.floating_emoji_1}
+                      </span>
+                    </div>
+                  )}
 
-                  <div
-                    className="absolute bottom-12 left-8 w-20 h-20 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
-                    style={{ animationDelay: "2s", animationDuration: "8s" }}
-                  >
-                    <span className="text-3xl">🌹</span>
-                  </div>
+                  {content?.floating_emoji_2 && (
+                    <div
+                      className="absolute bottom-12 left-8 w-20 h-20 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                      style={{ animationDelay: "2s", animationDuration: "8s" }}
+                    >
+                      <span className="text-3xl">
+                        {content.floating_emoji_2}
+                      </span>
+                    </div>
+                  )}
 
-                  <div
-                    className="absolute top-20 left-4 w-12 h-12 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
-                    style={{ animationDelay: "4s", animationDuration: "10s" }}
-                  >
-                    <span className="text-xl">🌻</span>
-                  </div>
+                  {content?.floating_emoji_3 && (
+                    <div
+                      className="absolute top-20 left-4 w-12 h-12 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                      style={{ animationDelay: "4s", animationDuration: "10s" }}
+                    >
+                      <span className="text-xl">
+                        {content.floating_emoji_3}
+                      </span>
+                    </div>
+                  )}
 
-                  <div
-                    className="absolute bottom-4 right-16 w-14 h-14 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
-                    style={{ animationDelay: "1s", animationDuration: "7s" }}
-                  >
-                    <span className="text-2xl">🌷</span>
-                  </div>
+                  {content?.floating_emoji_4 && (
+                    <div
+                      className="absolute bottom-4 right-16 w-14 h-14 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                      style={{ animationDelay: "1s", animationDuration: "7s" }}
+                    >
+                      <span className="text-2xl">
+                        {content.floating_emoji_4}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Background glow effects */}
@@ -780,7 +796,7 @@ export default function Index() {
     }
 
     console.log(
-      "����� Product Carousel: Rendering section with title:",
+      "��� Product Carousel: Rendering section with title:",
       displayTitle,
     );
     console.log(
