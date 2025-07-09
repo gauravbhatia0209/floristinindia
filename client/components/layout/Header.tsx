@@ -296,7 +296,43 @@ export function Header() {
                   ? `/category/${item.product_categories.slug}`
                   : item.url || "#";
 
-              return (
+              const hasSubcategories =
+                item.product_categories?.subcategories &&
+                item.product_categories.subcategories.length > 0;
+
+              return hasSubcategories ? (
+                <DropdownMenu key={item.id}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="px-3 py-2 h-auto font-normal hover:bg-accent hover:text-accent-foreground transition-colors"
+                    >
+                      {item.name}
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[200px]">
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to={href}
+                        target={item.target}
+                        className="font-medium text-primary"
+                      >
+                        View All {item.name}
+                      </Link>
+                    </DropdownMenuItem>
+                    {item.product_categories.subcategories?.map(
+                      (subcategory) => (
+                        <DropdownMenuItem key={subcategory.id} asChild>
+                          <Link to={`/category/${subcategory.slug}`}>
+                            {subcategory.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ),
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
                 <Link
                   key={item.id}
                   to={href}
