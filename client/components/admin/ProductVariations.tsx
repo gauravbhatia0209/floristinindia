@@ -465,6 +465,7 @@ export function ProductVariations({
             <span>• sale_price (DECIMAL)</span>
             <span>• sku (VARCHAR)</span>
             <span>• stock_quantity (INTEGER)</span>
+            <span>• image_url (TEXT)</span>
             <span>• is_active (BOOLEAN)</span>
           </div>
         </div>
