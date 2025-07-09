@@ -391,6 +391,11 @@ export default function Index() {
                 <Link to="/products">Explore Collections</Link>
               </Button>
             </div>
+
+            {/* Second column - space for the image */}
+            <div className="hidden lg:block relative">
+              {/* This space is reserved for the absolutely positioned decorative image */}
+            </div>
           </div>
         </div>
 
