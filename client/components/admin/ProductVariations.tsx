@@ -120,29 +120,30 @@ export function ProductVariations({
         throw error;
       }
 
-      // Group variants by type (extract from name if variation_type not available)
+      // Group variants by type (extract from name since we don't have separate type field)
       const groups: { [key: string]: ProductVariant[] } = {};
       variants?.forEach((variant) => {
-        // Extract type from name if variation_type not available
-        const type =
-          variant.variation_type ||
-          (variant.name.includes(" - ")
-            ? variant.name.split(" - ")[0]
-            : "Default");
+        let type = "Variations";
+        let value = variant.name;
+
+        // Try to extract type from name pattern "Type - Value"
+        if (variant.name && variant.name.includes(" - ")) {
+          const parts = variant.name.split(" - ");
+          if (parts.length >= 2) {
+            type = parts[0].trim();
+            value = parts[1].trim();
+          }
+        }
 
         if (!groups[type]) {
           groups[type] = [];
         }
 
-        // Enhance variant with extracted info if needed
+        // Add the variant with extracted info for UI purposes
         const enhancedVariant = {
           ...variant,
-          variation_type: variant.variation_type || type,
-          variation_value:
-            variant.variation_value ||
-            (variant.name.includes(" - ")
-              ? variant.name.split(" - ")[1]
-              : variant.name),
+          variation_type: type,
+          variation_value: value,
         };
 
         groups[type].push(enhancedVariant);
