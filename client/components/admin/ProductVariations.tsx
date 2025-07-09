@@ -453,9 +453,12 @@ export function ProductVariations({
 
         {variationGroups.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">
-              No variations created yet. Add variations like size, color, or
-              weight to give customers more options.
+            <p className="text-muted-foreground mb-2">
+              No variations found in the database for this product.
+            </p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Create variations to offer different options like size, color, or
+              packaging. All data will be stored in the product_variants table.
             </p>
             <Button onClick={() => setIsAddingVariation(true)}>
               <Plus className="w-4 h-4 mr-2" />
