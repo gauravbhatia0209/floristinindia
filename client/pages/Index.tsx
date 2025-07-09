@@ -742,21 +742,36 @@ export default function Index() {
                         (4.8)
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold text-primary">
-                        ₹
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-primary">
+                          ₹
+                          {product.sale_price &&
+                          product.sale_price < product.price
+                            ? product.sale_price.toFixed(2)
+                            : product.price.toFixed(2)}
+                        </span>
                         {product.sale_price &&
-                        product.sale_price < product.price
-                          ? product.sale_price.toFixed(2)
-                          : product.price.toFixed(2)}
-                      </span>
-                      {product.sale_price &&
-                        product.sale_price < product.price && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            ��{product.price.toFixed(2)}
-                          </span>
-                        )}
+                          product.sale_price < product.price && (
+                            <span className="text-sm text-muted-foreground line-through">
+                              ₹{product.price.toFixed(2)}
+                            </span>
+                          )}
+                      </div>
                     </div>
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Add to cart functionality here
+                        console.log("Adding to cart:", product.name);
+                      }}
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
                   </CardContent>
                 </Card>
               </Link>
