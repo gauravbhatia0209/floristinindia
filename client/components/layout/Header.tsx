@@ -311,22 +311,21 @@ export function Header() {
                   </Link>
 
                   {/* Hover Dropdown */}
-                  <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
-                    <div className="py-2">
+                  <div className="absolute top-full left-0 mt-2 w-56 hover-dropdown rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
+                    <div className="py-3">
                       <Link
                         to={href}
                         target={item.target}
-                        className="block px-4 py-2 text-sm font-medium text-primary hover:bg-accent hover:text-accent-foreground transition-colors"
+                        className="hover-dropdown-item block px-4 py-2.5 text-sm font-medium text-primary border-b border-border mb-2"
                       >
                         View All {item.name}
                       </Link>
-                      <div className="border-t border-border my-1"></div>
                       {item.product_categories.subcategories?.map(
                         (subcategory) => (
                           <Link
                             key={subcategory.id}
                             to={`/category/${subcategory.slug}`}
-                            className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                            className="hover-dropdown-item block px-4 py-2 text-sm text-foreground rounded-md mx-2"
                           >
                             {subcategory.name}
                           </Link>
