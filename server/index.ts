@@ -12,12 +12,21 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Example API routes
+  // Serve static files from uploads directory
+  app.use(
+    "/uploads",
+    express.static(path.join(process.cwd(), "public", "uploads")),
+  );
+
+  // API routes
   app.get("/api/ping", (_req, res) => {
     res.json({ message: "Hello from Express server v2!" });
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Upload routes
+  app.use("/api/upload", uploadRoutes);
 
   return app;
 }
