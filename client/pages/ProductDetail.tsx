@@ -389,8 +389,8 @@ export default function ProductDetail() {
             </p>
           )}
 
-          {/* Product Variations */}
-          {variants.length > 0 && (
+          {/* Product Variations or Simple Pricing */}
+          {product.has_variations && variants.length > 0 ? (
             <ProductVariationSelector
               variants={variants}
               basePrice={product.price}
@@ -398,6 +398,52 @@ export default function ProductDetail() {
               baseImages={product.images || []}
               onVariationChange={handleVariationChange}
             />
+          ) : (
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Price:</Label>
+              <div className="flex items-center gap-3">
+                {product.sale_price && product.sale_price < product.price ? (
+                  <>
+                    <span className="text-2xl font-bold text-green-600">
+                      ₹{product.sale_price.toFixed(0)}
+                    </span>
+                    <span className="text-lg text-muted-foreground line-through">
+                      ₹{product.price.toFixed(0)}
+                    </span>
+                    <Badge variant="destructive" className="ml-2">
+                      {Math.round(
+                        ((product.price - product.sale_price) / product.price) *
+                          100,
+                      )}
+                      % OFF
+                    </Badge>
+                  </>
+                ) : (
+                  <span className="text-2xl font-bold text-primary">
+                    ₹{product.price.toFixed(0)}
+                  </span>
+                )}
+              </div>
+
+              {/* Stock Status for Simple Products */}
+              <div className="flex items-center gap-2">
+                {product.stock_quantity > 0 ? (
+                  <>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-green-600 font-medium">
+                      {product.stock_quantity} in stock
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-red-600 font-medium">
+                      Out of stock
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
           )}
 
           {/* Quantity */}
