@@ -133,9 +133,22 @@ export function ProductVariations({
       setVariationGroups(groupedVariations);
     } catch (error) {
       console.error("Error fetching variations:", error);
+
+      let errorMessage = "Failed to load product variations.";
+
+      if (error && typeof error === "object") {
+        if ("message" in error && error.message) {
+          errorMessage = error.message;
+        } else if ("details" in error && error.details) {
+          errorMessage = error.details;
+        } else if ("hint" in error && error.hint) {
+          errorMessage = error.hint;
+        }
+      }
+
       toast({
         title: "Error",
-        description: "Failed to load product variations.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
