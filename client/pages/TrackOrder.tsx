@@ -100,13 +100,8 @@ export default function TrackOrder() {
     setError("");
 
     try {
-      // Build the query condition based on verification type
-      const verificationCondition =
-        verificationType === "phone"
-          ? `customers.phone.eq.${verificationField.trim()}`
-          : `customers.email.eq.${verificationField.trim()}`;
-
-      const { data, error } = await supabase
+      // First, fetch the order with customer details
+      const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .select(
           `
@@ -123,7 +118,8 @@ export default function TrackOrder() {
           special_instructions,
           created_at,
           updated_at,
-          customer:customers(
+          customer_id,
+          customers!inner(
             first_name,
             last_name,
             email,
@@ -132,17 +128,38 @@ export default function TrackOrder() {
         `,
         )
         .eq("order_number", orderNumber.trim().toUpperCase())
-        .eq(`customers.${verificationType}`, verificationField.trim())
         .single();
 
-      if (error || !data) {
+      if (orderError || !orderData) {
+        console.log("Order not found:", orderError);
+        setError("No order found. Please check your order number.");
+        return;
+      }
+
+      // Verify the customer contact details
+      const customer = orderData.customers;
+      const customerMatches =
+        verificationType === "phone"
+          ? customer.phone === verificationField.trim() ||
+            customer.phone === `+91${verificationField.trim()}` ||
+            customer.phone
+              .replace(/\D/g, "")
+              .endsWith(verificationField.trim().replace(/\D/g, ""))
+          : customer.email.toLowerCase() ===
+            verificationField.trim().toLowerCase();
+
+      if (!customerMatches) {
         setError(
-          "Order not found. Please check your order number and contact details.",
+          `The ${verificationType} you entered doesn't match our records for this order. Please check and try again.`,
         );
         return;
       }
 
-      setOrderData(data as OrderData);
+      // Format the data for display
+      setOrderData({
+        ...orderData,
+        customer: customer,
+      } as OrderData);
       setStep("results");
     } catch (error) {
       console.error("Error fetching order:", error);
