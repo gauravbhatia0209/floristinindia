@@ -152,6 +152,44 @@ export default function TrackOrder() {
         return;
       }
 
+      // Fetch product images for the order items
+      const productIds = orderData.items
+        .map((item: any) => item.product_id)
+        .filter(Boolean);
+      let productsData: any[] = [];
+
+      if (productIds.length > 0) {
+        const { data: products } = await supabase
+          .from("products")
+          .select("id, images")
+          .in("id", productIds);
+
+        productsData = products || [];
+      }
+
+      // Enhance order items with product images
+      const enhancedItems = orderData.items.map((item: any) => {
+        const product = productsData.find((p) => p.id === item.product_id);
+        const productImage = product?.images?.[0] || null;
+
+        return {
+          ...item,
+          image: productImage,
+        };
+      });
+
+      if (orderError || !orderData) {
+        console.log("Order not found:", orderError);
+        if (orderError?.code === "PGRST116") {
+          setError(
+            "No order found. Please check your order number and try again.",
+          );
+        } else {
+          setError("Unable to fetch order details. Please try again later.");
+        }
+        return;
+      }
+
       // Verify the customer contact details
       const customer = orderData.customers;
       const customerMatches =
