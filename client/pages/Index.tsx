@@ -431,13 +431,18 @@ export default function Index() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold text-primary">
-                        ₹{product.sale_price || product.price}
+                        ₹
+                        {product.sale_price &&
+                        product.sale_price < product.price
+                          ? product.sale_price.toFixed(2)
+                          : product.price.toFixed(2)}
                       </span>
-                      {product.sale_price && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ₹{product.price}
-                        </span>
-                      )}
+                      {product.sale_price &&
+                        product.sale_price < product.price && (
+                          <span className="text-sm text-muted-foreground line-through">
+                            ₹{product.price.toFixed(2)}
+                          </span>
+                        )}
                     </div>
                   </CardContent>
                 </Card>
