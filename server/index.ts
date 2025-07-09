@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { handleDemo } from "./routes/demo";
-const uploadRoutes = require("./routes/upload");
+import uploadRoutes from "./routes/upload";
 
 export function createServer() {
   const app = express();
