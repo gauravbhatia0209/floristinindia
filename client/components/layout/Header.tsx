@@ -51,13 +51,13 @@ export function Header() {
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
-    fetchCategories();
+    fetchMenuItems();
     fetchSiteSettings();
   }, []);
 
-  async function fetchCategories() {
+  async function fetchMenuItems() {
     // Fetch menu items from database (only active items, sorted by custom order)
-    const { data: menuItems, error } = await supabase
+    const { data: menuItemsData, error } = await supabase
       .from("menu_items")
       .select("*, product_categories(*)")
       .eq("is_active", true)
@@ -66,18 +66,23 @@ export function Header() {
 
     if (error) {
       console.error("Error fetching menu items:", error);
+      setMenuItems([]);
       setCategories([]);
       return;
     }
 
-    if (menuItems && menuItems.length > 0) {
-      // Only use menu items - no fallback to categories
-      const categoriesFromMenu = menuItems
+    if (menuItemsData && menuItemsData.length > 0) {
+      // Store the full menu items
+      setMenuItems(menuItemsData);
+
+      // Also store categories for backward compatibility (if needed elsewhere)
+      const categoriesFromMenu = menuItemsData
         .filter((item) => item.product_categories)
         .map((item) => item.product_categories);
       setCategories(categoriesFromMenu);
     } else {
       // No active menu items configured - show empty menu
+      setMenuItems([]);
       setCategories([]);
     }
   }
