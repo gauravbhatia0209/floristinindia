@@ -54,7 +54,11 @@ export function SingleImageUpload({
     const formData = new FormData();
     formData.append("image", file);
 
-    const response = await fetch("/api/upload/image", {
+    const url = subdir
+      ? `/api/upload/image?subdir=${encodeURIComponent(subdir)}`
+      : "/api/upload/image";
+
+    const response = await fetch(url, {
       method: "POST",
       body: formData,
     });
