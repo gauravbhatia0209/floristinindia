@@ -162,7 +162,7 @@ export default function TrackOrder() {
       if (productIds.length > 0) {
         const { data: products, error: productsError } = await supabase
           .from("products")
-          .select("id, images")
+          .select("id, images, slug")
           .in("id", productIds);
 
         console.log("Track Order: Products fetched:", products);
