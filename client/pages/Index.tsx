@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Truck, Shield, HeartHandshake } from "lucide-react";
+import {
+  ArrowRight,
+  Star,
+  Truck,
+  Shield,
+  HeartHandshake,
+  ShoppingCart,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
