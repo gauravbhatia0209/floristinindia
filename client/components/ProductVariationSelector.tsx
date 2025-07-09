@@ -224,11 +224,11 @@ export function ProductVariationSelector({
                   }
                   disabled={!inStock}
                   className={`
-                    relative p-4 rounded-xl border-2 transition-all duration-200 text-left
-                    min-h-[100px] flex flex-col justify-between
+                    variation-button relative p-4 rounded-xl border-2 transition-all duration-200 text-left
+                    min-h-[100px] flex flex-col justify-between group
                     ${
                       isSelected
-                        ? "border-primary bg-primary/5 shadow-lg scale-105"
+                        ? "border-primary bg-primary/5 shadow-lg scale-105 ring-2 ring-primary/20"
                         : "border-gray-200 hover:border-primary/50 hover:shadow-md"
                     }
                     ${
