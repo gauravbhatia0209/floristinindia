@@ -201,18 +201,18 @@ export function ProductVariationSelector({
               // Calculate price difference from base price
               const finalPrice =
                 effectiveSalePrice !== null &&
-                effectiveSalePrice < (effectivePrice || 0)
+                effectivePrice !== null &&
+                effectiveSalePrice < effectivePrice
                   ? effectiveSalePrice
                   : effectivePrice;
 
-              const priceDifference =
-                finalPrice !== null && finalPrice !== basePrice
-                  ? finalPrice - basePrice
-                  : 0;
+              const safeFinalPrice = finalPrice || 0;
+              const safeBasePrice = basePrice || 0;
+              const priceDifference = safeFinalPrice - safeBasePrice;
 
               const formatPriceDifference = (diff: number) => {
-                if (diff === 0) return "No Extra Cost";
-                if (diff > 0) return `+₹${diff.toFixed(0)}`;
+                if (Math.abs(diff) < 0.01) return "No Extra Cost";
+                if (diff > 0) return `+₹${Math.abs(diff).toFixed(0)}`;
                 return `-₹${Math.abs(diff).toFixed(0)}`;
               };
 
