@@ -28,7 +28,20 @@ interface SiteSettingsMap {
   header_banner_enabled?: string;
 }
 
+interface MenuItem {
+  id: string;
+  name: string;
+  category_id?: string;
+  url?: string;
+  is_active: boolean;
+  sort_order: number;
+  target: "_self" | "_blank";
+  parent_id?: string;
+  product_categories?: ProductCategory;
+}
+
 export function Header() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSettingsMap>({});
   const [isSearchOpen, setIsSearchOpen] = useState(false);
