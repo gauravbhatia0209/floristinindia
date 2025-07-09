@@ -150,7 +150,7 @@ export default function Index() {
               sortedProducts.map((p) => p.name),
             );
             console.log(
-              "🖼️ Product Showcase: Product images:",
+              "🖼��� Product Showcase: Product images:",
               sortedProducts.map((p) => ({
                 name: p.name,
                 hasImages: p.images && p.images.length > 0,
@@ -594,6 +594,16 @@ export default function Index() {
         </section>
       );
     }
+
+    console.log(
+      "🎨 Product Carousel: Rendering section with title:",
+      displayTitle,
+    );
+    console.log(
+      "🎨 Product Carousel: Will render",
+      validProducts.length,
+      "products",
+    );
 
     return (
       <section key={section.id} className="py-20 bg-muted/30">
