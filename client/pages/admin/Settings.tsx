@@ -52,6 +52,7 @@ interface SettingsData {
   enable_reviews: boolean;
   enable_wishlist: boolean;
   enable_file_upload: boolean;
+  enable_special_instructions: boolean;
   enable_guest_checkout: boolean;
 
   // SEO
