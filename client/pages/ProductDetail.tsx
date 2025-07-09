@@ -348,16 +348,19 @@ export default function ProductDetail() {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-gold text-gold" />
-                ))}
-                <span className="text-muted-foreground ml-2">
-                  (4.8) • 156 reviews
-                </span>
+            {/* Show ratings only for products with variations */}
+            {product.has_variations && variants.length > 0 && (
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-gold text-gold" />
+                  ))}
+                  <span className="text-muted-foreground ml-2">
+                    (4.8) • 156 reviews
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Pricing */}
             <div className="flex items-center gap-4 mb-6">
