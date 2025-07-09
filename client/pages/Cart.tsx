@@ -173,7 +173,42 @@ export default function Cart() {
   }
 
   function getItemPrice(item: CartItemWithDetails) {
-    return item.variant?.price || item.product.sale_price || item.product.price;
+    // Check for variant-specific pricing first
+    if (item.variant) {
+      // Use sale price override if available and less than regular price
+      if (
+        item.variant.sale_price_override !== null &&
+        item.variant.sale_price_override !== undefined &&
+        item.variant.price_override !== null &&
+        item.variant.price_override !== undefined &&
+        item.variant.sale_price_override < item.variant.price_override
+      ) {
+        return item.variant.sale_price_override;
+      }
+
+      // Use price override if available
+      if (
+        item.variant.price_override !== null &&
+        item.variant.price_override !== undefined
+      ) {
+        return item.variant.price_override;
+      }
+
+      // Fallback to legacy variant pricing
+      if (
+        item.variant.sale_price &&
+        item.variant.sale_price < item.variant.price
+      ) {
+        return item.variant.sale_price;
+      }
+
+      if (item.variant.price) {
+        return item.variant.price;
+      }
+    }
+
+    // Fallback to product pricing
+    return item.product.sale_price || item.product.price;
   }
 
   function getItemTotal(item: CartItemWithDetails) {
