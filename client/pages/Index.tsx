@@ -350,30 +350,64 @@ export default function Index() {
 
   function renderHeroSection(section: HomepageSection) {
     const content = section.content as any;
+
     return (
       <section
         key={section.id}
-        className="relative bg-gradient-rose text-white overflow-hidden"
+        className="relative min-h-[450px] md:min-h-[500px] flex items-center justify-center overflow-hidden"
+        style={{
+          backgroundImage: content?.background_image
+            ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${content.background_image})`
+            : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="container relative py-24 lg:py-32">
-          <div className="max-w-4xl relative z-20">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              {section.title || "Fresh Flowers"}
-              <br />
-              <span className="text-peach">
-                {section.subtitle || "Delivered Daily"}
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-rose-100 max-w-2xl">
-              {content?.description ||
-                "Experience the joy of premium flower delivery across India. Same-day delivery available in 100+ cities."}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+        {/* Fallback gradient if no background image */}
+        {!content?.background_image && (
+          <div className="absolute inset-0 bg-gradient-rose" />
+        )}
+
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/30" />
+
+        <div className="container relative z-20 text-center text-white">
+          <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
+            {/* Main Heading */}
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight animate-entrance">
+                {section.title || "Fresh Flowers"}
+              </h1>
+              {section.subtitle && (
+                <h2
+                  className="text-xl md:text-2xl lg:text-3xl font-medium text-peach animate-entrance"
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  {section.subtitle}
+                </h2>
+              )}
+            </div>
+
+            {/* Description */}
+            {content?.description && (
+              <p
+                className="text-base md:text-lg lg:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed animate-entrance"
+                style={{ animationDelay: "0.4s" }}
+              >
+                {content.description}
+              </p>
+            )}
+
+            {/* CTA Buttons */}
+            <div
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-entrance pt-4"
+              style={{ animationDelay: "0.6s" }}
+            >
               <Button
                 size="lg"
                 variant="secondary"
-                className="text-lg px-8"
+                className="text-base md:text-lg px-8 py-3 min-w-[160px] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 asChild
               >
                 <Link to={content?.button_link || "/products"}>
@@ -381,14 +415,19 @@ export default function Index() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
-                asChild
-              >
-                <Link to="/products">Explore Collections</Link>
-              </Button>
+
+              {content?.secondary_button_text && (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-base md:text-lg px-8 py-3 min-w-[160px] border-2 border-white text-white hover:bg-white hover:text-primary shadow-lg transition-all duration-300 hover:scale-105"
+                  asChild
+                >
+                  <Link to={content?.secondary_button_link || "/products"}>
+                    {content.secondary_button_text}
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
