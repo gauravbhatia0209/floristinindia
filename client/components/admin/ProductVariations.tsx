@@ -424,7 +424,12 @@ export function ProductVariations({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Product Variations</CardTitle>
+        <div>
+          <CardTitle>Product Variations</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage variations from database table: product_variants
+          </p>
+        </div>
         <Button onClick={() => setIsAddingVariation(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Add Variation
