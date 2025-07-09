@@ -119,15 +119,43 @@ export function ProductVariationSelector({
     return variant.stock_quantity > 0;
   }
 
-  function getEffectivePrice(variant: ProductVariant): number {
-    return variant.price_override !== null ? variant.price_override : basePrice;
+  function getEffectivePrice(variant: ProductVariant): number | null {
+    if (
+      variant.price_override !== null &&
+      variant.price_override !== undefined
+    ) {
+      return variant.price_override;
+    }
+    if (variant.price !== null && variant.price !== undefined) {
+      return variant.price;
+    }
+    if (basePrice !== null && basePrice !== undefined) {
+      return basePrice;
+    }
+    return null;
   }
 
-  function getEffectiveSalePrice(variant: ProductVariant): number | undefined {
-    if (variant.sale_price_override !== null) {
+  function getEffectiveSalePrice(variant: ProductVariant): number | null {
+    if (
+      variant.sale_price_override !== null &&
+      variant.sale_price_override !== undefined
+    ) {
       return variant.sale_price_override;
     }
-    return baseSalePrice;
+    if (variant.sale_price !== null && variant.sale_price !== undefined) {
+      return variant.sale_price;
+    }
+    if (baseSalePrice !== null && baseSalePrice !== undefined) {
+      return baseSalePrice;
+    }
+    return null;
+  }
+
+  function formatPrice(price: number | null): string {
+    if (price === null || price === undefined || isNaN(price)) {
+      return "Price Not Available";
+    }
+    return `₹${price.toFixed(0)}`;
   }
 
   if (variationGroups.length === 0) {
