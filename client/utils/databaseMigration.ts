@@ -9,76 +9,18 @@ export async function checkAndApplyVariationMigration() {
       .limit(1);
 
     if (testError) {
-      console.log("New variation columns not found, applying migration...");
-
-      // Apply the migration
-      const migrationSQL = `
-        -- Add new columns to product_variants table
-        DO $$ 
-        BEGIN
-            -- Add variation_type column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'variation_type') THEN
-                ALTER TABLE product_variants ADD COLUMN variation_type VARCHAR(100);
-            END IF;
-            
-            -- Add variation_value column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'variation_value') THEN
-                ALTER TABLE product_variants ADD COLUMN variation_value VARCHAR(100);
-            END IF;
-            
-            -- Add price_override column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'price_override') THEN
-                ALTER TABLE product_variants ADD COLUMN price_override DECIMAL(10, 2);
-            END IF;
-            
-            -- Add sale_price_override column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'sale_price_override') THEN
-                ALTER TABLE product_variants ADD COLUMN sale_price_override DECIMAL(10, 2);
-            END IF;
-            
-            -- Add image_url column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'image_url') THEN
-                ALTER TABLE product_variants ADD COLUMN image_url TEXT;
-            END IF;
-            
-            -- Add weight column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'weight') THEN
-                ALTER TABLE product_variants ADD COLUMN weight DECIMAL(8, 3);
-            END IF;
-            
-            -- Add display_order column
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_variants' AND column_name = 'display_order') THEN
-                ALTER TABLE product_variants ADD COLUMN display_order INTEGER DEFAULT 0;
-            END IF;
-            
-            -- Update existing variants to have variation_type and variation_value from name
-            UPDATE product_variants 
-            SET variation_type = 'Size', 
-                variation_value = name,
-                price_override = price,
-                sale_price_override = sale_price
-            WHERE variation_type IS NULL;
-            
-        END $$;
-      `;
-
-      const { error: migrationError } = await supabase.rpc("exec_sql", {
-        sql: migrationSQL,
-      });
-
-      if (migrationError) {
-        console.error("Migration error:", migrationError);
-        return false;
-      }
-
-      console.log("Migration applied successfully!");
-      return true;
+      console.warn(
+        "New variation columns not found. Database schema needs to be updated manually.",
+      );
+      console.warn("Please run the database migration to add the new columns.");
+      console.warn("Error details:", testError);
+      return false;
     }
 
-    console.log("Variation columns already exist.");
+    console.log("✅ Variation columns are available.");
     return true;
   } catch (error) {
-    console.error("Error checking/applying migration:", error);
+    console.error("Error checking variation schema:", error);
     return false;
   }
 }
