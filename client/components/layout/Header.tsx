@@ -203,18 +203,26 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1 flex-1 ml-8">
-            {categories.slice(0, 6).map((category) => (
+            {menuItems.slice(0, 6).map((item) => {
+              const href =
+                item.category_id && item.product_categories
+                  ? `/category/${item.product_categories.slug}`
+                  : item.url || "#";
+
+              return (
+                <Link
+                  key={item.id}
+                  to={href}
+                  target={item.target}
+                  className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+            {menuItems.length > 6 && (
               <Link
-                key={category.id}
-                to={`/category/${category.slug}`}
-                className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                {category.name}
-              </Link>
-            ))}
-            {categories.length > 6 && (
-              <Link
-                to="/categories"
+                to="/products"
                 className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 More...
