@@ -84,10 +84,22 @@ export default function Index() {
       });
 
       console.log("✅ Successfully added to cart:", product.name);
-      // Optional: Add a toast notification here
+
+      // Show success notification
+      toast({
+        title: "Added to cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "default",
+      });
     } catch (error) {
       console.error("❌ Failed to add to cart:", error);
-      // Optional: Add error toast notification here
+
+      // Show error notification
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
