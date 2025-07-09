@@ -49,7 +49,14 @@ export default function Index() {
       .limit(8);
 
     if (fallbackError) {
-      console.error("🚨 Fallback products error:", fallbackError);
+      console.error("🚨 Fallback products error:");
+      console.error(
+        "Fallback error details:",
+        JSON.stringify(fallbackError, null, 2),
+      );
+      console.error("Fallback error message:", fallbackError?.message);
+      console.error("Fallback error code:", fallbackError?.code);
+      console.error("Fallback error hint:", fallbackError?.hint);
     }
 
     if (fallbackData && fallbackData.length > 0) {
