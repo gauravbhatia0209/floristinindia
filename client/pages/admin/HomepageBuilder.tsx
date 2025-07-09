@@ -587,8 +587,78 @@ function EditSectionForm({
     content: section.content,
   });
 
+  const [availableProducts, setAvailableProducts] = useState<Product[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<
+    ProductCategory[]
+  >([]);
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
+  useEffect(() => {
+    if (
+      section.type === "product_carousel" ||
+      section.type === "category_grid"
+    ) {
+      fetchSelectableItems();
+    }
+  }, [section.type]);
+
+  async function fetchSelectableItems() {
+    setIsLoadingData(true);
+    try {
+      if (section.type === "product_carousel") {
+        const { data: products } = await supabase
+          .from("products")
+          .select("id, name, slug, price, sale_price, images")
+          .eq("is_active", true)
+          .order("name");
+
+        if (products) setAvailableProducts(products);
+      }
+
+      if (section.type === "category_grid") {
+        const { data: categories } = await supabase
+          .from("product_categories")
+          .select("id, name, slug, image_url")
+          .eq("is_active", true)
+          .order("name");
+
+        if (categories) setAvailableCategories(categories);
+      }
+    } catch (error) {
+      console.error("Failed to fetch selectable items:", error);
+    } finally {
+      setIsLoadingData(false);
+    }
+  }
+
   function handleSave() {
     onSave(formData);
+  }
+
+  function toggleProductSelection(productId: string) {
+    const content = formData.content as any;
+    const currentSelection = content?.selected_products || [];
+    const newSelection = currentSelection.includes(productId)
+      ? currentSelection.filter((id: string) => id !== productId)
+      : [...currentSelection, productId];
+
+    setFormData({
+      ...formData,
+      content: { ...content, selected_products: newSelection },
+    });
+  }
+
+  function toggleCategorySelection(categoryId: string) {
+    const content = formData.content as any;
+    const currentSelection = content?.selected_categories || [];
+    const newSelection = currentSelection.includes(categoryId)
+      ? currentSelection.filter((id: string) => id !== categoryId)
+      : [...currentSelection, categoryId];
+
+    setFormData({
+      ...formData,
+      content: { ...content, selected_categories: newSelection },
+    });
   }
 
   return (
