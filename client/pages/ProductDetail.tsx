@@ -192,11 +192,27 @@ export default function ProductDetail() {
   function handleAddToCart() {
     if (!product) return;
 
+    // Create a combined variant representation for cart
+    const combinedVariant = selectedVariant
+      ? {
+          ...selectedVariant,
+          // Include effective pricing and image
+          price_override: effectivePrice,
+          sale_price_override: effectiveSalePrice,
+          image_url: effectiveImage,
+          // Create a name that includes all selected variations
+          name:
+            Object.entries(selectedVariations)
+              .map(([type, variant]) => `${type}: ${variant.variation_value}`)
+              .join(", ") || selectedVariant.name,
+        }
+      : undefined;
+
     addItem({
       product_id: product.id,
       product,
       variant_id: selectedVariant?.id,
-      variant: selectedVariant || undefined,
+      variant: combinedVariant,
       quantity,
       uploaded_file: uploadedFile || undefined,
     });
