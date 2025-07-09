@@ -137,7 +137,13 @@ export function Footer() {
       }
 
       if (settingsError) {
-        console.error("Error fetching settings:", settingsError);
+        console.error("🚨 Footer: Error fetching settings:");
+        console.error(
+          "Settings error details:",
+          JSON.stringify(settingsError, null, 2),
+        );
+        console.error("Settings error message:", settingsError?.message);
+        console.error("Settings error code:", settingsError?.code);
       } else if (settingsData) {
         const settingsMap = settingsData.reduce(
           (acc, setting) => {
