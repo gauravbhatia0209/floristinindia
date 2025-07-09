@@ -71,6 +71,10 @@ export default function Index() {
 
         // Fetch admin-selected products
         if (productSection?.content?.selected_products?.length > 0) {
+          console.log(
+            "Homepage: Loading selected products:",
+            productSection.content.selected_products,
+          );
           const { data: productsData } = await supabase
             .from("products")
             .select("*, product_categories(name)")
@@ -82,9 +86,11 @@ export default function Index() {
             const sortedProducts = productSection.content.selected_products
               .map((id: string) => productsData.find((prod) => prod.id === id))
               .filter(Boolean);
+            console.log("Homepage: Loaded selected products:", sortedProducts);
             setFeaturedProducts(sortedProducts);
           }
         } else {
+          console.log("Homepage: No selected products, using fallback");
           // Fallback to featured products if none selected
           const { data: productsData } = await supabase
             .from("products")
@@ -92,7 +98,10 @@ export default function Index() {
             .eq("is_active", true)
             .eq("is_featured", true)
             .limit(12);
-          if (productsData) setFeaturedProducts(productsData);
+          if (productsData) {
+            console.log("Homepage: Loaded fallback products:", productsData);
+            setFeaturedProducts(productsData);
+          }
         }
       }
     } catch (error) {
