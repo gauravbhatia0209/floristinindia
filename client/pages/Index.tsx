@@ -261,43 +261,7 @@ export default function Index() {
           console.log(
             "🔄 Product Showcase: No admin-selected products, using fallback featured products",
           );
-          // Fallback to featured products if none selected by admin
-          const { data: productsData, error: fallbackError } = await supabase
-            .from("products")
-            .select(
-              `
-              id,
-              name,
-              slug,
-              price,
-              sale_price,
-              images,
-              is_active,
-              product_categories(name)
-            `,
-            )
-            .eq("is_active", true)
-            .eq("is_featured", true)
-            .limit(8);
-
-          if (fallbackError) {
-            console.error(
-              "🚨 Product Showcase: Fallback query error:",
-              fallbackError,
-            );
-          }
-
-          if (productsData) {
-            console.log(
-              "✅ Product Showcase: Loaded fallback featured products:",
-              productsData,
-            );
-            console.log(
-              "📝 Product Showcase: Fallback product titles:",
-              productsData.map((p) => p.name),
-            );
-            setFeaturedProducts(productsData);
-          }
+          await loadFallbackProducts();
         }
       }
     } catch (error) {
