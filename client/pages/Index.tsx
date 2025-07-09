@@ -392,8 +392,7 @@ export default function Index() {
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {section.title || "What Our"}{" "}
-              <span className="text-gradient-rose">Customers Say</span>
+              What Our Customers Say
             </h2>
             {section.subtitle && (
               <p className="text-xl text-muted-foreground">
