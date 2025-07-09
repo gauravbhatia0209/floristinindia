@@ -172,8 +172,7 @@ export default function Index() {
               price,
               sale_price,
               images,
-              is_active,
-              product_categories(name)
+              is_active
             `,
             )
             .in("id", selectedProductIds)
