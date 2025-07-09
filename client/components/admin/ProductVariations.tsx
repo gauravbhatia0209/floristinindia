@@ -423,25 +423,33 @@ export function ProductVariations({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Product Variations</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage variations from database table: product_variants
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={fetchVariations}
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "Refresh"}
-          </Button>
-          <Button onClick={() => setIsAddingVariation(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Variation
-          </Button>
+      <CardHeader className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="truncate">Product Variations</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              Manage variations from database table: product_variants
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchVariations}
+              disabled={isLoading}
+              className="whitespace-nowrap"
+            >
+              {isLoading ? "Loading..." : "Refresh"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setIsAddingVariation(true)}
+              className="whitespace-nowrap"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Variation
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
