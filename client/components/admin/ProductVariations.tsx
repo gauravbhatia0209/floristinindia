@@ -206,43 +206,12 @@ export function ProductVariations({
         return;
       }
 
-      // Prepare base variation data that works with existing schema
-      const variationData: any = {
-        product_id: productId,
-        name: `${formData.variation_type} - ${formData.variation_value}`,
-        price: formData.price_override
-          ? parseFloat(formData.price_override)
-          : basePrice,
-        sale_price: formData.sale_price_override
-          ? parseFloat(formData.sale_price_override)
-          : baseSalePrice,
-        stock_quantity: parseInt(formData.stock_quantity) || 0,
-        sku: formData.sku || null,
-        is_active: formData.is_active,
-        sort_order: 0,
-      };
-
-      // Add new columns only if they exist in the database
-      try {
-        // Test if new columns exist by trying to add them
-        variationData.variation_type = formData.variation_type;
-        variationData.variation_value = formData.variation_value;
-        variationData.price_override = formData.price_override
-          ? parseFloat(formData.price_override)
-          : null;
-        variationData.sale_price_override = formData.sale_price_override
-          ? parseFloat(formData.sale_price_override)
-          : null;
-        variationData.image_url = formData.image_url || null;
-        variationData.weight = formData.weight
-          ? parseFloat(formData.weight)
-          : null;
-        variationData.display_order = 0;
-      } catch (e) {
-        console.warn(
-          "New variation columns not available, using legacy schema",
-        );
-      }
+      // Get variation data based on available schema
+      const variationData = await getVariationData(
+        { ...formData, product_id: productId },
+        basePrice,
+        baseSalePrice,
+      );
 
       console.log("Saving variation data:", variationData);
 
