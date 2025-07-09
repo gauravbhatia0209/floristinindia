@@ -1212,13 +1212,6 @@ function EditSectionFormContent({
           Advanced: Edit the JSON content directly
         </p>
       </div>
-
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave}>Save Changes</Button>
-      </div>
     </div>
   );
 }
