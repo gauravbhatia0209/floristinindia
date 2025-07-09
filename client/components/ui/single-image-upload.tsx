@@ -28,6 +28,7 @@ export function SingleImageUpload({
   acceptedTypes = [".jpg", ".jpeg", ".png", ".webp"],
   label = "Image",
   className = "",
+  subdir = "",
 }: SingleImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>("");
