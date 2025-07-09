@@ -316,11 +316,11 @@ export function ProductVariationSelector({
                   {/* Hover effect overlay */}
                   <div
                     className={`
-                    absolute inset-0 rounded-xl transition-opacity duration-200
+                    absolute inset-0 rounded-xl transition-all duration-200 pointer-events-none
                     ${
                       isSelected
-                        ? "bg-primary/5"
-                        : "bg-transparent hover:bg-gray-50"
+                        ? "bg-gradient-to-br from-primary/10 to-primary/5"
+                        : "bg-transparent group-hover:bg-gradient-to-br group-hover:from-gray-50 group-hover:to-gray-25"
                     }
                   `}
                   />
