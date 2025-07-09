@@ -395,33 +395,75 @@ export default function Index() {
 
         {/* Right Side Decorative Image */}
         {content?.right_image_url && (
-          <img
-            src={content.right_image_url}
-            alt="Decorative"
-            className="absolute right-8 top-8 w-40 h-auto pointer-events-none z-10 opacity-90 hidden md:block"
-            style={{ objectFit: "contain" }}
-            onError={(e) => {
-              console.warn(
-                "Hero right image failed to load:",
-                content.right_image_url,
-              );
-              e.currentTarget.style.display = "none";
-            }}
-          />
+          <div className="absolute inset-0 pointer-events-none hidden lg:block overflow-hidden">
+            {/* Background blur effect */}
+            <div
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 opacity-10 blur-xl"
+              style={{
+                background: `radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)`,
+              }}
+            />
+
+            {/* Main decorative image */}
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 lg:right-12 xl:right-16">
+              <div className="relative">
+                {/* Subtle glow effect behind image */}
+                <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl scale-110 opacity-50" />
+
+                {/* Main image with enhanced styling */}
+                <img
+                  src={content.right_image_url}
+                  alt="Decorative"
+                  className="relative w-48 h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 object-contain opacity-80 drop-shadow-2xl"
+                  style={{
+                    filter:
+                      "drop-shadow(0 0 20px rgba(255,255,255,0.1)) drop-shadow(0 0 40px rgba(233,28,99,0.1))",
+                  }}
+                  onError={(e) => {
+                    console.warn(
+                      "Hero right image failed to load:",
+                      content.right_image_url,
+                    );
+                    e.currentTarget.parentElement?.parentElement?.remove();
+                  }}
+                />
+
+                {/* Animated particles around the image */}
+                <div className="absolute -inset-8">
+                  <div
+                    className="absolute top-4 right-8 w-2 h-2 bg-white/40 rounded-full animate-pulse"
+                    style={{ animationDelay: "0s" }}
+                  />
+                  <div
+                    className="absolute bottom-6 left-4 w-1 h-1 bg-rose-200/60 rounded-full animate-pulse"
+                    style={{ animationDelay: "1s" }}
+                  />
+                  <div
+                    className="absolute top-1/3 left-2 w-1.5 h-1.5 bg-peach/50 rounded-full animate-pulse"
+                    style={{ animationDelay: "2s" }}
+                  />
+                  <div
+                    className="absolute bottom-1/4 right-4 w-1 h-1 bg-white/50 rounded-full animate-pulse"
+                    style={{ animationDelay: "3s" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* Floating Flowers Animation */}
-        <div className="absolute top-10 right-10 text-6xl animate-float opacity-20">
+        {/* Floating Flowers Animation - repositioned to not conflict with image */}
+        <div className="absolute top-10 left-10 text-6xl animate-float opacity-20 lg:left-1/4">
           🌸
         </div>
         <div
-          className="absolute top-32 right-32 text-4xl animate-float opacity-30"
+          className="absolute top-32 left-1/3 text-4xl animate-float opacity-30 lg:left-1/2"
           style={{ animationDelay: "2s" }}
         >
           🌺
         </div>
         <div
-          className="absolute bottom-20 right-20 text-5xl animate-float opacity-25"
+          className="absolute bottom-20 left-16 text-5xl animate-float opacity-25 lg:left-1/3"
           style={{ animationDelay: "4s" }}
         >
           🌻
