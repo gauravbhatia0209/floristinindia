@@ -92,12 +92,27 @@ export function ProductVariationSelector({
     // Find the highest priority price override
     const selectedVariantsList = Object.values(selections);
     for (const variant of selectedVariantsList) {
-      if (variant.price_override !== null) {
+      if (
+        variant.price_override !== null &&
+        variant.price_override !== undefined
+      ) {
         effectivePrice = variant.price_override;
+      } else if (variant.price !== null && variant.price !== undefined) {
+        effectivePrice = variant.price;
       }
-      if (variant.sale_price_override !== null) {
+
+      if (
+        variant.sale_price_override !== null &&
+        variant.sale_price_override !== undefined
+      ) {
         effectiveSalePrice = variant.sale_price_override;
+      } else if (
+        variant.sale_price !== null &&
+        variant.sale_price !== undefined
+      ) {
+        effectiveSalePrice = variant.sale_price;
       }
+
       if (variant.image_url) {
         effectiveImage = variant.image_url;
       }
