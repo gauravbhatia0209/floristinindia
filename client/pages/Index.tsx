@@ -77,6 +77,7 @@ export default function Index() {
     try {
       addItem({
         product_id: product.id,
+        product: product, // Include full product data
         variant_id: null, // No variant selected from product showcase
         quantity: 1,
       });
