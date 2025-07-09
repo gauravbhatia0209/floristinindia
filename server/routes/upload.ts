@@ -103,8 +103,11 @@ router.post("/images", upload.array("images", 5), (req, res) => {
       return res.status(400).json({ error: "No files uploaded" });
     }
 
+    const subdir = req.query.subdir as string;
     const imageUrls = req.files.map((file) => ({
-      url: `/uploads/${file.filename}`,
+      url: subdir
+        ? `/uploads/${subdir}/${file.filename}`
+        : `/uploads/${file.filename}`,
       filename: file.filename,
       originalName: file.originalname,
       size: file.size,
