@@ -396,58 +396,90 @@ export default function Index() {
         {/* Right Side Decorative Image */}
         {content?.right_image_url && (
           <div className="absolute inset-0 pointer-events-none hidden lg:block overflow-hidden">
-            {/* Background blur effect */}
+            {/* Background gradient effect */}
             <div
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 opacity-10 blur-xl"
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 opacity-15 blur-2xl animate-glow-pulse"
               style={{
-                background: `radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)`,
+                background: `radial-gradient(circle, rgba(233,28,99,0.3) 0%, rgba(255,179,128,0.2) 50%, transparent 80%)`,
               }}
             />
 
-            {/* Main decorative image */}
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 lg:right-12 xl:right-16">
-              <div className="relative">
-                {/* Subtle glow effect behind image */}
-                <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl scale-110 opacity-50" />
+            {/* Main decorative image container */}
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 lg:right-12 xl:right-16 animate-entrance">
+              <div className="relative animate-gentle-float">
+                {/* Multiple layered glow effects */}
+                <div
+                  className="absolute inset-0 bg-white/10 rounded-full blur-3xl scale-125 opacity-60 animate-glow-pulse"
+                  style={{ animationDelay: "1s" }}
+                />
+                <div
+                  className="absolute inset-0 bg-rose-300/20 rounded-full blur-2xl scale-110 opacity-40 animate-glow-pulse"
+                  style={{ animationDelay: "0.5s" }}
+                />
 
                 {/* Main image with enhanced styling */}
                 <img
                   src={content.right_image_url}
                   alt="Decorative"
-                  className="relative w-48 h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 object-contain opacity-80 drop-shadow-2xl"
+                  className="relative w-48 h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 object-contain opacity-85 transition-all duration-700 hover:opacity-95 hover:scale-105"
                   style={{
                     filter:
-                      "drop-shadow(0 0 20px rgba(255,255,255,0.1)) drop-shadow(0 0 40px rgba(233,28,99,0.1))",
+                      "drop-shadow(0 8px 32px rgba(233,28,99,0.15)) drop-shadow(0 0 60px rgba(255,255,255,0.1))",
                   }}
                   onError={(e) => {
                     console.warn(
                       "Hero right image failed to load:",
                       content.right_image_url,
                     );
-                    e.currentTarget.parentElement?.parentElement?.remove();
+                    e.currentTarget.parentElement?.parentElement?.parentElement?.remove();
                   }}
                 />
 
-                {/* Animated particles around the image */}
-                <div className="absolute -inset-8">
+                {/* Floating decorative elements */}
+                <div className="absolute -inset-12">
+                  {/* Floating sparkles */}
                   <div
-                    className="absolute top-4 right-8 w-2 h-2 bg-white/40 rounded-full animate-pulse"
-                    style={{ animationDelay: "0s" }}
+                    className="absolute top-8 right-12 w-2 h-2 bg-gradient-to-r from-white to-rose-200 rounded-full animate-float opacity-60"
+                    style={{ animationDelay: "0s", animationDuration: "5s" }}
                   />
                   <div
-                    className="absolute bottom-6 left-4 w-1 h-1 bg-rose-200/60 rounded-full animate-pulse"
-                    style={{ animationDelay: "1s" }}
+                    className="absolute bottom-12 left-8 w-1.5 h-1.5 bg-gradient-to-r from-peach to-gold rounded-full animate-float opacity-50"
+                    style={{ animationDelay: "2s", animationDuration: "6s" }}
                   />
                   <div
-                    className="absolute top-1/3 left-2 w-1.5 h-1.5 bg-peach/50 rounded-full animate-pulse"
-                    style={{ animationDelay: "2s" }}
+                    className="absolute top-1/4 left-4 w-1 h-1 bg-gradient-to-r from-rose-300 to-rose-100 rounded-full animate-float opacity-70"
+                    style={{ animationDelay: "1s", animationDuration: "7s" }}
                   />
                   <div
-                    className="absolute bottom-1/4 right-4 w-1 h-1 bg-white/50 rounded-full animate-pulse"
-                    style={{ animationDelay: "3s" }}
+                    className="absolute bottom-1/3 right-6 w-1.5 h-1.5 bg-gradient-to-r from-white to-peach rounded-full animate-float opacity-40"
+                    style={{ animationDelay: "3s", animationDuration: "5.5s" }}
+                  />
+                  <div
+                    className="absolute top-1/2 left-12 w-1 h-1 bg-white/60 rounded-full animate-float opacity-50"
+                    style={{ animationDelay: "4s", animationDuration: "6.5s" }}
+                  />
+
+                  {/* Larger floating elements */}
+                  <div
+                    className="absolute top-16 left-16 w-3 h-3 bg-gradient-to-br from-white/30 to-rose-200/30 rounded-full blur-sm animate-float opacity-30"
+                    style={{ animationDelay: "1.5s", animationDuration: "8s" }}
+                  />
+                  <div
+                    className="absolute bottom-8 right-20 w-2 h-2 bg-gradient-to-br from-peach/40 to-gold/40 rounded-full blur-sm animate-float opacity-40"
+                    style={{
+                      animationDelay: "2.5s",
+                      animationDuration: "7.5s",
+                    }}
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Subtle light rays effect */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full opacity-5">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-1 bg-gradient-to-l from-white to-transparent blur-sm" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 rotate-12 w-96 h-0.5 bg-gradient-to-l from-rose-200 to-transparent blur-sm" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 -rotate-12 w-96 h-0.5 bg-gradient-to-l from-peach to-transparent blur-sm" />
             </div>
           </div>
         )}
