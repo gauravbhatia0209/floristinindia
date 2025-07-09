@@ -325,30 +325,6 @@ export function Footer() {
 
   return (
     <footer className="bg-muted/50 border-t">
-      {/* Newsletter Section */}
-      <div className="bg-gradient-rose text-white">
-        <div className="container py-12">
-          <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-2">
-              Stay Blooming with Our Updates 🌸
-            </h3>
-            <p className="text-rose-100 mb-6">
-              Get exclusive offers, flower care tips, and be the first to know
-              about new arrivals
-            </p>
-            <div className="flex gap-2 max-w-md mx-auto">
-              <Input
-                placeholder="Enter your email"
-                className="bg-white/10 border-white/20 text-white placeholder:text-rose-100"
-              />
-              <Button variant="secondary" className="whitespace-nowrap">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Content */}
       <div className="container py-12">
         <div
