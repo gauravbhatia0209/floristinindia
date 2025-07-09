@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { Product, ProductCategory } from "@shared/database.types";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { ProductVariations } from "@/components/admin/ProductVariations";
 
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
