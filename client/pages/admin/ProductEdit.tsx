@@ -422,8 +422,8 @@ export default function ProductEdit() {
             </CardContent>
           </Card>
 
-          {/* Product Variations Section */}
-          {!isNew && product && (
+          {/* Product Variations Management */}
+          {!isNew && product && formData.has_variations && (
             <ProductVariations
               productId={product.id}
               basePrice={parseFloat(formData.price) || 0}
