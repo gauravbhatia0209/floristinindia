@@ -76,6 +76,11 @@ const navigation = [
     icon: Home,
   },
   {
+    name: "Menu Bar",
+    href: "/admin/menu-bar",
+    icon: Menu,
+  },
+  {
     name: "Settings",
     href: "/admin/settings",
     icon: Settings,
