@@ -105,13 +105,20 @@ export function ProductVariations({
   async function fetchVariations() {
     try {
       setIsLoading(true);
+      console.log("Fetching variations for product:", productId);
+
       const { data: variants, error } = await supabase
         .from("product_variants")
         .select("*")
         .eq("product_id", productId)
         .order("sort_order");
 
-      if (error) throw error;
+      console.log("Query result - data:", variants, "error:", error);
+
+      if (error) {
+        console.error("Database error details:", error);
+        throw error;
+      }
 
       // Group variants by type (extract from name if variation_type not available)
       const groups: { [key: string]: ProductVariant[] } = {};
