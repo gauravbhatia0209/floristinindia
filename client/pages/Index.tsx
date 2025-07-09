@@ -393,6 +393,23 @@ export default function Index() {
           </div>
         </div>
 
+        {/* Right Side Decorative Image */}
+        {content?.right_image_url && (
+          <img
+            src={content.right_image_url}
+            alt="Decorative"
+            className="absolute right-8 top-8 w-40 h-auto pointer-events-none z-10 opacity-90 hidden md:block"
+            style={{ objectFit: "contain" }}
+            onError={(e) => {
+              console.warn(
+                "Hero right image failed to load:",
+                content.right_image_url,
+              );
+              e.currentTarget.style.display = "none";
+            }}
+          />
+        )}
+
         {/* Floating Flowers Animation */}
         <div className="absolute top-10 right-10 text-6xl animate-float opacity-20">
           🌸
