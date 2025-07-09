@@ -721,6 +721,7 @@ function EditSectionForm({
               label="Right Side Image"
               acceptedTypes={[".png", ".webp", ".jpg", ".jpeg"]}
               maxSizeMB={3}
+              subdir="hero"
             />
             <p className="text-sm text-muted-foreground mt-1">
               This image will be displayed on the right side of the hero section
