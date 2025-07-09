@@ -1,8 +1,9 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
+import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import crypto from "crypto";
+
 const router = express.Router();
 
 // Ensure uploads directory exists
