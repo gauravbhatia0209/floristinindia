@@ -24,6 +24,8 @@ interface SiteSettingsMap {
   logo_url?: string;
   contact_phone?: string;
   contact_email?: string;
+  header_banner_text?: string;
+  header_banner_enabled?: string;
 }
 
 export function Header() {
