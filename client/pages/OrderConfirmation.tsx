@@ -81,7 +81,36 @@ export default function OrderConfirmation() {
         return;
       }
 
-      setOrderData(data as OrderData);
+      // Fetch product images for the order items
+      const productIds = data.items
+        .map((item: any) => item.product_id)
+        .filter(Boolean);
+      let productsData: any[] = [];
+
+      if (productIds.length > 0) {
+        const { data: products } = await supabase
+          .from("products")
+          .select("id, images")
+          .in("id", productIds);
+
+        productsData = products || [];
+      }
+
+      // Enhance order items with product images
+      const enhancedItems = data.items.map((item: any) => {
+        const product = productsData.find((p: any) => p.id === item.product_id);
+        const productImage = product?.images?.[0] || null;
+
+        return {
+          ...item,
+          image: productImage,
+        };
+      });
+
+      setOrderData({
+        ...data,
+        items: enhancedItems,
+      } as OrderData);
     } catch (error) {
       console.error("Failed to fetch order:", error);
       setError("Failed to load order details");
