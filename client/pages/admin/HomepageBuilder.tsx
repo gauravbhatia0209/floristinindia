@@ -572,7 +572,7 @@ export default function HomepageBuilder() {
               <EditSectionFormContent
                 section={editingSection}
                 onDataChange={(formData) => {
-                  // Store form data in a ref or state for saving
+                  // Store form data in a ref for saving
                   currentFormData.current = formData;
                 }}
               />
