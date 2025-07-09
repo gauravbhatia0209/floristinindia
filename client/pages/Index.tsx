@@ -22,6 +22,39 @@ export default function Index() {
     fetchHomepageData();
   }, []);
 
+  async function loadFallbackProducts() {
+    console.log("🔄 Loading fallback featured products...");
+    const { data: fallbackData, error: fallbackError } = await supabase
+      .from("products")
+      .select(
+        `
+        id,
+        name,
+        slug,
+        price,
+        sale_price,
+        images,
+        is_active,
+        product_categories(name)
+      `,
+      )
+      .eq("is_active", true)
+      .eq("is_featured", true)
+      .limit(8);
+
+    if (fallbackError) {
+      console.error("🚨 Fallback products error:", fallbackError);
+    }
+
+    if (fallbackData && fallbackData.length > 0) {
+      console.log("✅ Loaded fallback featured products:", fallbackData);
+      setFeaturedProducts(fallbackData);
+    } else {
+      console.warn("⚠️ No fallback products found either");
+      setFeaturedProducts([]);
+    }
+  }
+
   async function fetchHomepageData() {
     try {
       // Fetch active homepage sections in order
