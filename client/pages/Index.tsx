@@ -238,37 +238,24 @@ export default function Index() {
               })),
             );
 
-            setFeaturedProducts(sortedProducts);
+            if (sortedProducts.length > 0) {
+              setFeaturedProducts(sortedProducts);
+            } else {
+              console.warn(
+                "⚠️ Product Showcase: All selected products filtered out, using fallback",
+              );
+              await loadFallbackProducts();
+            }
           } else {
             console.warn(
-              "⚠️ Product Showcase: No products found for selected IDs, using fallback",
+              "⚠️ Product Showcase: No products returned from database query for selected IDs:",
+              selectedProductIds,
             );
-            // If selected products not found, fall back to featured
-            const { data: fallbackData } = await supabase
-              .from("products")
-              .select(
-                `
-                id,
-                name,
-                slug,
-                price,
-                sale_price,
-                images,
-                is_active,
-                product_categories(name)
-              `,
-              )
-              .eq("is_active", true)
-              .eq("is_featured", true)
-              .limit(8);
-
-            if (fallbackData) {
-              console.log(
-                "🔄 Product Showcase: Using fallback featured products:",
-                fallbackData,
-              );
-              setFeaturedProducts(fallbackData);
-            }
+            console.warn(
+              "🔍 Available product IDs in database:",
+              allProducts?.map((p) => p.id) || [],
+            );
+            await loadFallbackProducts();
           }
         } else {
           console.log(
