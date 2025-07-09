@@ -390,7 +390,7 @@ export function ProductVariations({
         ? variation.sale_price.toString()
         : "",
       stock_quantity: variation.stock_quantity.toString(),
-      image_url: "", // Not available in current schema
+      image_url: variation.image_url || "", // Use actual database value
       weight: "", // Not available in current schema
       sku: variation.sku || "",
       is_active: variation.is_active,
