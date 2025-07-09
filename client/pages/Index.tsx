@@ -48,8 +48,30 @@ export default function Index() {
           (s) => s.type === "product_carousel",
         );
 
-        console.log("Homepage: Category section found:", categorySection);
-        console.log("Homepage: Product section found:", productSection);
+        console.log("🏠 Homepage: All sections loaded:", sectionsData);
+        console.log(
+          "🏠 Homepage: Section types found:",
+          sectionsData.map((s) => s.type),
+        );
+        console.log("🏠 Homepage: Category section found:", categorySection);
+        console.log("🏠 Homepage: Product section found:", productSection);
+
+        // Debug the product section content structure
+        if (productSection) {
+          console.log(
+            "🔍 Product section full content:",
+            JSON.stringify(productSection.content, null, 2),
+          );
+          console.log(
+            "🔍 Product section selected_products:",
+            productSection.content?.selected_products,
+          );
+        } else {
+          console.warn(
+            "⚠️ No product_carousel section found in sections:",
+            sectionsData.map((s) => ({ type: s.type, title: s.title })),
+          );
+        }
 
         // Fetch admin-selected categories
         if (categorySection?.content?.selected_categories?.length > 0) {
