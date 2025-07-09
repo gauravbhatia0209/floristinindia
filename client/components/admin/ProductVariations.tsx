@@ -370,8 +370,8 @@ export function ProductVariations({
       id: variation.id,
       variation_type: varType,
       variation_value: varValue,
-      price_override:
-        variation.price !== basePrice ? variation.price.toString() : "",
+      // Always show the actual database values
+      price_override: variation.price.toString(),
       sale_price_override: variation.sale_price
         ? variation.sale_price.toString()
         : "",
