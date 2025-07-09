@@ -372,6 +372,22 @@ export default function Index() {
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/30" />
 
+        {/* Subtle decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-10 right-10 w-20 h-20 bg-white/5 rounded-full blur-xl animate-float"
+            style={{ animationDelay: "0s", animationDuration: "8s" }}
+          />
+          <div
+            className="absolute bottom-20 left-20 w-16 h-16 bg-rose-300/10 rounded-full blur-lg animate-float"
+            style={{ animationDelay: "2s", animationDuration: "10s" }}
+          />
+          <div
+            className="absolute top-1/3 left-10 w-12 h-12 bg-peach/10 rounded-full blur-md animate-float"
+            style={{ animationDelay: "4s", animationDuration: "12s" }}
+          />
+        </div>
+
         <div className="container relative z-20 text-center text-white">
           <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
             {/* Main Heading */}
