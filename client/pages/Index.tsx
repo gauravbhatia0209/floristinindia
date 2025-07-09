@@ -274,7 +274,13 @@ export default function Index() {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch homepage data:", error);
+      console.error("🚨 Failed to fetch homepage data:");
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      console.error("Error object:", error);
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+      }
     } finally {
       setIsLoading(false);
     }
