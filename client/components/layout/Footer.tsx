@@ -112,7 +112,13 @@ export function Footer() {
         .select("*");
 
       if (footerError) {
-        console.error("Error fetching footer sections:", footerError);
+        console.error("🚨 Footer: Error fetching footer sections:");
+        console.error(
+          "Footer error details:",
+          JSON.stringify(footerError, null, 2),
+        );
+        console.error("Footer error message:", footerError?.message);
+        console.error("Footer error code:", footerError?.code);
       } else if (footerData) {
         console.log("Footer sections fetched:", footerData);
         console.log("Number of active footer sections:", footerData.length);
