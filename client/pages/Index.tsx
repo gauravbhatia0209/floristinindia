@@ -383,7 +383,32 @@ export default function Index() {
       .slice(0, showCount);
 
     if (validProducts.length === 0) {
-      return null; // Don't render section if no valid products
+      return (
+        <section key={section.id} className="py-20 bg-muted/30">
+          <div className="container">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                {displayTitle}
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                {displaySubtitle}
+              </p>
+            </div>
+            <div className="text-center py-12 bg-white rounded-xl shadow-lg">
+              <div className="text-6xl mb-4">🌺</div>
+              <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
+                Products Coming Soon
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                We're curating beautiful flowers for you to discover.
+              </p>
+              <Button asChild>
+                <Link to="/products">Browse All Products</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+      );
     }
 
     return (
