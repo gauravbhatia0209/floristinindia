@@ -203,11 +203,11 @@ export function ProductVariations({
         reorderedItem,
       );
 
-      // Update display_order
+      // Update sort_order
       newGroups[groupIndex].variants.forEach(async (variant, index) => {
         await supabase
           .from("product_variants")
-          .update({ display_order: index })
+          .update({ sort_order: index })
           .eq("id", variant.id);
       });
 
