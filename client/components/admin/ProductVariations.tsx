@@ -470,31 +470,40 @@ export function ProductVariations({
                                     <GripVertical className="w-4 h-4 text-muted-foreground" />
                                   </div>
 
-                                  <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     <div>
-                                      <p className="font-medium">
-                                        {variant.variation_value}
+                                      <p className="font-semibold text-sm text-muted-foreground">
+                                        Name
                                       </p>
-                                      <p className="text-sm text-muted-foreground">
-                                        Stock: {variant.stock_quantity}
+                                      <p className="font-medium">
+                                        {variant.name}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        ID: {variant.id.slice(0, 8)}...
                                       </p>
                                     </div>
 
                                     <div>
-                                      <p className="text-sm font-medium">
-                                        ₹{getEffectivePrice(variant).toFixed(2)}
+                                      <p className="font-semibold text-sm text-muted-foreground">
+                                        Pricing
                                       </p>
-                                      {getEffectiveSalePrice(variant) && (
+                                      <p className="text-sm font-medium">
+                                        Price: ₹{variant.price.toFixed(2)}
+                                      </p>
+                                      {variant.sale_price && (
                                         <p className="text-sm text-green-600">
-                                          Sale: ₹
-                                          {getEffectiveSalePrice(
-                                            variant,
-                                          )!.toFixed(2)}
+                                          Sale: ₹{variant.sale_price.toFixed(2)}
                                         </p>
                                       )}
                                     </div>
 
                                     <div>
+                                      <p className="font-semibold text-sm text-muted-foreground">
+                                        Inventory
+                                      </p>
+                                      <p className="text-sm">
+                                        Stock: {variant.stock_quantity}
+                                      </p>
                                       {variant.sku && (
                                         <p className="text-xs text-muted-foreground">
                                           SKU: {variant.sku}
@@ -503,6 +512,9 @@ export function ProductVariations({
                                     </div>
 
                                     <div>
+                                      <p className="font-semibold text-sm text-muted-foreground">
+                                        Status
+                                      </p>
                                       <Badge
                                         variant={
                                           variant.is_active
@@ -514,6 +526,9 @@ export function ProductVariations({
                                           ? "Active"
                                           : "Inactive"}
                                       </Badge>
+                                      <p className="text-xs text-muted-foreground mt-1">
+                                        Order: {variant.sort_order}
+                                      </p>
                                     </div>
                                   </div>
 
