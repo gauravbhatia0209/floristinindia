@@ -103,6 +103,7 @@ function App() {
             <Route path="pages" element={<Pages />} />
             <Route path="footer-editor" element={<FooterEditor />} />
             <Route path="homepage" element={<HomepageBuilder />} />
+            <Route path="menu-bar" element={<MenuBar />} />
             <Route path="settings" element={<Settings />} />
             <Route path="users" element={<Users />} />
             <Route
