@@ -100,7 +100,10 @@ export function SingleImageUpload({
     if (imageUrl.startsWith("/uploads/")) {
       try {
         const filename = imageUrl.split("/").pop();
-        await fetch(`/api/upload/image/${filename}`, {
+        const url = subdir
+          ? `/api/upload/image/${filename}?subdir=${encodeURIComponent(subdir)}`
+          : `/api/upload/image/${filename}`;
+        await fetch(url, {
           method: "DELETE",
         });
       } catch (error) {
