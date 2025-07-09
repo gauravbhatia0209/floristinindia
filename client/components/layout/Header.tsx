@@ -74,11 +74,34 @@ export function Header() {
     }
 
     if (menuItemsData && menuItemsData.length > 0) {
-      // Store the full menu items
-      setMenuItems(menuItemsData);
+      // For each menu item linked to a category, fetch its subcategories
+      const menuItemsWithSubcategories = await Promise.all(
+        menuItemsData.map(async (item) => {
+          if (item.category_id && item.product_categories) {
+            // Fetch active subcategories for this category
+            const { data: subcategories } = await supabase
+              .from("product_categories")
+              .select("*")
+              .eq("parent_id", item.category_id)
+              .eq("is_active", true)
+              .order("sort_order");
+
+            return {
+              ...item,
+              product_categories: {
+                ...item.product_categories,
+                subcategories: subcategories || [],
+              },
+            };
+          }
+          return item;
+        }),
+      );
+
+      setMenuItems(menuItemsWithSubcategories);
 
       // Also store categories for backward compatibility (if needed elsewhere)
-      const categoriesFromMenu = menuItemsData
+      const categoriesFromMenu = menuItemsWithSubcategories
         .filter((item) => item.product_categories)
         .map((item) => item.product_categories);
       setCategories(categoriesFromMenu);
