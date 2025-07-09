@@ -254,6 +254,7 @@ export function ProductVariations({
         sku: formData.sku || null,
         is_active: formData.is_active,
         sort_order: 0,
+        image_url: formData.image_url || null,
       };
 
       console.log("Saving variation data:", variationData);
