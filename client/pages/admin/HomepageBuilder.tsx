@@ -692,20 +692,41 @@ function EditSectionForm({
 
       {/* Hero Section Specific Fields */}
       {section.type === "hero" && (
-        <div>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            value={(formData.content as any)?.description || ""}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                content: { ...formData.content, description: e.target.value },
-              })
-            }
-            placeholder="Hero section description text"
-            rows={3}
-          />
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={(formData.content as any)?.description || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, description: e.target.value },
+                })
+              }
+              placeholder="Hero section description text"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <SingleImageUpload
+              imageUrl={(formData.content as any)?.right_image_url || ""}
+              onImageChange={(imageUrl) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, right_image_url: imageUrl },
+                })
+              }
+              label="Right Side Image"
+              acceptedTypes={[".png", ".webp", ".jpg", ".jpeg"]}
+              maxSizeMB={3}
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              This image will be displayed on the right side of the hero section
+              as a decorative element.
+            </p>
+          </div>
         </div>
       )}
 
