@@ -154,6 +154,86 @@ export interface Database {
         };
       };
 
+      // Product Variation Combinations
+      product_variation_combinations: {
+        Row: {
+          id: string;
+          product_id: string;
+          combination_name: string;
+          price_override: number | null;
+          sale_price_override: number | null;
+          sku: string | null;
+          stock_quantity: number;
+          image_url: string | null;
+          weight: number | null;
+          length: number | null;
+          width: number | null;
+          height: number | null;
+          is_active: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          combination_name: string;
+          price_override?: number | null;
+          sale_price_override?: number | null;
+          sku?: string | null;
+          stock_quantity?: number;
+          image_url?: string | null;
+          weight?: number | null;
+          length?: number | null;
+          width?: number | null;
+          height?: number | null;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          combination_name?: string;
+          price_override?: number | null;
+          sale_price_override?: number | null;
+          sku?: string | null;
+          stock_quantity?: number;
+          image_url?: string | null;
+          weight?: number | null;
+          length?: number | null;
+          width?: number | null;
+          height?: number | null;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+
+      // Product Variation Combination Items
+      product_variation_combination_items: {
+        Row: {
+          id: string;
+          combination_id: string;
+          variant_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          combination_id: string;
+          variant_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          combination_id?: string;
+          variant_id?: string;
+          created_at?: string;
+        };
+      };
+
       // Products - Enhanced with variants and delivery zones
       products: {
         Row: {
