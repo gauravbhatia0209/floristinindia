@@ -32,6 +32,10 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import { ProductVariant } from "@shared/database.types";
 import {
+  getVariationData,
+  checkAndApplyVariationMigration,
+} from "@/utils/databaseMigration";
+import {
   DragDropContext,
   Droppable,
   Draggable,
