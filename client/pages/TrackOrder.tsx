@@ -798,7 +798,7 @@ export default function TrackOrder() {
                         <div className="flex-shrink-0">
                           <img
                             src={item.image}
-                            alt={item.name}
+                            alt={item.product_name}
                             className="w-20 h-20 object-cover rounded-xl shadow-md"
                           />
                         </div>
