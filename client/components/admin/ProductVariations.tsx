@@ -109,7 +109,7 @@ export function ProductVariations({
         .from("product_variants")
         .select("*")
         .eq("product_id", productId)
-        .order("display_order");
+        .order("sort_order");
 
       if (error) throw error;
 
