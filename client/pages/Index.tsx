@@ -616,42 +616,49 @@ export default function Index() {
               >
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden">
                   <div className="aspect-square bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden">
-                    {product.images &&
-                    Array.isArray(product.images) &&
-                    product.images.length > 0 &&
-                    product.images[0] ? (
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-full h-full object-cover image-hover"
-                        onLoad={() => {
-                          console.log(
-                            `✅ Product image loaded successfully for "${product.name}":`,
-                            product.images[0],
-                          );
-                        }}
-                        onError={(e) => {
-                          console.error(
-                            `❌ Product image failed to load for "${product.name}":`,
-                            product.images[0],
-                          );
-                          e.currentTarget.style.display = "none";
-                          const placeholder =
-                            e.currentTarget.parentElement?.querySelector(
-                              ".fallback-emoji",
+                    {(() => {
+                      const hasValidImage =
+                        product.images &&
+                        Array.isArray(product.images) &&
+                        product.images.length > 0 &&
+                        product.images[0];
+
+                      if (!hasValidImage) {
+                        console.log(
+                          `⚠️ Product "${product.name}" has no valid images:`,
+                          product.images,
+                        );
+                      }
+
+                      return hasValidImage ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover image-hover"
+                          onLoad={() => {
+                            console.log(
+                              `✅ Product image loaded successfully for "${product.name}":`,
+                              product.images[0],
                             );
-                          if (placeholder) {
-                            placeholder.style.display = "block";
-                            placeholder.classList.remove("hidden");
-                          }
-                        }}
-                      />
-                    ) : (
-                      console.log(
-                        `⚠️ Product "${product.name}" has no valid images:`,
-                        product.images,
-                      )
-                    )}
+                          }}
+                          onError={(e) => {
+                            console.error(
+                              `❌ Product image failed to load for "${product.name}":`,
+                              product.images[0],
+                            );
+                            e.currentTarget.style.display = "none";
+                            const placeholder =
+                              e.currentTarget.parentElement?.querySelector(
+                                ".fallback-emoji",
+                              );
+                            if (placeholder) {
+                              placeholder.style.display = "block";
+                              placeholder.classList.remove("hidden");
+                            }
+                          }}
+                        />
+                      ) : null;
+                    })()}
                     <span
                       className={`fallback-emoji text-6xl animate-pulse ${
                         product.images &&
