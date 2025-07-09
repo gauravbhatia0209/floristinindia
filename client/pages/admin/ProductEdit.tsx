@@ -112,6 +112,7 @@ export default function ProductEdit() {
           tags: data.tags?.join(", ") || "",
           is_active: data.is_active,
           is_featured: data.is_featured,
+          has_variations: data.has_variations || false,
           requires_file_upload: data.requires_file_upload,
           upload_file_types: data.upload_file_types?.join(", ") || "",
           delivery_zones: data.delivery_zones?.join(", ") || "",
