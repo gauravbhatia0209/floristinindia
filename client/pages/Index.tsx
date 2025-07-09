@@ -63,6 +63,16 @@ export default function Index() {
 
   async function fetchHomepageData() {
     try {
+      console.log("🔍 Starting to fetch homepage sections...");
+
+      // First, let's try a simple query to test connection
+      const { data: testData, error: testError } = await supabase
+        .from("homepage_sections")
+        .select("id, type")
+        .limit(1);
+
+      console.log("🔍 Test query result:", { testData, testError });
+
       // Fetch active homepage sections in order
       const { data: sectionsData, error: sectionsError } = await supabase
         .from("homepage_sections")
