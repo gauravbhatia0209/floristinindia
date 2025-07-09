@@ -529,26 +529,28 @@ export default function HomepageBuilder() {
 
       {/* Add Section Dialog */}
       <Dialog open={isAddingSection} onOpenChange={setIsAddingSection}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-10 shrink-0">
             <DialogTitle>Add New Section</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {sectionTemplates.map((template) => (
-              <Card
-                key={template.type}
-                className="cursor-pointer hover:bg-accent transition-colors"
-                onClick={() => addSection(template)}
-              >
-                <CardContent className="p-4 text-center">
-                  <template.icon className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <h3 className="font-semibold mb-1">{template.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {template.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {sectionTemplates.map((template) => (
+                <Card
+                  key={template.type}
+                  className="cursor-pointer hover:bg-accent transition-colors"
+                  onClick={() => addSection(template)}
+                >
+                  <CardContent className="p-4 text-center">
+                    <template.icon className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <h3 className="font-semibold mb-1">{template.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {template.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
