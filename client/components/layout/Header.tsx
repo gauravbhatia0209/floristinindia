@@ -116,9 +116,12 @@ export function Header() {
               </span>
             )}
           </div>
-          <div className="hidden sm:block">
-            🌸 Free Delivery on Orders Above ₹999 🌸
-          </div>
+          {siteSettings.header_banner_enabled === "true" &&
+            siteSettings.header_banner_text && (
+              <div className="hidden sm:block">
+                {siteSettings.header_banner_text}
+              </div>
+            )}
         </div>
       </div>
 
