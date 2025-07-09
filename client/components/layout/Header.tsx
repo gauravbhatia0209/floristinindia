@@ -43,30 +43,29 @@ export function Header() {
   }, []);
 
   async function fetchCategories() {
-    // First try to get menu items from database
-    const { data: menuItems } = await supabase
+    // Fetch menu items from database (only active items, sorted by custom order)
+    const { data: menuItems, error } = await supabase
       .from("menu_items")
       .select("*, product_categories(*)")
       .eq("is_active", true)
       .is("parent_id", null)
       .order("sort_order");
 
+    if (error) {
+      console.error("Error fetching menu items:", error);
+      setCategories([]);
+      return;
+    }
+
     if (menuItems && menuItems.length > 0) {
-      // Use menu items if available
+      // Only use menu items - no fallback to categories
       const categoriesFromMenu = menuItems
         .filter((item) => item.product_categories)
         .map((item) => item.product_categories);
       setCategories(categoriesFromMenu);
     } else {
-      // Fallback to categories with show_in_menu = true
-      const { data: categoriesData } = await supabase
-        .from("product_categories")
-        .select("*")
-        .eq("is_active", true)
-        .eq("show_in_menu", true)
-        .order("sort_order");
-
-      if (categoriesData) setCategories(categoriesData);
+      // No active menu items configured - show empty menu
+      setCategories([]);
     }
   }
 
