@@ -436,6 +436,21 @@ export function ProductVariations({
         </Button>
       </CardHeader>
       <CardContent>
+        {/* Database Field Info */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm font-medium text-blue-900 mb-2">
+            Database Fields Used:
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-blue-800">
+            <span>• name (VARCHAR)</span>
+            <span>• price (DECIMAL)</span>
+            <span>• sale_price (DECIMAL)</span>
+            <span>• sku (VARCHAR)</span>
+            <span>• stock_quantity (INTEGER)</span>
+            <span>• is_active (BOOLEAN)</span>
+          </div>
+        </div>
+
         {variationGroups.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-muted-foreground mb-4">
