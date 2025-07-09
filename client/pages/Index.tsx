@@ -25,11 +25,16 @@ export default function Index() {
   async function fetchHomepageData() {
     try {
       // Fetch active homepage sections in order
-      const { data: sectionsData } = await supabase
+      const { data: sectionsData, error: sectionsError } = await supabase
         .from("homepage_sections")
         .select("*")
         .eq("is_active", true)
         .order("sort_order");
+
+      if (sectionsError) {
+        console.error("Homepage: Error fetching sections:", sectionsError);
+        return;
+      }
 
       if (sectionsData) {
         console.log("Homepage: Loaded sections from database:", sectionsData);
