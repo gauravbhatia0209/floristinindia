@@ -142,7 +142,13 @@ export default function TrackOrder() {
 
       if (orderError || !orderData) {
         console.log("Order not found:", orderError);
-        setError("No order found. Please check your order number.");
+        if (orderError?.code === "PGRST116") {
+          setError(
+            "No order found. Please check your order number and try again.",
+          );
+        } else {
+          setError("Unable to fetch order details. Please try again later.");
+        }
         return;
       }
 
