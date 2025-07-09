@@ -365,29 +365,15 @@ export default function ProductDetail() {
             </p>
           )}
 
-          {/* Variants */}
+          {/* Product Variations */}
           {variants.length > 0 && (
-            <div className="space-y-3">
-              <Label className="text-base font-semibold">Choose Size:</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {variants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    onClick={() => setSelectedVariant(variant)}
-                    className={`p-3 border rounded-lg text-center transition-colors ${
-                      selectedVariant?.id === variant.id
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-gray-200 hover:border-primary"
-                    }`}
-                  >
-                    <div className="font-medium">{variant.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      ₹{variant.sale_price || variant.price}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
+            <ProductVariationSelector
+              variants={variants}
+              basePrice={product.price}
+              baseSalePrice={product.sale_price || undefined}
+              baseImages={product.images || []}
+              onVariationChange={handleVariationChange}
+            />
           )}
 
           {/* Quantity */}
