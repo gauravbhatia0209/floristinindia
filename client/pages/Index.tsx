@@ -470,14 +470,15 @@ export default function Index() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center space-y-4 p-8">
                       <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-4xl">
-                        🌺
+                        {content?.feature_box_emoji || "🌺"}
                       </div>
                       <div className="space-y-2">
                         <h3 className="text-white font-semibold text-lg">
-                          Premium Quality
+                          {content?.feature_box_title || "Premium Quality"}
                         </h3>
                         <p className="text-white/70 text-sm">
-                          Hand-picked fresh flowers
+                          {content?.feature_box_description ||
+                            "Hand-picked fresh flowers"}
                         </p>
                       </div>
                     </div>
@@ -762,7 +763,7 @@ export default function Index() {
               </p>
             </div>
             <div className="text-center py-12 bg-white rounded-xl shadow-lg">
-              <div className="text-6xl mb-4">����</div>
+              <div className="text-6xl mb-4">🌺</div>
               <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
                 Products Coming Soon
               </h3>
@@ -779,7 +780,7 @@ export default function Index() {
     }
 
     console.log(
-      "��� Product Carousel: Rendering section with title:",
+      "����� Product Carousel: Rendering section with title:",
       displayTitle,
     );
     console.log(
