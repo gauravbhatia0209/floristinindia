@@ -805,12 +805,12 @@ export default function TrackOrder() {
                       )}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-gray-900 text-lg mb-1 truncate">
-                          {item.name}
+                          {item.product_name}
                         </h3>
-                        {item.variant && (
+                        {item.variant_name && (
                           <p className="text-sm text-gray-600 mb-1">
                             <span className="font-medium">Variant:</span>{" "}
-                            {item.variant}
+                            {item.variant_name}
                           </p>
                         )}
                         <div className="flex items-center text-sm text-gray-600">
@@ -823,10 +823,12 @@ export default function TrackOrder() {
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-xl text-gray-900">
-                          {formatPrice(item.price * item.quantity)}
+                          {formatPrice(
+                            item.total_price || item.unit_price * item.quantity,
+                          )}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {formatPrice(item.price)} each
+                          {formatPrice(item.unit_price)} each
                         </p>
                       </div>
                     </div>
