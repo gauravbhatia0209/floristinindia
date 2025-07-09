@@ -804,24 +804,40 @@ export default function TrackOrder() {
                       className="flex items-center space-x-4 p-6 bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-200 rounded-xl hover:shadow-lg transition-all duration-200"
                     >
                       <div className="flex-shrink-0">
-                        <div className="w-20 h-20 bg-gray-100 rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
+                        <div className="w-24 h-24 bg-gray-100 rounded-xl shadow-lg overflow-hidden border-2 border-gray-300 relative">
                           {item.image ? (
-                            <img
-                              src={item.image}
-                              alt={item.product_name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.style.display = "none";
-                                e.currentTarget.nextElementSibling.style.display =
-                                  "flex";
-                              }}
-                            />
-                          ) : null}
-                          <div
-                            className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 ${item.image ? "hidden" : "flex"}`}
-                          >
-                            <Package className="h-8 w-8 text-gray-400" />
-                          </div>
+                            <>
+                              <img
+                                src={item.image}
+                                alt={item.product_name}
+                                className="w-full h-full object-cover transition-opacity duration-200"
+                                onError={(e) => {
+                                  const target = e.currentTarget;
+                                  const placeholder =
+                                    target.parentElement?.querySelector(
+                                      ".placeholder-fallback",
+                                    );
+                                  if (placeholder) {
+                                    target.style.display = "none";
+                                    placeholder.classList.remove("hidden");
+                                    placeholder.classList.add("flex");
+                                  }
+                                }}
+                                onLoad={() =>
+                                  console.log(
+                                    `Image loaded for ${item.product_name}: ${item.image}`,
+                                  )
+                                }
+                              />
+                              <div className="placeholder-fallback hidden absolute inset-0 w-full h-full items-center justify-center bg-gradient-to-br from-rose-100 to-pink-100">
+                                <Package className="h-10 w-10 text-rose-400" />
+                              </div>
+                            </>
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-pink-100">
+                              <Package className="h-10 w-10 text-rose-400" />
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
