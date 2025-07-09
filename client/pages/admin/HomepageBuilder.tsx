@@ -558,19 +558,39 @@ export default function HomepageBuilder() {
         onOpenChange={() => setEditingSection(null)}
       >
         <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
-          <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-10">
+          <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-10 shrink-0">
             <DialogTitle>
               Edit {editingSection && getSectionName(editingSection.type)}
             </DialogTitle>
           </DialogHeader>
-          <div className="flex-1 overflow-y-auto px-6 py-4">
+
+          <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
             {editingSection && (
-              <EditSectionForm
+              <EditSectionFormContent
                 section={editingSection}
-                onSave={(updates) => updateSection(editingSection.id, updates)}
-                onCancel={() => setEditingSection(null)}
+                onDataChange={(formData) => {
+                  // Store form data in a ref or state for saving
+                  currentFormData.current = formData;
+                }}
               />
             )}
+          </div>
+
+          <div className="px-6 py-4 border-t bg-white sticky bottom-0 z-10 shrink-0">
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setEditingSection(null)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (editingSection && currentFormData.current) {
+                    updateSection(editingSection.id, currentFormData.current);
+                  }
+                }}
+              >
+                Save Changes
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
