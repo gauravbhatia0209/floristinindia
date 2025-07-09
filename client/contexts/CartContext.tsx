@@ -84,7 +84,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const total = items.reduce((sum, item) => {
-    const price = item.product.sale_price || item.product.price;
+    // Safety check: only calculate if product data exists
+    if (!item.product) {
+      console.warn("Cart item missing product data:", item);
+      return sum;
+    }
+    const price = item.product.sale_price || item.product.price || 0;
     return sum + price * item.quantity;
   }, 0);
 
