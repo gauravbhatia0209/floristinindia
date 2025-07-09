@@ -178,18 +178,6 @@ export default function TrackOrder() {
         };
       });
 
-      if (orderError || !orderData) {
-        console.log("Order not found:", orderError);
-        if (orderError?.code === "PGRST116") {
-          setError(
-            "No order found. Please check your order number and try again.",
-          );
-        } else {
-          setError("Unable to fetch order details. Please try again later.");
-        }
-        return;
-      }
-
       // Verify the customer contact details
       const customer = orderData.customers;
       const customerMatches =
@@ -209,9 +197,10 @@ export default function TrackOrder() {
         return;
       }
 
-      // Format the data for display
+      // Format the data for display with enhanced items
       setOrderData({
         ...orderData,
+        items: enhancedItems,
         customer: customer,
       } as OrderData);
       setStep("results");
