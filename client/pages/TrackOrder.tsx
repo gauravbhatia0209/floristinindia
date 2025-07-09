@@ -170,20 +170,24 @@ export default function TrackOrder() {
         productsData = products || [];
       }
 
-      // Enhance order items with product images
+      // Enhance order items with product images and slugs
       const enhancedItems = orderData.items.map((item: any) => {
         const product = productsData.find((p) => p.id === item.product_id);
         const productImage = product?.images?.[0] || null;
+        const productSlug = product?.slug || null;
         console.log(
           `Track Order: Item ${item.product_name} - Product:`,
           product,
           "Image:",
           productImage,
+          "Slug:",
+          productSlug,
         );
 
         return {
           ...item,
           image: productImage,
+          slug: productSlug,
         };
       });
 
