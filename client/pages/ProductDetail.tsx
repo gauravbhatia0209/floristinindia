@@ -154,20 +154,39 @@ export default function ProductDetail() {
   }
 
   function getCurrentPrice() {
-    if (selectedVariant) {
-      return selectedVariant.sale_price || selectedVariant.price;
+    if (effectiveSalePrice && effectiveSalePrice > 0) {
+      return effectiveSalePrice;
+    }
+    if (effectivePrice > 0) {
+      return effectivePrice;
     }
     return product?.sale_price || product?.price || 0;
   }
 
   function getOriginalPrice() {
-    if (selectedVariant && selectedVariant.sale_price) {
-      return selectedVariant.price;
+    if (effectiveSalePrice && effectiveSalePrice > 0 && effectivePrice > 0) {
+      return effectivePrice;
     }
     if (product?.sale_price) {
       return product.price;
     }
     return null;
+  }
+
+  function handleVariationChange(
+    variations: Record<string, ProductVariant>,
+    price: number,
+    salePrice?: number,
+    image?: string,
+  ) {
+    setSelectedVariations(variations);
+    setEffectivePrice(price);
+    setEffectiveSalePrice(salePrice);
+    setEffectiveImage(image);
+
+    // Set the first selected variant for backward compatibility
+    const variantsList = Object.values(variations);
+    setSelectedVariant(variantsList.length > 0 ? variantsList[0] : null);
   }
 
   function handleAddToCart() {
