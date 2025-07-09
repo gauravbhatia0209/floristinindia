@@ -102,6 +102,20 @@ export function ProductVariations({
     }
   }, [productId]);
 
+  // Check if image_url field is available in the database
+  async function checkImageFieldAvailability() {
+    try {
+      const { error } = await supabase
+        .from("product_variants")
+        .select("image_url")
+        .limit(1);
+
+      return !error;
+    } catch {
+      return false;
+    }
+  }
+
   async function fetchVariations() {
     try {
       setIsLoading(true);
