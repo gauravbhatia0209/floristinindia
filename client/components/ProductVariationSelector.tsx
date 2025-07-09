@@ -190,7 +190,7 @@ export function ProductVariationSelector({
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {group.variants.map((variant) => {
               const isSelected =
                 getSelectedVariant(group.type)?.id === variant.id;
@@ -198,66 +198,123 @@ export function ProductVariationSelector({
               const effectivePrice = getEffectivePrice(variant);
               const effectiveSalePrice = getEffectiveSalePrice(variant);
 
+              // Calculate price difference from base price
+              const finalPrice =
+                effectiveSalePrice !== null &&
+                effectiveSalePrice < (effectivePrice || 0)
+                  ? effectiveSalePrice
+                  : effectivePrice;
+
+              const priceDifference =
+                finalPrice !== null && finalPrice !== basePrice
+                  ? finalPrice - basePrice
+                  : 0;
+
+              const formatPriceDifference = (diff: number) => {
+                if (diff === 0) return "No Extra Cost";
+                if (diff > 0) return `+₹${diff.toFixed(0)}`;
+                return `-₹${Math.abs(diff).toFixed(0)}`;
+              };
+
               return (
-                <Button
+                <button
                   key={variant.id}
-                  variant={isSelected ? "default" : "outline"}
-                  size="sm"
-                  className={`relative ${
-                    !inStock
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:scale-105 transition-transform"
-                  }`}
                   onClick={() =>
                     inStock && selectVariation(group.type, variant)
                   }
                   disabled={!inStock}
+                  className={`
+                    relative p-4 rounded-xl border-2 transition-all duration-200 text-left
+                    min-h-[100px] flex flex-col justify-between
+                    ${
+                      isSelected
+                        ? "border-primary bg-primary/5 shadow-lg scale-105"
+                        : "border-gray-200 hover:border-primary/50 hover:shadow-md"
+                    }
+                    ${
+                      !inStock
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer hover:scale-102"
+                    }
+                  `}
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-sm font-medium">
-                      {variant.variation_value}
-                    </span>
+                  {/* Selection indicator */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  )}
 
-                    {/* Show price if different from base */}
-                    {(variant.price_override !== null ||
-                      variant.sale_price_override !== null ||
-                      variant.price !== null ||
-                      variant.sale_price !== null) && (
-                      <div className="text-xs">
-                        {effectiveSalePrice !== null &&
-                        effectivePrice !== null &&
-                        effectiveSalePrice < effectivePrice ? (
-                          <div className="flex flex-col items-center">
-                            <span className="text-green-600 font-medium">
-                              {formatPrice(effectiveSalePrice)}
-                            </span>
-                            <span className="line-through text-muted-foreground">
-                              {formatPrice(effectivePrice)}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="font-medium">
-                            {formatPrice(effectivePrice)}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                  {/* Variation name */}
+                  <div className="flex-1">
+                    <h4
+                      className={`font-semibold text-lg mb-1 ${isSelected ? "text-primary" : "text-gray-900"}`}
+                    >
+                      {variant.variation_value || variant.name}
+                    </h4>
 
-                    {/* Show stock status */}
-                    {!inStock && (
-                      <span className="text-xs text-red-500 font-medium">
+                    {/* Stock status */}
+                    {!inStock ? (
+                      <span className="text-sm text-red-500 font-medium">
                         Out of Stock
+                      </span>
+                    ) : (
+                      <span className="text-sm text-gray-500">
+                        In Stock ({variant.stock_quantity})
                       </span>
                     )}
                   </div>
 
-                  {/* Selected indicator */}
-                  {isSelected && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  {/* Price information */}
+                  <div className="mt-2">
+                    <div
+                      className={`text-sm font-medium ${
+                        priceDifference === 0
+                          ? "text-green-600"
+                          : priceDifference > 0
+                            ? "text-orange-600"
+                            : "text-green-600"
+                      }`}
+                    >
+                      {formatPriceDifference(priceDifference)}
                     </div>
-                  )}
-                </Button>
+
+                    {effectiveSalePrice !== null &&
+                      effectivePrice !== null &&
+                      effectiveSalePrice < effectivePrice && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          <span className="line-through">
+                            ₹{effectivePrice.toFixed(0)}
+                          </span>
+                          <span className="ml-1 text-green-600 font-medium">
+                            ₹{effectiveSalePrice.toFixed(0)}
+                          </span>
+                        </div>
+                      )}
+                  </div>
+
+                  {/* Hover effect overlay */}
+                  <div
+                    className={`
+                    absolute inset-0 rounded-xl transition-opacity duration-200
+                    ${
+                      isSelected
+                        ? "bg-primary/5"
+                        : "bg-transparent hover:bg-gray-50"
+                    }
+                  `}
+                  />
+                </button>
               );
             })}
           </div>
