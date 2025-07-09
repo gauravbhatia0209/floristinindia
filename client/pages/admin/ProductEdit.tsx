@@ -321,7 +321,7 @@ export default function ProductEdit() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="price">Regular Price (₹) *</Label>
+                  <Label htmlFor="price">Regular Price (��) *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -373,6 +373,31 @@ export default function ProductEdit() {
                     placeholder="50"
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Product Variations</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="has_variations">
+                    Does this product have variations?
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Enable this to create different variants (size, color, etc.)
+                  </p>
+                </div>
+                <Switch
+                  id="has_variations"
+                  checked={formData.has_variations}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, has_variations: checked })
+                  }
+                />
               </div>
             </CardContent>
           </Card>
