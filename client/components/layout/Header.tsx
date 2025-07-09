@@ -81,6 +81,8 @@ export function Header() {
           "logo_url",
           "contact_phone",
           "contact_email",
+          "header_banner_text",
+          "header_banner_enabled",
         ]);
 
       if (settingsData) {
