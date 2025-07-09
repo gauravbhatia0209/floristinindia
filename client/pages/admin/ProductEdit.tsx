@@ -526,19 +526,6 @@ export default function ProductEdit() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Product Variations Section */}
-          {!isNew && product && (
-            <ProductVariations
-              productId={product.id}
-              basePrice={parseFloat(formData.price) || 0}
-              baseSalePrice={
-                formData.sale_price
-                  ? parseFloat(formData.sale_price)
-                  : undefined
-              }
-            />
-          )}
         </div>
       </div>
     </div>
