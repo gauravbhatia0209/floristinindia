@@ -268,22 +268,36 @@ export default function Index() {
   function renderCategoryGrid(section: HomepageSection) {
     const content = section.content as any;
     const showCount = content?.show_count || 8;
+    const displayTitle = section.title || "Shop by Occasion";
+    const displaySubtitle =
+      section.subtitle ||
+      "Find the perfect flowers for every special moment in life";
+
+    // Filter out any invalid categories and limit display count
+    const validCategories = categories
+      .filter(
+        (category) => category && category.id && category.name && category.slug,
+      )
+      .slice(0, showCount);
+
+    if (validCategories.length === 0) {
+      return null; // Don't render section if no valid categories
+    }
 
     return (
       <section key={section.id} className="py-20">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Shop by Occasion
+              {displayTitle}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {section.subtitle ||
-                "Find the perfect flowers for every special moment in life"}
+              {displaySubtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {categories.slice(0, showCount).map((category) => (
+            {validCategories.map((category) => (
               <Link
                 key={category.id}
                 to={`/category/${category.slug}`}
@@ -296,10 +310,21 @@ export default function Index() {
                         src={category.image_url}
                         alt={category.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const placeholder =
+                            e.currentTarget.parentElement?.querySelector(
+                              ".fallback-emoji",
+                            );
+                          if (placeholder) placeholder.style.display = "block";
+                        }}
                       />
-                    ) : (
-                      <span className="animate-pulse">🌸</span>
-                    )}
+                    ) : null}
+                    <span
+                      className={`fallback-emoji animate-pulse ${category.image_url ? "hidden" : "block"}`}
+                    >
+                      🌸
+                    </span>
                   </div>
                   <CardContent className="p-4 text-center">
                     <h3 className="font-semibold group-hover:text-primary transition-colors">
