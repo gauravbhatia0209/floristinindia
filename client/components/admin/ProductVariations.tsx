@@ -192,6 +192,16 @@ export function ProductVariations({
 
   async function saveVariation() {
     try {
+      // Validation
+      if (!formData.variation_type || !formData.variation_value) {
+        toast({
+          title: "Validation Error",
+          description: "Variation type and value are required.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const variationData = {
         product_id: productId,
         variation_type: formData.variation_type,
@@ -212,6 +222,8 @@ export function ProductVariations({
         is_active: formData.is_active,
         display_order: 0,
       };
+
+      console.log("Saving variation data:", variationData);
 
       if (editingVariation) {
         const { error } = await supabase
