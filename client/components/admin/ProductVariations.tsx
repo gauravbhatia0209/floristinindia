@@ -213,12 +213,21 @@ export function ProductVariations({
         return;
       }
 
-      // Get variation data based on available schema
-      const variationData = await getVariationData(
-        { ...formData, product_id: productId },
-        basePrice,
-        baseSalePrice,
-      );
+      // Create variation data for current schema
+      const variationData = {
+        product_id: productId,
+        name: `${formData.variation_type} - ${formData.variation_value}`,
+        price: formData.price_override
+          ? parseFloat(formData.price_override)
+          : basePrice,
+        sale_price: formData.sale_price_override
+          ? parseFloat(formData.sale_price_override)
+          : baseSalePrice,
+        stock_quantity: parseInt(formData.stock_quantity) || 0,
+        sku: formData.sku || null,
+        is_active: formData.is_active,
+        sort_order: 0,
+      };
 
       console.log("Saving variation data:", variationData);
 
