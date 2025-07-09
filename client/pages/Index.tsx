@@ -82,13 +82,30 @@ export default function Index() {
         if (productSection?.content?.selected_products?.length > 0) {
           const selectedProductIds = productSection.content.selected_products;
           console.log(
+            "🎯 Product Showcase: Found product section with content:",
+            productSection,
+          );
+          console.log(
             "🎯 Product Showcase: Admin-selected product IDs:",
             selectedProductIds,
+          );
+          console.log(
+            "🎯 Product Showcase: ID types:",
+            selectedProductIds.map((id: any) => typeof id),
           );
           console.log(
             "🎯 Product Showcase: Fetching products with query - product.id IN",
             selectedProductIds,
           );
+
+          // First, let's check what products exist in the database
+          const { data: allProducts, error: allProductsError } = await supabase
+            .from("products")
+            .select("id, name, is_active")
+            .eq("is_active", true);
+
+          console.log("🔍 All active products in database:", allProducts);
+          console.log("🔍 All products error:", allProductsError);
 
           const { data: productsData, error: productsError } = await supabase
             .from("products")
