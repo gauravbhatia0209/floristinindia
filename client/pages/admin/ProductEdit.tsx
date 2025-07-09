@@ -378,23 +378,18 @@ export default function ProductEdit() {
               <CardTitle>Images</CardTitle>
             </CardHeader>
             <CardContent>
-              <div>
-                <Label htmlFor="images">Image URLs (one per line)</Label>
-                <Textarea
-                  id="images"
-                  value={formData.images.join("\n")}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      images: e.target.value
-                        .split("\n")
-                        .filter((url) => url.trim()),
-                    })
-                  }
-                  placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-                  rows={4}
-                />
-              </div>
+              <ImageUpload
+                images={formData.images}
+                onImagesChange={(images) =>
+                  setFormData({
+                    ...formData,
+                    images,
+                  })
+                }
+                maxImages={5}
+                maxSizeMB={3}
+                label="Product Images"
+              />
             </CardContent>
           </Card>
         </div>
