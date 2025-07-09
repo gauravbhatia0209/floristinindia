@@ -465,18 +465,20 @@ export default function ProductDetail() {
           )}
 
           {/* Special Instructions */}
-          <div className="space-y-3">
-            <Label htmlFor="instructions" className="text-base font-semibold">
-              Special Instructions (Optional):
-            </Label>
-            <Textarea
-              id="instructions"
-              placeholder="Any special message or delivery instructions..."
-              value={specialInstructions}
-              onChange={(e) => setSpecialInstructions(e.target.value)}
-              rows={3}
-            />
-          </div>
+          {settings?.enable_special_instructions && (
+            <div className="space-y-3">
+              <Label htmlFor="instructions" className="text-base font-semibold">
+                Special Instructions (Optional):
+              </Label>
+              <Textarea
+                id="instructions"
+                placeholder="Any special message or delivery instructions..."
+                value={specialInstructions}
+                onChange={(e) => setSpecialInstructions(e.target.value)}
+                rows={3}
+              />
+            </div>
+          )}
 
           {/* Pincode Check */}
           <div className="space-y-3">
