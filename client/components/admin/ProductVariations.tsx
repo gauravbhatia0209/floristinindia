@@ -430,10 +430,19 @@ export function ProductVariations({
             Manage variations from database table: product_variants
           </p>
         </div>
-        <Button onClick={() => setIsAddingVariation(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Variation
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={fetchVariations}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Refresh"}
+          </Button>
+          <Button onClick={() => setIsAddingVariation(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Variation
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {/* Database Field Info */}
