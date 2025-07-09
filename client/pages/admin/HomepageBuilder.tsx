@@ -580,7 +580,7 @@ export default function HomepageBuilder() {
             )}
           </div>
 
-          <div className="px-6 py-4 border-t bg-white sticky bottom-0 z-10 shrink-0">
+          <div className="px-6 py-4 border-t bg-white shrink-0">
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setEditingSection(null)}>
                 Cancel
