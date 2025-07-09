@@ -386,11 +386,11 @@ export function ProductVariations({
   }
 
   function getEffectivePrice(variant: ProductVariant) {
-    return variant.price_override || basePrice;
+    return variant.price;
   }
 
   function getEffectiveSalePrice(variant: ProductVariant) {
-    return variant.sale_price_override || baseSalePrice;
+    return variant.sale_price;
   }
 
   if (isLoading) {
