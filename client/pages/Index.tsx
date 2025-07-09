@@ -205,10 +205,14 @@ export default function Index() {
           console.log("🕐 Query executed at:", new Date().toISOString());
 
           if (productsError) {
+            console.error("🚨 Product Showcase: Database error:");
             console.error(
-              "🚨 Product Showcase: Database error:",
-              productsError,
+              "Products error details:",
+              JSON.stringify(productsError, null, 2),
             );
+            console.error("Products error message:", productsError?.message);
+            console.error("Products error code:", productsError?.code);
+            console.error("Products error hint:", productsError?.hint);
             await loadFallbackProducts();
             return;
           }
