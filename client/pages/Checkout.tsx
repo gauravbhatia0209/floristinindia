@@ -233,8 +233,8 @@ export default function Checkout() {
     try {
       const totals = calculateTotal();
 
-      // Generate order number
-      const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Generate sequential order number with FII prefix
+      const orderNumber = await generateOrderNumber();
 
       // Create customer record
       const nameParts = form.fullName.trim().split(" ");
