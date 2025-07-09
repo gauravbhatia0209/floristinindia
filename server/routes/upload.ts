@@ -15,7 +15,19 @@ if (!fs.existsSync(uploadsDir)) {
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadsDir);
+    // Support subdirectories via query parameter
+    const subdir = req.query.subdir as string;
+    let targetDir = uploadsDir;
+
+    if (subdir) {
+      targetDir = path.join(uploadsDir, subdir);
+      // Create subdirectory if it doesn't exist
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+    }
+
+    cb(null, targetDir);
   },
   filename: (req, file, cb) => {
     // Generate unique filename with timestamp and random string
