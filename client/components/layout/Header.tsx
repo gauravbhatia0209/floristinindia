@@ -197,15 +197,67 @@ export function Header() {
                         ? `/category/${item.product_categories.slug}`
                         : item.url || "#";
 
+                    const hasSubcategories =
+                      item.product_categories?.subcategories &&
+                      item.product_categories.subcategories.length > 0;
+
                     return (
-                      <Link
-                        key={item.id}
-                        to={href}
-                        target={item.target}
-                        className="px-3 py-2 rounded-md hover:bg-accent text-left"
-                      >
-                        {item.name}
-                      </Link>
+                      <div key={item.id}>
+                        {hasSubcategories ? (
+                          <div>
+                            <button
+                              onClick={() =>
+                                setExpandedMobileMenu(
+                                  expandedMobileMenu === item.id
+                                    ? null
+                                    : item.id,
+                                )
+                              }
+                              className="w-full px-3 py-2 rounded-md hover:bg-accent text-left flex items-center justify-between"
+                            >
+                              <span>{item.name}</span>
+                              <ChevronDown
+                                className={`w-4 h-4 transition-transform ${
+                                  expandedMobileMenu === item.id
+                                    ? "rotate-180"
+                                    : ""
+                                }`}
+                              />
+                            </button>
+
+                            {expandedMobileMenu === item.id && (
+                              <div className="ml-4 mt-2 space-y-1">
+                                <Link
+                                  to={href}
+                                  target={item.target}
+                                  className="block px-3 py-2 rounded-md hover:bg-accent text-sm text-muted-foreground"
+                                >
+                                  View All {item.name}
+                                </Link>
+                                {item.product_categories.subcategories?.map(
+                                  (subcategory) => (
+                                    <Link
+                                      key={subcategory.id}
+                                      to={`/category/${subcategory.slug}`}
+                                      className="block px-3 py-2 rounded-md hover:bg-accent text-sm"
+                                    >
+                                      {subcategory.name}
+                                    </Link>
+                                  ),
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <Link
+                            to={href}
+                            target={item.target}
+                            className="block px-3 py-2 rounded-md hover:bg-accent text-left"
+                          >
+                            {item.name}
+                          </Link>
+                        )}
+                      </div>
                     );
                   })}
                 </nav>
