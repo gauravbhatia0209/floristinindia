@@ -207,6 +207,7 @@ export default function TrackOrder() {
       }
 
       // Format the data for display with enhanced items
+      console.log("Track Order: Final enhanced items:", enhancedItems);
       setOrderData({
         ...orderData,
         items: enhancedItems,
