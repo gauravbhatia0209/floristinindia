@@ -85,8 +85,8 @@ export function ProductVariationSelector({
     if (!onVariationChange) return;
 
     // Calculate effective price based on selected variations
-    let effectivePrice = basePrice;
-    let effectiveSalePrice = baseSalePrice;
+    let effectivePrice = basePrice || 0;
+    let effectiveSalePrice = baseSalePrice || undefined;
     let effectiveImage: string | undefined;
 
     // Find the highest priority price override
