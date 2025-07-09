@@ -599,15 +599,13 @@ export default function HomepageBuilder() {
   );
 }
 
-// Edit Section Form Component
-function EditSectionForm({
+// Edit Section Form Content Component (without footer)
+function EditSectionFormContent({
   section,
-  onSave,
-  onCancel,
+  onDataChange,
 }: {
   section: HomepageSection;
-  onSave: (updates: Partial<HomepageSection>) => void;
-  onCancel: () => void;
+  onDataChange: (formData: Partial<HomepageSection>) => void;
 }) {
   const [formData, setFormData] = useState({
     title: section.title || "",
