@@ -281,7 +281,29 @@ export default function Index() {
       .slice(0, showCount);
 
     if (validCategories.length === 0) {
-      return null; // Don't render section if no valid categories
+      return (
+        <section key={section.id} className="py-20">
+          <div className="container">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                {displayTitle}
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                {displaySubtitle}
+              </p>
+            </div>
+            <div className="text-center py-12 bg-muted/30 rounded-xl">
+              <div className="text-6xl mb-4">🌸</div>
+              <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
+                Categories Coming Soon
+              </h3>
+              <p className="text-muted-foreground">
+                We're preparing beautiful categories for you to explore.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
     }
 
     return (
