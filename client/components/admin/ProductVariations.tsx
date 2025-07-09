@@ -228,6 +228,18 @@ export function ProductVariations({
         return;
       }
 
+      if (
+        !formData.price_override ||
+        parseFloat(formData.price_override) <= 0
+      ) {
+        toast({
+          title: "Validation Error",
+          description: "Price is required and must be greater than 0.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Create variation data for current schema
       const variationData = {
         product_id: productId,
