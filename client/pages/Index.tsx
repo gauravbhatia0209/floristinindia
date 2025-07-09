@@ -354,10 +354,10 @@ export default function Index() {
     return (
       <section
         key={section.id}
-        className="relative min-h-[450px] md:min-h-[500px] flex items-center justify-center overflow-hidden"
+        className="relative min-h-[450px] md:min-h-[500px] overflow-hidden"
         style={{
           backgroundImage: content?.background_image
-            ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${content.background_image})`
+            ? `url(${content.background_image})`
             : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -369,81 +369,164 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-rose" />
         )}
 
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/30" />
+        {/* Modern diagonal overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-transparent" />
 
-        {/* Subtle decorative elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div
-            className="absolute top-10 right-10 w-20 h-20 bg-white/5 rounded-full blur-xl animate-float"
-            style={{ animationDelay: "0s", animationDuration: "8s" }}
-          />
-          <div
-            className="absolute bottom-20 left-20 w-16 h-16 bg-rose-300/10 rounded-full blur-lg animate-float"
-            style={{ animationDelay: "2s", animationDuration: "10s" }}
-          />
-          <div
-            className="absolute top-1/3 left-10 w-12 h-12 bg-peach/10 rounded-full blur-md animate-float"
-            style={{ animationDelay: "4s", animationDuration: "12s" }}
-          />
-        </div>
-
-        <div className="container relative z-20 text-center text-white">
-          <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
-            {/* Main Heading */}
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight animate-entrance">
-                {section.title || "Fresh Flowers"}
-              </h1>
+        <div className="container relative z-20 h-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[450px] md:min-h-[500px]">
+            {/* Content Section - Left Side */}
+            <div className="space-y-8 text-white py-16 lg:py-0">
+              {/* Badge/Subtitle */}
               {section.subtitle && (
-                <h2
-                  className="text-xl md:text-2xl lg:text-3xl font-medium text-peach animate-entrance"
-                  style={{ animationDelay: "0.2s" }}
-                >
-                  {section.subtitle}
-                </h2>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 backdrop-blur-md rounded-full border border-white/30 animate-entrance">
+                  <div className="w-2 h-2 bg-peach rounded-full animate-pulse" />
+                  <span className="text-sm font-medium text-peach uppercase tracking-wide">
+                    {section.subtitle}
+                  </span>
+                </div>
               )}
-            </div>
 
-            {/* Description */}
-            {content?.description && (
-              <p
-                className="text-base md:text-lg lg:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed animate-entrance"
-                style={{ animationDelay: "0.4s" }}
+              {/* Main Heading */}
+              <h1
+                className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] animate-entrance"
+                style={{ animationDelay: "0.2s" }}
               >
-                {content.description}
-              </p>
-            )}
+                <span className="block">{section.title || "Fresh"}</span>
+                <span className="block text-peach">Flowers</span>
+              </h1>
 
-            {/* CTA Buttons */}
-            <div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-entrance pt-4"
-              style={{ animationDelay: "0.6s" }}
-            >
-              <Button
-                size="lg"
-                variant="secondary"
-                className="text-base md:text-lg px-8 py-3 min-w-[160px] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                asChild
+              {/* Description */}
+              {content?.description && (
+                <p
+                  className="text-lg md:text-xl text-gray-200 leading-relaxed max-w-lg animate-entrance"
+                  style={{ animationDelay: "0.4s" }}
+                >
+                  {content.description}
+                </p>
+              )}
+
+              {/* CTA Buttons */}
+              <div
+                className="flex flex-col sm:flex-row gap-4 animate-entrance"
+                style={{ animationDelay: "0.6s" }}
               >
-                <Link to={content?.button_link || "/products"}>
-                  {content?.button_text || "Shop Now"}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-
-              {content?.secondary_button_text && (
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="text-base md:text-lg px-8 py-3 min-w-[160px] border-2 border-white text-white hover:bg-white hover:text-primary shadow-lg transition-all duration-300 hover:scale-105"
+                  className="bg-white text-primary hover:bg-gray-100 text-lg px-10 py-4 h-auto font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 rounded-full"
                   asChild
                 >
-                  <Link to={content?.secondary_button_link || "/products"}>
-                    {content.secondary_button_text}
+                  <Link to={content?.button_link || "/products"}>
+                    {content?.button_text || "Shop Now"}
+                    <ArrowRight className="ml-3 w-5 h-5" />
                   </Link>
                 </Button>
-              )}
+
+                {content?.secondary_button_text && (
+                  <Button
+                    size="lg"
+                    variant="ghost"
+                    className="border-2 border-white/70 text-white hover:bg-white hover:text-primary text-lg px-10 py-4 h-auto font-bold backdrop-blur-sm transition-all duration-300 hover:scale-105 rounded-full"
+                    asChild
+                  >
+                    <Link to={content?.secondary_button_link || "/products"}>
+                      {content.secondary_button_text}
+                    </Link>
+                  </Button>
+                )}
+              </div>
+
+              {/* Trust Indicators */}
+              <div
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4 animate-entrance"
+                style={{ animationDelay: "0.8s" }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-gold text-gold" />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium text-white/90">
+                    4.9/5 (2,500+ reviews)
+                  </span>
+                </div>
+                <div className="hidden sm:block w-px h-6 bg-white/30" />
+                <div className="flex items-center gap-4 text-sm text-white/80">
+                  <span className="flex items-center gap-2">
+                    <Truck className="w-4 h-4" />
+                    Same Day Delivery
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Fresh Guarantee
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Visual Section - Right Side */}
+            <div className="relative hidden lg:flex items-center justify-center">
+              <div className="relative w-96 h-96">
+                {/* Main floating card */}
+                <div className="absolute inset-0 bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 shadow-2xl animate-gentle-float">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl" />
+
+                  {/* Content inside card */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center space-y-4 p-8">
+                      <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-4xl">
+                        🌺
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-white font-semibold text-lg">
+                          Premium Quality
+                        </h3>
+                        <p className="text-white/70 text-sm">
+                          Hand-picked fresh flowers
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating decorative elements */}
+                <div className="absolute -inset-20">
+                  <div
+                    className="absolute top-8 right-4 w-16 h-16 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                    style={{ animationDelay: "0s", animationDuration: "6s" }}
+                  >
+                    <span className="text-2xl">🌸</span>
+                  </div>
+
+                  <div
+                    className="absolute bottom-12 left-8 w-20 h-20 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                    style={{ animationDelay: "2s", animationDuration: "8s" }}
+                  >
+                    <span className="text-3xl">🌹</span>
+                  </div>
+
+                  <div
+                    className="absolute top-20 left-4 w-12 h-12 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                    style={{ animationDelay: "4s", animationDuration: "10s" }}
+                  >
+                    <span className="text-xl">🌻</span>
+                  </div>
+
+                  <div
+                    className="absolute bottom-4 right-16 w-14 h-14 bg-white/15 backdrop-blur-xl rounded-xl border border-white/30 flex items-center justify-center shadow-xl animate-float"
+                    style={{ animationDelay: "1s", animationDuration: "7s" }}
+                  >
+                    <span className="text-2xl">🌷</span>
+                  </div>
+                </div>
+
+                {/* Background glow effects */}
+                <div className="absolute inset-0 bg-white/5 rounded-full blur-3xl animate-glow-pulse" />
+                <div
+                  className="absolute inset-8 bg-rose-300/10 rounded-full blur-2xl animate-glow-pulse"
+                  style={{ animationDelay: "2s" }}
+                />
+              </div>
             </div>
           </div>
         </div>
