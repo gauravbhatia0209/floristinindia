@@ -120,45 +120,15 @@ export default function Products() {
     }
   }
 
-  async function filterAndSortProducts() {
+  function filterAndSortProducts() {
     let filtered = [...products];
 
-    // Filter by categories
+    // Filter by categories - for now, use legacy single category
+    // TODO: Enhance this once multi-category assignments are available
     if (selectedCategories.length > 0) {
-      // Check both multi-category assignments and legacy single category
-      const filteredByCategory: Product[] = [];
-
-      for (const product of filtered) {
-        // Check if product is assigned to any of the selected categories
-        try {
-          const { data: assignments } = await supabase
-            .from("product_category_assignments")
-            .select("category_id")
-            .eq("product_id", product.id);
-
-          if (assignments && assignments.length > 0) {
-            // Product has multi-category assignments
-            const productCategories = assignments.map((a) => a.category_id);
-            if (
-              selectedCategories.some((cat) => productCategories.includes(cat))
-            ) {
-              filteredByCategory.push(product);
-            }
-          } else {
-            // Fall back to legacy single category
-            if (selectedCategories.includes(product.category_id)) {
-              filteredByCategory.push(product);
-            }
-          }
-        } catch (error) {
-          // If query fails, fall back to legacy single category
-          if (selectedCategories.includes(product.category_id)) {
-            filteredByCategory.push(product);
-          }
-        }
-      }
-
-      filtered = filteredByCategory;
+      filtered = filtered.filter((product) =>
+        selectedCategories.includes(product.category_id),
+      );
     }
 
     // Filter by price range
