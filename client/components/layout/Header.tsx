@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   ShoppingCart,
@@ -9,6 +9,8 @@ import {
   X,
   Phone,
   Mail,
+  Package,
+  Tag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ProductCategory } from "@shared/database.types";
+import { ProductCategory, Product } from "@shared/database.types";
 import { useCart } from "@/hooks/useCart";
 
 interface SiteSettingsMap {
