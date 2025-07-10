@@ -252,6 +252,16 @@ export default function Products() {
 
   return (
     <div className="container py-8">
+      {/* Debug Info (temporary) */}
+      <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+        <strong>Debug Info:</strong>
+        <div>Category Slug: {categorySlug || "None"}</div>
+        <div>Current Category: {currentCategory?.name || "None"}</div>
+        <div>Total Products Loaded: {products.length}</div>
+        <div>Filtered Products: {filteredProducts.length}</div>
+        <div>Selected Categories: {selectedCategories.length}</div>
+      </div>
+
       {/* Header */}
       <div className="mb-8">
         {/* Breadcrumb */}
