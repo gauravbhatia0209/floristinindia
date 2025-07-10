@@ -47,8 +47,7 @@ export default function Products() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("name");
 
-  const [searchParams] = useSearchParams();
-  const categorySlug = searchParams.get("category");
+  const { slug: categorySlug } = useParams<{ slug: string }>();
 
   const { addItem } = useCart();
 
