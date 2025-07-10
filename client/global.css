@@ -347,6 +347,16 @@
     animation: fadeInUp 0.2s ease-out;
   }
 
+  /* Hide scrollbar while maintaining scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
