@@ -298,6 +298,40 @@ export default function Products() {
               </PopoverContent>
             </Popover>
 
+            {/* Sort By Dropdown */}
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="h-9 min-w-[140px] gap-2 flex-shrink-0">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Sort by Name</SelectItem>
+                <SelectItem value="price_low">Price: Low to High</SelectItem>
+                <SelectItem value="price_high">Price: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* View Mode Toggle */}
+            <div className="flex items-center border rounded-md flex-shrink-0">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="rounded-r-none h-8 w-8 p-0"
+                title="Grid View"
+              >
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="rounded-l-none h-8 w-8 p-0"
+                title="List View"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+
             {/* Active Filters Display */}
             {(selectedCategories.length > 0 ||
               priceRange[0] > 0 ||
