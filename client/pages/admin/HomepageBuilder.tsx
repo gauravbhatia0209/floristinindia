@@ -1261,7 +1261,9 @@ function EditSectionFormContent({
       )}
 
       {/* Hero Carousel Specific Fields */}
-      {section.type === "hero_carousel" && (
+      {(section.type === "hero_carousel" ||
+        (section.type === "hero" &&
+          (section.content as any)?.carousel_mode)) && (
         <div className="space-y-4">
           <div>
             <Label>Carousel Images</Label>
