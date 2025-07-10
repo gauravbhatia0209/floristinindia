@@ -336,20 +336,18 @@ export default function Products() {
             {(selectedCategories.length > 0 ||
               priceRange[0] > 0 ||
               priceRange[1] < 5000) && (
-              <div className="flex items-center gap-2 ml-auto">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 px-3 text-xs"
-                  onClick={() => {
-                    setSelectedCategories([]);
-                    setPriceRange([0, 5000]);
-                  }}
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  Clear All
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 px-3 text-xs flex-shrink-0 ml-auto"
+                onClick={() => {
+                  setSelectedCategories([]);
+                  setPriceRange([0, 5000]);
+                }}
+              >
+                <X className="w-3 h-3 mr-1" />
+                Clear All
+              </Button>
             )}
           </div>
         </div>
