@@ -76,6 +76,20 @@ const sectionTemplates: SectionTemplate[] = [
     },
   },
   {
+    type: "hero_carousel",
+    name: "Hero Image Carousel",
+    icon: Image,
+    description: "Full-width image carousel with auto-cycle and navigation",
+    defaultContent: {
+      images: [],
+      autoplay: true,
+      autoplay_delay: 5000,
+      show_navigation: true,
+      show_dots: true,
+      height: 500,
+    },
+  },
+  {
     type: "features",
     name: "Features Section",
     icon: Zap,
