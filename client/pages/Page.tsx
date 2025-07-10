@@ -10,6 +10,7 @@ import TermsConditionsPage from "@/components/pages/TermsConditionsPage";
 import DeliveryInfoPage from "@/components/pages/DeliveryInfoPage";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NotFound from "@/pages/NotFound";
+import { SectionRenderer, Section } from "@/components/SectionRenderer";
 
 interface PageData {
   id: string;
