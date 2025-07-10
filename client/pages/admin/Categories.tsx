@@ -634,6 +634,53 @@ export default function AdminCategories() {
         return;
       }
 
+      // Check for products that reference this category as main category
+      const { data: mainCategoryProducts, error: mainCatError } = await supabase
+        .from("products")
+        .select("id, name")
+        .eq("category_id", categoryId)
+        .limit(5);
+
+      if (mainCatError) {
+        console.error("Error checking main category products:", mainCatError);
+        alert("Unable to verify category usage. Please try again.");
+        return;
+      }
+
+      // Check for products that reference this category as subcategory
+      const { data: subCategoryProducts, error: subCatError } = await supabase
+        .from("products")
+        .select("id, name")
+        .eq("subcategory_id", categoryId)
+        .limit(5);
+
+      if (subCatError) {
+        console.error("Error checking subcategory products:", subCatError);
+        alert("Unable to verify category usage. Please try again.");
+        return;
+      }
+
+      const totalProducts =
+        (mainCategoryProducts?.length || 0) +
+        (subCategoryProducts?.length || 0);
+
+      if (totalProducts > 0) {
+        const productList = [
+          ...(mainCategoryProducts || []).map(
+            (p) => `${p.name} (main category)`,
+          ),
+          ...(subCategoryProducts || []).map((p) => `${p.name} (subcategory)`),
+        ].slice(0, 5);
+
+        const moreText =
+          totalProducts > 5 ? ` and ${totalProducts - 5} more` : "";
+
+        alert(
+          `Cannot delete this category. It is being used by ${totalProducts} product(s):\n\n${productList.join("\n")}${moreText}\n\nPlease reassign or delete these products first, or change their category assignment.`,
+        );
+        return;
+      }
+
       const { error } = await supabase
         .from("product_categories")
         .delete()
