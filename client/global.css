@@ -460,4 +460,57 @@
       transform: scale(1);
     }
   }
+
+  /* Hero Carousel Styling */
+  .hero-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-carousel-slide {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .hero-carousel-dots {
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 8px 12px;
+  }
+
+  .hero-carousel-dot {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero-carousel-dot:hover {
+    transform: scale(1.2);
+  }
+
+  .hero-carousel-nav {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px);
+  }
+
+  .hero-carousel-nav:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Responsive carousel height */
+  @media (max-width: 768px) {
+    .hero-carousel {
+      min-height: 300px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-carousel {
+      min-height: 250px;
+    }
+  }
 }
