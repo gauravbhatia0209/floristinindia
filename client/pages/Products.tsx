@@ -389,12 +389,18 @@ export default function Products() {
                   size="sm"
                   className="h-9 px-3 text-xs flex-shrink-0 w-fit"
                   onClick={() => {
-                    setSelectedCategories([]);
+                    if (categorySlug && currentCategory) {
+                      // If on category page, reset to just the current category
+                      setSelectedCategories([currentCategory.id]);
+                    } else {
+                      // If on all products page, clear all selections
+                      setSelectedCategories([]);
+                    }
                     setPriceRange([0, 5000]);
                   }}
                 >
                   <X className="w-3 h-3 mr-1" />
-                  Clear All
+                  {categorySlug ? "Reset Filters" : "Clear All"}
                 </Button>
               )}
             </div>
