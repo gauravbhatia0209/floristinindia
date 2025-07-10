@@ -76,11 +76,12 @@ const sectionTemplates: SectionTemplate[] = [
     },
   },
   {
-    type: "hero_carousel",
+    type: "hero",
     name: "Hero Image Carousel",
     icon: Image,
     description: "Full-width image carousel with auto-cycle and navigation",
     defaultContent: {
+      carousel_mode: true,
       images: [""],
       autoplay: true,
       autoplay_delay: 5000,
