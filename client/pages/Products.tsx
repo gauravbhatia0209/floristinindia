@@ -244,7 +244,7 @@ export default function Products() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-9 gap-2 min-w-[140px] flex-shrink-0 px-3"
+                  className="h-9 gap-2 w-fit max-w-[200px] min-w-[130px] flex-shrink-0 px-3"
                 >
                   <span className="truncate">Price Range</span>
                   {(priceRange[0] > 0 || priceRange[1] < 5000) && (
