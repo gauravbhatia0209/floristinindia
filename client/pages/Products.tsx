@@ -138,14 +138,20 @@ export default function Products() {
               .eq("category_id", currentCategoryData.id)
               .eq("is_active", true);
 
-            console.log("Legacy products:", { legacyProducts, legacyError });
+            if (import.meta.env.DEV) {
+              console.log("Legacy products:", { legacyProducts, legacyError });
+            }
             productsData = legacyProducts || [];
           }
         } else {
-          console.log("Category not found for slug:", categorySlug);
+          if (import.meta.env.DEV) {
+            console.log("Category not found for slug:", categorySlug);
+          }
         }
       } else {
-        console.log("No category slug, fetching all products");
+        if (import.meta.env.DEV) {
+          console.log("No category slug, fetching all products");
+        }
         // Fetch all products
         const { data: allProducts } = await supabase
           .from("products")
