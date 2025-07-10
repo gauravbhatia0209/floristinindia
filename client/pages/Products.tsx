@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import {
-  Filter,
-  Grid,
-  List,
-  Star,
-  Heart,
-  ShoppingCart,
-  ChevronDown,
-  X,
-} from "lucide-react";
+import { Filter, Grid, List, Star, Heart, ShoppingCart, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -170,77 +161,179 @@ export default function Products() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-24 space-y-6">
-            <div>
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Filter className="w-4 h-4" />
-                Filters
-              </h3>
+      {/* Horizontal Filter Bar */}
+      <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+          {/* Filter Title */}
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <Filter className="w-4 h-4" />
+            <span>Filters:</span>
+          </div>
 
-              {/* Categories */}
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-3">Categories</h4>
-                  <div className="space-y-2">
-                    {categories.map((category) => (
-                      <div
-                        key={category.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={category.id}
-                          checked={selectedCategories.includes(category.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedCategories([
-                                ...selectedCategories,
-                                category.id,
-                              ]);
-                            } else {
-                              setSelectedCategories(
-                                selectedCategories.filter(
-                                  (id) => id !== category.id,
-                                ),
-                              );
-                            }
-                          }}
-                        />
-                        <Label htmlFor={category.id} className="text-sm">
-                          {category.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          {/* Filters Container */}
+          <div className="flex flex-wrap lg:flex-nowrap gap-3 lg:gap-4 flex-1">
+            {/* Categories Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-9 gap-2 min-w-[120px]">
+                  Categories
+                  {selectedCategories.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5 text-xs">
+                      {selectedCategories.length}
+                    </Badge>
+                  )}
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="start">
+                <DropdownMenuLabel>Select Categories</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {categories.map((category) => (
+                  <DropdownMenuCheckboxItem
+                    key={category.id}
+                    checked={selectedCategories.includes(category.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedCategories([
+                          ...selectedCategories,
+                          category.id,
+                        ]);
+                      } else {
+                        setSelectedCategories(
+                          selectedCategories.filter(
+                            (id) => id !== category.id,
+                          ),
+                        );
+                      }
+                    }}
+                  >
+                    {category.name}
+                  </DropdownMenuCheckboxItem>
+                ))}
+                {selectedCategories.length > 0 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full h-8 text-xs"
+                      onClick={() => setSelectedCategories([])}
+                    >
+                      Clear All
+                    </Button>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-                {/* Price Range */}
-                <div>
-                  <h4 className="font-medium mb-3">Price Range</h4>
-                  <div className="space-y-3">
-                    <Slider
-                      value={priceRange}
-                      onValueChange={setPriceRange}
-                      max={5000}
-                      min={0}
-                      step={100}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-muted-foreground">
+            {/* Price Range Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="h-9 gap-2 min-w-[140px]">
+                  Price Range
+                  {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+                    <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                      ₹{priceRange[0]}-₹{priceRange[1]}
+                    </Badge>
+                  )}
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium">Price Range</Label>
+                    <div className="mt-3 px-2">
+                      <Slider
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        max={5000}
+                        min={0}
+                        step={100}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground mt-2">
                       <span>₹{priceRange[0]}</span>
                       <span>₹{priceRange[1]}</span>
                     </div>
                   </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-8"
+                      onClick={() => setPriceRange([0, 5000])}
+                    >
+                      Reset
+                    </Button>
+                  </div>
                 </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Active Filters Display */}
+            {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+              <div className="flex items-center gap-2 ml-auto">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 px-3 text-xs"
+                  onClick={() => {
+                    setSelectedCategories([]);
+                    setPriceRange([0, 5000]);
+                  }}
+                >
+                  <X className="w-3 h-3 mr-1" />
+                  Clear All
+                </Button>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="lg:col-span-3">
+        {/* Active Filter Tags (Mobile-friendly) */}
+        {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
+            {selectedCategories.map((categoryId) => {
+              const category = categories.find((c) => c.id === categoryId);
+              return (
+                <Badge
+                  key={categoryId}
+                  variant="secondary"
+                  className="text-xs gap-1"
+                >
+                  {category?.name}
+                  <button
+                    onClick={() =>
+                      setSelectedCategories(
+                        selectedCategories.filter((id) => id !== categoryId),
+                      )
+                    }
+                    className="hover:bg-muted-foreground/20 rounded-full p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              );
+            })}
+            {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+              <Badge variant="secondary" className="text-xs gap-1">
+                ₹{priceRange[0]} - ₹{priceRange[1]}
+                <button
+                  onClick={() => setPriceRange([0, 5000])}
+                  className="hover:bg-muted-foreground/20 rounded-full p-0.5"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Products Section */}
+      <div>
           {/* Toolbar */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4">
