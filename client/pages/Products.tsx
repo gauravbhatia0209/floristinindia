@@ -356,14 +356,17 @@ export default function Products() {
         {(selectedCategories.length > 0 ||
           priceRange[0] > 0 ||
           priceRange[1] < 5000) && (
-          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
+          <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border/50">
+            <span className="text-xs text-muted-foreground font-medium">
+              Active filters:
+            </span>
             {selectedCategories.map((categoryId) => {
               const category = categories.find((c) => c.id === categoryId);
               return (
                 <Badge
                   key={categoryId}
                   variant="secondary"
-                  className="text-xs gap-1"
+                  className="text-xs gap-1 h-6"
                 >
                   {category?.name}
                   <button
@@ -372,7 +375,7 @@ export default function Products() {
                         selectedCategories.filter((id) => id !== categoryId),
                       )
                     }
-                    className="hover:bg-muted-foreground/20 rounded-full p-0.5"
+                    className="hover:bg-muted-foreground/20 rounded-full p-0.5 ml-1"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -380,11 +383,11 @@ export default function Products() {
               );
             })}
             {(priceRange[0] > 0 || priceRange[1] < 5000) && (
-              <Badge variant="secondary" className="text-xs gap-1">
+              <Badge variant="secondary" className="text-xs gap-1 h-6">
                 ₹{priceRange[0]} - ₹{priceRange[1]}
                 <button
                   onClick={() => setPriceRange([0, 5000])}
-                  className="hover:bg-muted-foreground/20 rounded-full p-0.5"
+                  className="hover:bg-muted-foreground/20 rounded-full p-0.5 ml-1"
                 >
                   <X className="w-3 h-3" />
                 </button>
