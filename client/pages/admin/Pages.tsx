@@ -437,6 +437,12 @@ function PageForm({
 
   const [sections, setSections] = useState<Section[]>(formData.sections);
 
+  // Custom function to update sections and sync with parent
+  const updateSections = (newSections: Section[]) => {
+    setSections(newSections);
+    onSectionsUpdate(newSections);
+  };
+
   // Auto-generate slug from title
   useEffect(() => {
     if (!page && formData.title) {
