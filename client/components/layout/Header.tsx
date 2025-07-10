@@ -736,7 +736,10 @@ export function Header() {
                             .map((result) => (
                               <button
                                 key={`mobile-product-${result.id}`}
-                                onClick={() => handleResultClick(result)}
+                                onClick={() => {
+                                  handleResultClick(result);
+                                  setIsSearchOpen(false);
+                                }}
                                 className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-center gap-3"
                               >
                                 <div className="w-8 h-8 bg-muted rounded-md flex-shrink-0 overflow-hidden">
