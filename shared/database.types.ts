@@ -947,6 +947,8 @@ export type ProductVariant =
   Database["public"]["Tables"]["product_variants"]["Row"];
 export type ProductCategory =
   Database["public"]["Tables"]["product_categories"]["Row"];
+export type ProductCategoryAssignment =
+  Database["public"]["Tables"]["product_category_assignments"]["Row"];
 export type Customer = Database["public"]["Tables"]["customers"]["Row"];
 export type Order = Database["public"]["Tables"]["orders"]["Row"];
 export type Coupon = Database["public"]["Tables"]["coupons"]["Row"];
