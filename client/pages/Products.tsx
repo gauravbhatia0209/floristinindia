@@ -57,10 +57,7 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    const runFiltering = async () => {
-      await filterAndSortProducts();
-    };
-    runFiltering();
+    filterAndSortProducts();
   }, [products, selectedCategories, priceRange, sortBy, categorySlug]);
 
   async function fetchData() {
