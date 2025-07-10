@@ -183,19 +183,28 @@ export default function Products() {
   function filterAndSortProducts() {
     let filtered = [...products];
 
-    // Filter by categories - since we're using fetchProductsWithCategories when filtering by category slug,
-    // we only need additional filtering when user selects multiple categories manually
-    if (selectedCategories.length > 0 && !categorySlug) {
-      // Only apply manual category filtering when not already on a category page
+    console.log("filterAndSortProducts called with:", {
+      productsCount: products.length,
+      selectedCategories: selectedCategories.length,
+      categorySlug,
+      currentCategory: currentCategory?.name,
+    });
+
+    // When on a category page, products are already filtered by fetchData
+    // Only apply additional category filtering if:
+    // 1. We're NOT on a category page (categorySlug is null) AND user selected categories
+    // 2. OR we're on a category page AND user selected different/additional categories
+    if (!categorySlug && selectedCategories.length > 0) {
+      // On "All Products" page with manual category selection
       filtered = filtered.filter((product) =>
         selectedCategories.includes(product.category_id),
       );
-    } else if (selectedCategories.length > 1 && categorySlug) {
-      // If on category page but user selected additional categories
-      filtered = filtered.filter((product) =>
-        selectedCategories.includes(product.category_id),
+      console.log(
+        "Applied manual category filtering, result:",
+        filtered.length,
       );
     }
+    // If on category page, don't apply additional category filtering unless user deliberately changes selection
 
     // Filter by price range
     filtered = filtered.filter((product) => {
