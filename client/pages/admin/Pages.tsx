@@ -285,12 +285,10 @@ export default function Pages() {
       {/* Add/Edit Page Dialog */}
       <Dialog
         open={isAddingPage || !!editingPage}
-        onOpenChange={(open) => {
-          // Only close if no section is being edited
-          if (!open && !editingSection) {
-            setIsAddingPage(false);
-            setEditingPage(null);
-          }
+        onOpenChange={() => {
+          setIsAddingPage(false);
+          setEditingPage(null);
+          setEditingSection(null); // Clear section editing when page dialog closes
         }}
       >
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
@@ -305,44 +303,27 @@ export default function Pages() {
             onCancel={() => {
               setIsAddingPage(false);
               setEditingPage(null);
+              setEditingSection(null);
             }}
             onSectionEdit={setEditingSection}
+            editingSection={editingSection}
+            onSectionSave={(updatedSection) => {
+              // Update the section in the current page being edited
+              if (editingPage) {
+                const updatedSections = (
+                  (editingPage.content as Section[]) || []
+                ).map((section) =>
+                  section.id === updatedSection.id ? updatedSection : section,
+                );
+                setEditingPage({
+                  ...editingPage,
+                  content: updatedSections,
+                });
+              }
+              setEditingSection(null);
+            }}
+            onSectionCancel={() => setEditingSection(null)}
           />
-
-          {/* Nested Section Editor Dialog */}
-          {editingSection && (
-            <Dialog
-              open={!!editingSection}
-              onOpenChange={() => setEditingSection(null)}
-            >
-              <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Edit Section</DialogTitle>
-                </DialogHeader>
-                <SectionEditor
-                  section={editingSection}
-                  onSave={(updatedSection) => {
-                    // Update the section in the current page being edited
-                    if (editingPage) {
-                      const updatedSections = (
-                        (editingPage.content as Section[]) || []
-                      ).map((section) =>
-                        section.id === updatedSection.id
-                          ? updatedSection
-                          : section,
-                      );
-                      setEditingPage({
-                        ...editingPage,
-                        content: updatedSections,
-                      });
-                    }
-                    setEditingSection(null);
-                  }}
-                  onCancel={() => setEditingSection(null)}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
         </DialogContent>
       </Dialog>
     </div>
