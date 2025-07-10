@@ -81,6 +81,34 @@ export interface Database {
         };
       };
 
+      // Product Category Assignments - Junction table for multi-category support
+      product_category_assignments: {
+        Row: {
+          id: string;
+          product_id: string;
+          category_id: string;
+          is_primary: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          category_id: string;
+          is_primary?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          category_id?: string;
+          is_primary?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+
       // Product Variants
       product_variants: {
         Row: {
