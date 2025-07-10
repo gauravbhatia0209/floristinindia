@@ -497,7 +497,15 @@ function PageForm({
               </div>
               <SectionEditor
                 section={editingSection}
-                onSave={onSectionSave}
+                onSave={(updatedSection) => {
+                  // Update the local sections state
+                  const updatedSections = sections.map((section) =>
+                    section.id === updatedSection.id ? updatedSection : section,
+                  );
+                  updateSections(updatedSections);
+                  // Also call the parent callback
+                  onSectionSave(updatedSection);
+                }}
                 onCancel={onSectionCancel}
               />
             </div>
@@ -505,7 +513,7 @@ function PageForm({
             // Section Builder
             <SectionBuilder
               sections={sections}
-              onSectionsChange={setSections}
+              onSectionsChange={updateSections}
               pageType="pages"
               onSectionEdit={onSectionEdit}
             />
