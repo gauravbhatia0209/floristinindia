@@ -970,19 +970,6 @@ export default function Index() {
                     <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                       {product.name}
                     </h3>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="w-4 h-4 fill-gold text-gold"
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        (4.8)
-                      </span>
-                    </div>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-primary">
