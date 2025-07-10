@@ -835,7 +835,7 @@ export default function Index() {
       validProducts.map((p) => p.name),
     );
     console.log(
-      "🖼️ Product Carousel: Image status for each product:",
+      "���️ Product Carousel: Image status for each product:",
       validProducts.map((p) => ({
         name: p.name,
         hasImages: p.images && Array.isArray(p.images) && p.images.length > 0,
@@ -902,7 +902,7 @@ export default function Index() {
                 to={`/product/${product.slug}`}
                 className="group"
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden">
+                <Card className="border-0 shadow-lg overflow-hidden">
                   <div className="aspect-square bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden">
                     {(() => {
                       const hasValidImage =
