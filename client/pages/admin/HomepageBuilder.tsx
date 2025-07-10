@@ -58,6 +58,7 @@ interface SectionTemplate {
   icon: any;
   description: string;
   defaultContent: any;
+  isCarousel?: boolean;
 }
 
 const sectionTemplates: SectionTemplate[] = [
