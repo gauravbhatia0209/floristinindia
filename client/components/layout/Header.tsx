@@ -425,8 +425,8 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 flex-1 ml-8">
-            {menuItems.slice(0, 6).map((item) => {
+          <nav className="hidden lg:flex items-center gap-0.5 flex-1 ml-4 xl:ml-6">
+            {menuItems.map((item) => {
               const href =
                 item.category_id && item.product_categories
                   ? `/category/${item.product_categories.slug}`
@@ -441,22 +441,24 @@ export function Header() {
                   <Link
                     to={href}
                     target={item.target}
-                    className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors inline-flex items-center"
+                    className="px-2 xl:px-2.5 py-1.5 xl:py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors inline-flex items-center text-sm xl:text-base whitespace-nowrap"
                   >
-                    {item.name}
-                    <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
+                    <span className="truncate max-w-[100px] xl:max-w-none">
+                      {item.name}
+                    </span>
+                    <ChevronDown className="w-3 h-3 xl:w-4 xl:h-4 ml-0.5 xl:ml-1 transition-transform group-hover:rotate-180 flex-shrink-0" />
                   </Link>
 
                   {/* Invisible hover bridge */}
-                  <div className="absolute top-full left-0 w-56 h-2 bg-transparent group-hover:block hidden"></div>
+                  <div className="absolute top-full left-0 w-48 xl:w-56 h-2 bg-transparent group-hover:block hidden"></div>
 
                   {/* Hover Dropdown */}
-                  <div className="absolute top-full left-0 mt-2 w-56 hover-dropdown rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-48 xl:w-56 hover-dropdown rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
                     <div className="py-3">
                       <Link
                         to={href}
                         target={item.target}
-                        className="hover-dropdown-item block px-4 py-2.5 text-sm font-medium text-primary border-b border-border mb-2"
+                        className="hover-dropdown-item block px-3 xl:px-4 py-2 xl:py-2.5 text-xs xl:text-sm font-medium text-primary border-b border-border mb-2"
                       >
                         View All {item.name}
                       </Link>
@@ -465,7 +467,7 @@ export function Header() {
                           <Link
                             key={subcategory.id}
                             to={`/category/${subcategory.slug}`}
-                            className="hover-dropdown-item block px-4 py-2 text-sm text-foreground rounded-md mx-2"
+                            className="hover-dropdown-item block px-3 xl:px-4 py-1.5 xl:py-2 text-xs xl:text-sm text-foreground rounded-md mx-2"
                           >
                             {subcategory.name}
                           </Link>
@@ -479,20 +481,74 @@ export function Header() {
                   key={item.id}
                   to={href}
                   target={item.target}
-                  className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="px-2 xl:px-2.5 py-1.5 xl:py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-sm xl:text-base whitespace-nowrap"
                 >
-                  {item.name}
+                  <span className="truncate max-w-[100px] xl:max-w-none">
+                    {item.name}
+                  </span>
                 </Link>
               );
             })}
-            {menuItems.length > 6 && (
-              <Link
-                to="/products"
-                className="px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                More...
-              </Link>
-            )}
+          </nav>
+
+          {/* Tablet Navigation */}
+          <nav className="hidden md:flex lg:hidden items-center gap-0.5 flex-1 ml-3 overflow-x-auto scrollbar-hide">
+            {menuItems.map((item) => {
+              const href =
+                item.category_id && item.product_categories
+                  ? `/category/${item.product_categories.slug}`
+                  : item.url || "#";
+
+              const hasSubcategories =
+                item.product_categories?.subcategories &&
+                item.product_categories.subcategories.length > 0;
+
+              return hasSubcategories ? (
+                <div key={item.id} className="relative group flex-shrink-0">
+                  <Link
+                    to={href}
+                    target={item.target}
+                    className="px-1.5 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors inline-flex items-center text-xs whitespace-nowrap"
+                  >
+                    <span className="truncate max-w-[80px]">{item.name}</span>
+                    <ChevronDown className="w-3 h-3 ml-0.5 transition-transform group-hover:rotate-180 flex-shrink-0" />
+                  </Link>
+
+                  {/* Hover Dropdown for Tablet */}
+                  <div className="absolute top-full left-0 mt-2 w-44 hover-dropdown rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-2 group-hover:translate-y-0 z-50">
+                    <div className="py-2">
+                      <Link
+                        to={href}
+                        target={item.target}
+                        className="hover-dropdown-item block px-3 py-2 text-xs font-medium text-primary border-b border-border mb-1"
+                      >
+                        View All {item.name}
+                      </Link>
+                      {item.product_categories.subcategories?.map(
+                        (subcategory) => (
+                          <Link
+                            key={subcategory.id}
+                            to={`/category/${subcategory.slug}`}
+                            className="hover-dropdown-item block px-3 py-1.5 text-xs text-foreground rounded-md mx-2"
+                          >
+                            {subcategory.name}
+                          </Link>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.id}
+                  to={href}
+                  target={item.target}
+                  className="px-1.5 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-xs whitespace-nowrap flex-shrink-0"
+                >
+                  <span className="truncate max-w-[80px]">{item.name}</span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop Search Icon */}
