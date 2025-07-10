@@ -481,15 +481,137 @@ export function Header() {
           </nav>
 
           {/* Search */}
-          <div className="hidden md:flex flex-1 max-w-md relative">
+          <div
+            className="hidden md:flex flex-1 max-w-md relative"
+            ref={searchRef}
+          >
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search flowers, occasions..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10 pr-4"
+                onFocus={() => searchQuery && setShowSearchResults(true)}
               />
+
+              {/* Search Results Dropdown */}
+              {showSearchResults && (
+                <div className="absolute top-full left-0 w-full mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  {isSearching ? (
+                    <div className="p-4 text-center text-muted-foreground">
+                      <Search className="w-4 h-4 animate-spin mx-auto mb-2" />
+                      Searching...
+                    </div>
+                  ) : searchResults.length > 0 ? (
+                    <div className="py-2">
+                      {/* Products Section */}
+                      {searchResults.filter(
+                        (result) => result.type === "product",
+                      ).length > 0 && (
+                        <div>
+                          <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b">
+                            Products
+                          </div>
+                          {searchResults
+                            .filter((result) => result.type === "product")
+                            .map((result) => (
+                              <button
+                                key={`product-${result.id}`}
+                                onClick={() => handleResultClick(result)}
+                                className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-center gap-3"
+                              >
+                                <div className="w-10 h-10 bg-muted rounded-md flex-shrink-0 overflow-hidden">
+                                  {result.image ? (
+                                    <img
+                                      src={result.image}
+                                      alt={result.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <Package className="w-6 h-6 text-muted-foreground m-auto mt-2" />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm truncate">
+                                    {result.name}
+                                  </div>
+                                  {result.price && (
+                                    <div className="text-xs text-muted-foreground">
+                                      {result.sale_price &&
+                                      result.sale_price < result.price ? (
+                                        <>
+                                          <span className="font-medium text-green-600">
+                                            ₹{result.sale_price}
+                                          </span>
+                                          <span className="line-through ml-1">
+                                            ₹{result.price}
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <span>₹{result.price}</span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </button>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* Categories Section */}
+                      {searchResults.filter(
+                        (result) => result.type === "category",
+                      ).length > 0 && (
+                        <div>
+                          <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-t">
+                            Categories
+                          </div>
+                          {searchResults
+                            .filter((result) => result.type === "category")
+                            .map((result) => (
+                              <button
+                                key={`category-${result.id}`}
+                                onClick={() => handleResultClick(result)}
+                                className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-center gap-3"
+                              >
+                                <div className="w-10 h-10 bg-muted rounded-md flex-shrink-0 overflow-hidden">
+                                  {result.image ? (
+                                    <img
+                                      src={result.image}
+                                      alt={result.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <Tag className="w-6 h-6 text-muted-foreground m-auto mt-2" />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm truncate">
+                                    {result.name}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    Category
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    searchQuery && (
+                      <div className="p-4 text-center text-muted-foreground">
+                        <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <div className="text-sm">No matching results</div>
+                        <div className="text-xs">
+                          Try searching for flowers, categories, or occasions
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
