@@ -171,7 +171,7 @@ export default function Products() {
       </div>
 
       {/* Unified Horizontal Filter Bar */}
-      <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm">
+      <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm border-border/50">
         <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
           {/* Filter Title */}
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
