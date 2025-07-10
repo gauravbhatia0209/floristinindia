@@ -849,10 +849,15 @@ export default function AdminCategories() {
             Organize your flower catalog with categories and subcategories
           </p>
         </div>
-        <Button onClick={() => startEditing()}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Category
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => fetchCategories()}>
+            Refresh
+          </Button>
+          <Button onClick={() => startEditing()}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Category
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
