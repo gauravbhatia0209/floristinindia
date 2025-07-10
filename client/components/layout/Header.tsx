@@ -61,10 +61,16 @@ export function Header() {
   const [siteSettings, setSiteSettings] = useState<SiteSettingsMap>({});
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
     null,
   );
   const { items } = useCart();
+  const navigate = useNavigate();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout>();
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
