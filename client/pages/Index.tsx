@@ -239,7 +239,10 @@ export default function Index() {
             .in("id", selectedProductIds)
             .eq("is_active", true);
 
-          console.log("��� Product Showcase: Raw query results:", productsData);
+          console.log(
+            "����� Product Showcase: Raw query results:",
+            productsData,
+          );
           console.log(
             "🎯 Product Showcase: Query error (if any):",
             productsError,
@@ -704,44 +707,47 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {validCategories.map((category) => (
-              <Link
-                key={category.id}
-                to={`/category/${category.slug}`}
-                className="group"
-              >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden">
-                  <div className="aspect-square bg-gradient-to-br from-rose/20 to-peach/20 flex items-center justify-center text-6xl">
-                    {category.image_url ? (
-                      <img
-                        src={category.image_url}
-                        alt={category.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          const placeholder =
-                            e.currentTarget.parentElement?.querySelector(
-                              ".fallback-emoji",
-                            );
-                          if (placeholder) placeholder.style.display = "block";
-                        }}
-                      />
-                    ) : null}
-                    <span
-                      className={`fallback-emoji animate-pulse ${category.image_url ? "hidden" : "block"}`}
-                    >
-                      🌸
-                    </span>
-                  </div>
-                  <CardContent className="p-4 text-center">
-                    <h3 className="font-semibold group-hover:text-primary transition-colors">
-                      {category.name}
-                    </h3>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-6xl">
+              {validCategories.map((category) => (
+                <Link
+                  key={category.id}
+                  to={`/category/${category.slug}`}
+                  className="group"
+                >
+                  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden h-full">
+                    <div className="aspect-square bg-gradient-to-br from-rose/20 to-peach/20 flex items-center justify-center text-4xl">
+                      {category.image_url ? (
+                        <img
+                          src={category.image_url}
+                          alt={category.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            const placeholder =
+                              e.currentTarget.parentElement?.querySelector(
+                                ".fallback-emoji",
+                              );
+                            if (placeholder)
+                              placeholder.style.display = "block";
+                          }}
+                        />
+                      ) : null}
+                      <span
+                        className={`fallback-emoji animate-pulse ${category.image_url ? "hidden" : "block"}`}
+                      >
+                        🌸
+                      </span>
+                    </div>
+                    <CardContent className="p-3 text-center">
+                      <h3 className="text-sm font-semibold group-hover:text-primary transition-colors leading-tight">
+                        {category.name}
+                      </h3>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
