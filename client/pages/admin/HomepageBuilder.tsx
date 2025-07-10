@@ -1209,6 +1209,190 @@ function EditSectionFormContent({
         </div>
       )}
 
+      {/* Hero Carousel Specific Fields */}
+      {section.type === "hero_carousel" && (
+        <div className="space-y-4">
+          <div>
+            <Label>Carousel Images</Label>
+            <div className="space-y-3">
+              {((formData.content as any)?.images || []).map(
+                (image: string, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-3 border rounded-lg"
+                  >
+                    <div className="w-20 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={`Slide ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Image className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <SingleImageUpload
+                        imageUrl={image}
+                        onImageChange={(newImage) => {
+                          const images = [
+                            ...((formData.content as any)?.images || []),
+                          ];
+                          images[index] = newImage;
+                          setFormData({
+                            ...formData,
+                            content: {
+                              ...formData.content,
+                              images,
+                            },
+                          });
+                        }}
+                        label={`Slide ${index + 1}`}
+                        maxSizeMB={5}
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const images = [
+                          ...((formData.content as any)?.images || []),
+                        ];
+                        images.splice(index, 1);
+                        setFormData({
+                          ...formData,
+                          content: {
+                            ...formData.content,
+                            images,
+                          },
+                        });
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ),
+              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const images = [
+                    ...((formData.content as any)?.images || []),
+                    "",
+                  ];
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      images,
+                    },
+                  });
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Slide
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Auto-play Delay (ms)</Label>
+              <Input
+                type="number"
+                min="1000"
+                max="10000"
+                step="500"
+                value={(formData.content as any)?.autoplay_delay || 5000}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      autoplay_delay: parseInt(e.target.value),
+                    },
+                  })
+                }
+              />
+            </div>
+            <div>
+              <Label>Height (px)</Label>
+              <Input
+                type="number"
+                min="300"
+                max="800"
+                value={(formData.content as any)?.height || 500}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      height: parseInt(e.target.value),
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="autoplay"
+                checked={(formData.content as any)?.autoplay || true}
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      autoplay: checked,
+                    },
+                  })
+                }
+              />
+              <Label htmlFor="autoplay">Auto-play</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="show_navigation"
+                checked={(formData.content as any)?.show_navigation || true}
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      show_navigation: checked,
+                    },
+                  })
+                }
+              />
+              <Label htmlFor="show_navigation">Show Arrows</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="show_dots"
+                checked={(formData.content as any)?.show_dots || true}
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    content: {
+                      ...formData.content,
+                      show_dots: checked,
+                    },
+                  })
+                }
+              />
+              <Label htmlFor="show_dots">Show Dots</Label>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <Label htmlFor="content">Content (JSON)</Label>
         <Textarea
