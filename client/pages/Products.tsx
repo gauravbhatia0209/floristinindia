@@ -339,7 +339,7 @@ export default function Products() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 px-3 text-xs flex-shrink-0 ml-auto"
+                className="h-9 px-3 text-xs flex-shrink-0 ml-auto w-fit"
                 onClick={() => {
                   setSelectedCategories([]);
                   setPriceRange([0, 5000]);
