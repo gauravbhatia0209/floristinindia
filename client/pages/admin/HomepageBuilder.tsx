@@ -77,7 +77,7 @@ const sectionTemplates: SectionTemplate[] = [
     },
   },
   {
-    type: "hero",
+    type: "hero_carousel",
     name: "Hero Image Carousel",
     icon: Image,
     description: "Full-width image carousel with auto-cycle and navigation",
