@@ -79,10 +79,12 @@ export default function Products() {
             .eq("slug", categorySlug)
             .single();
 
-        console.log("Category lookup result:", {
-          currentCategoryData,
-          categoryError,
-        });
+        if (import.meta.env.DEV) {
+          console.log("Category lookup result:", {
+            currentCategoryData,
+            categoryError,
+          });
+        }
 
         if (currentCategoryData) {
           setCurrentCategory(currentCategoryData);
