@@ -782,13 +782,19 @@ export default function AdminCategories() {
     }
 
     try {
-      // Check for duplicate names in database (excluding current category if editing)
-      const { data: existingName, error: nameError } = await supabase
+      // Build the name query
+      let nameQuery = supabase
         .from("product_categories")
         .select("id, name")
         .ilike("name", formData.name.trim())
-        .neq("id", editingCategory?.id || "")
         .limit(1);
+
+      // Only exclude current category if we're editing
+      if (editingCategory?.id) {
+        nameQuery = nameQuery.neq("id", editingCategory.id);
+      }
+
+      const { data: existingName, error: nameError } = await nameQuery;
 
       if (nameError) {
         console.error("Name validation error:", nameError);
@@ -800,13 +806,24 @@ export default function AdminCategories() {
         return `A category with this name already exists (ID: ${existingName[0].id}). Please choose a different name.`;
       }
 
-      // Check for duplicate slugs in database (excluding current category if editing)
-      const { data: existingSlug } = await supabase
+      // Build the slug query
+      let slugQuery = supabase
         .from("product_categories")
         .select("id, slug")
         .eq("slug", formData.slug.trim())
-        .neq("id", editingCategory?.id || "")
         .limit(1);
+
+      // Only exclude current category if we're editing
+      if (editingCategory?.id) {
+        slugQuery = slugQuery.neq("id", editingCategory.id);
+      }
+
+      const { data: existingSlug, error: slugError } = await slugQuery;
+
+      if (slugError) {
+        console.error("Slug validation error:", slugError);
+        return "Unable to validate category slug. Please try again.";
+      }
 
       if (existingSlug && existingSlug.length > 0) {
         return "A category with this slug already exists. Try a different name or modify the slug manually.";
