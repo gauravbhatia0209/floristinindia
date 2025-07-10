@@ -167,7 +167,9 @@ export default function Products() {
       const categoriesWithCounts = await getCategoriesWithProductCount();
       setCategories(categoriesWithCounts);
 
-      console.log("Setting products data:", productsData.length, "products");
+      if (import.meta.env.DEV) {
+        console.log("Setting products data:", productsData.length, "products");
+      }
       setProducts(productsData);
     } catch (error) {
       console.error("Failed to fetch products:", error);
