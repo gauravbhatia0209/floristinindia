@@ -265,10 +265,14 @@ export function Header() {
   // Close search results when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      const isOutsideDesktop =
+        searchRef.current && !searchRef.current.contains(target);
+      const isOutsideMobile =
+        mobileSearchRef.current && !mobileSearchRef.current.contains(target);
+
+      // Only close if clicking outside both desktop and mobile search areas
+      if (isOutsideDesktop && isOutsideMobile) {
         setShowSearchResults(false);
         setIsSearchOpen(false);
       }
