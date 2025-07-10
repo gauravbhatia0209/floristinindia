@@ -598,9 +598,9 @@ export default function HomepageBuilder() {
           </DialogHeader>
           <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {sectionTemplates.map((template) => (
+              {sectionTemplates.map((template, index) => (
                 <Card
-                  key={template.type}
+                  key={`${template.type}-${index}`}
                   className="cursor-pointer hover:bg-accent transition-colors"
                   onClick={() => addSection(template)}
                 >
