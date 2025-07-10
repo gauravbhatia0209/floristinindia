@@ -175,7 +175,9 @@ export default function Products() {
       console.error("Failed to fetch products:", error);
       // Fallback to simple queries if utility functions fail
       try {
-        console.log("Using fallback queries");
+        if (import.meta.env.DEV) {
+          console.log("Using fallback queries");
+        }
         const { data: allProducts } = await supabase
           .from("products")
           .select("*")
@@ -187,10 +189,12 @@ export default function Products() {
           .eq("is_active", true)
           .order("sort_order");
 
-        console.log("Fallback data:", {
-          productsCount: allProducts?.length || 0,
-          categoriesCount: categoriesData?.length || 0,
-        });
+        if (import.meta.env.DEV) {
+          console.log("Fallback data:", {
+            productsCount: allProducts?.length || 0,
+            categoriesCount: categoriesData?.length || 0,
+          });
+        }
 
         setProducts(allProducts || []);
         setCategories(categoriesData || []);
