@@ -7,7 +7,7 @@ export function HeroCarouselFix() {
   const [result, setResult] = useState<string>("");
 
   const imageUrl =
-    "https://cdn.builder.io/o/assets%2F6386b40bf6104ad989c576dd2c4f7f26%2F7d2f512d7935414599a7e593857d9e8a?alt=media&token=c0ddf80b-475e-47bf-84cd-3972e123015a&apiKey=6386b40bf6104ad989c576dd2c4f7f26";
+    "https://cdn.builder.io/api/v1/image/assets%2F6386b40bf6104ad989c576dd2c4f7f26%2F780a5430107241139fcf7c7f71f44e5d?format=webp&width=800";
 
   async function fixHeroCarousel() {
     setIsFixing(true);
