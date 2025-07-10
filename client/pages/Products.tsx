@@ -109,23 +109,29 @@ export default function Products() {
             )
             .eq("category_id", currentCategoryData.id);
 
-          console.log("Multi-category assignments:", {
-            assignments,
-            assignmentError,
-          });
+          if (import.meta.env.DEV) {
+            console.log("Multi-category assignments:", {
+              assignments,
+              assignmentError,
+            });
+          }
 
           if (assignments && assignments.length > 0) {
             // Use multi-category data
             productsData = assignments
               .map((a: any) => a.products)
               .filter((p: Product) => p && p.is_active);
-            console.log(
-              "Using multi-category data, found products:",
-              productsData.length,
-            );
+            if (import.meta.env.DEV) {
+              console.log(
+                "Using multi-category data, found products:",
+                productsData.length,
+              );
+            }
           } else {
             // Fall back to legacy single category
-            console.log("Falling back to legacy single category");
+            if (import.meta.env.DEV) {
+              console.log("Falling back to legacy single category");
+            }
             const { data: legacyProducts, error: legacyError } = await supabase
               .from("products")
               .select("*")
