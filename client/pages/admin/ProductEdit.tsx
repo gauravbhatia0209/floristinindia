@@ -566,25 +566,29 @@ export default function ProductEdit() {
               <CardTitle>Categories</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="category_id">Category *</Label>
-                <Select
-                  value={formData.category_id}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, category_id: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <MultiCategorySelect
+                categories={categories}
+                selectedCategoryIds={selectedCategoryIds}
+                onSelectionChange={setSelectedCategoryIds}
+                primaryCategoryId={primaryCategoryId}
+                onPrimaryCategoryChange={setPrimaryCategoryId}
+                label="Product Categories"
+                placeholder="Select one or more categories..."
+                required={true}
+              />
+
+              <div className="text-sm text-muted-foreground">
+                <p>
+                  • Select multiple categories to display this product in all
+                  relevant sections
+                </p>
+                <p>
+                  • Click a selected category to make it the primary category
+                </p>
+                <p>
+                  • Primary category is used for main classification and
+                  backwards compatibility
+                </p>
               </div>
 
               <div>
