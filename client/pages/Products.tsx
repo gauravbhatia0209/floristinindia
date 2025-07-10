@@ -300,7 +300,7 @@ export default function Products() {
 
             {/* Sort By Dropdown */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-9 min-w-[140px] gap-2 flex-shrink-0">
+              <SelectTrigger className="h-9 min-w-[140px] gap-2 flex-shrink-0 px-3">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
