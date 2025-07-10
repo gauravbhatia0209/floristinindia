@@ -16,7 +16,6 @@ import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "@/hooks/use-toast";
 import { HeroCarousel } from "@/components/HeroCarousel";
-import { HeroCarouselFix } from "@/components/HeroCarouselFix";
 import {
   ProductCategory,
   Product,
@@ -94,7 +93,7 @@ export default function Index() {
         variant: "default",
       });
     } catch (error) {
-      console.error("❌ Failed to add to cart:", error);
+      console.error("�� Failed to add to cart:", error);
 
       // Show error notification
       toast({
@@ -1158,9 +1157,6 @@ export default function Index() {
           </Button>
         </div>
       </section>
-
-      {/* Temporary Hero Carousel Fix Component */}
-      <HeroCarouselFix />
     </div>
   );
 }
