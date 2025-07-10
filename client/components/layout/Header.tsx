@@ -555,7 +555,10 @@ export function Header() {
 
         {/* Desktop Dropdown Search */}
         {isSearchOpen && (
-          <div className="hidden md:block mt-4 transition-all duration-300 ease-in-out">
+          <div
+            className="hidden md:block mt-4 transition-all duration-300 ease-in-out"
+            ref={searchRef}
+          >
             <div className="relative max-w-lg mx-auto">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
