@@ -706,27 +706,36 @@ export default function AdminCategories() {
       return "Category slug is required";
     }
 
-    // Check for duplicate names (excluding current category if editing)
-    const existingCategory = categories.find(
-      (cat) =>
-        cat.name.toLowerCase() === formData.name.toLowerCase() &&
-        cat.id !== editingCategory?.id,
-    );
+    try {
+      // Check for duplicate names in database (excluding current category if editing)
+      const { data: existingName } = await supabase
+        .from("product_categories")
+        .select("id, name")
+        .ilike("name", formData.name.trim())
+        .neq("id", editingCategory?.id || "")
+        .limit(1);
 
-    if (existingCategory) {
-      return "A category with this name already exists";
+      if (existingName && existingName.length > 0) {
+        return "A category with this name already exists";
+      }
+
+      // Check for duplicate slugs in database (excluding current category if editing)
+      const { data: existingSlug } = await supabase
+        .from("product_categories")
+        .select("id, slug")
+        .eq("slug", formData.slug.trim())
+        .neq("id", editingCategory?.id || "")
+        .limit(1);
+
+      if (existingSlug && existingSlug.length > 0) {
+        return "A category with this slug already exists. Try a different name or modify the slug manually.";
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Validation error:", error);
+      return "Unable to validate category data. Please try again.";
     }
-
-    // Check for duplicate slugs
-    const existingSlug = categories.find(
-      (cat) => cat.slug === formData.slug && cat.id !== editingCategory?.id,
-    );
-
-    if (existingSlug) {
-      return "A category with this slug already exists";
-    }
-
-    return null;
   }
 
   async function saveCategory() {
