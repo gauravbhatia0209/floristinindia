@@ -587,6 +587,27 @@ export default function Index() {
     );
   }
 
+  function renderHeroCarousel(section: HomepageSection) {
+    const content = section.content as any;
+
+    if (!content?.images || content.images.length === 0) {
+      return null;
+    }
+
+    return (
+      <section key={section.id} className="w-full">
+        <HeroCarousel
+          images={content.images}
+          autoplay={content.autoplay !== false}
+          autoplayDelay={content.autoplay_delay || 5000}
+          showNavigation={content.show_navigation !== false}
+          showDots={content.show_dots !== false}
+          height={content.height || 500}
+        />
+      </section>
+    );
+  }
+
   function renderFeaturesSection(section: HomepageSection) {
     const content = section.content as any;
     const features = content?.features || [
