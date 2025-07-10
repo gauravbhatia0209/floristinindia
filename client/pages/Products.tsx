@@ -290,9 +290,19 @@ export default function Products() {
                         variant="ghost"
                         size="sm"
                         className="w-full h-8 text-xs"
-                        onClick={() => setSelectedCategories([])}
+                        onClick={() => {
+                          if (categorySlug && currentCategory) {
+                            // If on category page, reset to just the current category
+                            setSelectedCategories([currentCategory.id]);
+                          } else {
+                            // If on all products page, clear all selections
+                            setSelectedCategories([]);
+                          }
+                        }}
                       >
-                        Clear All
+                        {categorySlug
+                          ? "Reset to Current Category"
+                          : "Clear All"}
                       </Button>
                     </>
                   )}
