@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Filter, Grid, List, Star, Heart, ShoppingCart, ChevronDown, X } from "lucide-react";
+import {
+  Filter,
+  Grid,
+  List,
+  Star,
+  Heart,
+  ShoppingCart,
+  ChevronDown,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -178,7 +187,10 @@ export default function Products() {
                 <Button variant="outline" className="h-9 gap-2 min-w-[120px]">
                   Categories
                   {selectedCategories.length > 0 && (
-                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5 text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="ml-1 h-5 min-w-5 px-1.5 text-xs"
+                    >
                       {selectedCategories.length}
                     </Badge>
                   )}
@@ -200,9 +212,7 @@ export default function Products() {
                         ]);
                       } else {
                         setSelectedCategories(
-                          selectedCategories.filter(
-                            (id) => id !== category.id,
-                          ),
+                          selectedCategories.filter((id) => id !== category.id),
                         );
                       }
                     }}
@@ -232,7 +242,10 @@ export default function Products() {
                 <Button variant="outline" className="h-9 gap-2 min-w-[140px]">
                   Price Range
                   {(priceRange[0] > 0 || priceRange[1] < 5000) && (
-                    <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="ml-1 h-5 px-1.5 text-xs"
+                    >
                       ₹{priceRange[0]}-₹{priceRange[1]}
                     </Badge>
                   )}
@@ -273,7 +286,9 @@ export default function Products() {
             </Popover>
 
             {/* Active Filters Display */}
-            {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+            {(selectedCategories.length > 0 ||
+              priceRange[0] > 0 ||
+              priceRange[1] < 5000) && (
               <div className="flex items-center gap-2 ml-auto">
                 <Button
                   variant="ghost"
@@ -293,7 +308,9 @@ export default function Products() {
         </div>
 
         {/* Active Filter Tags (Mobile-friendly) */}
-        {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+        {(selectedCategories.length > 0 ||
+          priceRange[0] > 0 ||
+          priceRange[1] < 5000) && (
           <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
             {selectedCategories.map((categoryId) => {
               const category = categories.find((c) => c.id === categoryId);
@@ -334,169 +351,165 @@ export default function Products() {
 
       {/* Products Section */}
       <div>
-          {/* Toolbar */}
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {filteredProducts.length} products found
-              </span>
-            </div>
-
-            <div className="flex items-center gap-4">
-              {/* Sort */}
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Sort by Name</SelectItem>
-                  <SelectItem value="price_low">Price: Low to High</SelectItem>
-                  <SelectItem value="price_high">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* View Mode */}
-              <div className="flex items-center border rounded-md">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="rounded-r-none"
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="rounded-l-none"
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">
+              {filteredProducts.length} products found
+            </span>
           </div>
 
-          {/* Products */}
-          <div
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                : "space-y-4"
-            }
-          >
-            {filteredProducts.map((product) => (
-              <Card
-                key={product.id}
-                className={`group border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
-                  viewMode === "list" ? "flex" : ""
-                }`}
-              >
-                <div
-                  className={`bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden ${
-                    viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-square"
-                  }`}
-                >
-                  {product.images.length > 0 ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-full object-cover image-hover"
-                    />
-                  ) : (
-                    <span className="text-6xl animate-pulse">🌺</span>
-                  )}
-                  {product.sale_price && (
-                    <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
-                      SALE
-                    </Badge>
-                  )}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Sort */}
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Sort by Name</SelectItem>
+                <SelectItem value="price_low">Price: Low to High</SelectItem>
+                <SelectItem value="price_high">Price: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
 
-                  {/* Hover Actions */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <Button size="sm" variant="secondary">
-                      <Heart className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleAddToCart(product);
-                      }}
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <CardContent className="p-4 flex-1">
-                  <Link to={`/product/${product.slug}`}>
-                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </Link>
-
-                  {viewMode === "list" && product.short_description && (
-                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                      {product.short_description}
-                    </p>
-                  )}
-
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-gold text-gold" />
-                      ))}
-                    </div>
-                    <span className="text-sm text-muted-foreground">(4.8)</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold text-primary">
-                        ₹{product.sale_price || product.price}
-                      </span>
-                      {product.sale_price && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ₹{product.price}
-                        </span>
-                      )}
-                    </div>
-
-                    {viewMode === "list" && (
-                      <Button
-                        onClick={() => handleAddToCart(product)}
-                        size="sm"
-                      >
-                        Add to Cart
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Empty State */}
-          {filteredProducts.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🌸</div>
-              <h3 className="text-xl font-semibold mb-2">No flowers found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your filters or search criteria
-              </p>
+            {/* View Mode */}
+            <div className="flex items-center border rounded-md w-fit">
               <Button
-                onClick={() => {
-                  setSelectedCategories([]);
-                  setPriceRange([0, 5000]);
-                }}
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="rounded-r-none"
               >
-                Clear Filters
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="rounded-l-none"
+              >
+                <List className="w-4 h-4" />
               </Button>
             </div>
-          )}
+          </div>
         </div>
+
+        {/* Products Grid */}
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              : "space-y-4"
+          }
+        >
+          {filteredProducts.map((product) => (
+            <Card
+              key={product.id}
+              className={`group border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                viewMode === "list" ? "flex" : ""
+              }`}
+            >
+              <div
+                className={`bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden ${
+                  viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-square"
+                }`}
+              >
+                {product.images.length > 0 ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover image-hover"
+                  />
+                ) : (
+                  <span className="text-6xl animate-pulse">🌺</span>
+                )}
+                {product.sale_price && (
+                  <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                    SALE
+                  </Badge>
+                )}
+
+                {/* Hover Actions */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <Button size="sm" variant="secondary">
+                    <Heart className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleAddToCart(product);
+                    }}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <CardContent className="p-4 flex-1">
+                <Link to={`/product/${product.slug}`}>
+                  <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                </Link>
+
+                {viewMode === "list" && product.short_description && (
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    {product.short_description}
+                  </p>
+                )}
+
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-gold text-gold" />
+                    ))}
+                  </div>
+                  <span className="text-sm text-muted-foreground">(4.8)</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-primary">
+                      ₹{product.sale_price || product.price}
+                    </span>
+                    {product.sale_price && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ₹{product.price}
+                      </span>
+                    )}
+                  </div>
+
+                  {viewMode === "list" && (
+                    <Button onClick={() => handleAddToCart(product)} size="sm">
+                      Add to Cart
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🌸</div>
+            <h3 className="text-xl font-semibold mb-2">No flowers found</h3>
+            <p className="text-muted-foreground mb-4">
+              Try adjusting your filters or search criteria
+            </p>
+            <Button
+              onClick={() => {
+                setSelectedCategories([]);
+                setPriceRange([0, 5000]);
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
