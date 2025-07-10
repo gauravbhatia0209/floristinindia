@@ -76,6 +76,7 @@ export function Header() {
   const { items } = useCart();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout>();
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
