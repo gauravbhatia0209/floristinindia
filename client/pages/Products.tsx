@@ -30,6 +30,10 @@ import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/lib/supabase";
 import { Product, ProductCategory } from "@shared/database.types";
 import { useCart } from "@/hooks/useCart";
+import {
+  fetchProductsWithCategories,
+  getCategoriesWithProductCount,
+} from "@/lib/productUtils";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
