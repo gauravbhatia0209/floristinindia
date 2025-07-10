@@ -415,7 +415,7 @@ export default function Products() {
           {filteredProducts.map((product) => (
             <Card
               key={product.id}
-              className={`group border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+              className={`border-0 shadow-lg overflow-hidden ${
                 viewMode === "list" ? "flex" : ""
               }`}
             >
