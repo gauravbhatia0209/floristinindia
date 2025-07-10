@@ -71,15 +71,16 @@ export default function Products() {
         });
         productsData = productsWithCategories;
 
-        // Pre-select the current category in filters
-        const { data: currentCategory } = await supabase
+        // Set current category and pre-select it in filters
+        const { data: currentCategoryData } = await supabase
           .from("product_categories")
-          .select("id")
+          .select("*")
           .eq("slug", categorySlug)
           .single();
 
-        if (currentCategory) {
-          setSelectedCategories([currentCategory.id]);
+        if (currentCategoryData) {
+          setCurrentCategory(currentCategoryData);
+          setSelectedCategories([currentCategoryData.id]);
         }
       } else {
         // Fetch all products
