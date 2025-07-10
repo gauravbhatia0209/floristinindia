@@ -311,12 +311,12 @@ export default function Products() {
             </Select>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center border rounded-md flex-shrink-0">
+            <div className="flex items-center border rounded-md flex-shrink-0 h-9">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className="rounded-r-none h-8 w-8 p-0"
+                className="rounded-r-none h-9 w-9 p-0 border-0"
                 title="Grid View"
               >
                 <Grid className="w-4 h-4" />
@@ -325,7 +325,7 @@ export default function Products() {
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className="rounded-l-none h-8 w-8 p-0"
+                className="rounded-l-none h-9 w-9 p-0 border-0"
                 title="List View"
               >
                 <List className="w-4 h-4" />
