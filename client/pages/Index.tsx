@@ -399,7 +399,6 @@ export default function Index() {
 
     return (
       <section
-        key={section.id}
         className="relative min-h-[450px] md:min-h-[500px] overflow-hidden"
         style={{
           backgroundImage: content?.background_image
