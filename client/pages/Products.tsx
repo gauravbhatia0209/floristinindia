@@ -54,7 +54,7 @@ export default function Products() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [categorySlug]); // Refetch when category slug changes
 
   useEffect(() => {
     filterAndSortProducts();
