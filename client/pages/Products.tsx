@@ -209,12 +209,40 @@ export default function Products() {
             : "Discover our beautiful collection of fresh flowers"}
         </p>
 
-        {/* Product count */}
+        {/* Category info and product count */}
         <div className="mt-4">
+          {currentCategory && (
+            <div className="mb-3 p-3 bg-muted/50 rounded-lg border">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="font-medium text-sm text-foreground mb-1">
+                    Category Information
+                  </h3>
+                  {currentCategory.parent_id && (
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Subcategory of:{" "}
+                      {categories.find(
+                        (c) => c.id === currentCategory.parent_id,
+                      )?.name || "Unknown"}
+                    </p>
+                  )}
+                  {currentCategory.description && (
+                    <p className="text-xs text-muted-foreground">
+                      {currentCategory.description}
+                    </p>
+                  )}
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {filteredProducts.length}{" "}
+                  {filteredProducts.length === 1 ? "product" : "products"}
+                </Badge>
+              </div>
+            </div>
+          )}
+
           <p className="text-sm text-muted-foreground">
-            {filteredProducts.length}{" "}
-            {filteredProducts.length === 1 ? "product" : "products"}
-            {currentCategory && ` in ${currentCategory.name}`}
+            {!currentCategory &&
+              `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"} available`}
           </p>
         </div>
       </div>
