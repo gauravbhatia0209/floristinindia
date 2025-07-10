@@ -63,62 +63,52 @@ export default function Products() {
       let productsData: Product[] = [];
 
       if (categorySlug) {
-        // Fetch products for a specific category - check both legacy and new system
-        const { data: category } = await supabase
+        // Fetch products for a specific category using the utility function
+        const productsWithCategories = await fetchProductsWithCategories({
+          categorySlug: categorySlug,
+        });
+        productsData = productsWithCategories;
+
+        // Pre-select the current category in filters
+        const { data: currentCategory } = await supabase
           .from("product_categories")
           .select("id")
           .eq("slug", categorySlug)
           .single();
 
-        if (category) {
-          // Try to fetch from multi-category assignments first
-          const { data: assignments } = await supabase
-            .from("product_category_assignments")
-            .select(
-              `
-              product_id,
-              products (*)
-            `,
-            )
-            .eq("category_id", category.id);
-
-          if (assignments && assignments.length > 0) {
-            // Use multi-category data
-            productsData = assignments
-              .map((a: any) => a.products)
-              .filter((p: Product) => p && p.is_active);
-          } else {
-            // Fall back to legacy single category
-            const { data: legacyProducts } = await supabase
-              .from("products")
-              .select("*")
-              .eq("category_id", category.id)
-              .eq("is_active", true);
-
-            productsData = legacyProducts || [];
-          }
+        if (currentCategory) {
+          setSelectedCategories([currentCategory.id]);
         }
       } else {
         // Fetch all products
+        const productsWithCategories = await fetchProductsWithCategories();
+        productsData = productsWithCategories;
+      }
+
+      // Fetch categories with product counts
+      const categoriesWithCounts = await getCategoriesWithProductCount();
+      setCategories(categoriesWithCounts);
+      setProducts(productsData);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      // Fallback to simple queries if utility functions fail
+      try {
         const { data: allProducts } = await supabase
           .from("products")
           .select("*")
           .eq("is_active", true);
 
-        productsData = allProducts || [];
+        const { data: categoriesData } = await supabase
+          .from("product_categories")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order");
+
+        setProducts(allProducts || []);
+        setCategories(categoriesData || []);
+      } catch (fallbackError) {
+        console.error("Fallback query also failed:", fallbackError);
       }
-
-      // Fetch categories
-      const { data: categoriesData } = await supabase
-        .from("product_categories")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order");
-
-      if (productsData) setProducts(productsData);
-      if (categoriesData) setCategories(categoriesData);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
     } finally {
       setIsLoading(false);
     }
