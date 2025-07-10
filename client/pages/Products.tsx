@@ -61,30 +61,84 @@ export default function Products() {
 
   async function fetchData() {
     try {
+      console.log("fetchData called with categorySlug:", categorySlug);
       let productsData: Product[] = [];
 
       if (categorySlug) {
-        // Fetch products for a specific category using the utility function
-        const productsWithCategories = await fetchProductsWithCategories({
-          categorySlug: categorySlug,
-        });
-        productsData = productsWithCategories;
+        console.log("Fetching products for category:", categorySlug);
 
         // Set current category and pre-select it in filters
-        const { data: currentCategoryData } = await supabase
-          .from("product_categories")
-          .select("*")
-          .eq("slug", categorySlug)
-          .single();
+        const { data: currentCategoryData, error: categoryError } =
+          await supabase
+            .from("product_categories")
+            .select("*")
+            .eq("slug", categorySlug)
+            .single();
+
+        console.log("Category lookup result:", {
+          currentCategoryData,
+          categoryError,
+        });
 
         if (currentCategoryData) {
           setCurrentCategory(currentCategoryData);
           setSelectedCategories([currentCategoryData.id]);
+
+          // Fetch products for this specific category - try direct approach first
+          console.log(
+            "Fetching products for category ID:",
+            currentCategoryData.id,
+          );
+
+          // Try multi-category assignments first
+          const { data: assignments, error: assignmentError } = await supabase
+            .from("product_category_assignments")
+            .select(
+              `
+              product_id,
+              products!inner(*)
+            `,
+            )
+            .eq("category_id", currentCategoryData.id);
+
+          console.log("Multi-category assignments:", {
+            assignments,
+            assignmentError,
+          });
+
+          if (assignments && assignments.length > 0) {
+            // Use multi-category data
+            productsData = assignments
+              .map((a: any) => a.products)
+              .filter((p: Product) => p && p.is_active);
+            console.log(
+              "Using multi-category data, found products:",
+              productsData.length,
+            );
+          } else {
+            // Fall back to legacy single category
+            console.log("Falling back to legacy single category");
+            const { data: legacyProducts, error: legacyError } = await supabase
+              .from("products")
+              .select("*")
+              .eq("category_id", currentCategoryData.id)
+              .eq("is_active", true);
+
+            console.log("Legacy products:", { legacyProducts, legacyError });
+            productsData = legacyProducts || [];
+          }
+        } else {
+          console.log("Category not found for slug:", categorySlug);
         }
       } else {
+        console.log("No category slug, fetching all products");
         // Fetch all products
-        const productsWithCategories = await fetchProductsWithCategories();
-        productsData = productsWithCategories;
+        const { data: allProducts } = await supabase
+          .from("products")
+          .select("*")
+          .eq("is_active", true);
+
+        productsData = allProducts || [];
         setCurrentCategory(null);
         setSelectedCategories([]);
       }
