@@ -301,18 +301,31 @@ export default function HomepageBuilder() {
       setIsAddingSection(false);
     } catch (error: any) {
       console.error("Failed to add section:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", Object.keys(error || {}));
+      console.error("Full error object:", error);
+
       let errorMessage = "Unknown error";
 
-      if (error?.message) {
-        errorMessage = error.message;
-      } else if (error?.error_description) {
-        errorMessage = error.error_description;
-      } else if (error?.details) {
-        errorMessage = error.details;
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      } else if (error?.code) {
-        errorMessage = `Error ${error.code}: ${error.hint || "Database error"}`;
+      try {
+        if (error?.message) {
+          errorMessage = error.message;
+        } else if (error?.error_description) {
+          errorMessage = error.error_description;
+        } else if (error?.details) {
+          errorMessage = error.details;
+        } else if (error?.hint) {
+          errorMessage = error.hint;
+        } else if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error?.code) {
+          errorMessage = `Database error (${error.code}): ${error.hint || error.message || "Unknown database error"}`;
+        } else {
+          // Try to extract any meaningful text from the error
+          errorMessage = String(error);
+        }
+      } catch (stringifyError) {
+        errorMessage = "Error occurred but could not extract details";
       }
 
       alert(`Failed to add section: ${errorMessage}`);
