@@ -86,6 +86,8 @@ export default function Products() {
         // Fetch all products
         const productsWithCategories = await fetchProductsWithCategories();
         productsData = productsWithCategories;
+        setCurrentCategory(null);
+        setSelectedCategories([]);
       }
 
       // Fetch categories with product counts
