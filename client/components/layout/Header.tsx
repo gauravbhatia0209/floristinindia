@@ -161,6 +161,115 @@ export function Header() {
     }
   }
 
+  // Search functionality
+  const performSearch = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      // Search products
+      const { data: products } = await supabase
+        .from("products")
+        .select("id, name, slug, images, price, sale_price")
+        .eq("is_active", true)
+        .or(`name.ilike.%${query}%, description.ilike.%${query}%`)
+        .limit(5);
+
+      // Search categories
+      const { data: categories } = await supabase
+        .from("product_categories")
+        .select("id, name, slug, image_url")
+        .eq("is_active", true)
+        .ilike("name", `%${query}%`)
+        .limit(5);
+
+      const results: SearchResult[] = [];
+
+      // Add product results
+      if (products) {
+        products.forEach((product) => {
+          results.push({
+            type: "product",
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            image: product.images?.[0],
+            price: product.price,
+            sale_price: product.sale_price,
+          });
+        });
+      }
+
+      // Add category results
+      if (categories) {
+        categories.forEach((category) => {
+          results.push({
+            type: "category",
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            image: category.image_url,
+          });
+        });
+      }
+
+      setSearchResults(results);
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  // Debounced search
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchQuery(value);
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      debounceRef.current = setTimeout(() => {
+        performSearch(value);
+      }, 300);
+    },
+    [performSearch],
+  );
+
+  // Handle search result click
+  const handleResultClick = (result: SearchResult) => {
+    setSearchQuery("");
+    setShowSearchResults(false);
+
+    if (result.type === "product") {
+      navigate(`/products/${result.slug}`);
+    } else {
+      navigate(`/category/${result.slug}`);
+    }
+  };
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowSearchResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="bg-background border-b sticky top-0 z-50">
       {/* Top Bar */}
