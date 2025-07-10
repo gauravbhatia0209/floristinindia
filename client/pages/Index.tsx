@@ -594,7 +594,14 @@ export default function Index() {
   function renderHeroCarousel(section: HomepageSection) {
     const content = section.content as any;
 
+    console.log("🎠 Hero carousel section detected:", {
+      carousel_mode: content?.carousel_mode,
+      imagesLength: content?.images?.length,
+      images: content?.images,
+    });
+
     if (!content?.images || content.images.length === 0) {
+      console.log("❌ No images in carousel content, returning null");
       return null;
     }
 
@@ -603,7 +610,10 @@ export default function Index() {
       (img: string) => img && img.trim() !== "",
     );
 
+    console.log("🔍 Valid images found:", validImages);
+
     if (validImages.length === 0) {
+      console.log("❌ No valid images after filtering, returning null");
       return null;
     }
 
