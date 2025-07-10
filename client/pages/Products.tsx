@@ -262,7 +262,7 @@ export default function Products() {
                 <div className="space-y-4">
                   <div>
                     <Label className="text-sm font-medium">Price Range</Label>
-                    <div className="mt-3 px-2">
+                    <div className="mt-4 px-3 py-2">
                       <Slider
                         value={priceRange}
                         onValueChange={setPriceRange}
@@ -272,9 +272,16 @@ export default function Products() {
                         className="w-full"
                       />
                     </div>
-                    <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                      <span>₹{priceRange[0]}</span>
-                      <span>₹{priceRange[1]}</span>
+                    <div className="flex justify-between text-sm text-muted-foreground mt-3 px-1">
+                      <span className="font-medium">
+                        ₹{priceRange[0].toLocaleString()}
+                      </span>
+                      <span className="text-xs text-muted-foreground/70">
+                        to
+                      </span>
+                      <span className="font-medium">
+                        ₹{priceRange[1].toLocaleString()}
+                      </span>
                     </div>
                   </div>
                   <div className="flex gap-2">
