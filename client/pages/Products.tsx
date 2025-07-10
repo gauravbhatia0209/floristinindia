@@ -273,7 +273,14 @@ export default function Products() {
                         }
                       }}
                     >
-                      {category.name}
+                      <div className="flex justify-between items-center w-full">
+                        <span>{category.name}</span>
+                        {(category as any).product_count !== undefined && (
+                          <Badge variant="outline" className="text-xs ml-2">
+                            {(category as any).product_count}
+                          </Badge>
+                        )}
+                      </div>
                     </DropdownMenuCheckboxItem>
                   ))}
                   {selectedCategories.length > 0 && (
