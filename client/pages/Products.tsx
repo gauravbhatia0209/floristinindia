@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import {
-  Filter,
-  Grid,
-  List,
-  Star,
-  Heart,
-  ShoppingCart,
-  ChevronDown,
-  X,
-} from "lucide-react";
+import { Filter, Grid, List, ShoppingCart, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
