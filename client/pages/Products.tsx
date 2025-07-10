@@ -227,10 +227,12 @@ export default function Products() {
       filtered = filtered.filter((product) =>
         selectedCategories.includes(product.category_id),
       );
-      console.log(
-        "Applied manual category filtering, result:",
-        filtered.length,
-      );
+      if (import.meta.env.DEV) {
+        console.log(
+          "Applied manual category filtering, result:",
+          filtered.length,
+        );
+      }
     }
     // If on category page, don't apply additional category filtering unless user deliberately changes selection
 
