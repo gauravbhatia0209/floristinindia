@@ -209,12 +209,14 @@ export default function Products() {
   function filterAndSortProducts() {
     let filtered = [...products];
 
-    console.log("filterAndSortProducts called with:", {
-      productsCount: products.length,
-      selectedCategories: selectedCategories.length,
-      categorySlug,
-      currentCategory: currentCategory?.name,
-    });
+    if (import.meta.env.DEV) {
+      console.log("filterAndSortProducts called with:", {
+        productsCount: products.length,
+        selectedCategories: selectedCategories.length,
+        categorySlug,
+        currentCategory: currentCategory?.name,
+      });
+    }
 
     // When on a category page, products are already filtered by fetchData
     // Only apply additional category filtering if:
