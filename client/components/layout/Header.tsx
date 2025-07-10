@@ -551,13 +551,14 @@ export function Header() {
             })}
           </nav>
 
-          {/* Desktop Search Icon */}
-          <div className="hidden md:block relative">
+          {/* Actions - Always aligned to the right */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Search Icon - Desktop only (lg+) */}
             <Button
               variant="ghost"
               size="icon"
+              className="hidden lg:flex relative"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="relative"
             >
               {isSearchOpen ? (
                 <X className="h-5 w-5" />
@@ -565,15 +566,12 @@ export function Header() {
                 <Search className="h-5 w-5" />
               )}
             </Button>
-          </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            {/* Mobile Search */}
+            {/* Search Icon - Tablet and Mobile */}
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               {isSearchOpen ? (
