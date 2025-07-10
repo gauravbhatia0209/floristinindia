@@ -45,6 +45,16 @@ interface MenuItem {
   };
 }
 
+interface SearchResult {
+  type: "product" | "category";
+  id: string;
+  name: string;
+  slug: string;
+  image?: string;
+  price?: number;
+  sale_price?: number;
+}
+
 export function Header() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
