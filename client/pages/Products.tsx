@@ -122,48 +122,21 @@ export default function Products() {
     }
   }
 
-  async function filterAndSortProducts() {
+  function filterAndSortProducts() {
     let filtered = [...products];
 
-    // Filter by categories - handle both multi-category and legacy single category
-    if (selectedCategories.length > 0) {
-      const filteredByCategory: Product[] = [];
-
-      for (const product of filtered) {
-        let belongsToSelectedCategory = false;
-
-        // First, check if product has multi-category assignments
-        try {
-          const { data: assignments } = await supabase
-            .from("product_category_assignments")
-            .select("category_id")
-            .eq("product_id", product.id);
-
-          if (assignments && assignments.length > 0) {
-            // Product has multi-category assignments
-            const productCategoryIds = assignments.map((a) => a.category_id);
-            belongsToSelectedCategory = selectedCategories.some((selectedId) =>
-              productCategoryIds.includes(selectedId),
-            );
-          } else {
-            // Fall back to legacy single category
-            belongsToSelectedCategory = selectedCategories.includes(
-              product.category_id,
-            );
-          }
-        } catch (error) {
-          // If query fails, fall back to legacy single category
-          belongsToSelectedCategory = selectedCategories.includes(
-            product.category_id,
-          );
-        }
-
-        if (belongsToSelectedCategory) {
-          filteredByCategory.push(product);
-        }
-      }
-
-      filtered = filteredByCategory;
+    // Filter by categories - since we're using fetchProductsWithCategories when filtering by category slug,
+    // we only need additional filtering when user selects multiple categories manually
+    if (selectedCategories.length > 0 && !categorySlug) {
+      // Only apply manual category filtering when not already on a category page
+      filtered = filtered.filter((product) =>
+        selectedCategories.includes(product.category_id),
+      );
+    } else if (selectedCategories.length > 1 && categorySlug) {
+      // If on category page but user selected additional categories
+      filtered = filtered.filter((product) =>
+        selectedCategories.includes(product.category_id),
+      );
     }
 
     // Filter by price range
