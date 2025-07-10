@@ -241,7 +241,7 @@ export default function Index() {
             .eq("is_active", true);
 
           console.log(
-            "����� Product Showcase: Raw query results:",
+            "������ Product Showcase: Raw query results:",
             productsData,
           );
           console.log(
@@ -371,6 +371,8 @@ export default function Index() {
     switch (section.type) {
       case "hero":
         return renderHeroSection(section);
+      case "hero_carousel":
+        return renderHeroCarousel(section);
       case "features":
         return renderFeaturesSection(section);
       case "category_grid":
