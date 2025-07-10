@@ -1168,6 +1168,9 @@ export default function Index() {
           </Button>
         </div>
       </section>
+
+      {/* Temporary Hero Carousel Fix Component */}
+      <HeroCarouselFix />
     </div>
   );
 }
