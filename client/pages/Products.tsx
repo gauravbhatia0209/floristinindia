@@ -244,13 +244,13 @@ export default function Products() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-9 gap-2 min-w-[140px] flex-shrink-0"
+                  className="h-9 gap-2 min-w-[140px] flex-shrink-0 px-3"
                 >
                   <span className="truncate">Price Range</span>
                   {(priceRange[0] > 0 || priceRange[1] < 5000) && (
                     <Badge
                       variant="secondary"
-                      className="ml-1 h-5 px-1.5 text-xs"
+                      className="ml-1 h-4 px-1.5 text-xs"
                     >
                       ₹{priceRange[0]}-₹{priceRange[1]}
                     </Badge>
