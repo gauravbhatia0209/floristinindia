@@ -837,7 +837,7 @@ export default function Index() {
 
     if (validProducts.length === 0) {
       return (
-        <section key={section.id} className="py-20 bg-muted/30">
+        <section className="py-20 bg-muted/30">
           <div className="container">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
