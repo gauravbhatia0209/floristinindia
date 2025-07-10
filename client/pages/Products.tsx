@@ -334,8 +334,8 @@ export default function Products() {
             </div>
 
             {/* Right Group: View Mode Toggle */}
-            <div className="flex items-center gap-4 ml-auto">
-              <div className="flex items-center border rounded-md flex-shrink-0 h-9">
+            <div className="flex items-center justify-end ml-auto flex-shrink-0">
+              <div className="flex items-center border rounded-md h-9">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
