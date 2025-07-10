@@ -91,10 +91,12 @@ export default function Products() {
           setSelectedCategories([currentCategoryData.id]);
 
           // Fetch products for this specific category - try direct approach first
-          console.log(
-            "Fetching products for category ID:",
-            currentCategoryData.id,
-          );
+          if (import.meta.env.DEV) {
+            console.log(
+              "Fetching products for category ID:",
+              currentCategoryData.id,
+            );
+          }
 
           // Try multi-category assignments first
           const { data: assignments, error: assignmentError } = await supabase
