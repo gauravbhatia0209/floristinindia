@@ -752,7 +752,7 @@ export default function Index() {
                   to={`/category/${category.slug}`}
                   className="group"
                 >
-                  <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 overflow-hidden h-full">
+                  <Card className="border-0 shadow-lg overflow-hidden h-full">
                     <div className="aspect-square bg-gradient-to-br from-rose/20 to-peach/20 flex items-center justify-center text-4xl">
                       {category.image_url ? (
                         <img
