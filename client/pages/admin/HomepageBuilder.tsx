@@ -81,7 +81,7 @@ const sectionTemplates: SectionTemplate[] = [
     icon: Image,
     description: "Full-width image carousel with auto-cycle and navigation",
     defaultContent: {
-      images: [],
+      images: [""],
       autoplay: true,
       autoplay_delay: 5000,
       show_navigation: true,
