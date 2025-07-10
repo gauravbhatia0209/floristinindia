@@ -776,7 +776,12 @@ export default function AdminCategories() {
       cancelEditing();
     } catch (error: any) {
       console.error("Failed to save category:", error);
-      alert(`Failed to save category: ${error.message}`);
+      const errorMessage =
+        error?.message ||
+        error?.error?.message ||
+        error?.toString() ||
+        "Unknown error occurred";
+      alert(`Failed to save category: ${errorMessage}`);
     } finally {
       setIsSaving(false);
     }
