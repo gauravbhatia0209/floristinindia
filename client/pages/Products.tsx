@@ -310,13 +310,7 @@ export default function Products() {
         </p>
 
         {/* Product count */}
-        <div className="mt-4">
-          <p className="text-sm text-muted-foreground">
-            {filteredProducts.length}{" "}
-            {filteredProducts.length === 1 ? "product" : "products"}{" "}
-            {currentCategory ? `in ${currentCategory.name}` : "available"}
-          </p>
-        </div>
+        <div className="mt-4" />
       </div>
 
       {/* Unified Horizontal Filter Bar */}
