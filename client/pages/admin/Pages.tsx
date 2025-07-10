@@ -347,6 +347,7 @@ function PageForm({
   editingSection,
   onSectionSave,
   onSectionCancel,
+  onSectionsUpdate,
 }: {
   page: Page | null;
   onSave: (data: Partial<Page>) => void;
@@ -355,6 +356,7 @@ function PageForm({
   editingSection: Section | null;
   onSectionSave: (section: Section) => void;
   onSectionCancel: () => void;
+  onSectionsUpdate: (sections: Section[]) => void;
 }) {
   const [formData, setFormData] = useState({
     title: page?.title || "",
