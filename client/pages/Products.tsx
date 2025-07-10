@@ -242,8 +242,11 @@ export default function Products() {
             {/* Price Range Popover */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="h-9 gap-2 min-w-[140px]">
-                  Price Range
+                <Button
+                  variant="outline"
+                  className="h-9 gap-2 min-w-[140px] flex-shrink-0"
+                >
+                  <span className="truncate">Price Range</span>
                   {(priceRange[0] > 0 || priceRange[1] < 5000) && (
                     <Badge
                       variant="secondary"
@@ -252,7 +255,7 @@ export default function Products() {
                       ₹{priceRange[0]}-₹{priceRange[1]}
                     </Badge>
                   )}
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4 flex-shrink-0" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80" align="start">
