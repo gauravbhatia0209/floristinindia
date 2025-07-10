@@ -19,8 +19,8 @@ const Slider = React.forwardRef<
       )}
       {...props}
     >
-      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
-        <SliderPrimitive.Range className="absolute h-full bg-primary" />
+      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary/50">
+        <SliderPrimitive.Range className="absolute h-full bg-primary rounded-full" />
       </SliderPrimitive.Track>
 
       {/* Render thumbs based on whether it's a range slider */}
