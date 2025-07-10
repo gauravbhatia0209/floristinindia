@@ -629,7 +629,7 @@ export default function Index() {
     return (
       <section className="w-full">
         <HeroCarousel
-          images={content.images}
+          images={validImages}
           autoplay={content.autoplay !== false}
           autoplayDelay={content.autoplay_delay || 5000}
           showNavigation={content.show_navigation !== false}
