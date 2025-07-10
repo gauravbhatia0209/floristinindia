@@ -450,18 +450,11 @@ export default function Products() {
 
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <Button size="sm" variant="secondary">
+                  <Button size="sm" variant="secondary" title="Add to Wishlist">
                     <Heart className="w-4 h-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(product);
-                    }}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
+                  <Button size="sm" variant="secondary" title="Quick View">
+                    <Star className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
