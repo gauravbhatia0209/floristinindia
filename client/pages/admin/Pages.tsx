@@ -502,53 +502,6 @@ function PageForm({
       .join("\n");
   }
 
-  function addContentBlock(type: PageContent["type"]) {
-    const newBlock: PageContent = {
-      type,
-      content: getDefaultContent(type),
-    };
-
-    setFormData((prev) => ({
-      ...prev,
-      content: [...prev.content, newBlock],
-    }));
-  }
-
-  function updateContentBlock(index: number, content: any) {
-    setFormData((prev) => ({
-      ...prev,
-      content: prev.content.map((block, i) =>
-        i === index ? { ...block, content } : block,
-      ),
-    }));
-  }
-
-  function removeContentBlock(index: number) {
-    setFormData((prev) => ({
-      ...prev,
-      content: prev.content.filter((_, i) => i !== index),
-    }));
-  }
-
-  function getDefaultContent(type: PageContent["type"]) {
-    switch (type) {
-      case "heading":
-        return { level: 2, text: "New Heading" };
-      case "paragraph":
-        return { text: "Your text content here..." };
-      case "image":
-        return { url: "", alt: "", caption: "" };
-      case "button":
-        return { text: "Click Here", url: "", style: "primary" };
-      case "list":
-        return { items: ["Item 1", "Item 2", "Item 3"], ordered: false };
-      case "separator":
-        return {};
-      default:
-        return {};
-    }
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Tabs defaultValue="content" className="w-full">
