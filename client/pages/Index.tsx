@@ -603,7 +603,26 @@ export default function Index() {
   function renderHeroCarousel(section: HomepageSection) {
     const content = section.content as any;
 
+    console.log("🎠 renderHeroCarousel called:", {
+      sectionId: section.id,
+      content,
+      images: content?.images,
+      imagesLength: content?.images?.length,
+    });
+
     if (!content?.images || content.images.length === 0) {
+      console.log("❌ No images found, returning null");
+      return null;
+    }
+
+    // Filter out empty strings
+    const validImages = content.images.filter(
+      (img: string) => img && img.trim() !== "",
+    );
+    console.log("✅ Valid images found:", validImages);
+
+    if (validImages.length === 0) {
+      console.log("❌ No valid images after filtering, returning null");
       return null;
     }
 
