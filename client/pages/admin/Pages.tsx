@@ -44,6 +44,7 @@ export default function Pages() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [isAddingPage, setIsAddingPage] = useState(false);
+  const [editingSection, setEditingSection] = useState<Section | null>(null);
 
   useEffect(() => {
     fetchPages();
