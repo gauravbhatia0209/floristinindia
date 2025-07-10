@@ -623,10 +623,38 @@ export default function AdminCategories() {
     if (!confirm("Are you sure you want to delete this category?")) return;
 
     try {
-      await supabase.from("product_categories").delete().eq("id", categoryId);
-      setCategories(categories.filter((cat) => cat.id !== categoryId));
-    } catch (error) {
+      // Check if category has subcategories
+      const subcategoriesCount = categories.filter(
+        (cat) => cat.parent_id === categoryId,
+      ).length;
+      if (subcategoriesCount > 0) {
+        alert(
+          `Cannot delete this category. It has ${subcategoriesCount} subcategories. Please delete or reassign the subcategories first.`,
+        );
+        return;
+      }
+
+      const { error } = await supabase
+        .from("product_categories")
+        .delete()
+        .eq("id", categoryId);
+
+      if (error) {
+        console.error("Database delete error:", error);
+        alert(
+          `Failed to delete category: ${error.message || error.toString()}`,
+        );
+        return;
+      }
+
+      // Refresh the categories list from database to ensure consistency
+      await fetchCategories();
+      alert("Category deleted successfully!");
+    } catch (error: any) {
       console.error("Failed to delete category:", error);
+      const errorMessage =
+        error?.message || error?.toString() || "Unknown error occurred";
+      alert(`Failed to delete category: ${errorMessage}`);
     }
   }
 
