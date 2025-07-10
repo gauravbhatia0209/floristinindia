@@ -180,7 +180,7 @@ export default function Products() {
           </div>
 
           {/* Main Controls Container */}
-          <div className="flex flex-wrap xl:flex-nowrap gap-3 lg:gap-4 flex-1 min-w-0">
+          <div className="flex flex-wrap gap-3 lg:gap-4 flex-1 min-w-0">
             {/* Categories Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
