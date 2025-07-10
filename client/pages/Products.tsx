@@ -61,11 +61,15 @@ export default function Products() {
 
   async function fetchData() {
     try {
-      console.log("fetchData called with categorySlug:", categorySlug);
+      if (import.meta.env.DEV) {
+        console.log("fetchData called with categorySlug:", categorySlug);
+      }
       let productsData: Product[] = [];
 
       if (categorySlug) {
-        console.log("Fetching products for category:", categorySlug);
+        if (import.meta.env.DEV) {
+          console.log("Fetching products for category:", categorySlug);
+        }
 
         // Set current category and pre-select it in filters
         const { data: currentCategoryData, error: categoryError } =
