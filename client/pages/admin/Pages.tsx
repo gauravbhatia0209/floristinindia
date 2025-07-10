@@ -433,6 +433,8 @@ function PageForm({
     })(),
   });
 
+  const [sections, setSections] = useState<Section[]>(formData.sections);
+
   // Auto-generate slug from title
   useEffect(() => {
     if (!page && formData.title) {
@@ -447,9 +449,6 @@ function PageForm({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Convert content blocks to HTML string for storage
-    const htmlContent = convertBlocksToHtml(formData.content);
-
     onSave({
       title: formData.title,
       slug: formData.slug,
@@ -460,7 +459,7 @@ function PageForm({
       footer_column: formData.show_in_footer
         ? parseInt(formData.footer_column)
         : null,
-      content: htmlContent,
+      content: sections, // Store sections directly instead of converting to HTML
     });
   }
 
