@@ -736,15 +736,21 @@ export default function AdminCategories() {
 
     try {
       // Check for duplicate names in database (excluding current category if editing)
-      const { data: existingName } = await supabase
+      const { data: existingName, error: nameError } = await supabase
         .from("product_categories")
         .select("id, name")
         .ilike("name", formData.name.trim())
         .neq("id", editingCategory?.id || "")
         .limit(1);
 
+      if (nameError) {
+        console.error("Name validation error:", nameError);
+        return "Unable to validate category name. Please try again.";
+      }
+
       if (existingName && existingName.length > 0) {
-        return "A category with this name already exists";
+        console.log("Found existing category with same name:", existingName[0]);
+        return `A category with this name already exists (ID: ${existingName[0].id}). Please choose a different name.`;
       }
 
       // Check for duplicate slugs in database (excluding current category if editing)
