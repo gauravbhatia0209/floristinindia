@@ -967,7 +967,7 @@ export default function Index() {
                       )}
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 className="font-semibold mb-2 line-clamp-2">
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between mb-3">
