@@ -80,6 +80,7 @@ const sectionTemplates: SectionTemplate[] = [
     name: "Hero Image Carousel",
     icon: Image,
     description: "Full-width image carousel with auto-cycle and navigation",
+    isCarousel: true, // Add identifier to distinguish from regular hero
     defaultContent: {
       carousel_mode: true,
       images: [""],
