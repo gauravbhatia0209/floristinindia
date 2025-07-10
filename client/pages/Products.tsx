@@ -172,15 +172,15 @@ export default function Products() {
 
       {/* Horizontal Filter Bar */}
       <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
           {/* Filter Title */}
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0">
             <Filter className="w-4 h-4" />
             <span>Filters:</span>
           </div>
 
           {/* Filters Container */}
-          <div className="flex flex-wrap lg:flex-nowrap gap-3 lg:gap-4 flex-1">
+          <div className="flex flex-wrap gap-3 sm:gap-4 flex-1 min-w-0">
             {/* Categories Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
