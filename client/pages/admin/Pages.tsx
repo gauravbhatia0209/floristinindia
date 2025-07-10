@@ -473,36 +473,6 @@ function PageForm({
         </TabsList>
 
         <TabsContent value="content" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Page Content</h3>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => addContentBlock("heading")}
-              >
-                + Heading
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => addContentBlock("paragraph")}
-              >
-                + Paragraph
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => addContentBlock("button")}
-              >
-                + Button
-              </Button>
-            </div>
-          </div>
-
           <SectionBuilder
             sections={sections}
             onSectionsChange={setSections}
