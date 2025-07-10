@@ -11,7 +11,7 @@ import {
   Link as LinkIcon,
   List,
   Minus,
-  Button as ButtonIcon,
+  MousePointer as ButtonIcon,
 } from "lucide-react";
 
 export interface SectionTemplate {
