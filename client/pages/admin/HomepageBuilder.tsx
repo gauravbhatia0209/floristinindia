@@ -55,16 +55,8 @@ import { getSectionTemplatesForPage } from "@/lib/sectionLibrary";
 import { SectionBuilder, Section } from "@/components/admin/SectionBuilder";
 import { SectionEditor } from "@/components/admin/SectionEditor";
 
-interface SectionTemplate {
-  type: string;
-  name: string;
-  icon: any;
-  description: string;
-  defaultContent: any;
-  isCarousel?: boolean;
-}
-
-const sectionTemplates: SectionTemplate[] = [
+// Using unified section templates from lib/sectionLibrary.ts
+const sectionTemplates = getSectionTemplatesForPage("homepage");
   {
     type: "hero",
     name: "Hero Banner",
