@@ -1092,7 +1092,7 @@ export default function Index() {
     const content = section.content as any;
 
     return (
-      <section key={section.id} className="py-20 bg-gradient-rose text-white">
+      <section className="py-20 bg-gradient-rose text-white">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             {section.title || "Stay Blooming with Our Updates"}
