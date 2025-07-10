@@ -491,7 +491,7 @@ export function Header() {
           </nav>
 
           {/* Desktop Search Icon */}
-          <div className="hidden md:block relative" ref={searchRef}>
+          <div className="hidden md:block relative">
             <Button
               variant="ghost"
               size="icon"
