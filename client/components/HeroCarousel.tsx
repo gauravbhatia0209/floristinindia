@@ -1,0 +1,152 @@
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface HeroCarouselProps {
+  images: string[];
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  showNavigation?: boolean;
+  showDots?: boolean;
+  height?: number;
+}
+
+export function HeroCarousel({
+  images,
+  autoplay = true,
+  autoplayDelay = 5000,
+  showNavigation = true,
+  showDots = true,
+  height = 500,
+}: HeroCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1,
+    );
+  }, [images.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1,
+    );
+  }, [images.length]);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentIndex(index);
+  }, []);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!autoplay || isHovered || images.length <= 1) return;
+
+    const interval = setInterval(nextSlide, autoplayDelay);
+    return () => clearInterval(interval);
+  }, [autoplay, autoplayDelay, isHovered, nextSlide, images.length]);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        prevSlide();
+      } else if (event.key === "ArrowRight") {
+        nextSlide();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [nextSlide, prevSlide]);
+
+  if (!images || images.length === 0) {
+    return (
+      <div
+        className="w-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center"
+        style={{ height: `${height}px` }}
+      >
+        <div className="text-center text-muted-foreground">
+          <div className="text-6xl mb-4">🌸</div>
+          <p className="text-lg">No carousel images configured</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="relative w-full overflow-hidden bg-gray-100"
+      style={{ height: `${height}px` }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Image slides */}
+      <div
+        className="flex transition-transform duration-500 ease-in-out h-full"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="w-full h-full flex-shrink-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+            role="img"
+            aria-label={`Slide ${index + 1} of ${images.length}`}
+          />
+        ))}
+      </div>
+
+      {/* Navigation arrows */}
+      {showNavigation && images.length > 1 && (
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 backdrop-blur-sm border-white/20 shadow-lg z-10 transition-all duration-200 hover:scale-110"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 backdrop-blur-sm border-white/20 shadow-lg z-10 transition-all duration-200 hover:scale-110"
+            onClick={nextSlide}
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </>
+      )}
+
+      {/* Dots navigation */}
+      {showDots && images.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === currentIndex
+                  ? "bg-white shadow-lg scale-110"
+                  : "bg-white/50 hover:bg-white/75 hover:scale-105"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Slide indicator for screen readers */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        Slide {currentIndex + 1} of {images.length}
+      </div>
+    </div>
+  );
+}
