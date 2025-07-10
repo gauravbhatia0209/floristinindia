@@ -269,6 +269,7 @@ export function Header() {
         !searchRef.current.contains(event.target as Node)
       ) {
         setShowSearchResults(false);
+        setIsSearchOpen(false);
       }
     };
 
