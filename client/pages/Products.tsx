@@ -172,7 +172,7 @@ export default function Products() {
 
       {/* Unified Horizontal Filter Bar */}
       <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:h-9">
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
           {/* Filter Title */}
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
             <Filter className="w-4 h-4" />
@@ -180,7 +180,7 @@ export default function Products() {
           </div>
 
           {/* Main Controls Container */}
-          <div className="flex flex-wrap lg:flex-nowrap items-center gap-4 flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-4 flex-1 min-w-0">
             {/* Categories Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
