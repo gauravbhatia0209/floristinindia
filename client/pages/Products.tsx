@@ -186,13 +186,13 @@ export default function Products() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-9 gap-2 min-w-[120px] flex-shrink-0"
+                  className="h-9 gap-2 min-w-[120px] flex-shrink-0 px-3"
                 >
                   <span className="truncate">Categories</span>
                   {selectedCategories.length > 0 && (
                     <Badge
                       variant="secondary"
-                      className="ml-1 h-5 min-w-5 px-1.5 text-xs"
+                      className="ml-1 h-4 min-w-[16px] px-1.5 text-xs"
                     >
                       {selectedCategories.length}
                     </Badge>
