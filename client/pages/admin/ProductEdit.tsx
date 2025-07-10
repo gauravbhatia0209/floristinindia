@@ -15,9 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
-import { Product, ProductCategory } from "@shared/database.types";
+import {
+  Product,
+  ProductCategory,
+  ProductCategoryAssignment,
+} from "@shared/database.types";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { ProductVariations } from "@/components/admin/ProductVariations";
+import { MultiCategorySelect } from "@/components/ui/multi-category-select";
 
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
