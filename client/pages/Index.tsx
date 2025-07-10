@@ -392,8 +392,17 @@ export default function Index() {
   function renderHeroSection(section: HomepageSection) {
     const content = section.content as any;
 
+    console.log("🎯 renderHeroSection called:", {
+      sectionId: section.id,
+      content,
+      carouselMode: content?.carousel_mode,
+      imagesLength: content?.images?.length,
+      images: content?.images,
+    });
+
     // Check if this is a carousel hero section
     if (content?.carousel_mode && content?.images?.length > 0) {
+      console.log("🎠 Rendering hero carousel:", content.images);
       return renderHeroCarousel(section);
     }
 
