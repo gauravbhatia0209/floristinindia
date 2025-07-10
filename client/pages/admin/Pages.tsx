@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Eye, FileText, Settings } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  FileText,
+  Settings,
+  Layers,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,6 +31,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
 import { Page } from "@shared/database.types";
+import { SectionBuilder, Section } from "@/components/admin/SectionBuilder";
+import { SectionEditor } from "@/components/admin/SectionEditor";
 
 interface PageContent {
   type: "heading" | "paragraph" | "image" | "button" | "list" | "separator";
