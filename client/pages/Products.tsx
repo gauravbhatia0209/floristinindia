@@ -39,6 +39,8 @@ export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [currentCategory, setCurrentCategory] =
+    useState<ProductCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [priceRange, setPriceRange] = useState([0, 5000]);
