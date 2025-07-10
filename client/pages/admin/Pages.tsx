@@ -465,12 +465,35 @@ function PageForm({
         </TabsList>
 
         <TabsContent value="content" className="space-y-4">
-          <SectionBuilder
-            sections={sections}
-            onSectionsChange={setSections}
-            pageType="pages"
-            onSectionEdit={onSectionEdit}
-          />
+          {editingSection ? (
+            // Inline Section Editor
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div>
+                  <h3 className="font-semibold">Editing Section</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Make your changes below and click save to apply them.
+                  </p>
+                </div>
+                <Button variant="outline" onClick={onSectionCancel} size="sm">
+                  Back to Sections
+                </Button>
+              </div>
+              <SectionEditor
+                section={editingSection}
+                onSave={onSectionSave}
+                onCancel={onSectionCancel}
+              />
+            </div>
+          ) : (
+            // Section Builder
+            <SectionBuilder
+              sections={sections}
+              onSectionsChange={setSections}
+              pageType="pages"
+              onSectionEdit={onSectionEdit}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
