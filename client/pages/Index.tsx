@@ -1122,7 +1122,9 @@ export default function Index() {
 
   return (
     <div className="min-h-screen">
-      {sections.map((section) => renderSection(section))}
+      {sections.map((section) => (
+        <div key={section.id}>{renderSection(section)}</div>
+      ))}
 
       {/* CTA Section - Always show at end */}
       <section className="py-20 bg-gradient-rose text-white">
