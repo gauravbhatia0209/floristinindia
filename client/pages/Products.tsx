@@ -184,8 +184,11 @@ export default function Products() {
             {/* Categories Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-9 gap-2 min-w-[120px]">
-                  Categories
+                <Button
+                  variant="outline"
+                  className="h-9 gap-2 min-w-[120px] flex-shrink-0"
+                >
+                  <span className="truncate">Categories</span>
                   {selectedCategories.length > 0 && (
                     <Badge
                       variant="secondary"
@@ -194,7 +197,7 @@ export default function Products() {
                       {selectedCategories.length}
                     </Badge>
                   )}
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4 flex-shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start">
