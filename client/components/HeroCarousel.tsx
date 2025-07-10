@@ -76,7 +76,7 @@ export function HeroCarousel({
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-gray-100"
+      className="hero-carousel relative w-full overflow-hidden bg-gray-100"
       style={{ height: `${height}px` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -89,11 +89,9 @@ export function HeroCarousel({
         {images.map((image, index) => (
           <div
             key={index}
-            className="w-full h-full flex-shrink-0 bg-cover bg-center bg-no-repeat"
+            className="hero-carousel-slide w-full h-full flex-shrink-0"
             style={{
               backgroundImage: `url(${image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
             }}
             role="img"
             aria-label={`Slide ${index + 1} of ${images.length}`}
@@ -107,7 +105,7 @@ export function HeroCarousel({
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 backdrop-blur-sm border-white/20 shadow-lg z-10 transition-all duration-200 hover:scale-110"
+            className="hero-carousel-nav absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10"
             onClick={prevSlide}
             aria-label="Previous slide"
           >
@@ -116,7 +114,7 @@ export function HeroCarousel({
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 backdrop-blur-sm border-white/20 shadow-lg z-10 transition-all duration-200 hover:scale-110"
+            className="hero-carousel-nav absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10"
             onClick={nextSlide}
             aria-label="Next slide"
           >
@@ -127,15 +125,15 @@ export function HeroCarousel({
 
       {/* Dots navigation */}
       {showDots && images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+        <div className="hero-carousel-dots absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+              className={`hero-carousel-dot w-3 h-3 rounded-full transition-all duration-200 ${
                 index === currentIndex
                   ? "bg-white shadow-lg scale-110"
-                  : "bg-white/50 hover:bg-white/75 hover:scale-105"
+                  : "bg-white/50 hover:bg-white/75"
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
