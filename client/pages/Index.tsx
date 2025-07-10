@@ -647,7 +647,7 @@ export default function Index() {
     };
 
     return (
-      <section key={section.id} className="py-16 bg-cream/30">
+      <section className="py-16 bg-cream/30">
         <div className="container">
           {section.title && (
             <div className="text-center mb-12">
@@ -826,7 +826,7 @@ export default function Index() {
       validProducts.map((p) => p.name),
     );
     console.log(
-      "🖼��� Product Carousel: Image status for each product:",
+      "🖼️ Product Carousel: Image status for each product:",
       validProducts.map((p) => ({
         name: p.name,
         hasImages: p.images && Array.isArray(p.images) && p.images.length > 0,
