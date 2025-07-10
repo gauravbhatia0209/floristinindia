@@ -488,7 +488,7 @@ export default function Products() {
                   <span className="text-sm text-muted-foreground">(4.8)</span>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-primary">
                       ₹{product.sale_price || product.price}
@@ -499,13 +499,17 @@ export default function Products() {
                       </span>
                     )}
                   </div>
-
-                  {viewMode === "list" && (
-                    <Button onClick={() => handleAddToCart(product)} size="sm">
-                      Add to Cart
-                    </Button>
-                  )}
                 </div>
+
+                {/* Add to Cart Button - Always Visible */}
+                <Button
+                  onClick={() => handleAddToCart(product)}
+                  size="sm"
+                  className="w-full"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
               </CardContent>
             </Card>
           ))}
