@@ -442,7 +442,7 @@ export default function Products() {
 
               <CardContent className="p-4 flex-1">
                 <Link to={`/product/${product.slug}`}>
-                  <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="font-semibold mb-2 line-clamp-2">
                     {product.name}
                   </h3>
                 </Link>
