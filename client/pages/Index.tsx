@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "@/hooks/use-toast";
 import { HeroCarousel } from "@/components/HeroCarousel";
+import { HeroCarouselFix } from "@/components/HeroCarouselFix";
 import {
   ProductCategory,
   Product,
