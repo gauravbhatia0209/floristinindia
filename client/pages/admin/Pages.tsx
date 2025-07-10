@@ -323,6 +323,14 @@ export default function Pages() {
               setEditingSection(null);
             }}
             onSectionCancel={() => setEditingSection(null)}
+            onSectionsUpdate={(updatedSections) => {
+              if (editingPage) {
+                setEditingPage({
+                  ...editingPage,
+                  content: updatedSections,
+                });
+              }
+            }}
           />
         </DialogContent>
       </Dialog>
