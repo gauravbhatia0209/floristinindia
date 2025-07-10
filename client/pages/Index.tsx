@@ -777,7 +777,7 @@ export default function Index() {
                       </span>
                     </div>
                     <CardContent className="p-3 text-center">
-                      <h3 className="text-sm font-semibold group-hover:text-primary transition-colors leading-tight">
+                      <h3 className="text-sm font-semibold leading-tight">
                         {category.name}
                       </h3>
                     </CardContent>
@@ -835,7 +835,7 @@ export default function Index() {
       validProducts.map((p) => p.name),
     );
     console.log(
-      "���️ Product Carousel: Image status for each product:",
+      "🖼️ Product Carousel: Image status for each product:",
       validProducts.map((p) => ({
         name: p.name,
         hasImages: p.images && Array.isArray(p.images) && p.images.length > 0,
