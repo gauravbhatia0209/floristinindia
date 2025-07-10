@@ -15,7 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory, Product } from "@shared/database.types";
@@ -309,6 +315,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-80">
+              <VisuallyHidden>
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </VisuallyHidden>
               <div className="py-4">
                 <h2 className="text-lg font-semibold mb-4">Menu</h2>
                 <nav className="flex flex-col gap-2">
