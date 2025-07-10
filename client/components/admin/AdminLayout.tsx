@@ -19,7 +19,13 @@ import {
   Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Badge } from "@/components/ui/badge";
 
 const navigation = [
@@ -111,6 +117,9 @@ export default function AdminLayout() {
       {/* Mobile sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="w-80 p-0">
+          <VisuallyHidden>
+            <SheetTitle>Admin Navigation</SheetTitle>
+          </VisuallyHidden>
           <AdminSidebar />
         </SheetContent>
       </Sheet>
