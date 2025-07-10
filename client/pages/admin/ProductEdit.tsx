@@ -199,8 +199,10 @@ export default function ProductEdit() {
   }, [formData.name, product]);
 
   async function handleSave() {
-    if (!formData.name || !formData.price || !formData.category_id) {
-      alert("Please fill in all required fields");
+    if (!formData.name || !formData.price || selectedCategoryIds.length === 0) {
+      alert(
+        "Please fill in all required fields including at least one category",
+      );
       return;
     }
 
@@ -217,7 +219,7 @@ export default function ProductEdit() {
           : null,
         sku: formData.sku || null,
         stock_quantity: parseInt(formData.stock_quantity) || 0,
-        category_id: formData.category_id,
+        category_id: primaryCategoryId, // Keep for backwards compatibility
         subcategory_id: formData.subcategory_id || null,
         images: formData.images,
         tags: formData.tags
@@ -238,11 +240,17 @@ export default function ProductEdit() {
         weight: formData.weight ? parseFloat(formData.weight) : null,
       };
 
+      let productId: string;
+
       if (isNew) {
-        const { error } = await supabase.from("products").insert(productData);
+        const { data, error } = await supabase
+          .from("products")
+          .insert(productData)
+          .select("id")
+          .single();
 
         if (error) throw error;
-        alert("Product created successfully!");
+        productId = data.id;
       } else {
         const { error } = await supabase
           .from("products")
@@ -250,9 +258,17 @@ export default function ProductEdit() {
           .eq("id", id);
 
         if (error) throw error;
-        alert("Product updated successfully!");
+        productId = id!;
       }
 
+      // Save category assignments
+      await saveCategoryAssignments(productId);
+
+      alert(
+        isNew
+          ? "Product created successfully!"
+          : "Product updated successfully!",
+      );
       navigate("/admin/products");
     } catch (error: any) {
       console.error("Failed to save product:", error);
@@ -275,6 +291,45 @@ export default function ProductEdit() {
       alert(`Failed to save product: ${errorMessage}`);
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function saveCategoryAssignments(productId: string) {
+    try {
+      // First, try to delete existing assignments
+      const { error: deleteError } = await supabase
+        .from("product_category_assignments")
+        .delete()
+        .eq("product_id", productId);
+
+      // If delete fails, the table might not exist yet - that's okay
+      if (deleteError && !deleteError.message.includes("does not exist")) {
+        console.warn("Could not delete existing assignments:", deleteError);
+      }
+
+      // Create new assignments
+      if (selectedCategoryIds.length > 0) {
+        const assignments = selectedCategoryIds.map((categoryId) => ({
+          product_id: productId,
+          category_id: categoryId,
+          is_primary: categoryId === primaryCategoryId,
+        }));
+
+        const { error: insertError } = await supabase
+          .from("product_category_assignments")
+          .insert(assignments);
+
+        if (insertError) {
+          // If the junction table doesn't exist, just continue with legacy single category
+          console.warn(
+            "Could not save category assignments, using legacy mode:",
+            insertError,
+          );
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to save category assignments:", error);
+      // Don't throw here - the product was saved successfully
     }
   }
 
