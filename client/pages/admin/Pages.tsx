@@ -589,17 +589,12 @@ function PageForm({
             </div>
           </div>
 
-          <div className="space-y-4 max-h-96 overflow-y-auto border rounded-lg p-4">
-            {formData.content.map((block, index) => (
-              <ContentBlockEditor
-                key={index}
-                block={block}
-                index={index}
-                onChange={(content) => updateContentBlock(index, content)}
-                onRemove={() => removeContentBlock(index)}
-              />
-            ))}
-          </div>
+          <SectionBuilder
+            sections={sections}
+            onSectionsChange={setSections}
+            pageType="pages"
+            onSectionEdit={onSectionEdit}
+          />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
