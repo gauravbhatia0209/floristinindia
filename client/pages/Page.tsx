@@ -204,85 +204,117 @@ export default function Page() {
           </h1>
         </header>
 
-        <main className="prose prose-lg max-w-none">
+        <main>
           {(() => {
             // Handle different content formats
-            if (typeof pageData.content === "string") {
+            console.log("Page content type:", typeof pageData.content);
+            console.log("Page content:", pageData.content);
+
+            // Check if content is the new section format (array of Section objects)
+            if (
+              Array.isArray(pageData.content) &&
+              pageData.content.length > 0 &&
+              pageData.content[0].id &&
+              pageData.content[0].type
+            ) {
+              console.log("Rendering with SectionRenderer");
               return (
-                <div
-                  dangerouslySetInnerHTML={{ __html: pageData.content }}
-                  className="break-words"
-                />
+                <SectionRenderer sections={pageData.content as Section[]} />
               );
-            } else if (
+            }
+            // Handle legacy string HTML content
+            else if (typeof pageData.content === "string") {
+              console.log("Rendering legacy HTML content");
+              return (
+                <div className="prose prose-lg max-w-none">
+                  <div
+                    dangerouslySetInnerHTML={{ __html: pageData.content }}
+                    className="break-words"
+                  />
+                </div>
+              );
+            }
+            // Handle legacy structured content with blocks
+            else if (
               typeof pageData.content === "object" &&
               pageData.content &&
               pageData.content.blocks
             ) {
-              // Handle structured content with blocks
-              return pageData.content.blocks.map(
-                (block: any, index: number) => {
-                  switch (block.type) {
-                    case "heading":
-                      return (
-                        <h1 key={index} className="text-2xl font-bold mb-4">
-                          {block.content}
-                        </h1>
-                      );
-                    case "text":
-                    case "paragraph":
-                      return (
-                        <p key={index} className="text-base text-gray-700 mb-2">
-                          {block.content}
-                        </p>
-                      );
-                    case "image":
-                      return (
-                        <img
-                          key={index}
-                          src={block.url || block.content}
-                          alt={block.alt || ""}
-                          className="w-full max-w-md mx-auto rounded-lg mb-4"
-                        />
-                      );
-                    case "button":
-                      return (
-                        <a
-                          key={index}
-                          href={block.url || "#"}
-                          className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors mb-4"
-                        >
-                          {block.content || block.text}
-                        </a>
-                      );
-                    case "list":
-                      return (
-                        <ul key={index} className="list-disc list-inside mb-4">
-                          {(block.items || []).map(
-                            (item: string, itemIndex: number) => (
-                              <li
-                                key={itemIndex}
-                                className="text-base text-gray-700 mb-1"
-                              >
-                                {item}
-                              </li>
-                            ),
-                          )}
-                        </ul>
-                      );
-                    default:
-                      return (
-                        <div
-                          key={index}
-                          className="text-base text-gray-700 mb-2"
-                        >
-                          {block.content || ""}
-                        </div>
-                      );
-                  }
-                },
+              console.log("Rendering legacy blocks content");
+              return (
+                <div className="prose prose-lg max-w-none">
+                  {pageData.content.blocks.map((block: any, index: number) => {
+                    switch (block.type) {
+                      case "heading":
+                        return (
+                          <h1 key={index} className="text-2xl font-bold mb-4">
+                            {block.content}
+                          </h1>
+                        );
+                      case "text":
+                      case "paragraph":
+                        return (
+                          <p
+                            key={index}
+                            className="text-base text-gray-700 mb-2"
+                          >
+                            {block.content}
+                          </p>
+                        );
+                      case "image":
+                        return (
+                          <img
+                            key={index}
+                            src={block.url || block.content}
+                            alt={block.alt || ""}
+                            className="w-full max-w-md mx-auto rounded-lg mb-4"
+                          />
+                        );
+                      case "button":
+                        return (
+                          <a
+                            key={index}
+                            href={block.url || "#"}
+                            className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors mb-4"
+                          >
+                            {block.content || block.text}
+                          </a>
+                        );
+                      case "list":
+                        return (
+                          <ul
+                            key={index}
+                            className="list-disc list-inside mb-4"
+                          >
+                            {(block.items || []).map(
+                              (item: string, itemIndex: number) => (
+                                <li
+                                  key={itemIndex}
+                                  className="text-base text-gray-700 mb-1"
+                                >
+                                  {item}
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        );
+                      default:
+                        return (
+                          <div
+                            key={index}
+                            className="text-base text-gray-700 mb-2"
+                          >
+                            {block.content || ""}
+                          </div>
+                        );
+                    }
+                  })}
+                </div>
               );
-            } else {
+            }
+            // Fallback for empty or unrecognized content
+            else {
+              console.log("No valid content found");
               return (
                 <div className="text-center py-8">
                   <p className="text-gray-600">
