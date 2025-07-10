@@ -172,183 +172,190 @@ export default function Products() {
 
       {/* Unified Horizontal Filter Bar */}
       <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm border-border/50">
-        <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* Filter Title */}
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
             <Filter className="w-4 h-4" />
             <span>Filters:</span>
           </div>
 
-          {/* Main Controls Container */}
-          <div className="flex flex-wrap items-center gap-4 flex-1 min-w-0">
-            {/* Categories Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-9 gap-2 w-fit max-w-[180px] min-w-[110px] flex-shrink-0 px-3"
-                >
-                  <span className="truncate">Categories</span>
-                  {selectedCategories.length > 0 && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-1 h-4 min-w-[16px] px-1.5 text-xs"
-                    >
-                      {selectedCategories.length}
-                    </Badge>
-                  )}
-                  <ChevronDown className="w-4 h-4 flex-shrink-0" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuLabel>Select Categories</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {categories.map((category) => (
-                  <DropdownMenuCheckboxItem
-                    key={category.id}
-                    checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedCategories([
-                          ...selectedCategories,
-                          category.id,
-                        ]);
-                      } else {
-                        setSelectedCategories(
-                          selectedCategories.filter((id) => id !== category.id),
-                        );
-                      }
-                    }}
+          {/* Main Filter Bar Container */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center flex-1">
+            {/* Left Group: Filter Controls */}
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Categories Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-9 gap-2 w-fit max-w-[180px] min-w-[110px] flex-shrink-0 px-3"
                   >
-                    {category.name}
-                  </DropdownMenuCheckboxItem>
-                ))}
-                {selectedCategories.length > 0 && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full h-8 text-xs"
-                      onClick={() => setSelectedCategories([])}
+                    <span className="truncate">Categories</span>
+                    {selectedCategories.length > 0 && (
+                      <Badge
+                        variant="secondary"
+                        className="ml-1 h-4 min-w-[16px] px-1.5 text-xs"
+                      >
+                        {selectedCategories.length}
+                      </Badge>
+                    )}
+                    <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start">
+                  <DropdownMenuLabel>Select Categories</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {categories.map((category) => (
+                    <DropdownMenuCheckboxItem
+                      key={category.id}
+                      checked={selectedCategories.includes(category.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedCategories([
+                            ...selectedCategories,
+                            category.id,
+                          ]);
+                        } else {
+                          setSelectedCategories(
+                            selectedCategories.filter(
+                              (id) => id !== category.id,
+                            ),
+                          );
+                        }
+                      }}
                     >
-                      Clear All
-                    </Button>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Price Range Popover */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="h-9 gap-2 w-fit max-w-[200px] min-w-[130px] flex-shrink-0 px-3"
-                >
-                  <span className="truncate">Price Range</span>
-                  {(priceRange[0] > 0 || priceRange[1] < 5000) && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-1 h-4 px-1.5 text-xs"
-                    >
-                      ₹{priceRange[0]}-₹{priceRange[1]}
-                    </Badge>
+                      {category.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  {selectedCategories.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full h-8 text-xs"
+                        onClick={() => setSelectedCategories([])}
+                      >
+                        Clear All
+                      </Button>
+                    </>
                   )}
-                  <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Price Range Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="h-9 gap-2 w-fit max-w-[200px] min-w-[130px] flex-shrink-0 px-3"
+                  >
+                    <span className="truncate">Price Range</span>
+                    {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+                      <Badge
+                        variant="secondary"
+                        className="ml-1 h-4 px-1.5 text-xs"
+                      >
+                        ₹{priceRange[0]}-₹{priceRange[1]}
+                      </Badge>
+                    )}
+                    <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80" align="start">
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">Price Range</Label>
+                      <div className="mt-4 px-3 py-2">
+                        <Slider
+                          value={priceRange}
+                          onValueChange={setPriceRange}
+                          max={5000}
+                          min={0}
+                          step={100}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm text-muted-foreground mt-3 px-1">
+                        <span className="font-medium">
+                          ₹{priceRange[0].toLocaleString()}
+                        </span>
+                        <span className="text-xs text-muted-foreground/70">
+                          to
+                        </span>
+                        <span className="font-medium">
+                          ₹{priceRange[1].toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-8"
+                        onClick={() => setPriceRange([0, 5000])}
+                      >
+                        Reset
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              {/* Sort By Dropdown */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="h-9 w-fit max-w-[220px] min-w-[120px] gap-2 flex-shrink-0 px-3">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">Sort by Name</SelectItem>
+                  <SelectItem value="price_low">Price: Low to High</SelectItem>
+                  <SelectItem value="price_high">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Clear All Filters Button */}
+              {(selectedCategories.length > 0 ||
+                priceRange[0] > 0 ||
+                priceRange[1] < 5000) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 px-3 text-xs flex-shrink-0 w-fit"
+                  onClick={() => {
+                    setSelectedCategories([]);
+                    setPriceRange([0, 5000]);
+                  }}
+                >
+                  <X className="w-3 h-3 mr-1" />
+                  Clear All
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80" align="start">
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium">Price Range</Label>
-                    <div className="mt-4 px-3 py-2">
-                      <Slider
-                        value={priceRange}
-                        onValueChange={setPriceRange}
-                        max={5000}
-                        min={0}
-                        step={100}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground mt-3 px-1">
-                      <span className="font-medium">
-                        ₹{priceRange[0].toLocaleString()}
-                      </span>
-                      <span className="text-xs text-muted-foreground/70">
-                        to
-                      </span>
-                      <span className="font-medium">
-                        ₹{priceRange[1].toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 h-8"
-                      onClick={() => setPriceRange([0, 5000])}
-                    >
-                      Reset
-                    </Button>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            {/* Sort By Dropdown */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-9 w-fit max-w-[220px] min-w-[120px] gap-2 flex-shrink-0 px-3">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Sort by Name</SelectItem>
-                <SelectItem value="price_low">Price: Low to High</SelectItem>
-                <SelectItem value="price_high">Price: High to Low</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* View Mode Toggle */}
-            <div className="flex items-center border rounded-md flex-shrink-0 h-9">
-              <Button
-                variant={viewMode === "grid" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-                className="rounded-r-none h-9 w-9 p-0 border-0"
-                title="Grid View"
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-                className="rounded-l-none h-9 w-9 p-0 border-0"
-                title="List View"
-              >
-                <List className="w-4 h-4" />
-              </Button>
+              )}
             </div>
 
-            {/* Clear All Filters Button */}
-            {(selectedCategories.length > 0 ||
-              priceRange[0] > 0 ||
-              priceRange[1] < 5000) && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 px-3 text-xs flex-shrink-0 ml-auto w-fit"
-                onClick={() => {
-                  setSelectedCategories([]);
-                  setPriceRange([0, 5000]);
-                }}
-              >
-                <X className="w-3 h-3 mr-1" />
-                Clear All
-              </Button>
-            )}
+            {/* Right Group: View Mode Toggle */}
+            <div className="flex items-center gap-4 ml-auto">
+              <div className="flex items-center border rounded-md flex-shrink-0 h-9">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="rounded-r-none h-9 w-9 p-0 border-0"
+                  title="Grid View"
+                >
+                  <Grid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="rounded-l-none h-9 w-9 p-0 border-0"
+                  title="List View"
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
