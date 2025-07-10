@@ -289,11 +289,16 @@ export default function HomepageBuilder() {
         sort_order: sections.length,
       };
 
+      console.log("Attempting to insert new section:", newSection);
+      console.log("Template defaultContent:", template.defaultContent);
+
       const { data, error } = await supabase
         .from("homepage_sections")
         .insert(newSection)
         .select()
         .single();
+
+      console.log("Supabase response:", { data, error });
 
       if (error) throw error;
 
