@@ -56,13 +56,10 @@ export default function Products() {
 
   async function fetchData() {
     try {
-      // Fetch products
-      let productQuery = supabase
-        .from("products")
-        .select("*")
-        .eq("is_active", true);
+      let productsData: Product[] = [];
 
       if (categorySlug) {
+        // Fetch products for a specific category - check both legacy and new system
         const { data: category } = await supabase
           .from("product_categories")
           .select("id")
@@ -70,11 +67,42 @@ export default function Products() {
           .single();
 
         if (category) {
-          productQuery = productQuery.eq("category_id", category.id);
-        }
-      }
+          // Try to fetch from multi-category assignments first
+          const { data: assignments } = await supabase
+            .from("product_category_assignments")
+            .select(
+              `
+              product_id,
+              products (*)
+            `,
+            )
+            .eq("category_id", category.id);
 
-      const { data: productsData } = await productQuery;
+          if (assignments && assignments.length > 0) {
+            // Use multi-category data
+            productsData = assignments
+              .map((a: any) => a.products)
+              .filter((p: Product) => p && p.is_active);
+          } else {
+            // Fall back to legacy single category
+            const { data: legacyProducts } = await supabase
+              .from("products")
+              .select("*")
+              .eq("category_id", category.id)
+              .eq("is_active", true);
+
+            productsData = legacyProducts || [];
+          }
+        }
+      } else {
+        // Fetch all products
+        const { data: allProducts } = await supabase
+          .from("products")
+          .select("*")
+          .eq("is_active", true);
+
+        productsData = allProducts || [];
+      }
 
       // Fetch categories
       const { data: categoriesData } = await supabase
