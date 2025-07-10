@@ -364,46 +364,72 @@ function PageForm({
     is_active: page?.is_active ?? true,
     show_in_footer: page?.show_in_footer ?? false,
     footer_column: page?.footer_column?.toString() || "1",
-    content: (() => {
+    sections: (() => {
       if (!page?.content) {
         return [
           {
+            id: "section_1",
             type: "heading",
             content: { level: 1, text: "Page Title" },
+            is_visible: true,
+            sort_order: 0,
           },
           {
+            id: "section_2",
             type: "paragraph",
             content: { text: "Your page content goes here..." },
+            is_visible: true,
+            sort_order: 1,
           },
-        ];
+        ] as Section[];
       }
 
-      // If content is already an array (content blocks), use it
+      // If content is already sections array, use it
+      if (Array.isArray(page.content) && page.content[0]?.id) {
+        return page.content as Section[];
+      }
+
+      // If content is legacy blocks array, convert to sections
       if (Array.isArray(page.content)) {
-        return page.content;
+        return page.content.map((block: any, index: number) => ({
+          id: `section_${index}`,
+          type: block.type,
+          content: block.content,
+          is_visible: true,
+          sort_order: index,
+        })) as Section[];
       }
 
-      // If content is a string (HTML), convert it to a single paragraph block
+      // If content is a string (HTML), convert it to a single paragraph section
       if (typeof page.content === "string") {
         return [
           {
+            id: "section_1",
             type: "paragraph",
             content: { text: page.content },
+            is_visible: true,
+            sort_order: 0,
           },
-        ];
+        ] as Section[];
       }
 
       // Fallback to default content
       return [
         {
+          id: "section_1",
           type: "heading",
           content: { level: 1, text: page?.title || "Page Title" },
+          is_visible: true,
+          sort_order: 0,
         },
         {
+          id: "section_2",
           type: "paragraph",
           content: { text: "Your page content goes here..." },
+          is_visible: true,
+          sort_order: 1,
         },
-      ];
+      ] as Section[];
     })(),
   });
 
