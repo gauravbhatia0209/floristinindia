@@ -178,15 +178,39 @@ export default function Products() {
     <div className="container py-8">
       {/* Header */}
       <div className="mb-8">
+        {/* Breadcrumb */}
+        {currentCategory && (
+          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+            <Link to="/" className="hover:text-primary">
+              Home
+            </Link>
+            <span>/</span>
+            <Link to="/products" className="hover:text-primary">
+              Products
+            </Link>
+            <span>/</span>
+            <span className="text-foreground">{currentCategory.name}</span>
+          </nav>
+        )}
+
         <h1 className="text-3xl font-bold mb-2">
-          {categorySlug
-            ? categories.find((c) => c.slug === categorySlug)?.name ||
-              "Products"
-            : "All Products"}
+          {currentCategory ? currentCategory.name : "All Products"}
         </h1>
         <p className="text-muted-foreground">
-          Discover our beautiful collection of fresh flowers
+          {currentCategory
+            ? currentCategory.description ||
+              `Discover our beautiful collection of ${currentCategory.name.toLowerCase()}`
+            : "Discover our beautiful collection of fresh flowers"}
         </p>
+
+        {/* Product count */}
+        <div className="mt-4">
+          <p className="text-sm text-muted-foreground">
+            {filteredProducts.length}{" "}
+            {filteredProducts.length === 1 ? "product" : "products"}
+            {currentCategory && ` in ${currentCategory.name}`}
+          </p>
+        </div>
       </div>
 
       {/* Unified Horizontal Filter Bar */}
