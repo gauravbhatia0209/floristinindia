@@ -186,7 +186,7 @@ export default function Products() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="h-9 gap-2 min-w-[120px] flex-shrink-0 px-3"
+                  className="h-9 gap-2 w-fit max-w-[180px] min-w-[110px] flex-shrink-0 px-3"
                 >
                   <span className="truncate">Categories</span>
                   {selectedCategories.length > 0 && (
