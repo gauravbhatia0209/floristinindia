@@ -72,6 +72,7 @@ export default function Settings() {
     favicon_url: "",
     contact_phone: "",
     contact_phone_2: "",
+    whatsapp_number: "",
     contact_email: "",
     contact_address: "",
     business_hours: "",
