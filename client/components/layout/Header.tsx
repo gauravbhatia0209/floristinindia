@@ -97,6 +97,11 @@ export function Header() {
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
   useEffect(() => {
     fetchMenuItems();
     fetchSiteSettings();
