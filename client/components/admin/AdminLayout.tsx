@@ -36,6 +36,11 @@ const navigation = [
     icon: LayoutDashboard,
   },
   {
+    name: "Analytics",
+    href: "/admin/analytics",
+    icon: BarChart3,
+  },
+  {
     name: "Products",
     href: "/admin/products",
     icon: Package,
