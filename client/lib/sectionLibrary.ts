@@ -54,15 +54,18 @@ export const sectionTemplates: SectionTemplate[] = [
     isCarousel: true,
     availableFor: ["homepage", "pages"],
     defaultContent: {
-      carousel_mode: true,
-      images: [""],
+      slides: [
+        {
+          image: "",
+          url: "",
+          target: "_self",
+        },
+      ],
       autoplay: true,
       autoplay_delay: 5000,
       show_navigation: true,
       show_dots: true,
       height: 500,
-      overlay_text: "",
-      overlay_position: "center",
     },
   },
   {
