@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -15,8 +14,7 @@ export default function ProtectedRoute({
   requireAdmin = false,
   redirectTo,
 }: ProtectedRouteProps) {
-  const { isAuthenticated, isAdmin, isLoading, checkSession } = useAuth();
-  const location = useLocation();
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
 
   // Remove the useEffect that was causing infinite loops
   // Session is already checked in AuthProvider on mount
@@ -35,14 +33,7 @@ export default function ProtectedRoute({
 
   // Handle authentication requirements
   if (requireAuth && !isAuthenticated) {
-    // Store the attempted location for redirect after login
-    return (
-      <Navigate
-        to={redirectTo || "/login"}
-        state={{ from: location }}
-        replace
-      />
-    );
+    return <Navigate to={redirectTo || "/login"} replace />;
   }
 
   // Handle admin requirements
