@@ -11,6 +11,12 @@ import {
   Mail,
   Package,
   Tag,
+  LogOut,
+  Settings,
+  MapPin,
+  UserCog,
+  CreditCard,
+  HeadphonesIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,11 +27,20 @@ import {
   SheetTrigger,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory, Product } from "@shared/database.types";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SiteSettingsMap {
   site_name?: string;
