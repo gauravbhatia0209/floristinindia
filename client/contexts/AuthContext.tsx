@@ -136,9 +136,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     userType: "admin" | "customer",
   ) => {
     try {
+      console.log("🔐 Login attempt:", { email, userType });
       const tableName = userType === "admin" ? "admins" : "customers";
 
       // Check if user exists and is active
+      console.log("🔍 Checking user in table:", tableName);
       const { data: userData, error: userError } = await supabase
         .from(tableName)
         .select("*")
@@ -146,7 +148,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         .eq("is_active", true)
         .single();
 
+      console.log("📊 User query result:", { userData, userError });
+
       if (userError || !userData) {
+        console.log("❌ User not found or error:", userError);
         await logLoginAttempt(
           email,
           userType,
@@ -169,12 +174,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       }
 
-      // Verify password using Supabase Auth (we'll use a cloud function for this)
-      // For now, using basic comparison - in production, use proper bcrypt verification
+      // Verify password using bcrypt
+      console.log("🔑 Verifying password...");
+      console.log(
+        "📝 Stored hash:",
+        userData.password_hash?.substring(0, 20) + "...",
+      );
       const isValidPassword = await verifyPassword(
         password,
         userData.password_hash,
       );
+      console.log("✅ Password valid:", isValidPassword);
 
       if (!isValidPassword) {
         // Increment failed attempts
