@@ -71,17 +71,31 @@ export default function Pages() {
     try {
       if (editingPage) {
         await supabase.from("pages").update(pageData).eq("id", editingPage.id);
+        fetchPages();
+        setEditingPage(null);
+        setIsAddingPage(false);
       } else {
+        // Creating a new page
         const maxOrder =
           pages.length > 0 ? Math.max(...pages.map((p) => p.sort_order)) : 0;
-        await supabase
+        const { data, error } = await supabase
           .from("pages")
-          .insert({ ...pageData, sort_order: maxOrder + 1 });
-      }
+          .insert({ ...pageData, sort_order: maxOrder + 1 })
+          .select()
+          .single();
 
-      fetchPages();
-      setEditingPage(null);
-      setIsAddingPage(false);
+        if (error) {
+          throw error;
+        }
+
+        // After successful creation, set the new page as editing page
+        await fetchPages();
+        if (data) {
+          setEditingPage(data);
+          setIsAddingPage(false);
+          // Don't close the dialog, keep it open for immediate editing
+        }
+      }
     } catch (error) {
       console.error("Failed to save page:", error);
     }
