@@ -806,7 +806,10 @@ export function Header() {
                     setSearchQuery("");
                     setSearchResults([]);
                     setShowSearchResults(false);
-                    setIsSearchOpen(false);
+                    // Use setTimeout to ensure this happens after any other event handlers
+                    setTimeout(() => {
+                      setIsSearchOpen(false);
+                    }, 0);
                   }}
                 >
                   <X className="h-4 w-4" />
