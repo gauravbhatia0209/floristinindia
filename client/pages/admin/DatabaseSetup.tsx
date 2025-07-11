@@ -1052,6 +1052,77 @@ CREATE POLICY "Admin access to analytics_cart_events" ON analytics_cart_events
             </div>
           </CardContent>
         </Card>
+
+        {/* Analytics Tables */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Analytics Tables
+              <Badge variant="outline">For Statistics Dashboard</Badge>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Creates tables to track visitor behavior, page views, product
+              interactions, and cart events for the Analytics dashboard
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">
+                  Run this SQL to enable comprehensive analytics tracking
+                </span>
+              </div>
+              <div className="relative">
+                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                  <code>{analyticsTablesSQL}</code>
+                </pre>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() =>
+                    copyToClipboard(analyticsTablesSQL, "analytics")
+                  }
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  {copied === "analytics" ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>📊 What this creates:</strong>
+                </p>
+                <ul className="text-sm text-blue-700 mt-1 space-y-1">
+                  <li>
+                    • <strong>Sessions table</strong> - Track user sessions,
+                    devices, browsers
+                  </li>
+                  <li>
+                    • <strong>Page views table</strong> - Track which pages
+                    users visit
+                  </li>
+                  <li>
+                    • <strong>Product views table</strong> - Track product page
+                    visits
+                  </li>
+                  <li>
+                    • <strong>Cart events table</strong> - Track add/remove cart
+                    actions
+                  </li>
+                  <li>
+                    • <strong>Performance indexes</strong> - Fast data retrieval
+                  </li>
+                  <li>
+                    • <strong>Security policies</strong> - Admin-only access to
+                    analytics data
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* RLS Fix Section */}
