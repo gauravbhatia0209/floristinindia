@@ -843,6 +843,7 @@ INSERT INTO site_settings (key, value, type, description) VALUES
   ('business_name', 'Florist in India', 'text', 'Business name'),
   ('contact_phone', '', 'text', 'Primary contact phone'),
   ('contact_phone_2', '', 'text', 'Secondary contact phone'),
+  ('whatsapp_number', '', 'text', 'WhatsApp number for floating chat widget'),
   ('contact_email', '', 'text', 'Contact email address'),
   ('contact_address', '', 'text', 'Business address'),
   ('business_hours', 'Monday - Sunday: 9:00 AM - 9:00 PM', 'text', 'Business operating hours'),
