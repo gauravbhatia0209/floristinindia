@@ -18,12 +18,8 @@ export default function ProtectedRoute({
   const { isAuthenticated, isAdmin, isLoading, checkSession } = useAuth();
   const location = useLocation();
 
-  useEffect(() => {
-    // Recheck session on route change
-    if (!isLoading) {
-      checkSession();
-    }
-  }, [location.pathname, checkSession, isLoading]);
+  // Remove the useEffect that was causing infinite loops
+  // Session is already checked in AuthProvider on mount
 
   // Show loading spinner while checking authentication
   if (isLoading) {
