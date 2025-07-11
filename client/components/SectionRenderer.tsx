@@ -371,16 +371,169 @@ function FeaturesSection({ content }: { content: any }) {
   );
 }
 
-// Placeholder components for complex sections that need data fetching
+// Real product carousel implementation
 function ProductCarouselSection({ content }: { content: any }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [content.product_filter, content.show_count]);
+
+  async function fetchProducts() {
+    try {
+      setLoading(true);
+      let query = supabase.from("products").select("*").eq("is_active", true);
+
+      // Apply filter based on content settings
+      switch (content.product_filter) {
+        case "featured":
+          query = query.eq("is_featured", true);
+          break;
+        case "sale":
+          query = query.not("sale_price", "is", null);
+          break;
+        case "latest":
+          query = query.order("created_at", { ascending: false });
+          break;
+        case "popular":
+          // For now, order by featured then created_at
+          query = query.order("is_featured", { ascending: false });
+          break;
+        default:
+          query = query.eq("is_featured", true);
+      }
+
+      query = query.limit(content.show_count || 8);
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } else {
+        setProducts(data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.sale_price || product.price,
+      image: product.images?.[0] || "",
+      quantity: 1,
+    });
+  };
+
+  if (loading) {
+    return (
+      <section className="container mx-auto px-4 py-12">
+        {content.show_title !== false && (
+          <h2 className="text-3xl font-bold text-center mb-8">
+            {content.title || "Featured Products"}
+          </h2>
+        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: content.show_count || 4 }).map((_, index) => (
+            <Card key={index} className="border-0 shadow-lg overflow-hidden">
+              <div className="aspect-square bg-gray-200 animate-pulse"></div>
+              <CardContent className="p-4">
+                <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="container mx-auto px-4 py-12">
+        {content.show_title !== false && (
+          <h2 className="text-3xl font-bold text-center mb-8">
+            {content.title || "Featured Products"}
+          </h2>
+        )}
+        <div className="text-center text-gray-600">
+          <p>No products found for the selected filter.</p>
+          <p className="text-sm">
+            Filter: {content.product_filter || "featured"}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="container mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center mb-8">
-        {content.title || "Featured Products"}
-      </h2>
-      <div className="text-center text-gray-600">
-        <p>Product carousel will be implemented here</p>
-        <p className="text-sm">Filter: {content.product_filter}</p>
+      {content.show_title !== false && (
+        <h2 className="text-3xl font-bold text-center mb-8">
+          {content.title || "Featured Products"}
+        </h2>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <Card
+            key={product.id}
+            className="border-0 shadow-lg overflow-hidden group hover:shadow-xl transition-shadow"
+          >
+            <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-square">
+              {product.images && product.images.length > 0 ? (
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <span className="text-6xl animate-pulse">🌺</span>
+              )}
+              {product.sale_price && (
+                <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                  SALE
+                </Badge>
+              )}
+            </div>
+
+            <CardContent className="p-4">
+              <Link to={`/product/${product.slug}`}>
+                <h3 className="font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
+                  {product.name}
+                </h3>
+              </Link>
+
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-primary">
+                    ₹{product.sale_price || product.price}
+                  </span>
+                  {product.sale_price && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      ₹{product.price}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <Button
+                onClick={() => handleAddToCart(product)}
+                size="sm"
+                className="w-full"
+              >
+                Add to Cart
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </section>
   );
