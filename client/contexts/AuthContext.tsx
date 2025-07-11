@@ -1,0 +1,504 @@
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role?: string;
+  user_type: "admin" | "customer";
+  is_verified: boolean;
+  phone?: string;
+  last_login?: string;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  login: (
+    email: string,
+    password: string,
+    userType: "admin" | "customer",
+  ) => Promise<{ success: boolean; error?: string; user?: User }>;
+  logout: () => Promise<void>;
+  signup: (
+    userData: SignupData,
+  ) => Promise<{ success: boolean; error?: string; user?: User }>;
+  resetPassword: (
+    email: string,
+    userType: "admin" | "customer",
+  ) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (
+    data: Partial<User>,
+  ) => Promise<{ success: boolean; error?: string }>;
+  checkSession: () => Promise<void>;
+}
+
+export interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  userType: "customer";
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      setIsLoading(true);
+      const sessionToken = localStorage.getItem("session_token");
+      const userType = localStorage.getItem("user_type") as
+        | "admin"
+        | "customer";
+
+      if (!sessionToken || !userType) {
+        setUser(null);
+        return;
+      }
+
+      // Verify session with database
+      const { data: session, error: sessionError } = await supabase
+        .from("user_sessions")
+        .select("*")
+        .eq("session_token", sessionToken)
+        .eq("is_active", true)
+        .gte("expires_at", new Date().toISOString())
+        .single();
+
+      if (sessionError || !session) {
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("user_type");
+        setUser(null);
+        return;
+      }
+
+      // Get user data
+      const tableName = userType === "admin" ? "admins" : "customers";
+      const { data: userData, error: userError } = await supabase
+        .from(tableName)
+        .select("*")
+        .eq("id", session.user_id)
+        .eq("is_active", true)
+        .single();
+
+      if (userError || !userData) {
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("user_type");
+        setUser(null);
+        return;
+      }
+
+      const userObj: User = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        role: userData.role,
+        user_type: userType,
+        is_verified: userData.is_verified,
+        phone: userData.phone,
+        last_login: userData.last_login,
+      };
+
+      setUser(userObj);
+    } catch (error) {
+      console.error("Session check failed:", error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const login = async (
+    email: string,
+    password: string,
+    userType: "admin" | "customer",
+  ) => {
+    try {
+      const tableName = userType === "admin" ? "admins" : "customers";
+
+      // Check if user exists and is active
+      const { data: userData, error: userError } = await supabase
+        .from(tableName)
+        .select("*")
+        .eq("email", email.toLowerCase())
+        .eq("is_active", true)
+        .single();
+
+      if (userError || !userData) {
+        await logLoginAttempt(
+          email,
+          userType,
+          false,
+          "User not found or inactive",
+        );
+        return { success: false, error: "Invalid email or password" };
+      }
+
+      // Check if account is locked
+      if (
+        userData.locked_until &&
+        new Date(userData.locked_until) > new Date()
+      ) {
+        await logLoginAttempt(email, userType, false, "Account locked");
+        return {
+          success: false,
+          error:
+            "Account is temporarily locked due to too many failed attempts",
+        };
+      }
+
+      // Verify password using Supabase Auth (we'll use a cloud function for this)
+      // For now, using basic comparison - in production, use proper bcrypt verification
+      const isValidPassword = await verifyPassword(
+        password,
+        userData.password_hash,
+      );
+
+      if (!isValidPassword) {
+        // Increment failed attempts
+        const newFailedAttempts = (userData.failed_login_attempts || 0) + 1;
+        const shouldLock = newFailedAttempts >= 5;
+
+        await supabase
+          .from(tableName)
+          .update({
+            failed_login_attempts: newFailedAttempts,
+            locked_until: shouldLock
+              ? new Date(Date.now() + 15 * 60 * 1000).toISOString()
+              : null, // 15 minutes
+          })
+          .eq("id", userData.id);
+
+        await logLoginAttempt(email, userType, false, "Invalid password");
+        return { success: false, error: "Invalid email or password" };
+      }
+
+      // Successful login - create session
+      const sessionToken = generateSessionToken();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      const { error: sessionError } = await supabase
+        .from("user_sessions")
+        .insert({
+          user_id: userData.id,
+          user_type: userType,
+          session_token: sessionToken,
+          expires_at: expiresAt.toISOString(),
+          ip_address: await getClientIP(),
+          user_agent: navigator.userAgent,
+        });
+
+      if (sessionError) {
+        console.error("Session creation failed:", sessionError);
+        return { success: false, error: "Login failed. Please try again." };
+      }
+
+      // Update user login info
+      await supabase
+        .from(tableName)
+        .update({
+          last_login: new Date().toISOString(),
+          failed_login_attempts: 0,
+          locked_until: null,
+        })
+        .eq("id", userData.id);
+
+      // Store session
+      localStorage.setItem("session_token", sessionToken);
+      localStorage.setItem("user_type", userType);
+
+      const userObj: User = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        role: userData.role,
+        user_type: userType,
+        is_verified: userData.is_verified,
+        phone: userData.phone,
+        last_login: new Date().toISOString(),
+      };
+
+      setUser(userObj);
+      await logLoginAttempt(email, userType, true);
+
+      return { success: true, user: userObj };
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, error: "Login failed. Please try again." };
+    }
+  };
+
+  const signup = async (signupData: SignupData) => {
+    try {
+      const { name, email, password, phone } = signupData;
+
+      // Check if user already exists
+      const { data: existingUser } = await supabase
+        .from("customers")
+        .select("id")
+        .eq("email", email.toLowerCase())
+        .single();
+
+      if (existingUser) {
+        return {
+          success: false,
+          error: "An account with this email already exists",
+        };
+      }
+
+      // Hash password
+      const passwordHash = await hashPassword(password);
+
+      // Create user
+      const { data: userData, error: userError } = await supabase
+        .from("customers")
+        .insert({
+          name: name.trim(),
+          email: email.toLowerCase(),
+          password_hash: passwordHash,
+          phone: phone?.trim() || null,
+          is_active: true,
+          is_verified: false, // Require email verification
+        })
+        .select()
+        .single();
+
+      if (userError || !userData) {
+        console.error("User creation failed:", userError);
+        return {
+          success: false,
+          error: "Account creation failed. Please try again.",
+        };
+      }
+
+      // TODO: Send verification email
+
+      const userObj: User = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        user_type: "customer",
+        is_verified: userData.is_verified,
+        phone: userData.phone,
+      };
+
+      return { success: true, user: userObj };
+    } catch (error) {
+      console.error("Signup error:", error);
+      return {
+        success: false,
+        error: "Account creation failed. Please try again.",
+      };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      const sessionToken = localStorage.getItem("session_token");
+
+      if (sessionToken) {
+        // Deactivate session in database
+        await supabase
+          .from("user_sessions")
+          .update({ is_active: false })
+          .eq("session_token", sessionToken);
+      }
+
+      // Clear local storage
+      localStorage.removeItem("session_token");
+      localStorage.removeItem("user_type");
+
+      setUser(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const resetPassword = async (
+    email: string,
+    userType: "admin" | "customer",
+  ) => {
+    try {
+      const tableName = userType === "admin" ? "admins" : "customers";
+
+      // Check if user exists
+      const { data: userData, error: userError } = await supabase
+        .from(tableName)
+        .select("id, email, name")
+        .eq("email", email.toLowerCase())
+        .eq("is_active", true)
+        .single();
+
+      if (userError || !userData) {
+        // Don't reveal if user exists or not for security
+        return { success: true };
+      }
+
+      // Generate reset token
+      const resetToken = generateResetToken();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      // Store reset request
+      await supabase.from("password_reset_requests").insert({
+        user_id: userData.id,
+        user_type: userType,
+        email: userData.email,
+        token: resetToken,
+        expires_at: expiresAt.toISOString(),
+        ip_address: await getClientIP(),
+      });
+
+      // Update user with reset token
+      await supabase
+        .from(tableName)
+        .update({
+          password_reset_token: resetToken,
+          password_reset_expires: expiresAt.toISOString(),
+        })
+        .eq("id", userData.id);
+
+      // TODO: Send reset email
+
+      return { success: true };
+    } catch (error) {
+      console.error("Password reset error:", error);
+      return {
+        success: false,
+        error: "Password reset failed. Please try again.",
+      };
+    }
+  };
+
+  const updateProfile = async (data: Partial<User>) => {
+    try {
+      if (!user) {
+        return { success: false, error: "Not authenticated" };
+      }
+
+      const tableName = user.user_type === "admin" ? "admins" : "customers";
+
+      const { error } = await supabase
+        .from(tableName)
+        .update({
+          name: data.name || user.name,
+          phone: data.phone || user.phone,
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        console.error("Profile update failed:", error);
+        return { success: false, error: "Profile update failed" };
+      }
+
+      // Update local user state
+      setUser({ ...user, ...data });
+
+      return { success: true };
+    } catch (error) {
+      console.error("Profile update error:", error);
+      return { success: false, error: "Profile update failed" };
+    }
+  };
+
+  // Helper functions
+  const logLoginAttempt = async (
+    email: string,
+    userType: "admin" | "customer",
+    success: boolean,
+    failureReason?: string,
+  ) => {
+    try {
+      await supabase.from("login_attempts").insert({
+        email: email.toLowerCase(),
+        user_type: userType,
+        ip_address: await getClientIP(),
+        user_agent: navigator.userAgent,
+        success,
+        failure_reason: failureReason || null,
+      });
+    } catch (error) {
+      console.error("Failed to log login attempt:", error);
+    }
+  };
+
+  const generateSessionToken = () => {
+    return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("");
+  };
+
+  const generateResetToken = () => {
+    return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("");
+  };
+
+  const getClientIP = async () => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      const data = await response.json();
+      return data.ip;
+    } catch {
+      return null;
+    }
+  };
+
+  const hashPassword = async (password: string): Promise<string> => {
+    // In production, this should be done server-side
+    // For now, using a simple hash - REPLACE WITH PROPER BCRYPT
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + "salt_string");
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  };
+
+  const verifyPassword = async (
+    password: string,
+    hash: string,
+  ): Promise<boolean> => {
+    const inputHash = await hashPassword(password);
+    return inputHash === hash;
+  };
+
+  const isAuthenticated = !!user;
+  const isAdmin = user?.user_type === "admin";
+
+  const value: AuthContextType = {
+    user,
+    isLoading,
+    isAuthenticated,
+    isAdmin,
+    login,
+    logout,
+    signup,
+    resetPassword,
+    updateProfile,
+    checkSession,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export default AuthProvider;
