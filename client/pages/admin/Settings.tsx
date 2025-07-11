@@ -31,6 +31,7 @@ interface SettingsData {
   // Contact Info
   contact_phone: string;
   contact_phone_2: string;
+  whatsapp_number: string;
   contact_email: string;
   contact_address: string;
   business_hours: string;
