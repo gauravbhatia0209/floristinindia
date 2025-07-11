@@ -2,10 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import AuthProvider from "@/contexts/AuthContext";
-import ProtectedRoute, {
-  AdminRoute,
-  GuestRoute,
-} from "@/components/ProtectedRoute";
+import ProtectedRoute, { AdminRoute, GuestRoute } from "@/components/ProtectedRoute";
 import Layout from "@/components/layout/Layout";
 import AdminLayout from "@/components/admin/AdminLayout";
 
@@ -73,35 +70,61 @@ function App() {
   }, []);
 
   return (
-    <CartProvider>
-      <Router>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Index />} />
-            <Route path="products" element={<Products />} />
-            <Route path="category/:slug" element={<Products />} />
-            <Route path="product/:slug" element={<ProductDetail />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} />
-            <Route path="track-order" element={<TrackOrder />} />
-            <Route
-              path="order-confirmation/:orderId"
-              element={<OrderConfirmation />}
-            />
-            {/* Specific static routes - must come before dynamic route */}
-            <Route path="about" element={<Page />} />
-            <Route path="help" element={<Page />} />
-            <Route path="terms" element={<Page />} />
-            <Route path="privacy-policy" element={<Page />} />
-            <Route path="return-refunds" element={<Page />} />
-            <Route path="delivery-info" element={<Page />} />
-            {/* Dynamic pages from CMS - must be last */}
-            <Route path=":slug" element={<Page />} />
-          </Route>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
+            {/* Auth routes */}
+            <Route path="/login" element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            } />
+            <Route path="/signup" element={
+              <GuestRoute>
+                <Signup />
+              </GuestRoute>
+            } />
+            <Route path="/admin/login" element={
+              <GuestRoute>
+                <AdminLogin />
+              </GuestRoute>
+            } />
 
-          {/* Admin routes */}
-          <Route path="/admin" element={<AdminLayout />}>
+            {/* Public routes */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Index />} />
+              <Route path="products" element={<Products />} />
+              <Route path="category/:slug" element={<Products />} />
+              <Route path="product/:slug" element={<ProductDetail />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="checkout" element={
+                <ProtectedRoute requireAuth={true} requireAdmin={false}>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+              <Route path="track-order" element={<TrackOrder />} />
+              <Route
+                path="order-confirmation/:orderId"
+                element={<OrderConfirmation />}
+              />
+              {/* Specific static routes - must come before dynamic route */}
+              <Route path="about" element={<Page />} />
+              <Route path="help" element={<Page />} />
+              <Route path="terms" element={<Page />} />
+              <Route path="privacy-policy" element={<Page />} />
+              <Route path="return-refunds" element={<Page />} />
+              <Route path="delivery-info" element={<Page />} />
+              {/* Dynamic pages from CMS - must be last */}
+              <Route path=":slug" element={<Page />} />
+            </Route>
+
+            {/* Admin routes */}
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }>
             <Route index element={<Dashboard />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="products" element={<AdminProducts />} />
