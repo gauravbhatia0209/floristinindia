@@ -849,6 +849,92 @@ INSERT INTO site_settings (key, value, type, description) VALUES
   ('google_maps_embed', '', 'text', 'Google Maps embed code')
 ON CONFLICT (key) DO NOTHING;`;
 
+  const analyticsTablesSQL = `-- Create Analytics Tables for Statistics Dashboard
+-- Run this to enable visitor and behavior tracking
+
+-- Analytics Sessions Table
+CREATE TABLE IF NOT EXISTS analytics_sessions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT UNIQUE NOT NULL,
+  user_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  end_time TIMESTAMP WITH TIME ZONE,
+  page_count INTEGER DEFAULT 0,
+  device_type TEXT NOT NULL,
+  browser TEXT NOT NULL,
+  referrer TEXT,
+  ip_address INET,
+  location TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Analytics Page Views Table
+CREATE TABLE IF NOT EXISTS analytics_page_views (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  user_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  page_url TEXT NOT NULL,
+  page_title TEXT NOT NULL,
+  referrer TEXT,
+  user_agent TEXT,
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Analytics Product Views Table
+CREATE TABLE IF NOT EXISTS analytics_product_views (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  user_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  category_id UUID REFERENCES product_categories(id) ON DELETE SET NULL,
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Analytics Cart Events Table
+CREATE TABLE IF NOT EXISTS analytics_cart_events (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  user_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  action TEXT NOT NULL CHECK (action IN ('add', 'remove', 'update')),
+  quantity INTEGER NOT NULL,
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_analytics_sessions_start_time ON analytics_sessions(start_time);
+CREATE INDEX IF NOT EXISTS idx_analytics_sessions_user_id ON analytics_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_page_views_timestamp ON analytics_page_views(timestamp);
+CREATE INDEX IF NOT EXISTS idx_analytics_page_views_page_url ON analytics_page_views(page_url);
+CREATE INDEX IF NOT EXISTS idx_analytics_product_views_timestamp ON analytics_product_views(timestamp);
+CREATE INDEX IF NOT EXISTS idx_analytics_product_views_product_id ON analytics_product_views(product_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_cart_events_timestamp ON analytics_cart_events(timestamp);
+CREATE INDEX IF NOT EXISTS idx_analytics_cart_events_product_id ON analytics_cart_events(product_id);
+
+-- Enable RLS (Row Level Security)
+ALTER TABLE analytics_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analytics_page_views ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analytics_product_views ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analytics_cart_events ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for analytics tables (admin access only for sensitive data)
+CREATE POLICY "Admin access to analytics_sessions" ON analytics_sessions
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin access to analytics_page_views" ON analytics_page_views
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin access to analytics_product_views" ON analytics_product_views
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin access to analytics_cart_events" ON analytics_cart_events
+  FOR ALL USING (auth.role() = 'authenticated');`;
+
   function copyToClipboard(text: string, type: string) {
     navigator.clipboard.writeText(text);
     setCopied(type);
