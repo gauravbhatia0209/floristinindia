@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
 
 export default function Account() {
   const { user, isAuthenticated, isAdmin, logout, updateProfile } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [profileData, setProfileData] = useState({
@@ -26,6 +27,8 @@ export default function Account() {
     email: "",
     phone: "",
   });
+
+  const activeTab = searchParams.get("tab") || "profile";
 
   useEffect(() => {
     if (user) {
@@ -85,7 +88,11 @@ export default function Account() {
         </p>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setSearchParams({ tab: value })}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
