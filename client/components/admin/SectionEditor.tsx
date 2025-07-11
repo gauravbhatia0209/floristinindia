@@ -355,72 +355,198 @@ function HeroCarouselEditor({
   content: any;
   updateContent: (key: string, value: any) => void;
 }) {
+  const slides = content.slides || [];
+
+  const addSlide = () => {
+    const newSlides = [...slides, { image: "", url: "", target: "_self" }];
+    updateContent("slides", newSlides);
+  };
+
+  const updateSlide = (index: number, field: string, value: string) => {
+    const newSlides = [...slides];
+    newSlides[index] = { ...newSlides[index], [field]: value };
+    updateContent("slides", newSlides);
+  };
+
+  const removeSlide = (index: number) => {
+    const newSlides = slides.filter((_: any, i: number) => i !== index);
+    updateContent("slides", newSlides);
+  };
+
+  const moveSlide = (index: number, direction: "up" | "down") => {
+    const newSlides = [...slides];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex >= 0 && targetIndex < slides.length) {
+      [newSlides[index], newSlides[targetIndex]] = [
+        newSlides[targetIndex],
+        newSlides[index],
+      ];
+      updateContent("slides", newSlides);
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Slides Management */}
       <div>
-        <Label>Carousel Images</Label>
-        <ImageUpload
-          images={content.images || []}
-          onImagesChange={(images) => updateContent("images", images)}
-          maxImages={10}
-          label="Hero Images"
-        />
+        <div className="flex items-center justify-between mb-4">
+          <Label className="text-base font-semibold">Carousel Slides</Label>
+          <Button onClick={addSlide} size="sm">
+            <Plus className="w-4 h-4 mr-1" />
+            Add Slide
+          </Button>
+        </div>
+
+        {slides.length === 0 ? (
+          <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+            <p className="text-gray-500">
+              No slides yet. Click "Add Slide" to get started.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {slides.map((slide: any, index: number) => (
+              <Card key={index} className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <h4 className="text-sm font-medium">Slide {index + 1}</h4>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => moveSlide(index, "up")}
+                      size="sm"
+                      variant="outline"
+                      disabled={index === 0}
+                    >
+                      ↑
+                    </Button>
+                    <Button
+                      onClick={() => moveSlide(index, "down")}
+                      size="sm"
+                      variant="outline"
+                      disabled={index === slides.length - 1}
+                    >
+                      ↓
+                    </Button>
+                    <Button
+                      onClick={() => removeSlide(index)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <Label>Image</Label>
+                    <SingleImageUpload
+                      imageUrl={slide.image || ""}
+                      onImageChange={(url) => updateSlide(index, "image", url)}
+                      label={`Slide ${index + 1} Image`}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`url-${index}`}>Link URL (optional)</Label>
+                    <Input
+                      id={`url-${index}`}
+                      value={slide.url || ""}
+                      onChange={(e) =>
+                        updateSlide(index, "url", e.target.value)
+                      }
+                      placeholder="https://example.com or /page"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`target-${index}`}>Link Target</Label>
+                    <Select
+                      value={slide.target || "_self"}
+                      onValueChange={(value) =>
+                        updateSlide(index, "target", value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="_self">
+                          Same window (_self)
+                        </SelectItem>
+                        <SelectItem value="_blank">
+                          New window (_blank)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="height">Height (px)</Label>
-          <Input
-            id="height"
-            type="number"
-            value={content.height || 500}
-            onChange={(e) => updateContent("height", parseInt(e.target.value))}
-          />
+      {/* Carousel Settings */}
+      <Card className="p-4">
+        <h4 className="text-sm font-medium mb-4">Carousel Settings</h4>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <Label htmlFor="height">Height (px)</Label>
+            <Input
+              id="height"
+              type="number"
+              value={content.height || 500}
+              onChange={(e) =>
+                updateContent("height", parseInt(e.target.value))
+              }
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="autoplay_delay">Autoplay Delay (ms)</Label>
+            <Input
+              id="autoplay_delay"
+              type="number"
+              value={content.autoplay_delay || 5000}
+              onChange={(e) =>
+                updateContent("autoplay_delay", parseInt(e.target.value))
+              }
+            />
+          </div>
         </div>
 
-        <div>
-          <Label htmlFor="autoplay_delay">Autoplay Delay (ms)</Label>
-          <Input
-            id="autoplay_delay"
-            type="number"
-            value={content.autoplay_delay || 5000}
-            onChange={(e) =>
-              updateContent("autoplay_delay", parseInt(e.target.value))
-            }
-          />
-        </div>
-      </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="autoplay">Autoplay</Label>
+            <Switch
+              id="autoplay"
+              checked={content.autoplay || false}
+              onCheckedChange={(checked) => updateContent("autoplay", checked)}
+            />
+          </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="autoplay">Autoplay</Label>
-          <Switch
-            id="autoplay"
-            checked={content.autoplay || false}
-            onCheckedChange={(checked) => updateContent("autoplay", checked)}
-          />
-        </div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="show_navigation">Show Navigation</Label>
+            <Switch
+              id="show_navigation"
+              checked={content.show_navigation || false}
+              onCheckedChange={(checked) =>
+                updateContent("show_navigation", checked)
+              }
+            />
+          </div>
 
-        <div className="flex items-center justify-between">
-          <Label htmlFor="show_navigation">Show Navigation</Label>
-          <Switch
-            id="show_navigation"
-            checked={content.show_navigation || false}
-            onCheckedChange={(checked) =>
-              updateContent("show_navigation", checked)
-            }
-          />
+          <div className="flex items-center justify-between">
+            <Label htmlFor="show_dots">Show Dots</Label>
+            <Switch
+              id="show_dots"
+              checked={content.show_dots || false}
+              onCheckedChange={(checked) => updateContent("show_dots", checked)}
+            />
+          </div>
         </div>
-
-        <div className="flex items-center justify-between">
-          <Label htmlFor="show_dots">Show Dots</Label>
-          <Switch
-            id="show_dots"
-            checked={content.show_dots || false}
-            onCheckedChange={(checked) => updateContent("show_dots", checked)}
-          />
-        </div>
-      </div>
+      </Card>
     </div>
   );
 }
