@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import bcrypt from "bcryptjs";
 
 export interface User {
   id: string;
@@ -465,21 +466,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const hashPassword = async (password: string): Promise<string> => {
-    // In production, this should be done server-side
-    // For now, using a simple hash - REPLACE WITH PROPER BCRYPT
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password + "salt_string");
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    // Use bcrypt for secure password hashing
+    const saltRounds = 12;
+    return await bcrypt.hash(password, saltRounds);
   };
 
   const verifyPassword = async (
     password: string,
     hash: string,
   ): Promise<boolean> => {
-    const inputHash = await hashPassword(password);
-    return inputHash === hash;
+    try {
+      return await bcrypt.compare(password, hash);
+    } catch (error) {
+      console.error("Password verification error:", error);
+      return false;
+    }
   };
 
   const isAuthenticated = !!user;
