@@ -276,10 +276,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const passwordHash = await hashPassword(password);
 
       // Create user (match existing customers table structure)
+      const fullName = name.trim();
+      const nameParts = fullName.split(" ");
+      const firstName = nameParts[0] || fullName;
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
       const { data: userData, error: userError } = await supabase
         .from("customers")
         .insert({
-          name: name.trim(),
+          first_name: firstName,
+          last_name: lastName || firstName, // Use first name as fallback if no last name
+          name: fullName,
           email: email.toLowerCase(),
           password_hash: passwordHash,
           phone: phone?.trim() || null,
