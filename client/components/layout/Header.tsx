@@ -643,6 +643,7 @@ export function Header() {
                     setSearchQuery("");
                     setSearchResults([]);
                     setShowSearchResults(false);
+                    setIsSearchOpen(false);
                   }}
                 >
                   <X className="h-4 w-4" />
