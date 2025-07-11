@@ -282,6 +282,11 @@ export default function Analytics() {
 
   async function fetchCustomerData(startDate: Date, endDate: Date) {
     try {
+      console.log("Fetching customer data for date range:", {
+        startDate,
+        endDate,
+      });
+
       // Fetch customers created in date range
       const { data: newCustomers, error: newError } = await supabase
         .from("customers")
@@ -289,19 +294,53 @@ export default function Analytics() {
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString());
 
-      if (newError) throw newError;
+      if (newError) {
+        console.error("Error fetching new customers:", newError);
+        return {
+          newCustomers: 0,
+          returningCustomers: 0,
+          avgOrderFrequency: 0,
+          topLocations: [],
+          cltv: 0,
+        };
+      }
 
-      // Fetch all customers for returning customer calculation
-      const { data: allCustomers, error: allError } = await supabase
-        .from("customers")
-        .select("*, orders(count)");
+      console.log("Found new customers:", newCustomers?.length || 0);
 
-      if (allError) throw allError;
+      // Try to calculate returning customers (simplified approach)
+      let returningCustomers = 0;
+      try {
+        const { data: allCustomers, error: allError } = await supabase
+          .from("customers")
+          .select("id");
 
-      const returningCustomers =
-        allCustomers?.filter(
-          (customer) => customer.orders && customer.orders.length > 1,
-        ).length || 0;
+        if (!allError && allCustomers) {
+          // Get order counts for each customer
+          const { data: orderCounts, error: ordersError } = await supabase
+            .from("orders")
+            .select("customer_id")
+            .in(
+              "customer_id",
+              allCustomers.map((c) => c.id),
+            );
+
+          if (!ordersError && orderCounts) {
+            const customerOrderCounts: { [key: string]: number } = {};
+            orderCounts.forEach((order) => {
+              if (order.customer_id) {
+                customerOrderCounts[order.customer_id] =
+                  (customerOrderCounts[order.customer_id] || 0) + 1;
+              }
+            });
+
+            returningCustomers = Object.values(customerOrderCounts).filter(
+              (count) => count > 1,
+            ).length;
+          }
+        }
+      } catch (error) {
+        console.log("Could not calculate returning customers:", error);
+      }
 
       return {
         newCustomers: newCustomers?.length || 0,
@@ -311,7 +350,7 @@ export default function Analytics() {
         cltv: 0, // Customer Lifetime Value calculation
       };
     } catch (error) {
-      console.error("Error fetching customer data:", error);
+      console.error("Error fetching customer data:", error.message || error);
       return {
         newCustomers: 0,
         returningCustomers: 0,
