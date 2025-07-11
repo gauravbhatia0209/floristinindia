@@ -113,6 +113,7 @@ export default function Analytics() {
   async function fetchAnalyticsData() {
     try {
       setIsLoading(true);
+      console.log("Starting analytics data fetch for date range:", dateRange);
 
       // Calculate date range
       const endDate = new Date();
@@ -135,18 +136,71 @@ export default function Analytics() {
           startDate = subDays(endDate, 7);
       }
 
-      // Fetch real data from database
-      const analyticsData = await Promise.all([
-        fetchSalesData(startDate, endDate),
-        fetchCustomerData(startDate, endDate),
-        fetchProductData(startDate, endDate),
-        fetchOrdersData(startDate, endDate),
-      ]);
+      console.log("Date range calculated:", { startDate, endDate });
 
-      const [salesData, customerData, productData, ordersData] = analyticsData;
+      // Fetch real data from database with individual error handling
+      const [salesData, customerData, productData, ordersData] =
+        await Promise.allSettled([
+          fetchSalesData(startDate, endDate),
+          fetchCustomerData(startDate, endDate),
+          fetchProductData(startDate, endDate),
+          fetchOrdersData(startDate, endDate),
+        ]).then((results) => {
+          return results.map((result, index) => {
+            if (result.status === "fulfilled") {
+              return result.value;
+            } else {
+              console.error(
+                `Error in analytics function ${index}:`,
+                result.reason,
+              );
+              // Return default empty data based on function index
+              switch (index) {
+                case 0: // salesData
+                  return {
+                    totalRevenue: 0,
+                    totalOrders: 0,
+                    avgOrderValue: 0,
+                    topProducts: [],
+                    conversionRate: 0,
+                    refunds: 0,
+                    revenueByCategory: [],
+                  };
+                case 1: // customerData
+                  return {
+                    newCustomers: 0,
+                    returningCustomers: 0,
+                    avgOrderFrequency: 0,
+                    topLocations: [],
+                    cltv: 0,
+                  };
+                case 2: // productData
+                  return {
+                    topViewed: [],
+                    cartAdds: [],
+                    lowStock: [],
+                    outOfStock: 0,
+                  };
+                case 3: // ordersData
+                  return {
+                    totalOrders: 0,
+                  };
+                default:
+                  return {};
+              }
+            }
+          });
+        });
+
+      console.log("Analytics data fetched:", {
+        salesData,
+        customerData,
+        productData,
+        ordersData,
+      });
 
       // Since visitor tracking isn't implemented yet, show empty state
-      const mockData: AnalyticsData = {
+      const analyticsData: AnalyticsData = {
         visitors: {
           total: 0,
           unique: 0,
@@ -170,9 +224,53 @@ export default function Analytics() {
         },
       };
 
-      setData(mockData);
+      setData(analyticsData);
+      console.log("Analytics data set successfully");
     } catch (error) {
-      console.error("Failed to fetch analytics data:", error);
+      console.error("Failed to fetch analytics data:", error.message || error);
+      // Set empty data on error
+      setData({
+        visitors: {
+          total: 0,
+          unique: 0,
+          pageViews: 0,
+          bounceRate: 0,
+          avgTimeOnSite: 0,
+          topPages: [],
+          devices: [],
+          referrers: [],
+        },
+        sales: {
+          totalRevenue: 0,
+          totalOrders: 0,
+          avgOrderValue: 0,
+          topProducts: [],
+          conversionRate: 0,
+          refunds: 0,
+          revenueByCategory: [],
+        },
+        customers: {
+          newCustomers: 0,
+          returningCustomers: 0,
+          avgOrderFrequency: 0,
+          topLocations: [],
+          cltv: 0,
+        },
+        products: {
+          topViewed: [],
+          cartAdds: [],
+          lowStock: [],
+          outOfStock: 0,
+        },
+        funnel: {
+          homepage: 0,
+          category: 0,
+          product: 0,
+          cart: 0,
+          checkout: 0,
+          complete: 0,
+        },
+      });
     } finally {
       setIsLoading(false);
     }
