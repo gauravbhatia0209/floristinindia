@@ -350,6 +350,20 @@ export default function Settings() {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="whatsapp_number">WhatsApp Number</Label>
+                  <Input
+                    id="whatsapp_number"
+                    value={settings.whatsapp_number}
+                    onChange={(e) =>
+                      handleInputChange("whatsapp_number", e.target.value)
+                    }
+                    placeholder="+919876543210"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Include country code (e.g., +919876543210)
+                  </p>
+                </div>
+                <div>
                   <Label htmlFor="contact_email">Contact Email</Label>
                   <Input
                     id="contact_email"
