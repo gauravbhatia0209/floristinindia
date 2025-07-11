@@ -540,11 +540,119 @@ function ProductCarouselSection({ content }: { content: any }) {
 }
 
 function CategoryGridSection({ content }: { content: any }) {
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [content.show_count]);
+
+  async function fetchCategories() {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order")
+        .limit(content.show_count || 8);
+
+      if (error) {
+        console.error("Error fetching categories:", error);
+        setCategories([]);
+      } else {
+        setCategories(data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const getGridColsClass = (columns: number) => {
+    switch (columns) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+      case 6:
+        return "grid-cols-2 sm:grid-cols-3 lg:grid-cols-6";
+      default:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="container mx-auto px-4 py-12">
+        <div className={`grid gap-6 ${getGridColsClass(content.columns || 4)}`}>
+          {Array.from({ length: content.show_count || 4 }).map((_, index) => (
+            <Card key={index} className="border-0 shadow-lg overflow-hidden">
+              <div className="aspect-square bg-gray-200 animate-pulse"></div>
+              <CardContent className="p-4">
+                <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                {content.show_product_count && (
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <section className="container mx-auto px-4 py-12">
+        <div className="text-center text-gray-600">
+          <p>No categories found.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="container mx-auto px-4 py-12">
-      <div className="text-center text-gray-600">
-        <p>Category grid will be implemented here</p>
-        <p className="text-sm">Columns: {content.columns}</p>
+      <div className={`grid gap-6 ${getGridColsClass(content.columns || 4)}`}>
+        {categories.map((category) => (
+          <Link
+            key={category.id}
+            to={`/category/${category.slug}`}
+            className="group"
+          >
+            <Card className="border-0 shadow-lg overflow-hidden group-hover:shadow-xl transition-shadow">
+              <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-square">
+                {category.image ? (
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="text-6xl">🌸</div>
+                )}
+              </div>
+              <CardContent className="p-4 text-center">
+                <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                  {category.name}
+                </h3>
+                {category.description && (
+                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                    {category.description}
+                  </p>
+                )}
+                {content.show_product_count && (
+                  <p className="text-xs text-muted-foreground">View Products</p>
+                )}
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
     </section>
   );
