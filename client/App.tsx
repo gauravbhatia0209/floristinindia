@@ -93,6 +93,7 @@ function App() {
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="analytics" element={<Analytics />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="products/new" element={<ProductEdit />} />
             <Route path="products/:id/edit" element={<ProductEdit />} />
