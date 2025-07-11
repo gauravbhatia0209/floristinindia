@@ -21,6 +21,11 @@ import OrderConfirmation from "@/pages/OrderConfirmation";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
 
+// Auth pages
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import AdminLogin from "@/pages/admin/Login";
+
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
 import Analytics from "@/pages/admin/Analytics";
