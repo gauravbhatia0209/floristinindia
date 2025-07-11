@@ -18,6 +18,7 @@ import NotFound from "@/pages/NotFound";
 
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
+import Analytics from "@/pages/admin/Analytics";
 import AdminProducts from "@/pages/admin/Products";
 import ProductEdit from "@/pages/admin/ProductEdit";
 import Categories from "@/pages/admin/Categories";
