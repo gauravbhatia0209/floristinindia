@@ -180,17 +180,36 @@ export default function Analytics() {
 
   async function fetchSalesData(startDate: Date, endDate: Date) {
     try {
-      // Fetch orders in date range
-      const { data: orders, error } = await supabase
+      console.log("Fetching sales data for date range:", {
+        startDate,
+        endDate,
+      });
+
+      // First, try to fetch orders without nested select to check if table exists
+      const { data: orders, error: ordersError } = await supabase
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString());
 
-      if (error) throw error;
+      if (ordersError) {
+        console.error("Error fetching orders:", ordersError);
+        // If orders table doesn't exist or has permission issues, return empty data
+        return {
+          totalRevenue: 0,
+          totalOrders: 0,
+          avgOrderValue: 0,
+          topProducts: [],
+          conversionRate: 0,
+          refunds: 0,
+          revenueByCategory: [],
+        };
+      }
+
+      console.log("Found orders:", orders?.length || 0);
 
       const totalRevenue =
-        orders?.reduce((sum, order) => sum + order.total_amount, 0) || 0;
+        orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
       const totalOrders = orders?.length || 0;
       const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
@@ -201,28 +220,42 @@ export default function Analytics() {
             order.status === "cancelled" || order.status === "refunded",
         ).length || 0;
 
-      // Get top products
-      const productSales: {
-        [key: string]: { sales: number; revenue: number; name: string };
-      } = {};
+      // Try to fetch order items separately (might not exist yet)
+      let topProducts: Array<{ name: string; sales: number; revenue: number }> =
+        [];
 
-      orders?.forEach((order) => {
-        order.order_items?.forEach((item: any) => {
-          if (!productSales[item.product_id]) {
-            productSales[item.product_id] = {
-              sales: 0,
-              revenue: 0,
-              name: item.product_name || "Unknown Product",
-            };
-          }
-          productSales[item.product_id].sales += item.quantity;
-          productSales[item.product_id].revenue += item.quantity * item.price;
-        });
-      });
+      try {
+        const { data: orderItems, error: itemsError } = await supabase
+          .from("order_items")
+          .select("*")
+          .in("order_id", orders?.map((order) => order.id) || []);
 
-      const topProducts = Object.values(productSales)
-        .sort((a, b) => b.revenue - a.revenue)
-        .slice(0, 5);
+        if (!itemsError && orderItems) {
+          // Get top products from order items
+          const productSales: {
+            [key: string]: { sales: number; revenue: number; name: string };
+          } = {};
+
+          orderItems.forEach((item: any) => {
+            if (!productSales[item.product_id]) {
+              productSales[item.product_id] = {
+                sales: 0,
+                revenue: 0,
+                name: item.product_name || "Unknown Product",
+              };
+            }
+            productSales[item.product_id].sales += item.quantity || 0;
+            productSales[item.product_id].revenue +=
+              (item.quantity || 0) * (item.price || 0);
+          });
+
+          topProducts = Object.values(productSales)
+            .sort((a, b) => b.revenue - a.revenue)
+            .slice(0, 5);
+        }
+      } catch (itemsError) {
+        console.log("Order items table not available yet:", itemsError);
+      }
 
       return {
         totalRevenue,
@@ -234,7 +267,7 @@ export default function Analytics() {
         revenueByCategory: [], // Would need product categories
       };
     } catch (error) {
-      console.error("Error fetching sales data:", error);
+      console.error("Error fetching sales data:", error.message || error);
       return {
         totalRevenue: 0,
         totalOrders: 0,
