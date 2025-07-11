@@ -1198,6 +1198,246 @@ ON CONFLICT (key) DO NOTHING;`,
             </div>
           </CardContent>
         </Card>
+
+        {/* Authentication Tables */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Authentication System Setup
+              <Badge variant="outline">Login/Signup System</Badge>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Complete authentication system with admin and customer login,
+              secure password hashing, and session management
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">
+                  Run this SQL to create all authentication tables and security
+                  features
+                </span>
+              </div>
+              <div className="relative">
+                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                  <code>{`-- Authentication Tables Setup
+-- Complete authentication system with admin and customer login
+
+-- Admins table for admin users
+CREATE TABLE IF NOT EXISTS admins (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+  is_active BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  last_login TIMESTAMP WITH TIME ZONE,
+  failed_login_attempts INTEGER DEFAULT 0,
+  locked_until TIMESTAMP WITH TIME ZONE,
+  password_reset_token TEXT,
+  password_reset_expires TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enhanced customers table
+CREATE TABLE IF NOT EXISTS customers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  phone TEXT,
+  is_active BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  last_login TIMESTAMP WITH TIME ZONE,
+  failed_login_attempts INTEGER DEFAULT 0,
+  locked_until TIMESTAMP WITH TIME ZONE,
+  password_reset_token TEXT,
+  password_reset_expires TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Sessions table for secure session management
+CREATE TABLE IF NOT EXISTS user_sessions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  user_type TEXT NOT NULL CHECK (user_type IN ('admin', 'customer')),
+  session_token TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  ip_address INET,
+  user_agent TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Login attempts table for security tracking
+CREATE TABLE IF NOT EXISTS login_attempts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL,
+  user_type TEXT NOT NULL CHECK (user_type IN ('admin', 'customer')),
+  ip_address INET,
+  success BOOLEAN NOT NULL,
+  failure_reason TEXT,
+  attempted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email);
+CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+CREATE INDEX IF NOT EXISTS idx_user_sessions_session_token ON user_sessions(session_token);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email ON login_attempts(email);
+
+-- Insert default super admin (CHANGE PASSWORD IMMEDIATELY)
+INSERT INTO admins (email, password_hash, name, role, is_active, is_verified)
+VALUES (
+  'admin@floristinindia.com',
+  '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewrBILSE7l8e5qYK',
+  'System Administrator',
+  'super_admin',
+  true,
+  true
+) ON CONFLICT (email) DO NOTHING;`}</code>
+                </pre>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() =>
+                    copyToClipboard(
+                      `-- Authentication Tables Setup
+-- Complete authentication system with admin and customer login
+
+-- Admins table for admin users
+CREATE TABLE IF NOT EXISTS admins (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+  is_active BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  last_login TIMESTAMP WITH TIME ZONE,
+  failed_login_attempts INTEGER DEFAULT 0,
+  locked_until TIMESTAMP WITH TIME ZONE,
+  password_reset_token TEXT,
+  password_reset_expires TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enhanced customers table
+CREATE TABLE IF NOT EXISTS customers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  phone TEXT,
+  is_active BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  last_login TIMESTAMP WITH TIME ZONE,
+  failed_login_attempts INTEGER DEFAULT 0,
+  locked_until TIMESTAMP WITH TIME ZONE,
+  password_reset_token TEXT,
+  password_reset_expires TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Sessions table for secure session management
+CREATE TABLE IF NOT EXISTS user_sessions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  user_type TEXT NOT NULL CHECK (user_type IN ('admin', 'customer')),
+  session_token TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  ip_address INET,
+  user_agent TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Login attempts table for security tracking
+CREATE TABLE IF NOT EXISTS login_attempts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL,
+  user_type TEXT NOT NULL CHECK (user_type IN ('admin', 'customer')),
+  ip_address INET,
+  success BOOLEAN NOT NULL,
+  failure_reason TEXT,
+  attempted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email);
+CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+CREATE INDEX IF NOT EXISTS idx_user_sessions_session_token ON user_sessions(session_token);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email ON login_attempts(email);
+
+-- Insert default super admin (CHANGE PASSWORD IMMEDIATELY)
+INSERT INTO admins (email, password_hash, name, role, is_active, is_verified)
+VALUES (
+  'admin@floristinindia.com',
+  '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewrBILSE7l8e5qYK',
+  'System Administrator',
+  'super_admin',
+  true,
+  true
+) ON CONFLICT (email) DO NOTHING;`,
+                      "auth",
+                    )
+                  }
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  {copied === "auth" ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>🔐 Security Features:</strong>
+                </p>
+                <ul className="text-sm text-blue-700 mt-1 space-y-1">
+                  <li>
+                    • <strong>Password encryption</strong> - Secure bcrypt
+                    hashing
+                  </li>
+                  <li>
+                    • <strong>Session management</strong> - Database-stored
+                    secure sessions
+                  </li>
+                  <li>
+                    • <strong>Brute force protection</strong> - Account locking
+                    after failed attempts
+                  </li>
+                  <li>
+                    • <strong>Login tracking</strong> - Monitor all login
+                    attempts
+                  </li>
+                  <li>
+                    • <strong>Password reset</strong> - Secure token-based
+                    password recovery
+                  </li>
+                  <li>
+                    • <strong>Role-based access</strong> - Admin vs customer
+                    permissions
+                  </li>
+                  <li>
+                    • <strong>Default admin</strong> - Email:
+                    admin@floristinindia.com, Password: admin123
+                  </li>
+                </ul>
+                <div className="mt-2 p-2 bg-red-100 rounded text-red-800 text-xs">
+                  <strong>⚠️ IMPORTANT:</strong> Change the default admin
+                  password immediately after setup!
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* RLS Fix Section */}
