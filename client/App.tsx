@@ -18,6 +18,7 @@ import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import TrackOrder from "@/pages/TrackOrder";
 import OrderConfirmation from "@/pages/OrderConfirmation";
+import Account from "@/pages/Account";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
 
@@ -122,6 +123,14 @@ function App() {
               <Route
                 path="order-confirmation/:orderId"
                 element={<OrderConfirmation />}
+              />
+              <Route
+                path="account"
+                element={
+                  <ProtectedRoute requireAuth={true} requireAdmin={false}>
+                    <Account />
+                  </ProtectedRoute>
+                }
               />
               {/* Specific static routes - must come before dynamic route */}
               <Route path="about" element={<Page />} />
