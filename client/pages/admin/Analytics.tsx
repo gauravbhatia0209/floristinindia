@@ -415,19 +415,31 @@ export default function Analytics() {
 
   async function fetchOrdersData(startDate: Date, endDate: Date) {
     try {
+      console.log("Fetching orders data for date range:", {
+        startDate,
+        endDate,
+      });
+
       const { data: orders, error } = await supabase
         .from("orders")
-        .select("*")
+        .select("id, created_at")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString());
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching orders:", error);
+        return {
+          totalOrders: 0,
+        };
+      }
+
+      console.log("Found orders:", orders?.length || 0);
 
       return {
         totalOrders: orders?.length || 0,
       };
     } catch (error) {
-      console.error("Error fetching orders data:", error);
+      console.error("Error fetching orders data:", error.message || error);
       return {
         totalOrders: 0,
       };
