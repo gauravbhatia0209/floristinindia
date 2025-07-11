@@ -1124,6 +1124,80 @@ CREATE POLICY "Admin access to analytics_cart_events" ON analytics_cart_events
             </div>
           </CardContent>
         </Card>
+
+        {/* WhatsApp Widget Setup */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              WhatsApp Float Widget Setup
+              <Badge variant="outline">Add WhatsApp Chat</Badge>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Add this setting to enable the floating WhatsApp chat widget on
+              your website
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-green-500" />
+                <span className="text-sm">
+                  Run this SQL to add WhatsApp number setting (if not already
+                  present)
+                </span>
+              </div>
+              <div className="relative">
+                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                  <code>{`-- Add WhatsApp number setting for floating chat widget
+INSERT INTO site_settings (key, value, type, description)
+VALUES ('whatsapp_number', '', 'text', 'WhatsApp number for floating chat widget')
+ON CONFLICT (key) DO NOTHING;`}</code>
+                </pre>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() =>
+                    copyToClipboard(
+                      `-- Add WhatsApp number setting for floating chat widget
+INSERT INTO site_settings (key, value, type, description)
+VALUES ('whatsapp_number', '', 'text', 'WhatsApp number for floating chat widget')
+ON CONFLICT (key) DO NOTHING;`,
+                      "whatsapp",
+                    )
+                  }
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  {copied === "whatsapp" ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm text-green-800">
+                  <strong>📱 How to use:</strong>
+                </p>
+                <ol className="text-sm text-green-700 mt-1 space-y-1">
+                  <li>1. Run the SQL above in Supabase SQL Editor</li>
+                  <li>
+                    2. Go to <strong>Admin → Settings → Contact Tab</strong>
+                  </li>
+                  <li>
+                    3. Enter your WhatsApp number with country code (e.g.,
+                    +919876543210)
+                  </li>
+                  <li>
+                    4. Save settings - the floating chat icon will appear on all
+                    pages
+                  </li>
+                  <li>
+                    5. Users can click the icon to start a WhatsApp chat with
+                    you
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* RLS Fix Section */}
