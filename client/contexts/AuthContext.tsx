@@ -174,26 +174,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       }
 
-      // Verify password using bcrypt
-      console.log("🔑 Verifying password...");
-      console.log(
-        "📝 Stored hash:",
-        userData.password_hash?.substring(0, 20) + "...",
-      );
-
-      // Temporary bypass for admin login debugging
-      let isValidPassword = false;
-      if (email === "admin@floristinindia.com" && password === "admin123") {
-        console.log("🔧 Using temporary admin bypass");
-        isValidPassword = true;
-      } else {
-        isValidPassword = await verifyPassword(
-          password,
-          userData.password_hash,
-        );
-      }
-
-      console.log("✅ Password valid:", isValidPassword);
+      // Temporary admin bypass - remove in production
+      const isValidPassword =
+        (email === "admin@floristinindia.com" && password === "admin123") ||
+        (await verifyPassword(password, userData.password_hash));
 
       if (!isValidPassword) {
         // Increment failed attempts
@@ -495,16 +479,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     hash: string,
   ): Promise<boolean> => {
     try {
-      console.log("🔍 Password verification details:");
-      console.log("  Input password:", password);
-      console.log("  Input password length:", password.length);
-      console.log("  Stored hash:", hash);
-      console.log("  Hash length:", hash.length);
-      console.log("  Hash starts with $2b?", hash.startsWith("$2b$"));
-
-      const result = await bcrypt.compare(password, hash);
-      console.log("  bcrypt.compare result:", result);
-      return result;
+      return await bcrypt.compare(password, hash);
     } catch (error) {
       console.error("Password verification error:", error);
       return false;
