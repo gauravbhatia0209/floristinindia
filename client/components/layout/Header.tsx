@@ -624,12 +624,117 @@ export function Header() {
               </Button>
             </Link>
 
-            {/* Profile */}
-            <Link to="/account">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            {/* Profile Dropdown */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="flex flex-col">
+                    <span>My Account</span>
+                    <span className="text-xs text-muted-foreground font-normal">
+                      {user?.email}
+                    </span>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  {/* Admin access */}
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/admin"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+
+                  {/* Customer options */}
+                  {!isAdmin && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/account"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <UserCog className="mr-2 h-4 w-4" />
+                          Profile Settings
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/account?tab=orders"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <Package className="mr-2 h-4 w-4" />
+                          My Orders
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/account?tab=wishlist"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <Heart className="mr-2 h-4 w-4" />
+                          Wishlist
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/account?tab=addresses"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <MapPin className="mr-2 h-4 w-4" />
+                          Addresses
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/track-order"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <Search className="mr-2 h-4 w-4" />
+                          Track Order
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to="/help"
+                          className="flex items-center cursor-pointer"
+                        >
+                          <HeadphonesIcon className="mr-2 h-4 w-4" />
+                          Help & Support
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-red-600 focus:text-red-600 cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
