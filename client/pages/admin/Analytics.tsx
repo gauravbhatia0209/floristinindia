@@ -363,16 +363,31 @@ export default function Analytics() {
 
   async function fetchProductData(startDate: Date, endDate: Date) {
     try {
+      console.log("Fetching product data");
+
       // Fetch products and their stock levels
       const { data: products, error } = await supabase
         .from("products")
-        .select("*");
+        .select("id, name, stock_quantity");
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching products:", error);
+        return {
+          topViewed: [],
+          cartAdds: [],
+          lowStock: [],
+          outOfStock: 0,
+        };
+      }
+
+      console.log("Found products:", products?.length || 0);
 
       const lowStock =
         products?.filter(
-          (product) => product.stock_quantity && product.stock_quantity < 5,
+          (product) =>
+            product.stock_quantity !== null &&
+            product.stock_quantity > 0 &&
+            product.stock_quantity < 5,
         ) || [];
 
       const outOfStock =
@@ -388,7 +403,7 @@ export default function Analytics() {
         outOfStock,
       };
     } catch (error) {
-      console.error("Error fetching product data:", error);
+      console.error("Error fetching product data:", error.message || error);
       return {
         topViewed: [],
         cartAdds: [],
