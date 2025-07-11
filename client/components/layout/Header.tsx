@@ -785,10 +785,24 @@ export function Header() {
                 placeholder="Search flowers, occasions..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10 pr-4"
+                className="pl-10 pr-10"
                 autoFocus
                 onFocus={() => searchQuery && setShowSearchResults(true)}
               />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSearchResults([]);
+                    setShowSearchResults(false);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
 
               {/* Mobile Search Results */}
               {showSearchResults && (
