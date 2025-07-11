@@ -2,7 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import AuthProvider from "@/contexts/AuthContext";
-import ProtectedRoute, { AdminRoute, GuestRoute } from "@/components/ProtectedRoute";
+import ProtectedRoute, {
+  AdminRoute,
+  GuestRoute,
+} from "@/components/ProtectedRoute";
 import Layout from "@/components/layout/Layout";
 import AdminLayout from "@/components/admin/AdminLayout";
 
@@ -75,21 +78,30 @@ function App() {
         <Router>
           <Routes>
             {/* Auth routes */}
-            <Route path="/login" element={
-              <GuestRoute>
-                <Login />
-              </GuestRoute>
-            } />
-            <Route path="/signup" element={
-              <GuestRoute>
-                <Signup />
-              </GuestRoute>
-            } />
-            <Route path="/admin/login" element={
-              <GuestRoute>
-                <AdminLogin />
-              </GuestRoute>
-            } />
+            <Route
+              path="/login"
+              element={
+                <GuestRoute>
+                  <Login />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <GuestRoute>
+                  <Signup />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/admin/login"
+              element={
+                <GuestRoute>
+                  <AdminLogin />
+                </GuestRoute>
+              }
+            />
 
             {/* Public routes */}
             <Route path="/" element={<Layout />}>
@@ -98,11 +110,14 @@ function App() {
               <Route path="category/:slug" element={<Products />} />
               <Route path="product/:slug" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={
-                <ProtectedRoute requireAuth={true} requireAdmin={false}>
-                  <Checkout />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="checkout"
+                element={
+                  <ProtectedRoute requireAuth={true} requireAdmin={false}>
+                    <Checkout />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="track-order" element={<TrackOrder />} />
               <Route
                 path="order-confirmation/:orderId"
@@ -120,40 +135,44 @@ function App() {
             </Route>
 
             {/* Admin routes */}
-            <Route path="/admin" element={
-              <AdminRoute>
-                <AdminLayout />
-              </AdminRoute>
-            }>
-            <Route index element={<Dashboard />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="products/new" element={<ProductEdit />} />
-            <Route path="products/:id/edit" element={<ProductEdit />} />
-            <Route path="categories" element={<Categories />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="customers" element={<Customers />} />
-            <Route path="coupons" element={<Coupons />} />
-            <Route path="shipping" element={<Shipping />} />
-            <Route path="pages" element={<Pages />} />
-            <Route path="footer-editor" element={<FooterEditor />} />
-            <Route path="homepage" element={<HomepageBuilder />} />
-            <Route path="menu-bar" element={<MenuBar />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="users" element={<Users />} />
             <Route
-              path="contact-submissions"
-              element={<ContactSubmissions />}
-            />
-            <Route path="database-setup" element={<DatabaseSetup />} />
-            <Route path="database-test" element={<DatabaseTest />} />
-          </Route>
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/new" element={<ProductEdit />} />
+              <Route path="products/:id/edit" element={<ProductEdit />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="customers" element={<Customers />} />
+              <Route path="coupons" element={<Coupons />} />
+              <Route path="shipping" element={<Shipping />} />
+              <Route path="pages" element={<Pages />} />
+              <Route path="footer-editor" element={<FooterEditor />} />
+              <Route path="homepage" element={<HomepageBuilder />} />
+              <Route path="menu-bar" element={<MenuBar />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="users" element={<Users />} />
+              <Route
+                path="contact-submissions"
+                element={<ContactSubmissions />}
+              />
+              <Route path="database-setup" element={<DatabaseSetup />} />
+              <Route path="database-test" element={<DatabaseTest />} />
+            </Route>
 
-          {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </CartProvider>
+            {/* 404 Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
