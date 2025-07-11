@@ -8,7 +8,7 @@ export interface User {
   name: string;
   role?: string;
   user_type: "admin" | "customer";
-  is_verified: boolean;
+  email_verified: boolean;
   phone?: string;
   last_login?: string;
 }
@@ -116,7 +116,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         name: userData.name,
         role: userData.role,
         user_type: userType,
-        is_verified: userData.is_verified,
+        email_verified:
+          userData.email_verified || userData.is_verified || false,
         phone: userData.phone,
         last_login: userData.last_login,
       };
@@ -274,7 +275,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Hash password
       const passwordHash = await hashPassword(password);
 
-      // Create user
+      // Create user (match existing customers table structure)
       const { data: userData, error: userError } = await supabase
         .from("customers")
         .insert({
@@ -283,7 +284,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           password_hash: passwordHash,
           phone: phone?.trim() || null,
           is_active: true,
-          is_verified: false, // Require email verification
+          email_verified: false, // Use existing column name
+          phone_verified: false,
+          total_orders: 0,
+          total_spent: 0,
         })
         .select()
         .single();
@@ -303,7 +307,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         email: userData.email,
         name: userData.name,
         user_type: "customer",
-        is_verified: userData.is_verified,
+        email_verified: userData.email_verified || false,
         phone: userData.phone,
       };
 
