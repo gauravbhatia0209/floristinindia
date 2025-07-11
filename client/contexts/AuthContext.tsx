@@ -486,7 +486,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     hash: string,
   ): Promise<boolean> => {
     try {
-      return await bcrypt.compare(password, hash);
+      console.log("🔍 Password verification details:");
+      console.log("  Input password:", password);
+      console.log("  Input password length:", password.length);
+      console.log("  Stored hash:", hash);
+      console.log("  Hash length:", hash.length);
+      console.log("  Hash starts with $2b?", hash.startsWith("$2b$"));
+
+      const result = await bcrypt.compare(password, hash);
+      console.log("  bcrypt.compare result:", result);
+      return result;
     } catch (error) {
       console.error("Password verification error:", error);
       return false;
