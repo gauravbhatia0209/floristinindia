@@ -108,65 +108,96 @@ function HeroSection({ content }: { content: any }) {
 
 function HeroCarouselSection({ content }: { content: any }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = content.images || [];
+
+  // Support both new slides format and legacy images array
+  const slides =
+    content.slides?.length > 0
+      ? content.slides
+      : (content.images || []).map((image: string) => ({
+          image,
+          url: "",
+          target: "_self",
+        }));
 
   useEffect(() => {
-    if (content.autoplay && images.length > 1) {
+    if (content.autoplay && slides.length > 1) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % images.length);
+        setCurrentIndex((prev) => (prev + 1) % slides.length);
       }, content.autoplay_delay || 5000);
       return () => clearInterval(interval);
     }
-  }, [content.autoplay, content.autoplay_delay, images.length]);
+  }, [content.autoplay, content.autoplay_delay, slides.length]);
 
-  if (!images.length) return null;
+  if (!slides.length) return null;
+
+  const renderSlide = (slide: any, index: number) => {
+    const slideContent = (
+      <img
+        src={slide.image}
+        alt={`Slide ${index + 1}`}
+        className="w-full h-full object-cover"
+      />
+    );
+
+    // If slide has a URL, wrap in anchor tag
+    if (slide.url && slide.url.trim()) {
+      return (
+        <a
+          href={slide.url}
+          target={slide.target || "_self"}
+          rel={slide.target === "_blank" ? "noopener noreferrer" : undefined}
+          className="block w-full h-full"
+        >
+          {slideContent}
+        </a>
+      );
+    }
+
+    return slideContent;
+  };
 
   return (
     <section
       className="relative overflow-hidden"
       style={{ height: content.height || 500 }}
     >
-      {images.map((image: string, index: number) => (
+      {slides.map((slide: any, index: number) => (
         <div
           key={index}
           className={`absolute inset-0 transition-opacity duration-500 ${
             index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
-            src={image}
-            alt={`Slide ${index + 1}`}
-            className="w-full h-full object-cover"
-          />
+          {renderSlide(slide, index)}
         </div>
       ))}
 
-      {content.show_navigation && images.length > 1 && (
+      {content.show_navigation && slides.length > 1 && (
         <>
           <button
             onClick={() =>
               setCurrentIndex(
-                (prev) => (prev - 1 + images.length) % images.length,
+                (prev) => (prev - 1 + slides.length) % slides.length,
               )
             }
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-2 rounded-full"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-2 rounded-full z-10"
           >
             ←
           </button>
           <button
             onClick={() =>
-              setCurrentIndex((prev) => (prev + 1) % images.length)
+              setCurrentIndex((prev) => (prev + 1) % slides.length)
             }
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-2 rounded-full"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-2 rounded-full z-10"
           >
             →
           </button>
         </>
       )}
 
-      {content.show_dots && images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {images.map((_: any, index: number) => (
+      {content.show_dots && slides.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+          {slides.map((_: any, index: number) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
