@@ -201,7 +201,7 @@ function ShippingMethodCard({
                         <div className="flex items-center gap-2">
                           <Label
                             htmlFor={method.config_id}
-                            className="font-medium cursor-pointer"
+                            className="font-medium cursor-pointer flex-1"
                           >
                             {method.name}
                           </Label>
