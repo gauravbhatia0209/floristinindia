@@ -1025,6 +1025,11 @@ export default function Checkout() {
                             className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
                             required
                           />
+                          {errors.deliveryDate && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {errors.deliveryDate}
+                            </p>
+                          )}
                         </div>
                         {selectedShippingMethod?.time_slot_required && (
                           <div>
