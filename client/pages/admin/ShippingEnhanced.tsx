@@ -187,17 +187,23 @@ export default function ShippingEnhanced() {
             ? Math.max(...methods.map((m) => m.sort_order))
             : 0;
 
+        const insertData: any = {
+          name: methodData.name,
+          description: methodData.description || null,
+          type: methodData.type,
+          rules: methodData.rules || null,
+          is_active: methodData.is_active,
+          sort_order: maxOrder + 1,
+        };
+
+        // Add time_slot_required if the field exists in formData
+        if ("time_slot_required" in methodData) {
+          insertData.time_slot_required = methodData.time_slot_required;
+        }
+
         const { data: newMethod, error: insertError } = await supabase
           .from("shipping_method_templates")
-          .insert({
-            name: methodData.name,
-            description: methodData.description || null,
-            type: methodData.type,
-            rules: methodData.rules || null,
-            time_slot_required: methodData.time_slot_required,
-            is_active: methodData.is_active,
-            sort_order: maxOrder + 1,
-          })
+          .insert(insertData)
           .select()
           .single();
 
