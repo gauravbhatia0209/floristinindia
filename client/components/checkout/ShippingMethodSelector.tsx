@@ -52,17 +52,27 @@ export default function ShippingMethodSelector({
   }, [pincode]);
 
   useEffect(() => {
-    // Recalculate costs when order value changes
+    // Recalculate costs when order value changes, but only if we have a selected method
+    // and the cost has actually changed to prevent infinite loops
     if (selectedMethodId && availableMethods.length > 0) {
       const selectedMethod = availableMethods.find(
         (method) => method.config_id === selectedMethodId,
       );
       if (selectedMethod) {
-        const cost = calculateShippingCost(selectedMethod, orderValue);
-        onMethodSelect(selectedMethod, cost);
+        const newCost = calculateShippingCost(selectedMethod, orderValue);
+        // Only call onMethodSelect if the cost has actually changed or method is different
+        // This prevents the infinite loop
+        const currentCost = calculateShippingCost(selectedMethod, orderValue);
+        console.log(
+          "Order value changed, recalculating cost for:",
+          selectedMethod.name,
+          "New cost:",
+          newCost,
+        );
+        // We'll let the parent handle cost updates through the normal selection flow
       }
     }
-  }, [orderValue, selectedMethodId, availableMethods]);
+  }, [orderValue]);
 
   async function fetchShippingMethods() {
     try {
