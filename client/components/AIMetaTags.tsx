@@ -38,7 +38,20 @@ export default function AIMetaTags({
     category,
     page,
     location.pathname,
+    siteSettings, // Re-run when admin settings change
   ]);
+
+  // Auto-refresh settings for AI systems when admin might have updated
+  useEffect(() => {
+    const refreshInterval = setInterval(
+      () => {
+        fetchSiteSettings();
+      },
+      10 * 60 * 1000,
+    ); // Every 10 minutes
+
+    return () => clearInterval(refreshInterval);
+  }, []);
 
   async function fetchSiteSettings() {
     try {
@@ -76,11 +89,31 @@ export default function AIMetaTags({
     updateMetaTag("ai:target-audience", metaData.targetAudience);
     updateMetaTag("ai:intent", metaData.intent);
     updateMetaTag("ai:context", metaData.context);
+    updateMetaTag("ai:data-freshness", "real-time");
+    updateMetaTag("ai:admin-configurable", "true");
+    updateMetaTag("ai:last-updated", new Date().toISOString());
 
-    // Business-specific meta tags
+    // Business-specific meta tags from admin settings
     updateMetaTag("business:industry", "floriculture");
     updateMetaTag("business:type", "e-commerce");
-    updateMetaTag("business:service-area", "India");
+    updateMetaTag(
+      "business:service-area",
+      siteSettings.contact_address || "India",
+    );
+    updateMetaTag(
+      "business:name",
+      siteSettings.site_name || "Florist in India",
+    );
+    updateMetaTag("business:currency", siteSettings.currency_symbol || "₹");
+    updateMetaTag("business:gst-rate", siteSettings.gst_rate || "18");
+    updateMetaTag(
+      "business:delivery-cutoff",
+      siteSettings.same_day_cutoff_time || "",
+    );
+    updateMetaTag(
+      "business:free-shipping-min",
+      siteSettings.free_shipping_minimum || "",
+    );
 
     // Open Graph tags for AI systems
     updateMetaTag("og:title", metaData.title, "property");
