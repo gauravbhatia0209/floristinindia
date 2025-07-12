@@ -27,18 +27,6 @@ export async function getAvailableShippingMethods(
 
     console.log("Found zone for pincode:", zone);
 
-    // Get all shipping methods for this zone (without filtering first)
-    const { data: allMethods, error: allMethodsError } = await supabase
-      .from("shipping_methods_with_zones")
-      .select("*")
-      .eq("zone_id", zone.id);
-
-    if (allMethodsError) {
-      console.error("Error fetching all methods:", allMethodsError);
-    } else {
-      console.log("All methods for zone:", allMethods);
-    }
-
     // Get shipping methods available for this zone with proper filtering
     const { data: methods, error: methodsError } = await supabase
       .from("shipping_methods_with_zones")
