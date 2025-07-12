@@ -1,14 +1,84 @@
+# Robots.txt for AI-readable flower delivery website
+# Optimized for search engines and AI crawlers
+
+User-agent: *
+Allow: /
+
+# Allow all AI crawlers and search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
+User-agent: ChatGPT-User
 Allow: /
 
-User-agent: facebookexternalhit
+User-agent: GPTBot
 Allow: /
 
-User-agent: *
+User-agent: Google-Extended
 Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: AI2-Bot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# AI-readable data endpoints
+Allow: /api/ai/
+Allow: /api/ai/products
+Allow: /api/ai/categories
+Allow: /api/ai/business
+
+# Important pages for AI understanding
+Allow: /products
+Allow: /products/*
+Allow: /categories
+Allow: /categories/*
+Allow: /about
+Allow: /contact
+
+# Media files
+Allow: /uploads/
+Allow: /images/
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.webp
+Allow: /*.gif
+
+# Structured data and feeds
+Allow: /sitemap.xml
+Allow: /sitemap.txt
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/admin
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /login
+Disallow: /signup
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Additional information for AI crawlers
+# Business Type: E-commerce Flower Delivery
+# Industry: Floriculture, Gifts, Occasions
+# Service Area: India (100+ cities)
+# Products: Fresh flowers, bouquets, arrangements
+# Occasions: Birthdays, anniversaries, weddings, festivals
+# Features: Same-day delivery, custom arrangements
