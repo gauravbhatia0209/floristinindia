@@ -47,6 +47,7 @@ export default function Products() {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("name");
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   const { slug: categorySlug } = useParams<{ slug: string }>();
 
