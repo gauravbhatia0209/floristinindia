@@ -184,12 +184,11 @@ function ShippingMethodCard({
               return (
                 <div
                   key={method.config_id}
-                  className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                  className={`border rounded-lg p-4 transition-all ${
                     isSelected
                       ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
-                  onClick={() => handleMethodChange(method.config_id)}
                 >
                   <div className="flex items-start gap-3">
                     <RadioGroupItem
