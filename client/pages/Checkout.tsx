@@ -364,6 +364,7 @@ export default function Checkout() {
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [gstRate, setGstRate] = useState(18); // Default fallback
 
   // Function to generate sequential order number
   async function generateOrderNumber(): Promise<string> {
@@ -401,7 +402,32 @@ export default function Checkout() {
     if (items.length === 0) {
       navigate("/cart");
     }
+    fetchGstRate();
   }, [items, navigate]);
+
+  async function fetchGstRate() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "gst_rate")
+        .single();
+
+      if (error) {
+        console.error("Failed to fetch GST rate:", error);
+        return;
+      }
+
+      if (data) {
+        const rate = parseFloat(data.value);
+        if (!isNaN(rate)) {
+          setGstRate(rate);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching GST rate:", error);
+    }
+  }
 
   function handleShippingMethodSelect(
     method: AvailableShippingMethod | null,
