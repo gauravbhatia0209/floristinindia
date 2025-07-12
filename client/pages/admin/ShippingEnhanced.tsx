@@ -827,6 +827,19 @@ function MethodForm({
 
         <div className="flex items-center space-x-2">
           <Switch
+            id="time_slot_required"
+            checked={formData.time_slot_required}
+            onCheckedChange={(checked) =>
+              setFormData({ ...formData, time_slot_required: checked })
+            }
+          />
+          <Label htmlFor="time_slot_required">
+            Requires Time Slot Selection
+          </Label>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Switch
             id="is_active"
             checked={formData.is_active}
             onCheckedChange={(checked) =>
