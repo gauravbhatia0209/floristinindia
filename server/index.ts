@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import uploadRoutes from "./routes/upload";
 import aiDataRoutes from "./routes/ai-data";
 import sitemapRoutes from "./routes/sitemap";
+import adminUpdatesRoutes from "./routes/admin-updates";
 
 export function createServer() {
   const app = express();
@@ -35,6 +36,9 @@ export function createServer() {
 
   // Sitemap routes
   app.use("/", sitemapRoutes);
+
+  // Admin update notification routes for AI cache management
+  app.use("/api/admin", adminUpdatesRoutes);
 
   return app;
 }
