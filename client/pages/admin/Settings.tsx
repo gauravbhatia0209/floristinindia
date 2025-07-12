@@ -425,6 +425,8 @@ export default function Settings() {
                         </div>
                         <p className="text-sm text-muted-foreground">
                           PNG, JPG, or WebP up to 3MB
+                          <br />
+                          Recommended: 300×100px or 400×120px
                         </p>
                       </div>
                     )}
@@ -502,6 +504,8 @@ export default function Settings() {
                         </div>
                         <p className="text-sm text-muted-foreground">
                           ICO, PNG, or JPG up to 3MB
+                          <br />
+                          Recommended: 32×32px or 48×48px
                         </p>
                       </div>
                     )}
