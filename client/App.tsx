@@ -9,6 +9,7 @@ import ProtectedRoute, {
 import Layout from "@/components/layout/Layout";
 import AdminLayout from "@/components/admin/AdminLayout";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import FacebookPixel from "@/components/FacebookPixel";
 import { supabase } from "@/lib/supabase";
 
 // Public pages
@@ -53,6 +54,7 @@ import CategoryImageMigration from "@/pages/admin/CategoryImageMigration";
 
 function App() {
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState<string>("");
+  const [facebookPixelId, setFacebookPixelId] = useState<string>("");
 
   // Add error handling for navigation issues
   React.useEffect(() => {
@@ -72,6 +74,9 @@ function App() {
 
     // Fetch Google Analytics ID
     fetchGoogleAnalyticsId();
+
+    // Fetch Facebook Pixel ID
+    fetchFacebookPixelId();
 
     return () => {
       window.removeEventListener("error", handleError);
@@ -98,6 +103,22 @@ function App() {
     }
   }
 
+  async function fetchFacebookPixelId() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "facebook_pixel_id")
+        .single();
+
+      if (data && data.value) {
+        setFacebookPixelId(data.value);
+      }
+    } catch (error) {
+      console.error("Error fetching Facebook Pixel ID:", error);
+    }
+  }
+
   return (
     <AuthProvider>
       <CartProvider>
@@ -105,6 +126,7 @@ function App() {
           {googleAnalyticsId && (
             <GoogleAnalytics trackingId={googleAnalyticsId} />
           )}
+          {facebookPixelId && <FacebookPixel pixelId={facebookPixelId} />}
           <Routes>
             {/* Auth routes */}
             <Route
