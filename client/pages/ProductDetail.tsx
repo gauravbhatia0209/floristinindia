@@ -29,6 +29,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { useFacebookPixel } from "@/components/FacebookPixel";
+import FacebookShopMeta from "@/components/FacebookShopMeta";
 import { ProductVariationSelector } from "@/components/ProductVariationSelector";
 import { toast } from "@/hooks/use-toast";
 import {
