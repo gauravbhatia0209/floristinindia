@@ -50,12 +50,38 @@ export default function OrderConfirmation() {
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [gstRate, setGstRate] = useState(18); // Default fallback
 
   useEffect(() => {
     if (orderId) {
       fetchOrderDetails();
     }
+    fetchGstRate();
   }, [orderId]);
+
+  async function fetchGstRate() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "gst_rate")
+        .single();
+
+      if (error) {
+        console.error("Failed to fetch GST rate:", error);
+        return;
+      }
+
+      if (data) {
+        const rate = parseFloat(data.value);
+        if (!isNaN(rate)) {
+          setGstRate(rate);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching GST rate:", error);
+    }
+  }
 
   async function fetchOrderDetails() {
     try {
@@ -471,7 +497,7 @@ export default function OrderConfirmation() {
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span>Tax (18% GST):</span>
+                    <span>Tax ({gstRate}% GST):</span>
                     <span>{formatPrice(orderData.tax_amount)}</span>
                   </div>
                   <hr />
