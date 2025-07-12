@@ -144,16 +144,22 @@ export default function ShippingEnhanced() {
       if (editingMethod) {
         console.log("Updating existing method:", editingMethod.id);
         // Update existing method
+        const updateData: any = {
+          name: methodData.name,
+          description: methodData.description || null,
+          type: methodData.type,
+          rules: methodData.rules || null,
+          is_active: methodData.is_active,
+        };
+
+        // Add time_slot_required if the field exists in formData
+        if ("time_slot_required" in methodData) {
+          updateData.time_slot_required = methodData.time_slot_required;
+        }
+
         const { error: updateError } = await supabase
           .from("shipping_method_templates")
-          .update({
-            name: methodData.name,
-            description: methodData.description || null,
-            type: methodData.type,
-            rules: methodData.rules || null,
-            time_slot_required: methodData.time_slot_required,
-            is_active: methodData.is_active,
-          })
+          .update(updateData)
           .eq("id", editingMethod.id);
 
         if (updateError) {
