@@ -99,6 +99,7 @@ export default function Settings() {
     default_meta_title: "",
     default_meta_description: "",
     google_analytics_id: "",
+    google_analytics_id: "",
     facebook_pixel_id: "",
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -204,6 +205,8 @@ export default function Settings() {
       gst_rate: "GST rate percentage",
       free_shipping_minimum: "Minimum order amount for free shipping",
       same_day_cutoff_time: "Order cutoff time for same-day delivery",
+      google_analytics_id:
+        "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
     };
     return descriptions[key] || "";
   }
