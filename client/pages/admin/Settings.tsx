@@ -99,7 +99,6 @@ export default function Settings() {
     default_meta_title: "",
     default_meta_description: "",
     google_analytics_id: "",
-    google_analytics_id: "",
     facebook_pixel_id: "",
   });
   const [isLoading, setIsLoading] = useState(true);
