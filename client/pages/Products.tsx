@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  Filter,
-  Grid,
-  List,
-  ShoppingCart,
-  ChevronDown,
-  ChevronUp,
-  X,
-} from "lucide-react";
+import { Filter, Grid, List, ShoppingCart, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -331,13 +323,38 @@ export default function Products() {
       </div>
 
       {/* Unified Horizontal Filter Bar */}
-      <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm border-border/50">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Filter Title */}
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
-            <Filter className="w-4 h-4" />
-            <span>Filters:</span>
-          </div>
+      <div className="bg-white border rounded-lg mb-6 shadow-sm border-border/50">
+        {/* Mobile Filter Header */}
+        <div className="lg:hidden">
+          <button
+            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+            className="w-full flex items-center justify-between p-4 text-sm font-medium text-muted-foreground"
+          >
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4" />
+              <span>Filters</span>
+              {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+                <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-xs">
+                  {selectedCategories.length + (priceRange[0] > 0 || priceRange[1] < 5000 ? 1 : 0)}
+                </Badge>
+              )}
+            </div>
+            {isFilterExpanded ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+
+        {/* Filter Content */}
+        <div className={`${isFilterExpanded ? 'block' : 'hidden'} lg:block p-4 ${isFilterExpanded ? 'border-t border-border/50' : ''}`}>
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Filter Title - Desktop Only */}
+            <div className="hidden lg:flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
+              <Filter className="w-4 h-4" />
+              <span>Filters:</span>
+            </div>
 
           {/* Main Filter Bar Container */}
           <div className="flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center flex-1">
