@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   Package,
@@ -117,6 +118,23 @@ const navigation = [
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    if (confirm("Are you sure you want to logout?")) {
+      try {
+        await logout();
+        navigate("/admin/login");
+      } catch (error) {
+        console.error("Logout failed:", error);
+        // Force logout anyway
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("user_type");
+        navigate("/admin/login");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -162,7 +180,12 @@ export default function AdminLayout() {
               >
                 View Website
               </Link>
-              <Button variant="ghost" size="icon">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                title="Logout"
+              >
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
