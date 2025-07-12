@@ -1015,12 +1015,16 @@ export default function Checkout() {
                             id="deliveryDate"
                             type="date"
                             value={form.deliveryDate}
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setForm({
                                 ...form,
                                 deliveryDate: e.target.value,
-                              })
-                            }
+                              });
+                              // Clear delivery date error when user selects a date
+                              if (errors.deliveryDate) {
+                                setErrors({ ...errors, deliveryDate: "" });
+                              }
+                            }}
                             min={new Date().toISOString().split("T")[0]}
                             className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
                             required
