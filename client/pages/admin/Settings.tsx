@@ -212,6 +212,66 @@ export default function Settings() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   }
 
+  async function handleLogoUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setLogoUploading(true);
+    try {
+      // Delete old logo if exists
+      if (settings.logo_url) {
+        await deleteImageFromSupabase(settings.logo_url);
+      }
+
+      const result = await uploadImageToSupabase(file, "logos");
+      if (result.success && result.publicUrl) {
+        handleInputChange("logo_url", result.publicUrl);
+      } else {
+        alert(result.error || "Failed to upload logo");
+      }
+    } catch (error) {
+      console.error("Logo upload error:", error);
+      alert("Failed to upload logo");
+    } finally {
+      setLogoUploading(false);
+    }
+  }
+
+  async function handleFaviconUpload(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setFaviconUploading(true);
+    try {
+      // Delete old favicon if exists
+      if (settings.favicon_url) {
+        await deleteImageFromSupabase(settings.favicon_url);
+      }
+
+      const result = await uploadImageToSupabase(file, "favicons");
+      if (result.success && result.publicUrl) {
+        handleInputChange("favicon_url", result.publicUrl);
+      } else {
+        alert(result.error || "Failed to upload favicon");
+      }
+    } catch (error) {
+      console.error("Favicon upload error:", error);
+      alert("Failed to upload favicon");
+    } finally {
+      setFaviconUploading(false);
+    }
+  }
+
+  function removeLogo() {
+    handleInputChange("logo_url", "");
+  }
+
+  function removeFavicon() {
+    handleInputChange("favicon_url", "");
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
