@@ -64,6 +64,8 @@ export default function ProductDetail() {
   const [settings, setSettings] = useState<any>(null);
 
   const { addItem } = useCart();
+  const { trackViewContent, trackAddToCart: trackFBAddToCart } =
+    useFacebookPixel();
 
   useEffect(() => {
     if (slug) {
