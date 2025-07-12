@@ -63,6 +63,7 @@ export default function Products() {
   const { toast } = useToast();
   const { trackAddToCart } = useGoogleAnalytics();
   const { trackAddToCart: trackFBAddToCart } = useFacebookPixel();
+  const { trackAddToCart: trackFBAddToCart } = useFacebookPixel();
 
   useEffect(() => {
     fetchData();
