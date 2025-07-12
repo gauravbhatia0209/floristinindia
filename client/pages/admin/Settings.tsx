@@ -67,6 +67,7 @@ interface SettingsData {
   default_meta_description: string;
   google_analytics_id: string;
   facebook_pixel_id: string;
+  facebook_app_id: string;
 }
 
 export default function Settings() {
@@ -695,7 +696,7 @@ export default function Settings() {
                     onChange={(e) =>
                       handleInputChange("currency_symbol", e.target.value)
                     }
-                    placeholder="��"
+                    placeholder="₹"
                   />
                 </div>
                 <div>
