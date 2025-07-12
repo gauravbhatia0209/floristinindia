@@ -36,7 +36,7 @@ import Categories from "@/pages/admin/Categories";
 import Orders from "@/pages/admin/Orders";
 import Customers from "@/pages/admin/Customers";
 import Coupons from "@/pages/admin/Coupons";
-import Shipping from "@/pages/admin/Shipping";
+import ShippingEnhanced from "@/pages/admin/ShippingEnhanced";
 import Pages from "@/pages/admin/Pages";
 import HomepageBuilder from "@/pages/admin/HomepageBuilder";
 import MenuBar from "@/pages/admin/MenuBar";
@@ -166,7 +166,7 @@ function App() {
               <Route path="orders" element={<Orders />} />
               <Route path="customers" element={<Customers />} />
               <Route path="coupons" element={<Coupons />} />
-              <Route path="shipping" element={<Shipping />} />
+              <Route path="shipping" element={<ShippingEnhanced />} />
               <Route path="pages" element={<Pages />} />
               <Route path="footer-editor" element={<FooterEditor />} />
               <Route path="homepage" element={<HomepageBuilder />} />
