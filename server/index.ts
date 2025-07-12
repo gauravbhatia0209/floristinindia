@@ -4,6 +4,7 @@ import path from "path";
 import { handleDemo } from "./routes/demo";
 import uploadRoutes from "./routes/upload";
 import aiDataRoutes from "./routes/ai-data";
+import sitemapRoutes from "./routes/sitemap";
 
 export function createServer() {
   const app = express();
@@ -31,6 +32,9 @@ export function createServer() {
 
   // AI-readable data routes
   app.use("/api/ai", aiDataRoutes);
+
+  // Sitemap routes
+  app.use("/", sitemapRoutes);
 
   return app;
 }
