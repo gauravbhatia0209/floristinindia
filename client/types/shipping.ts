@@ -69,6 +69,7 @@ export interface ShippingMethodFormData {
   description: string;
   type: "same_day" | "next_day" | "standard" | "express" | "scheduled";
   rules: string;
+  time_slot_required: boolean;
   is_active: boolean;
   zone_configs: {
     zone_id: string;
