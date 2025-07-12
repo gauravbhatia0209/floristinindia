@@ -44,6 +44,18 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
     }
   }, [type, data, siteSettings, location.pathname]);
 
+  // Refresh data when admin might have updated settings
+  useEffect(() => {
+    const interval = setInterval(
+      () => {
+        fetchSiteSettings(); // Refresh every 5 minutes for AI systems
+      },
+      5 * 60 * 1000,
+    );
+
+    return () => clearInterval(interval);
+  }, []);
+
   async function fetchSiteSettings() {
     try {
       const { data: settings } = await supabase
@@ -113,6 +125,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         siteSettings.facebook_url,
         siteSettings.instagram_url,
         siteSettings.twitter_url,
+        siteSettings.youtube_url,
       ].filter(Boolean),
       potentialAction: {
         "@type": "SearchAction",
@@ -130,6 +143,11 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
           url: siteSettings.logo_url,
         },
       },
+      // AI metadata for real-time updates
+      "@type:ai": "dynamic-content",
+      lastModified: new Date().toISOString(),
+      dataSource: "admin-configurable",
+      cachePolicy: "refresh-on-admin-changes",
     };
   }
 
@@ -197,13 +215,25 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         "@type": "ImageObject",
         url: siteSettings.logo_url,
       },
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: siteSettings.contact_phone,
-        contactType: "customer service",
-        email: siteSettings.contact_email,
-        availableLanguage: ["English", "Hindi"],
-      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone: siteSettings.contact_phone,
+          contactType: "customer service",
+          email: siteSettings.contact_email,
+          availableLanguage: ["English", "Hindi"],
+        },
+        siteSettings.contact_phone_2 && {
+          "@type": "ContactPoint",
+          telephone: siteSettings.contact_phone_2,
+          contactType: "secondary contact",
+        },
+        siteSettings.whatsapp_number && {
+          "@type": "ContactPoint",
+          telephone: siteSettings.whatsapp_number,
+          contactType: "WhatsApp support",
+        },
+      ].filter(Boolean),
       address: {
         "@type": "PostalAddress",
         addressLocality: siteSettings.contact_address,
@@ -213,12 +243,27 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         siteSettings.facebook_url,
         siteSettings.instagram_url,
         siteSettings.twitter_url,
+        siteSettings.youtube_url,
       ].filter(Boolean),
       foundingDate: "2023",
       numberOfEmployees: "10-50",
       industry: "Floriculture",
       keywords:
         "flowers, flower delivery, bouquets, floral arrangements, gifts, occasions",
+      // Dynamic business info from admin settings
+      priceRange: siteSettings.currency_symbol || "₹",
+      paymentAccepted: [
+        "Cash",
+        "Credit Card",
+        "Debit Card",
+        "UPI",
+        "Net Banking",
+      ],
+      currenciesAccepted: "INR",
+      // AI metadata
+      "@type:ai": "admin-configurable",
+      lastModified: new Date().toISOString(),
+      dataFreshness: "real-time",
     };
   }
 
