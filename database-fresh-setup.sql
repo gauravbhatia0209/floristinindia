@@ -291,6 +291,7 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('contact_address', 'Delhi NCR, Mumbai, Bangalore & 100+ Cities', 'text', 'Business address'),
 ('currency', 'INR', 'text', 'Default currency'),
 ('currency_symbol', '₹', 'text', 'Currency symbol'),
+('gst_rate', '18', 'number', 'GST rate percentage'),
 ('gst_number', '07AAACZ1234C1Z5', 'text', 'GST registration number'),
 ('logo_url', '', 'image', 'Website logo'),
 ('favicon_url', '', 'image', 'Website favicon'),
@@ -337,14 +338,14 @@ INSERT INTO shipping_zones (name, description, pincodes) VALUES
 
 -- Insert Shipping Methods
 DO $$
-DECLARE 
+DECLARE
     zone_record RECORD;
 BEGIN
     FOR zone_record IN SELECT id, name FROM shipping_zones LOOP
         INSERT INTO shipping_methods (zone_id, name, description, type, price, delivery_time, sort_order) VALUES
         (zone_record.id, 'Same Day Delivery', 'Order before 2 PM for same day delivery', 'same_day', 149.00, '4-6 hours', 1),
         (zone_record.id, 'Next Day Delivery', 'Delivered next day', 'next_day', 99.00, 'Next day', 2);
-        
+
         -- Add scheduled delivery for major metros
         IF zone_record.name IN ('Delhi NCR', 'Mumbai Metropolitan', 'Bangalore Urban') THEN
             INSERT INTO shipping_methods (zone_id, name, description, type, price, delivery_time, sort_order) VALUES

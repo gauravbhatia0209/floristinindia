@@ -5,67 +5,67 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Update existing site_settings table structure
-DO $$ 
+DO $$
 BEGIN
     -- Add new columns to site_settings if they don't exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'site_settings' AND column_name = 'type') THEN
         ALTER TABLE site_settings ADD COLUMN type VARCHAR(20) DEFAULT 'text' CHECK (type IN ('text', 'json', 'boolean', 'number', 'image'));
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'site_settings' AND column_name = 'description') THEN
         ALTER TABLE site_settings ADD COLUMN description TEXT;
     END IF;
 END $$;
 
 -- Update existing product_categories table structure
-DO $$ 
+DO $$
 BEGIN
     -- Add new columns to product_categories if they don't exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'parent_id') THEN
         ALTER TABLE product_categories ADD COLUMN parent_id UUID REFERENCES product_categories(id) ON DELETE SET NULL;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'meta_title') THEN
         ALTER TABLE product_categories ADD COLUMN meta_title VARCHAR(255);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'meta_description') THEN
         ALTER TABLE product_categories ADD COLUMN meta_description TEXT;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'product_categories' AND column_name = 'show_in_menu') THEN
         ALTER TABLE product_categories ADD COLUMN show_in_menu BOOLEAN DEFAULT TRUE;
     END IF;
 END $$;
 
 -- Update existing products table structure
-DO $$ 
+DO $$
 BEGIN
     -- Add new columns to products if they don't exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'is_featured') THEN
         ALTER TABLE products ADD COLUMN is_featured BOOLEAN DEFAULT FALSE;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'subcategory_id') THEN
         ALTER TABLE products ADD COLUMN subcategory_id UUID REFERENCES product_categories(id);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'upload_file_types') THEN
         ALTER TABLE products ADD COLUMN upload_file_types TEXT[] DEFAULT '{}';
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'meta_title') THEN
         ALTER TABLE products ADD COLUMN meta_title VARCHAR(255);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'meta_description') THEN
         ALTER TABLE products ADD COLUMN meta_description TEXT;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'weight') THEN
         ALTER TABLE products ADD COLUMN weight DECIMAL(8, 2);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'products' AND column_name = 'dimensions') THEN
         ALTER TABLE products ADD COLUMN dimensions JSONB;
     END IF;
@@ -87,14 +87,14 @@ CREATE TABLE IF NOT EXISTS product_variants (
 );
 
 -- Update existing customers table structure (FIXED)
-DO $$ 
+DO $$
 BEGIN
     -- Handle address/addresses column situation properly
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'address') 
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'address')
        AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'addresses') THEN
         -- Only rename if addresses column doesn't exist
         ALTER TABLE customers RENAME COLUMN address TO addresses;
-    ELSIF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'address') 
+    ELSIF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'address')
           AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'addresses') THEN
         -- Both exist, drop the old address column
         ALTER TABLE customers DROP COLUMN address;
@@ -102,43 +102,43 @@ BEGIN
         -- Neither exists, create addresses column
         ALTER TABLE customers ADD COLUMN addresses JSONB DEFAULT '[]';
     END IF;
-    
+
     -- Add other new columns if they don't exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'gender') THEN
         ALTER TABLE customers ADD COLUMN gender VARCHAR(10) CHECK (gender IN ('male', 'female', 'other'));
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'preferences') THEN
         ALTER TABLE customers ADD COLUMN preferences JSONB;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'is_active') THEN
         ALTER TABLE customers ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'email_verified') THEN
         ALTER TABLE customers ADD COLUMN email_verified BOOLEAN DEFAULT FALSE;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'phone_verified') THEN
         ALTER TABLE customers ADD COLUMN phone_verified BOOLEAN DEFAULT FALSE;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'total_orders') THEN
         ALTER TABLE customers ADD COLUMN total_orders INTEGER DEFAULT 0;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'total_spent') THEN
         ALTER TABLE customers ADD COLUMN total_spent DECIMAL(12, 2) DEFAULT 0;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'customers' AND column_name = 'last_order_date') THEN
         ALTER TABLE customers ADD COLUMN last_order_date TIMESTAMP WITH TIME ZONE;
     END IF;
 END $$;
 
 -- Update existing orders table structure (FIXED - Simple order number generation)
-DO $$ 
+DO $$
 BEGIN
     -- Add order_number column if it doesn't exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'order_number') THEN
@@ -148,27 +148,27 @@ BEGIN
         ALTER TABLE orders ALTER COLUMN order_number SET NOT NULL;
         CREATE UNIQUE INDEX IF NOT EXISTS orders_order_number_unique ON orders(order_number);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'tax_amount') THEN
         ALTER TABLE orders ADD COLUMN tax_amount DECIMAL(10, 2) DEFAULT 0;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'delivery_zone_id') THEN
         ALTER TABLE orders ADD COLUMN delivery_zone_id UUID;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'special_instructions') THEN
         ALTER TABLE orders ADD COLUMN special_instructions TEXT;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'payment_reference') THEN
         ALTER TABLE orders ADD COLUMN payment_reference VARCHAR(255);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'coupon_code') THEN
         ALTER TABLE orders ADD COLUMN coupon_code VARCHAR(50);
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'tracking_number') THEN
         ALTER TABLE orders ADD COLUMN tracking_number VARCHAR(100);
     END IF;
@@ -228,6 +228,7 @@ CREATE TABLE IF NOT EXISTS shipping_methods (
 INSERT INTO site_settings (key, value, type, description) VALUES
 ('currency', 'INR', 'text', 'Default currency'),
 ('currency_symbol', '₹', 'text', 'Currency symbol'),
+('gst_rate', '18', 'number', 'GST rate percentage'),
 ('gst_number', '07AAACZ1234C1Z5', 'text', 'GST registration number'),
 ('logo_url', '', 'image', 'Website logo'),
 ('favicon_url', '', 'image', 'Website favicon'),
@@ -255,7 +256,7 @@ ON CONFLICT (name) DO NOTHING;
 
 -- Insert shipping methods for each zone
 DO $$
-DECLARE 
+DECLARE
     zone_record RECORD;
 BEGIN
     FOR zone_record IN SELECT id, name FROM shipping_zones LOOP
@@ -263,7 +264,7 @@ BEGIN
         (zone_record.id, 'Same Day Delivery', 'Order before 2 PM for same day delivery', 'same_day', 149.00, '4-6 hours', 1),
         (zone_record.id, 'Next Day Delivery', 'Delivered next day', 'next_day', 99.00, 'Next day', 2)
         ON CONFLICT DO NOTHING;
-        
+
         -- Add scheduled delivery for major metros
         IF zone_record.name IN ('Delhi NCR', 'Mumbai Metropolitan', 'Bangalore Urban') THEN
             INSERT INTO shipping_methods (zone_id, name, description, type, price, delivery_time, sort_order) VALUES
@@ -304,15 +305,15 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_product_variants') THEN
         CREATE TRIGGER set_timestamp_product_variants BEFORE UPDATE ON product_variants FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_coupons') THEN
         CREATE TRIGGER set_timestamp_coupons BEFORE UPDATE ON coupons FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_shipping_zones') THEN
         CREATE TRIGGER set_timestamp_shipping_zones BEFORE UPDATE ON shipping_zones FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'set_timestamp_shipping_methods') THEN
         CREATE TRIGGER set_timestamp_shipping_methods BEFORE UPDATE ON shipping_methods FOR EACH ROW EXECUTE PROCEDURE trigger_set_timestamp();
     END IF;
