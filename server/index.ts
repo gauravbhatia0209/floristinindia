@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { handleDemo } from "./routes/demo";
 import uploadRoutes from "./routes/upload";
+import aiDataRoutes from "./routes/ai-data";
 
 export function createServer() {
   const app = express();
