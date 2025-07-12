@@ -884,7 +884,7 @@ export default function Checkout() {
                   </CardContent>
                 </Card>
 
-                {/* 6. Terms & Conditions */}
+                {/* 7. Terms & Conditions */}
                 <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                   <CardHeader className="bg-gradient-to-r from-gray-600 to-slate-700 text-white rounded-t-lg">
                     <CardTitle className="flex items-center gap-3 text-xl">
