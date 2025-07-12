@@ -141,8 +141,18 @@ export default function Checkout() {
     method: AvailableShippingMethod | null,
     cost: number,
   ) {
+    console.log(
+      "Checkout: handleShippingMethodSelect called with:",
+      method?.name,
+      cost,
+    );
+    console.log(
+      "Previous selectedShippingMethod:",
+      selectedShippingMethod?.name,
+    );
     setSelectedShippingMethod(method);
     setShippingCost(cost);
+    console.log("Updated selectedShippingMethod to:", method?.name);
     // Clear any shipping-related errors
     if (errors.pincode || errors.shipping) {
       setErrors({ ...errors, pincode: "", shipping: "" });
