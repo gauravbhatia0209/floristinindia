@@ -336,7 +336,7 @@ export function Header() {
       <div className="container py-4">
         <div className="flex items-center gap-4">
           {/* Mobile Menu */}
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden">
                 <Menu className="h-5 w-5" />
