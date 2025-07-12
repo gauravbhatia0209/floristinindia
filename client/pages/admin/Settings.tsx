@@ -356,27 +356,156 @@ export default function Settings() {
               <Separator />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="logo_url">Logo URL</Label>
-                  <Input
-                    id="logo_url"
-                    value={settings.logo_url}
-                    onChange={(e) =>
-                      handleInputChange("logo_url", e.target.value)
-                    }
-                    placeholder="https://example.com/logo.png"
-                  />
+                <div className="space-y-3">
+                  <Label>Logo</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                    {settings.logo_url ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-center">
+                          <img
+                            src={settings.logo_url}
+                            alt="Logo preview"
+                            className="max-h-20 max-w-full object-contain"
+                          />
+                        </div>
+                        <div className="flex gap-2 justify-center">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoUpload}
+                            disabled={logoUploading}
+                            className="hidden"
+                            id="logo-upload"
+                          />
+                          <Label htmlFor="logo-upload">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              disabled={logoUploading}
+                            >
+                              <span>
+                                {logoUploading ? "Uploading..." : "Change"}
+                              </span>
+                            </Button>
+                          </Label>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={removeLogo}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center space-y-3">
+                        <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground" />
+                        <div>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoUpload}
+                            disabled={logoUploading}
+                            className="hidden"
+                            id="logo-upload"
+                          />
+                          <Label htmlFor="logo-upload">
+                            <Button
+                              variant="outline"
+                              asChild
+                              disabled={logoUploading}
+                            >
+                              <span>
+                                <Upload className="h-4 w-4 mr-2" />
+                                {logoUploading ? "Uploading..." : "Upload Logo"}
+                              </span>
+                            </Button>
+                          </Label>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          PNG, JPG, or WebP up to 3MB
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="favicon_url">Favicon URL</Label>
-                  <Input
-                    id="favicon_url"
-                    value={settings.favicon_url}
-                    onChange={(e) =>
-                      handleInputChange("favicon_url", e.target.value)
-                    }
-                    placeholder="https://example.com/favicon.ico"
-                  />
+
+                <div className="space-y-3">
+                  <Label>Favicon</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                    {settings.favicon_url ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-center">
+                          <img
+                            src={settings.favicon_url}
+                            alt="Favicon preview"
+                            className="w-8 h-8 object-contain"
+                          />
+                        </div>
+                        <div className="flex gap-2 justify-center">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFaviconUpload}
+                            disabled={faviconUploading}
+                            className="hidden"
+                            id="favicon-upload"
+                          />
+                          <Label htmlFor="favicon-upload">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              disabled={faviconUploading}
+                            >
+                              <span>
+                                {faviconUploading ? "Uploading..." : "Change"}
+                              </span>
+                            </Button>
+                          </Label>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={removeFavicon}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center space-y-3">
+                        <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground" />
+                        <div>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFaviconUpload}
+                            disabled={faviconUploading}
+                            className="hidden"
+                            id="favicon-upload"
+                          />
+                          <Label htmlFor="favicon-upload">
+                            <Button
+                              variant="outline"
+                              asChild
+                              disabled={faviconUploading}
+                            >
+                              <span>
+                                <Upload className="h-4 w-4 mr-2" />
+                                {faviconUploading
+                                  ? "Uploading..."
+                                  : "Upload Favicon"}
+                              </span>
+                            </Button>
+                          </Label>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          ICO, PNG, or JPG up to 3MB
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
