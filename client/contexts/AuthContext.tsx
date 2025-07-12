@@ -280,6 +280,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        console.error("Google login error:", error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Google login error:", error);
+      return {
+        success: false,
+        error: "Google login failed. Please try again.",
+      };
+    }
+  };
+
   const signup = async (signupData: SignupData) => {
     try {
       const { name, email, password, phone } = signupData;
