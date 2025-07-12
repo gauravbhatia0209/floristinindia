@@ -70,8 +70,12 @@ export default function ShippingMethodSelector({
 
       setAvailableMethods(methods);
 
-      // Auto-select the first method if none is selected
-      if (!selectedMethodId && methods.length > 0) {
+      // Auto-select the first method ONLY if none is currently selected AND this is the initial load
+      if (
+        !selectedMethodId &&
+        methods.length > 0 &&
+        availableMethods.length === 0
+      ) {
         const firstMethod = methods[0];
         const cost = calculateShippingCost(firstMethod, orderValue);
         onMethodSelect(firstMethod, cost);
