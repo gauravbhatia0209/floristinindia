@@ -114,14 +114,7 @@ function App() {
               <Route path="category/:slug" element={<Products />} />
               <Route path="product/:slug" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
-              <Route
-                path="checkout"
-                element={
-                  <ProtectedRoute requireAuth={true} requireAdmin={false}>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="checkout" element={<Checkout />} />
               <Route path="track-order" element={<TrackOrder />} />
               <Route
                 path="order-confirmation/:orderId"
