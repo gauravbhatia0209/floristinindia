@@ -88,6 +88,7 @@ export function Header() {
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
     null,
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { items } = useCart();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
