@@ -25,6 +25,7 @@ import NotFound from "@/pages/NotFound";
 // Auth pages
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import AuthCallback from "@/pages/AuthCallback";
 import AdminLogin from "@/pages/admin/Login";
 
 // Admin pages
