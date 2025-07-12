@@ -23,6 +23,7 @@ export interface AuthContextType {
     password: string,
     userType: "admin" | "customer",
   ) => Promise<{ success: boolean; error?: string; user?: User }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   signup: (
     userData: SignupData,
