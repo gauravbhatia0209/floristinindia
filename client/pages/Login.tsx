@@ -30,6 +30,7 @@ export default function Login() {
 
   const {
     login,
+    loginWithGoogle,
     resetPassword,
     isAuthenticated,
     isLoading: authLoading,
