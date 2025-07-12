@@ -70,6 +70,15 @@ export async function uploadImageToSupabase(
   maxSizeMB: number = 3,
 ): Promise<UploadResult> {
   try {
+    // Check if user is authenticated
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      // Try to create a temporary session for upload
+      console.log("No active session, attempting upload anyway...");
+    }
+
     // Validate file
     const validation = validateFile(file, maxSizeMB);
     if (!validation.isValid) {
@@ -92,9 +101,13 @@ export async function uploadImageToSupabase(
 
     if (uploadError) {
       console.error("Supabase upload error:", uploadError);
+      const errorMessage =
+        uploadError.message ||
+        JSON.stringify(uploadError) ||
+        "Unknown upload error";
       return {
         success: false,
-        error: `Upload failed: ${uploadError.message}`,
+        error: `Upload failed: ${errorMessage}`,
       };
     }
 
@@ -121,9 +134,19 @@ export async function uploadImageToSupabase(
     };
   } catch (error) {
     console.error("Upload error:", error);
+    let errorMessage = "Unknown upload error";
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "object" && error !== null) {
+      errorMessage = JSON.stringify(error);
+    } else {
+      errorMessage = String(error);
+    }
+
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown upload error",
+      error: `Upload failed: ${errorMessage}`,
     };
   }
 }
