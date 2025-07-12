@@ -314,6 +314,7 @@ interface CheckoutForm {
   pincode: string;
   receiverPhone: string;
   receiverPhoneCountryCode: string;
+  alternatePhone: string;
 
   // Message with Order
   orderMessage: string;
