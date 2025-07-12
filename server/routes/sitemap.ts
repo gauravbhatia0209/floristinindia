@@ -32,8 +32,14 @@ router.get("/sitemap.xml", async (req, res) => {
       .order("updated_at", { ascending: false })
       .limit(1);
 
-    // Generate sitemap XML
+    // Generate sitemap XML with AI-readable metadata
+    const lastSettingsUpdate =
+      settings?.[0]?.updated_at || new Date().toISOString();
+
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- AI-Readable Sitemap - Data reflects real-time admin settings -->
+<!-- Last Settings Update: ${lastSettingsUpdate} -->
+<!-- Generated: ${new Date().toISOString()} -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -41,7 +47,7 @@ router.get("/sitemap.xml", async (req, res) => {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
-  <!-- Homepage -->
+  <!-- Homepage - Content based on current admin settings -->
   <url>
     <loc>${baseUrl}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
