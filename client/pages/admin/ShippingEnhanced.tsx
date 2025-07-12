@@ -693,6 +693,7 @@ function MethodForm({
     description: method?.description || "",
     type: method?.type || "standard",
     rules: method?.rules || "",
+    time_slot_required: method?.time_slot_required ?? false,
     is_active: method?.is_active ?? true,
     zone_configs: zones.map((zone) => ({
       zone_id: zone.id,
