@@ -214,7 +214,7 @@ export default function Checkout() {
 
   function calculateTotal() {
     const subtotal = total;
-    const shipping = selectedShippingMethod?.price || 0;
+    const shipping = shippingCost;
     const discount = calculateDiscount();
     const tax = Math.round((subtotal - discount) * 0.18); // 18% GST
 
