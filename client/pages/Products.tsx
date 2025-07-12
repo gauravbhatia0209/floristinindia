@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Filter, Grid, List, ShoppingCart, ChevronDown, ChevronUp, X } from "lucide-react";
+import {
+  Filter,
+  Grid,
+  List,
+  ShoppingCart,
+  ChevronDown,
+  ChevronUp,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -333,9 +341,12 @@ export default function Products() {
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4" />
               <span>Filters</span>
-              {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 5000) && (
+              {(selectedCategories.length > 0 ||
+                priceRange[0] > 0 ||
+                priceRange[1] < 5000) && (
                 <Badge variant="secondary" className="ml-2 h-4 px-1.5 text-xs">
-                  {selectedCategories.length + (priceRange[0] > 0 || priceRange[1] < 5000 ? 1 : 0)}
+                  {selectedCategories.length +
+                    (priceRange[0] > 0 || priceRange[1] < 5000 ? 1 : 0)}
                 </Badge>
               )}
             </div>
@@ -348,7 +359,9 @@ export default function Products() {
         </div>
 
         {/* Filter Content */}
-        <div className={`${isFilterExpanded ? 'block' : 'hidden'} lg:block p-4 ${isFilterExpanded ? 'border-t border-border/50' : ''}`}>
+        <div
+          className={`${isFilterExpanded ? "block" : "hidden"} lg:block p-4 ${isFilterExpanded ? "border-t border-border/50" : ""}`}
+        >
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Filter Title - Desktop Only */}
             <div className="hidden lg:flex items-center gap-2 text-sm font-medium text-muted-foreground flex-shrink-0 h-9">
@@ -356,252 +369,259 @@ export default function Products() {
               <span>Filters:</span>
             </div>
 
-          {/* Main Filter Bar Container */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center flex-1">
-            {/* Left Group: Filter Controls */}
-            <div className="flex flex-wrap items-center gap-4">
-              {/* Categories Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-9 gap-2 w-fit max-w-[180px] min-w-[110px] flex-shrink-0 px-3"
-                  >
-                    <span className="truncate">Categories</span>
-                    {selectedCategories.length > 0 && (
-                      <Badge
-                        variant="secondary"
-                        className="ml-1 h-4 min-w-[16px] px-1.5 text-xs"
-                      >
-                        {selectedCategories.length}
-                      </Badge>
-                    )}
-                    <ChevronDown className="w-4 h-4 flex-shrink-0" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="start">
-                  <DropdownMenuLabel>Select Categories</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {categories.map((category) => (
-                    <DropdownMenuCheckboxItem
-                      key={category.id}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedCategories([
-                            ...selectedCategories,
-                            category.id,
-                          ]);
-                        } else {
-                          setSelectedCategories(
-                            selectedCategories.filter(
-                              (id) => id !== category.id,
-                            ),
-                          );
-                        }
-                      }}
+            {/* Main Filter Bar Container */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center flex-1">
+              {/* Left Group: Filter Controls */}
+              <div className="flex flex-wrap items-center gap-4">
+                {/* Categories Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-9 gap-2 w-fit max-w-[180px] min-w-[110px] flex-shrink-0 px-3"
                     >
-                      <div className="flex justify-between items-center w-full">
-                        <span>{category.name}</span>
-                        {(category as any).product_count !== undefined && (
-                          <Badge variant="outline" className="text-xs ml-2">
-                            {(category as any).product_count}
-                          </Badge>
-                        )}
-                      </div>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                  {selectedCategories.length > 0 && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full h-8 text-xs"
-                        onClick={() => {
-                          if (categorySlug && currentCategory) {
-                            // If on category page, reset to just the current category
-                            setSelectedCategories([currentCategory.id]);
+                      <span className="truncate">Categories</span>
+                      {selectedCategories.length > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="ml-1 h-4 min-w-[16px] px-1.5 text-xs"
+                        >
+                          {selectedCategories.length}
+                        </Badge>
+                      )}
+                      <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="start">
+                    <DropdownMenuLabel>Select Categories</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {categories.map((category) => (
+                      <DropdownMenuCheckboxItem
+                        key={category.id}
+                        checked={selectedCategories.includes(category.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedCategories([
+                              ...selectedCategories,
+                              category.id,
+                            ]);
                           } else {
-                            // If on all products page, clear all selections
-                            setSelectedCategories([]);
+                            setSelectedCategories(
+                              selectedCategories.filter(
+                                (id) => id !== category.id,
+                              ),
+                            );
                           }
                         }}
                       >
-                        {categorySlug
-                          ? "Reset to Current Category"
-                          : "Clear All"}
-                      </Button>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Price Range Popover */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-9 gap-2 w-fit max-w-[200px] min-w-[130px] flex-shrink-0 px-3"
-                  >
-                    <span className="truncate">Price Range</span>
-                    {(priceRange[0] > 0 || priceRange[1] < 5000) && (
-                      <Badge
-                        variant="secondary"
-                        className="ml-1 h-4 px-1.5 text-xs"
-                      >
-                        ₹{priceRange[0]}-₹{priceRange[1]}
-                      </Badge>
+                        <div className="flex justify-between items-center w-full">
+                          <span>{category.name}</span>
+                          {(category as any).product_count !== undefined && (
+                            <Badge variant="outline" className="text-xs ml-2">
+                              {(category as any).product_count}
+                            </Badge>
+                          )}
+                        </div>
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                    {selectedCategories.length > 0 && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full h-8 text-xs"
+                          onClick={() => {
+                            if (categorySlug && currentCategory) {
+                              // If on category page, reset to just the current category
+                              setSelectedCategories([currentCategory.id]);
+                            } else {
+                              // If on all products page, clear all selections
+                              setSelectedCategories([]);
+                            }
+                          }}
+                        >
+                          {categorySlug
+                            ? "Reset to Current Category"
+                            : "Clear All"}
+                        </Button>
+                      </>
                     )}
-                    <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Price Range Popover */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-9 gap-2 w-fit max-w-[200px] min-w-[130px] flex-shrink-0 px-3"
+                    >
+                      <span className="truncate">Price Range</span>
+                      {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+                        <Badge
+                          variant="secondary"
+                          className="ml-1 h-4 px-1.5 text-xs"
+                        >
+                          ₹{priceRange[0]}-₹{priceRange[1]}
+                        </Badge>
+                      )}
+                      <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="start">
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium">
+                          Price Range
+                        </Label>
+                        <div className="mt-4 px-3 py-2">
+                          <Slider
+                            value={priceRange}
+                            onValueChange={setPriceRange}
+                            max={5000}
+                            min={0}
+                            step={100}
+                            className="w-full"
+                          />
+                        </div>
+                        <div className="flex justify-between text-sm text-muted-foreground mt-3 px-1">
+                          <span className="font-medium">
+                            ₹{priceRange[0].toLocaleString()}
+                          </span>
+                          <span className="text-xs text-muted-foreground/70">
+                            to
+                          </span>
+                          <span className="font-medium">
+                            ₹{priceRange[1].toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 h-8"
+                          onClick={() => setPriceRange([0, 5000])}
+                        >
+                          Reset
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Sort By Dropdown */}
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-9 w-fit max-w-[220px] min-w-[120px] gap-2 flex-shrink-0 px-3">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Sort by Name</SelectItem>
+                    <SelectItem value="price_low">
+                      Price: Low to High
+                    </SelectItem>
+                    <SelectItem value="price_high">
+                      Price: High to Low
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Clear All Filters Button */}
+                {(selectedCategories.length > 0 ||
+                  priceRange[0] > 0 ||
+                  priceRange[1] < 5000) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 px-3 text-xs flex-shrink-0 w-fit"
+                    onClick={() => {
+                      if (categorySlug && currentCategory) {
+                        // If on category page, reset to just the current category
+                        setSelectedCategories([currentCategory.id]);
+                      } else {
+                        // If on all products page, clear all selections
+                        setSelectedCategories([]);
+                      }
+                      setPriceRange([0, 5000]);
+                    }}
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    {categorySlug ? "Reset Filters" : "Clear All"}
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80" align="start">
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium">Price Range</Label>
-                      <div className="mt-4 px-3 py-2">
-                        <Slider
-                          value={priceRange}
-                          onValueChange={setPriceRange}
-                          max={5000}
-                          min={0}
-                          step={100}
-                          className="w-full"
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm text-muted-foreground mt-3 px-1">
-                        <span className="font-medium">
-                          ₹{priceRange[0].toLocaleString()}
-                        </span>
-                        <span className="text-xs text-muted-foreground/70">
-                          to
-                        </span>
-                        <span className="font-medium">
-                          ₹{priceRange[1].toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-8"
-                        onClick={() => setPriceRange([0, 5000])}
-                      >
-                        Reset
-                      </Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                )}
+              </div>
 
-              {/* Sort By Dropdown */}
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="h-9 w-fit max-w-[220px] min-w-[120px] gap-2 flex-shrink-0 px-3">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Sort by Name</SelectItem>
-                  <SelectItem value="price_low">Price: Low to High</SelectItem>
-                  <SelectItem value="price_high">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Clear All Filters Button */}
-              {(selectedCategories.length > 0 ||
-                priceRange[0] > 0 ||
-                priceRange[1] < 5000) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 px-3 text-xs flex-shrink-0 w-fit"
-                  onClick={() => {
-                    if (categorySlug && currentCategory) {
-                      // If on category page, reset to just the current category
-                      setSelectedCategories([currentCategory.id]);
-                    } else {
-                      // If on all products page, clear all selections
-                      setSelectedCategories([]);
-                    }
-                    setPriceRange([0, 5000]);
-                  }}
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  {categorySlug ? "Reset Filters" : "Clear All"}
-                </Button>
-              )}
-            </div>
-
-            {/* Right Group: View Mode Toggle */}
-            <div className="flex items-center justify-end ml-auto flex-shrink-0">
-              <div className="flex items-center border rounded-md h-9">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="rounded-r-none h-9 w-9 p-0 border-0"
-                  title="Grid View"
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="rounded-l-none h-9 w-9 p-0 border-0"
-                  title="List View"
-                >
-                  <List className="w-4 h-4" />
-                </Button>
+              {/* Right Group: View Mode Toggle */}
+              <div className="flex items-center justify-end ml-auto flex-shrink-0">
+                <div className="flex items-center border rounded-md h-9">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("grid")}
+                    className="rounded-r-none h-9 w-9 p-0 border-0"
+                    title="Grid View"
+                  >
+                    <Grid className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("list")}
+                    className="rounded-l-none h-9 w-9 p-0 border-0"
+                    title="List View"
+                  >
+                    <List className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Active Filter Tags (Mobile-friendly) */}
-        {(selectedCategories.length > 0 ||
-          priceRange[0] > 0 ||
-          priceRange[1] < 5000) && (
-          <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border/50">
-            <span className="text-xs text-muted-foreground font-medium">
-              Active filters:
-            </span>
-            {selectedCategories.map((categoryId) => {
-              const category = categories.find((c) => c.id === categoryId);
-              return (
-                <Badge
-                  key={categoryId}
-                  variant="secondary"
-                  className="text-xs gap-1 h-6"
-                >
-                  {category?.name}
+          {/* Active Filter Tags (Mobile-friendly) */}
+          {(selectedCategories.length > 0 ||
+            priceRange[0] > 0 ||
+            priceRange[1] < 5000) && (
+            <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border/50">
+              <span className="text-xs text-muted-foreground font-medium">
+                Active filters:
+              </span>
+              {selectedCategories.map((categoryId) => {
+                const category = categories.find((c) => c.id === categoryId);
+                return (
+                  <Badge
+                    key={categoryId}
+                    variant="secondary"
+                    className="text-xs gap-1 h-6"
+                  >
+                    {category?.name}
+                    <button
+                      onClick={() =>
+                        setSelectedCategories(
+                          selectedCategories.filter((id) => id !== categoryId),
+                        )
+                      }
+                      className="hover:bg-muted-foreground/20 rounded-full p-0.5 ml-1"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+                <Badge variant="secondary" className="text-xs gap-1 h-6">
+                  ��{priceRange[0]} - ₹{priceRange[1]}
                   <button
-                    onClick={() =>
-                      setSelectedCategories(
-                        selectedCategories.filter((id) => id !== categoryId),
-                      )
-                    }
+                    onClick={() => setPriceRange([0, 5000])}
                     className="hover:bg-muted-foreground/20 rounded-full p-0.5 ml-1"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </Badge>
-              );
-            })}
-            {(priceRange[0] > 0 || priceRange[1] < 5000) && (
-              <Badge variant="secondary" className="text-xs gap-1 h-6">
-                ₹{priceRange[0]} - ₹{priceRange[1]}
-                <button
-                  onClick={() => setPriceRange([0, 5000])}
-                  className="hover:bg-muted-foreground/20 rounded-full p-0.5 ml-1"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </Badge>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Products Section */}
