@@ -295,26 +295,28 @@ export default function Cart() {
                 {cartItemsWithDetails.map((item) => (
                   <div
                     key={`${item.product_id}-${item.variant_id || "default"}`}
-                    className="flex items-center gap-4 p-4 border rounded-lg"
+                    className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-lg"
                   >
-                    {/* Product Image */}
-                    <div className="w-20 h-20 bg-gradient-to-br from-cream to-peach/30 rounded-lg flex items-center justify-center overflow-hidden">
-                      {item.variant?.image_url ||
-                      item.product.images.length > 0 ? (
-                        <img
-                          src={
-                            item.variant?.image_url || item.product.images[0]
-                          }
-                          alt={item.product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-2xl">🌺</span>
-                      )}
-                    </div>
+                    {/* Top row on mobile: Image + Product Details */}
+                    <div className="flex items-center gap-4 flex-1">
+                      {/* Product Image */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cream to-peach/30 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {item.variant?.image_url ||
+                        item.product.images.length > 0 ? (
+                          <img
+                            src={
+                              item.variant?.image_url || item.product.images[0]
+                            }
+                            alt={item.product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xl sm:text-2xl">🌺</span>
+                        )}
+                      </div>
 
-                    {/* Product Details */}
-                    <div className="flex-1">
+                      {/* Product Details */}
+                      <div className="flex-1 min-w-0">
                       <h3 className="font-semibold">{item.product.name}</h3>
                       {item.variant && (
                         <div className="space-y-1">
