@@ -996,7 +996,7 @@ export default function Checkout() {
                             htmlFor="deliveryDate"
                             className="text-sm font-semibold text-gray-700 mb-2 block"
                           >
-                            Preferred Date
+                            Delivery Date
                           </Label>
                           <Input
                             id="deliveryDate"
