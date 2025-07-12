@@ -876,7 +876,7 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="google_analytics_id">
-                    Google Analytics ID
+                    Google Analytics Tracking ID
                   </Label>
                   <Input
                     id="google_analytics_id"
@@ -884,8 +884,12 @@ export default function Settings() {
                     onChange={(e) =>
                       handleInputChange("google_analytics_id", e.target.value)
                     }
-                    placeholder="GA-XXXXXXXXX-X"
+                    placeholder="G-XXXXXXXXXX"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter your Google Analytics 4 measurement ID (format:
+                    G-XXXXXXXXXX)
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="facebook_pixel_id">Facebook Pixel ID</Label>
