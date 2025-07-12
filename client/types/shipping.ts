@@ -58,6 +58,7 @@ export interface AvailableShippingMethod {
   free_shipping_minimum: number | null;
   delivery_time: string;
   rules: string | null;
+  time_slot_required: boolean;
   zone_id: string;
   zone_name: string;
 }
