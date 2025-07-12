@@ -6,6 +6,7 @@ export interface ShippingMethodTemplate {
   description: string | null;
   type: "same_day" | "next_day" | "standard" | "express" | "scheduled";
   rules: string | null; // Custom rules/notes
+  time_slot_required: boolean; // Whether this method requires time slot selection
   is_active: boolean;
   sort_order: number;
   created_at: string;
