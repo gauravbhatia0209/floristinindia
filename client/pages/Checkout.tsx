@@ -13,6 +13,9 @@ import {
   Mail,
   FileText,
   CheckCircle,
+  Clock,
+  Info,
+  IndianRupee,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -31,8 +36,11 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { ShippingZone, ShippingMethod, Coupon } from "@shared/database.types";
-import ShippingMethodSelector from "@/components/checkout/ShippingMethodSelector";
 import { AvailableShippingMethod } from "@/types/shipping";
+import {
+  getAvailableShippingMethods,
+  calculateShippingCost,
+} from "@/lib/shipping-service";
 
 interface CheckoutForm {
   // Customer Info
