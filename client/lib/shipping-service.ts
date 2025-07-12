@@ -58,8 +58,6 @@ export async function getAvailableShippingMethods(
         zone_name: method.zone_name,
       })) || [];
 
-    console.log("Final mapped methods:", mappedMethods);
-
     return mappedMethods;
   } catch (error) {
     console.error("Error fetching shipping methods:", error);
