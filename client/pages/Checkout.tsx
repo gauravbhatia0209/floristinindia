@@ -1368,7 +1368,7 @@ export default function Checkout() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                    className="w-full py-4 text-sm sm:text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
                     onClick={handleSubmit}
                     disabled={
                       isSubmitting ||
@@ -1380,12 +1380,14 @@ export default function Checkout() {
                     {isSubmitting ? (
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                        Processing Order...
+                        <span className="truncate">Processing Order...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center">
-                        <Shield className="h-5 w-5 mr-2" />
-                        Complete Secure Payment ₹{totals.total.toFixed(2)}
+                      <div className="flex items-center justify-center gap-2 min-w-0">
+                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                        <span className="truncate">
+                          Complete Secure Payment ₹{totals.total.toFixed(2)}
+                        </span>
                       </div>
                     )}
                   </Button>
