@@ -54,7 +54,7 @@ export async function getAvailableShippingMethods(
         free_shipping_minimum: method.free_shipping_minimum,
         delivery_time: method.delivery_time,
         rules: method.rules,
-        time_slot_required: method.time_slot_required || false,
+        time_slot_required: method.time_slot_required ?? false,
         zone_id: method.zone_id,
         zone_name: method.zone_name,
       })) || [];
