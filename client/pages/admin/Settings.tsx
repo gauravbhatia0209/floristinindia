@@ -19,6 +19,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/lib/supabase";
 import { SiteSettings } from "@shared/database.types";
+import {
+  uploadImageToSupabase,
+  deleteImageFromSupabase,
+} from "@/lib/supabase-storage";
 
 interface SettingsData {
   // Site Info
@@ -97,6 +101,8 @@ export default function Settings() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [faviconUploading, setFaviconUploading] = useState(false);
 
   useEffect(() => {
     fetchSettings();
