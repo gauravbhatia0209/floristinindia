@@ -277,6 +277,7 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('contact_address', 'Delhi NCR, Mumbai, Bangalore & 100+ Cities', 'text', 'Business address'),
 ('currency', 'INR', 'text', 'Default currency'),
 ('currency_symbol', '₹', 'text', 'Currency symbol'),
+('gst_rate', '18', 'number', 'GST rate percentage'),
 ('gst_number', '07AAACZ1234C1Z5', 'text', 'GST registration number'),
 ('logo_url', '', 'image', 'Website logo'),
 ('favicon_url', '', 'image', 'Website favicon'),
