@@ -95,9 +95,12 @@ export default function ShippingMethodSelector({
   }
 
   function handleMethodChange(methodId: string) {
+    console.log("Method change requested:", methodId);
+    console.log("Current selectedMethodId:", selectedMethodId);
     const method = availableMethods.find((m) => m.config_id === methodId);
     if (method) {
       const cost = calculateShippingCost(method, orderValue);
+      console.log("Calling onMethodSelect with:", method.name, cost);
       onMethodSelect(method, cost);
     }
   }
