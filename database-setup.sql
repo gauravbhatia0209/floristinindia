@@ -292,7 +292,8 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('meta_title', 'Florist in India - Premium Fresh Flower Delivery', 'text', 'Default meta title'),
 ('meta_description', 'Order fresh flowers online for same-day delivery across India. Premium flower arrangements for all occasions with 100% freshness guarantee.', 'text', 'Default meta description'),
 ('google_analytics_id', '', 'text', 'Google Analytics tracking ID (G-XXXXXXXXXX)'),
-('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop');
+('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop'),
+('facebook_app_id', '', 'text', 'Facebook App ID for enhanced social sharing');
 
 -- Product Categories (Hierarchical)
 INSERT INTO product_categories (name, slug, description, is_active, sort_order, show_in_menu) VALUES
