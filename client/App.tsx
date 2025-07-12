@@ -81,6 +81,9 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          {googleAnalyticsId && (
+            <GoogleAnalytics trackingId={googleAnalyticsId} />
+          )}
           <Routes>
             {/* Auth routes */}
             <Route
