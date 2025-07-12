@@ -449,12 +449,8 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>
-                    {shippingCost === 0 ? (
-                      <Badge variant="secondary">Free</Badge>
-                    ) : (
-                      `₹${shippingCost}`
-                    )}
+                  <span className="text-muted-foreground">
+                    Calculated at checkout
                   </span>
                 </div>
                 {discount > 0 && (
