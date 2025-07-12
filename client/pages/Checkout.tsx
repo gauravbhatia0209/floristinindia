@@ -488,7 +488,7 @@ export default function Checkout() {
     const subtotal = total;
     const shipping = shippingCost;
     const discount = calculateDiscount();
-    const tax = Math.round((subtotal - discount) * 0.18); // 18% GST
+    const tax = Math.round((subtotal - discount) * (gstRate / 100)); // Dynamic GST
 
     return {
       subtotal,
@@ -1355,7 +1355,7 @@ export default function Checkout() {
                       </div>
                     )}
                     <div className="flex justify-between">
-                      <span>Tax (18% GST):</span>
+                      <span>Tax ({gstRate}% GST):</span>
                       <span>₹{totals.tax.toFixed(2)}</span>
                     </div>
                     <hr />
