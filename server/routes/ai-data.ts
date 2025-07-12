@@ -6,6 +6,14 @@ const router = Router();
 // AI-readable products endpoint
 router.get("/products", async (req, res) => {
   try {
+    // Fetch current site settings for context
+    const { data: settings } = await supabase.from("site_settings").select("*");
+    const settingsMap: any = {};
+    settings?.forEach((setting) => {
+      settingsMap[setting.key] = setting.value;
+    });
+
+    // Fetch products with current admin configuration
     const { data: products, error } = await supabase
       .from("products")
       .select(
@@ -39,23 +47,37 @@ router.get("/products", async (req, res) => {
       updatedAt: product.updated_at,
       slug: product.slug,
       url: `${req.protocol}://${req.get("host")}/products/${product.slug}`,
-      // AI-friendly metadata
+      // AI-friendly metadata with real-time business context
       aiMetadata: {
         productType: "physical",
         availability: product.is_active ? "in-stock" : "out-of-stock",
         condition: "new",
+        businessContext: {
+          storeName: settingsMap.site_name || "Florist in India",
+          currency: settingsMap.currency_symbol || "₹",
+          gstRate: parseFloat(settingsMap.gst_rate || "18"),
+          deliveryInfo: {
+            sameDayAvailable: !!settingsMap.same_day_cutoff_time,
+            cutoffTime: settingsMap.same_day_cutoff_time || "",
+            freeShippingMin: parseFloat(
+              settingsMap.free_shipping_minimum || "500",
+            ),
+          },
+        },
         priceRange: product.sale_price
           ? `${product.sale_price} - ${product.price}`
           : product.price.toString(),
         keywords: [
           product.name.toLowerCase(),
           product.product_categories?.name?.toLowerCase(),
+          settingsMap.site_name?.toLowerCase(),
           ...(product.tags || []),
         ].filter(Boolean),
         recommendations: {
           occasion: extractOccasions(product.name, product.description),
           season: extractSeason(product.name, product.description),
           target: extractTarget(product.name, product.description),
+          businessRecommendation: `Available from ${settingsMap.site_name || "Florist in India"} with ${settingsMap.same_day_cutoff_time ? "same-day" : "next-day"} delivery`,
         },
       },
     }));
@@ -139,40 +161,75 @@ router.get("/business", async (req, res) => {
       settingsMap[setting.key] = setting.value;
     });
 
+    // Dynamic business info based on current admin settings
     const businessInfo = {
       name: settingsMap.site_name || "Florist in India",
       description:
         settingsMap.site_description || "Premium flower delivery service",
+      tagline: settingsMap.site_tagline || "",
       industry: "Floriculture and Flower Delivery",
+
+      // Services (could be made configurable in admin settings in future)
       services: [
         "Fresh flower delivery",
         "Custom floral arrangements",
         "Occasion-based bouquets",
-        "Same-day delivery",
+        settingsMap.same_day_cutoff_time
+          ? "Same-day delivery"
+          : "Next-day delivery",
         "Corporate flower services",
         "Wedding decorations",
         "Event planning",
-      ],
-      serviceAreas: [
-        "Delhi NCR",
-        "Mumbai",
-        "Bangalore",
-        "Hyderabad",
-        "Chennai",
-        "Pune",
-        "Kolkata",
-        "Ahmedabad",
-        "100+ cities across India",
-      ],
+      ].filter(Boolean),
+
+      // Service areas (derived from current settings)
+      serviceAreas: settingsMap.contact_address
+        ? [settingsMap.contact_address, "100+ cities across India"]
+        : [
+            "Delhi NCR",
+            "Mumbai",
+            "Bangalore",
+            "Hyderabad",
+            "Chennai",
+            "Pune",
+            "Kolkata",
+            "Ahmedabad",
+            "100+ cities across India",
+          ],
+
+      // Real-time contact info from admin settings
       contact: {
-        phone: settingsMap.contact_phone,
-        email: settingsMap.contact_email,
-        address: settingsMap.contact_address,
+        phone: settingsMap.contact_phone || "",
+        phone2: settingsMap.contact_phone_2 || "",
+        whatsapp: settingsMap.whatsapp_number || "",
+        email: settingsMap.contact_email || "",
+        address: settingsMap.contact_address || "",
       },
+
+      // Real-time social media from admin settings
       social: {
-        facebook: settingsMap.facebook_url,
-        instagram: settingsMap.instagram_url,
-        twitter: settingsMap.twitter_url,
+        facebook: settingsMap.facebook_url || "",
+        instagram: settingsMap.instagram_url || "",
+        twitter: settingsMap.twitter_url || "",
+        youtube: settingsMap.youtube_url || "",
+      },
+
+      // Business configuration from admin settings
+      businessConfig: {
+        currency: settingsMap.currency_symbol || "₹",
+        gstRate: parseFloat(settingsMap.gst_rate || "18"),
+        freeShippingMinimum: parseFloat(
+          settingsMap.free_shipping_minimum || "500",
+        ),
+        sameDayCutoff: settingsMap.same_day_cutoff_time || "14:00",
+        businessHours: settingsMap.business_hours || "",
+      },
+
+      // Analytics and tracking (for AI recommendation systems)
+      tracking: {
+        googleAnalytics: settingsMap.google_analytics_id || "",
+        facebookPixel: settingsMap.facebook_pixel_id || "",
+        facebookApp: settingsMap.facebook_app_id || "",
       },
       features: {
         freshFlowers: true,
@@ -229,6 +286,11 @@ router.get("/business", async (req, res) => {
         purpose: "AI business understanding and recommendations",
         format: "structured JSON",
         version: "1.0",
+        dataSource: "real-time database",
+        cachePolicy: "no-cache, always fresh",
+        lastUpdated: settingsMap.updated_at || new Date().toISOString(),
+        adminEditable: true,
+        updateFrequency: "real-time on admin changes",
       },
     });
   } catch (error) {
