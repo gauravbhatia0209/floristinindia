@@ -57,49 +57,12 @@ async function setupStorage() {
       console.log("✅ Bucket created successfully");
     }
 
-    // 2. Set up storage policies
+    // 2. Set up storage policies (note: these may need manual setup)
     console.log("🔐 Setting up storage policies...");
-
-    // Policy for public read access
-    const { error: readPolicyError } = await supabase
-      .rpc("create_storage_policy", {
-        bucket_name: "media-assets",
-        policy_name: "Public read access",
-        definition: "true",
-        command: "SELECT",
-      })
-      .catch(() => {
-        // Fallback: manually create policy if RPC doesn't exist
-        return supabase.from("storage.objects").select("*").limit(1);
-      });
-
-    // Policy for authenticated uploads
-    const { error: uploadPolicyError } = await supabase
-      .rpc("create_storage_policy", {
-        bucket_name: "media-assets",
-        policy_name: "Authenticated upload access",
-        definition: 'auth.role() = "authenticated"',
-        command: "INSERT",
-      })
-      .catch(() => {
-        // Fallback for manual policy creation
-        return supabase.from("storage.objects").select("*").limit(1);
-      });
-
-    // Policy for authenticated deletes
-    const { error: deletePolicyError } = await supabase
-      .rpc("create_storage_policy", {
-        bucket_name: "media-assets",
-        policy_name: "Authenticated delete access",
-        definition: 'auth.role() = "authenticated"',
-        command: "DELETE",
-      })
-      .catch(() => {
-        // Fallback for manual policy creation
-        return supabase.from("storage.objects").select("*").limit(1);
-      });
-
-    console.log("✅ Storage policies configured");
+    console.log(
+      "⚠️  Note: Storage policies need to be configured manually in Supabase dashboard",
+    );
+    console.log("✅ Storage policies noted for manual setup");
 
     // 3. Test upload functionality
     console.log("🧪 Testing upload functionality...");
