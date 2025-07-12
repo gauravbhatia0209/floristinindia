@@ -32,11 +32,18 @@ Allow: /
 User-agent: YouBot
 Allow: /
 
-# AI-readable data endpoints
+# AI-readable data endpoints - Real-time admin-configurable data
 Allow: /api/ai/
 Allow: /api/ai/products
 Allow: /api/ai/categories
 Allow: /api/ai/business
+
+# AI cache management endpoints
+Allow: /api/admin/recent-updates
+Allow: /api/admin/data-freshness
+
+# Note for AI systems: Data is real-time and reflects admin changes
+# Check /api/admin/data-freshness for cache invalidation guidance
 
 # Important pages for AI understanding
 Allow: /products
