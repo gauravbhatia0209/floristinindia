@@ -117,6 +117,28 @@ export default function Login() {
     if (error) setError("");
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      // Store the intended destination for after login
+      if (from !== "/") {
+        sessionStorage.setItem("redirectAfterLogin", from);
+      }
+
+      const result = await loginWithGoogle();
+      if (!result.success) {
+        setError(result.error || "Google login failed");
+      }
+      // Note: Don't navigate here - the OAuth flow will handle redirection
+    } catch (error) {
+      setError("Google login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
