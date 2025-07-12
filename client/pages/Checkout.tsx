@@ -91,9 +91,11 @@ function ShippingMethodCard({
 
       // Auto-select first method only if no method is currently selected
       if (!selectedMethodId && methods.length > 0) {
-        const firstMethod = methods[0];
-        const cost = calculateShippingCost(firstMethod, orderValue);
-        onMethodSelect(firstMethod, cost);
+        setTimeout(() => {
+          const firstMethod = methods[0];
+          const cost = calculateShippingCost(firstMethod, orderValue);
+          onMethodSelect(firstMethod, cost);
+        }, 0);
       }
     } catch (error) {
       console.error("Error fetching shipping methods:", error);
