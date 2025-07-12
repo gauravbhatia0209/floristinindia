@@ -8,8 +8,6 @@ export async function getAvailableShippingMethods(
   pincode: string,
 ): Promise<AvailableShippingMethod[]> {
   try {
-    console.log("Fetching shipping methods for pincode:", pincode);
-
     // First, find the zone that contains this pincode
     const { data: zones, error: zoneError } = await supabase
       .from("shipping_zones")
@@ -21,12 +19,9 @@ export async function getAvailableShippingMethods(
       throw zoneError;
     }
 
-    console.log("Available zones:", zones);
-
     const zone = zones?.find((z) => z.pincodes.includes(pincode));
 
     if (!zone) {
-      console.log("No shipping zone found for pincode:", pincode);
       return [];
     }
 
