@@ -70,14 +70,8 @@ export async function uploadImageToSupabase(
   maxSizeMB: number = 3,
 ): Promise<UploadResult> {
   try {
-    // Check if user is authenticated
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
-      // Try to create a temporary session for upload
-      console.log("No active session, attempting upload anyway...");
-    }
+    // Note: Using public access for now since we have custom auth system
+    console.log("Uploading to Supabase storage...");
 
     // Validate file
     const validation = validateFile(file, maxSizeMB);
