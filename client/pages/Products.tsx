@@ -63,7 +63,6 @@ export default function Products() {
   const { toast } = useToast();
   const { trackAddToCart } = useGoogleAnalytics();
   const { trackAddToCart: trackFBAddToCart } = useFacebookPixel();
-  const { trackAddToCart: trackFBAddToCart } = useFacebookPixel();
 
   useEffect(() => {
     fetchData();
@@ -282,6 +281,12 @@ export default function Products() {
       product.id,
       product.name,
       product.sale_price || product.price,
+    );
+    trackFBAddToCart(
+      product.name,
+      product.id,
+      product.sale_price || product.price,
+      "INR",
     );
 
     toast({
