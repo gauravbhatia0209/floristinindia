@@ -90,11 +90,9 @@ export default function Checkout() {
     acceptTerms: false,
   });
 
-  const [availableShippingMethods, setAvailableShippingMethods] = useState<
-    ShippingMethod[]
-  >([]);
   const [selectedShippingMethod, setSelectedShippingMethod] =
-    useState<ShippingMethod | null>(null);
+    useState<AvailableShippingMethod | null>(null);
+  const [shippingCost, setShippingCost] = useState<number>(0);
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
