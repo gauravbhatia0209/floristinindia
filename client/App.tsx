@@ -97,6 +97,7 @@ function App() {
                 </GuestRoute>
               }
             />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route
               path="/admin/login"
               element={
