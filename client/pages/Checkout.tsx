@@ -31,6 +31,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { ShippingZone, ShippingMethod, Coupon } from "@shared/database.types";
+import ShippingMethodSelector from "@/components/checkout/ShippingMethodSelector";
+import { AvailableShippingMethod } from "@/types/shipping";
 
 interface CheckoutForm {
   // Customer Info
