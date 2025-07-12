@@ -1004,7 +1004,7 @@ export default function Checkout() {
                             htmlFor="deliveryDate"
                             className="text-sm font-semibold text-gray-700 mb-2 block"
                           >
-                            Delivery Date
+                            Delivery Date *
                           </Label>
                           <Input
                             id="deliveryDate"
@@ -1018,6 +1018,7 @@ export default function Checkout() {
                             }
                             min={new Date().toISOString().split("T")[0]}
                             className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
+                            required
                           />
                         </div>
                         {selectedShippingMethod?.time_slot_required && (
