@@ -347,6 +347,7 @@ export default function Checkout() {
     pincode: "",
     receiverPhone: "",
     receiverPhoneCountryCode: "+91",
+    alternatePhone: "",
     orderMessage: "",
     deliveryDate: "",
     deliverySlot: "",
