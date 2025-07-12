@@ -8,13 +8,20 @@ export async function getAvailableShippingMethods(
   pincode: string,
 ): Promise<AvailableShippingMethod[]> {
   try {
+    console.log("Fetching shipping methods for pincode:", pincode);
+
     // First, find the zone that contains this pincode
     const { data: zones, error: zoneError } = await supabase
       .from("shipping_zones")
       .select("*")
       .eq("is_active", true);
 
-    if (zoneError) throw zoneError;
+    if (zoneError) {
+      console.error("Error fetching zones:", zoneError);
+      throw zoneError;
+    }
+
+    console.log("Available zones:", zones);
 
     const zone = zones?.find((z) => z.pincodes.includes(pincode));
 
@@ -23,19 +30,37 @@ export async function getAvailableShippingMethods(
       return [];
     }
 
-    // Get shipping methods available for this zone
+    console.log("Found zone for pincode:", zone);
+
+    // Get all shipping methods for this zone (without filtering first)
+    const { data: allMethods, error: allMethodsError } = await supabase
+      .from("shipping_methods_with_zones")
+      .select("*")
+      .eq("zone_id", zone.id);
+
+    if (allMethodsError) {
+      console.error("Error fetching all methods:", allMethodsError);
+    } else {
+      console.log("All methods for zone:", allMethods);
+    }
+
+    // Get shipping methods available for this zone with proper filtering
     const { data: methods, error: methodsError } = await supabase
       .from("shipping_methods_with_zones")
       .select("*")
       .eq("zone_id", zone.id)
       .eq("method_active", true)
       .eq("zone_active", true)
-      .eq("zone_is_active", true)
       .order("sort_order");
 
-    if (methodsError) throw methodsError;
+    if (methodsError) {
+      console.error("Error fetching filtered methods:", methodsError);
+      throw methodsError;
+    }
 
-    return (
+    console.log("Filtered methods for zone:", methods);
+
+    const mappedMethods =
       methods?.map((method) => ({
         method_id: method.method_id,
         config_id: method.config_id,
@@ -48,8 +73,11 @@ export async function getAvailableShippingMethods(
         rules: method.rules,
         zone_id: method.zone_id,
         zone_name: method.zone_name,
-      })) || []
-    );
+      })) || [];
+
+    console.log("Final mapped methods:", mappedMethods);
+
+    return mappedMethods;
   } catch (error) {
     console.error("Error fetching shipping methods:", error);
     return [];
