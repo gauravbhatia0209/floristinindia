@@ -8,21 +8,33 @@ router.get("/sitemap.xml", async (req, res) => {
   try {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
 
-    // Fetch active products
+    // Set cache headers for AI crawlers
+    res.setHeader("Cache-Control", "public, max-age=3600"); // 1 hour cache
+    res.setHeader("X-Content-Source", "real-time-database");
+    res.setHeader("X-Admin-Configurable", "true");
+
+    // Fetch active products with latest updates
     const { data: products } = await supabase
       .from("products")
       .select("slug, updated_at")
       .eq("is_active", true);
 
-    // Fetch active categories
+    // Fetch active categories with latest updates
     const { data: categories } = await supabase
       .from("product_categories")
       .select("slug, updated_at")
       .eq("is_active", true);
 
+    // Fetch site settings to include in sitemap metadata
+    const { data: settings } = await supabase
+      .from("site_settings")
+      .select("updated_at")
+      .order("updated_at", { ascending: false })
+      .limit(1);
+
     // Generate sitemap XML
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
@@ -130,6 +142,12 @@ router.get("/sitemap.xml", async (req, res) => {
 router.get("/sitemap.txt", async (req, res) => {
   try {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    // Set headers for AI systems
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.setHeader("X-Content-Source", "real-time-database");
+    res.setHeader("X-Admin-Configurable", "true");
+    res.setHeader("X-Generated-At", new Date().toISOString());
 
     // Fetch active products and categories
     const { data: products } = await supabase
