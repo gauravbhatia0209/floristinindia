@@ -100,6 +100,7 @@ export default function Settings() {
     default_meta_description: "",
     google_analytics_id: "",
     facebook_pixel_id: "",
+    facebook_app_id: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -694,7 +695,7 @@ export default function Settings() {
                     onChange={(e) =>
                       handleInputChange("currency_symbol", e.target.value)
                     }
-                    placeholder="₹"
+                    placeholder="��"
                   />
                 </div>
                 <div>
@@ -906,6 +907,24 @@ export default function Settings() {
                     integration
                   </p>
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="facebook_app_id">
+                  Facebook App ID (Optional)
+                </Label>
+                <Input
+                  id="facebook_app_id"
+                  value={settings.facebook_app_id}
+                  onChange={(e) =>
+                    handleInputChange("facebook_app_id", e.target.value)
+                  }
+                  placeholder="1234567890123456"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Facebook App ID for enhanced social sharing and Facebook Shop
+                  features
+                </p>
               </div>
             </CardContent>
           </Card>
