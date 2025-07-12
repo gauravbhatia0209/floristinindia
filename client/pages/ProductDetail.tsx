@@ -31,6 +31,7 @@ import { useCart } from "@/hooks/useCart";
 import { useFacebookPixel } from "@/components/FacebookPixel";
 import FacebookShopMeta from "@/components/FacebookShopMeta";
 import StructuredData from "@/components/StructuredData";
+import AIMetaTags from "@/components/AIMetaTags";
 import { ProductVariationSelector } from "@/components/ProductVariationSelector";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -339,6 +340,7 @@ export default function ProductDetail() {
     <div className="container py-8">
       <FacebookShopMeta product={fbProduct} />
       <StructuredData type="product" data={product} />
+      <AIMetaTags page="product" product={product} />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-primary">
