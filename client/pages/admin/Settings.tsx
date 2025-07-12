@@ -901,6 +901,10 @@ export default function Settings() {
                     }
                     placeholder="123456789012345"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter your Facebook Pixel ID for tracking and Facebook Shop
+                    integration
+                  </p>
                 </div>
               </div>
             </CardContent>
