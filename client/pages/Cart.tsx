@@ -349,55 +349,62 @@ export default function Cart() {
                       </div>
                     </div>
 
-                    {/* Quantity Controls */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          updateQuantity(
-                            item.product_id,
-                            Math.max(1, item.quantity - 1),
-                            item.variant_id,
-                          )
-                        }
-                        disabled={item.quantity <= 1}
-                      >
-                        <Minus className="w-4 h-4" />
-                      </Button>
-                      <span className="w-12 text-center font-medium">
-                        {item.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          updateQuantity(
-                            item.product_id,
-                            item.quantity + 1,
-                            item.variant_id,
-                          )
-                        }
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </div>
+                    {/* Bottom row on mobile: Quantity, Price, and Delete */}
+                    <div className="flex items-center justify-between sm:justify-end sm:gap-4 flex-shrink-0">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            updateQuantity(
+                              item.product_id,
+                              Math.max(1, item.quantity - 1),
+                              item.variant_id,
+                            )
+                          }
+                          disabled={item.quantity <= 1}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        <span className="w-8 text-center font-medium text-sm">
+                          {item.quantity}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            updateQuantity(
+                              item.product_id,
+                              item.quantity + 1,
+                              item.variant_id,
+                            )
+                          }
+                          className="h-8 w-8 p-0"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
 
-                    {/* Item Total */}
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        ₹{getItemTotal(item).toLocaleString()}
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          removeItem(item.product_id, item.variant_id)
-                        }
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      {/* Item Total and Delete */}
+                      <div className="flex items-center gap-2">
+                        <div className="text-right">
+                          <p className="font-semibold">
+                            ₹{getItemTotal(item).toLocaleString()}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            removeItem(item.product_id, item.variant_id)
+                          }
+                          className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
