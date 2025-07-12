@@ -394,6 +394,7 @@ export function Header() {
                                 <Link
                                   to={href}
                                   target={item.target}
+                                  onClick={closeMobileMenu}
                                   className="block px-3 py-2 rounded-md hover:bg-accent text-sm text-muted-foreground"
                                 >
                                   View All {item.name}
@@ -403,6 +404,7 @@ export function Header() {
                                     <Link
                                       key={subcategory.id}
                                       to={`/category/${subcategory.slug}`}
+                                      onClick={closeMobileMenu}
                                       className="block px-3 py-2 rounded-md hover:bg-accent text-sm"
                                     >
                                       {subcategory.name}
