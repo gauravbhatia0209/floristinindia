@@ -808,7 +808,7 @@ export default function Checkout() {
                   </Card>
                 )}
 
-                {/* 5. Payment Methods */}
+                {/* 6. Payment Methods */}
                 <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                   <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
                     <CardTitle className="flex items-center gap-3 text-xl">
