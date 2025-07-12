@@ -914,6 +914,15 @@ export default function AdminCategories() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() =>
+              window.open("/admin/categories/migrate-images", "_blank")
+            }
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Migrate Images
+          </Button>
           <Button variant="outline" onClick={() => fetchCategories()}>
             Refresh
           </Button>
