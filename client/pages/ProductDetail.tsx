@@ -30,6 +30,7 @@ import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { useFacebookPixel } from "@/components/FacebookPixel";
 import FacebookShopMeta from "@/components/FacebookShopMeta";
+import StructuredData from "@/components/StructuredData";
 import { ProductVariationSelector } from "@/components/ProductVariationSelector";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -337,6 +338,7 @@ export default function ProductDetail() {
   return (
     <div className="container py-8">
       <FacebookShopMeta product={fbProduct} />
+      <StructuredData type="product" data={product} />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-primary">
