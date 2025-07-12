@@ -407,6 +407,12 @@ export default function Checkout() {
   ) {
     setSelectedShippingMethod(method);
     setShippingCost(cost);
+
+    // Clear delivery slot if the new method doesn't require time slots
+    if (method && !method.time_slot_required) {
+      setForm((prev) => ({ ...prev, deliverySlot: "" }));
+    }
+
     // Clear any shipping-related errors
     if (errors.pincode || errors.shipping) {
       setErrors({ ...errors, pincode: "", shipping: "" });
