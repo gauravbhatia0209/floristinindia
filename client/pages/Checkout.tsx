@@ -707,12 +707,11 @@ export default function Checkout() {
                 </Card>
 
                 {/* 4. Shipping Methods */}
-                <ShippingMethodSelector
+                <ShippingMethodCard
                   pincode={form.pincode}
                   orderValue={total}
                   selectedMethodId={selectedShippingMethod?.config_id || null}
                   onMethodSelect={handleShippingMethodSelect}
-                  className="shadow-xl border-0 bg-white/80 backdrop-blur-sm"
                 />
 
                 {/* 5. Delivery Schedule */}
