@@ -208,6 +208,7 @@ export default function Settings() {
       same_day_cutoff_time: "Order cutoff time for same-day delivery",
       google_analytics_id:
         "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
+      facebook_app_id: "Facebook App ID for enhanced Facebook Shop integration",
     };
     return descriptions[key] || "";
   }
