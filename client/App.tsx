@@ -11,6 +11,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import FacebookPixel from "@/components/FacebookPixel";
 import StructuredData from "@/components/StructuredData";
+import AIMetaTags from "@/components/AIMetaTags";
 import { supabase } from "@/lib/supabase";
 
 // Public pages
@@ -130,6 +131,7 @@ function App() {
           {facebookPixelId && <FacebookPixel pixelId={facebookPixelId} />}
           <StructuredData type="website" />
           <StructuredData type="organization" />
+          <AIMetaTags page="home" />
           <Routes>
             {/* Auth routes */}
             <Route
