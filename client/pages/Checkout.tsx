@@ -41,6 +41,7 @@ import {
   getAvailableShippingMethods,
   calculateShippingCost,
 } from "@/lib/shipping-service";
+import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
 
 interface ShippingMethodCardProps {
   pincode: string;
@@ -365,6 +366,7 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [gstRate, setGstRate] = useState(18); // Default fallback
+  const { trackPurchase } = useGoogleAnalytics();
 
   // Function to generate sequential order number
   async function generateOrderNumber(): Promise<string> {
