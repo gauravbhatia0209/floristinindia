@@ -112,9 +112,11 @@ export default function ShippingEnhanced() {
 
   async function saveMethod(methodData: ShippingMethodFormData) {
     try {
+      console.log("Saving method data:", methodData);
       let methodId: string;
 
       if (editingMethod) {
+        console.log("Updating existing method:", editingMethod.id);
         // Update existing method
         const { error: updateError } = await supabase
           .from("shipping_method_templates")
@@ -127,15 +129,25 @@ export default function ShippingEnhanced() {
           })
           .eq("id", editingMethod.id);
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          console.error("Update method error:", updateError);
+          throw updateError;
+        }
         methodId = editingMethod.id;
 
         // Delete existing configs
-        await supabase
+        console.log("Deleting existing configs for method:", methodId);
+        const { error: deleteError } = await supabase
           .from("shipping_method_zone_config")
           .delete()
           .eq("method_template_id", methodId);
+
+        if (deleteError) {
+          console.error("Delete configs error:", deleteError);
+          throw deleteError;
+        }
       } else {
+        console.log("Creating new method");
         // Create new method
         const maxOrder =
           methods.length > 0
@@ -155,17 +167,25 @@ export default function ShippingEnhanced() {
           .select()
           .single();
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Insert method error:", insertError);
+          throw insertError;
+        }
         methodId = newMethod.id;
+        console.log("Created new method with ID:", methodId);
       }
 
       // Insert zone configs
-      const zoneConfigs = methodData.zone_configs
-        .filter((config) => config.is_active)
-        .map((config) => ({
+      const activeConfigs = methodData.zone_configs.filter(
+        (config) => config.is_active,
+      );
+      console.log("Active zone configs to save:", activeConfigs);
+
+      if (activeConfigs.length > 0) {
+        const zoneConfigs = activeConfigs.map((config) => ({
           method_template_id: methodId,
           zone_id: config.zone_id,
-          price: parseFloat(config.price),
+          price: parseFloat(config.price) || 0,
           free_shipping_minimum: config.free_shipping_minimum
             ? parseFloat(config.free_shipping_minimum)
             : null,
@@ -173,20 +193,27 @@ export default function ShippingEnhanced() {
           is_active: config.is_active,
         }));
 
-      if (zoneConfigs.length > 0) {
+        console.log("Inserting zone configs:", zoneConfigs);
         const { error: configError } = await supabase
           .from("shipping_method_zone_config")
           .insert(zoneConfigs);
 
-        if (configError) throw configError;
+        if (configError) {
+          console.error("Insert config error:", configError);
+          throw configError;
+        }
       }
 
+      console.log("Method saved successfully");
       fetchShippingData();
       setEditingMethod(null);
       setIsAddingMethod(false);
-    } catch (error) {
+      alert("Shipping method saved successfully!");
+    } catch (error: any) {
       console.error("Failed to save method:", error);
-      alert("Failed to save shipping method. Please try again.");
+      const errorMessage =
+        error?.message || error?.toString() || "Unknown error";
+      alert(`Failed to save shipping method: ${errorMessage}`);
     }
   }
 
