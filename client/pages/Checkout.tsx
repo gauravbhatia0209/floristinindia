@@ -944,6 +944,28 @@ export default function Checkout() {
                         </div>
                       </div>
                     </div>
+
+                    <div>
+                      <Label
+                        htmlFor="alternatePhone"
+                        className="text-sm font-semibold text-gray-700 mb-2 block"
+                      >
+                        Alternate Phone No.
+                      </Label>
+                      <Input
+                        id="alternatePhone"
+                        type="tel"
+                        placeholder="9876543210"
+                        value={form.alternatePhone}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            alternatePhone: e.target.value,
+                          })
+                        }
+                        className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
 
