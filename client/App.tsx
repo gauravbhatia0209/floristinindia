@@ -52,6 +52,8 @@ import FooterEditor from "@/pages/admin/FooterEditor";
 import CategoryImageMigration from "@/pages/admin/CategoryImageMigration";
 
 function App() {
+  const [googleAnalyticsId, setGoogleAnalyticsId] = useState<string>("");
+
   // Add error handling for navigation issues
   React.useEffect(() => {
     const handleError = (event: ErrorEvent) => {
