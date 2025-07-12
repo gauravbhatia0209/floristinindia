@@ -61,6 +61,7 @@ export default function Products() {
 
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { trackAddToCart } = useGoogleAnalytics();
 
   useEffect(() => {
     fetchData();
@@ -274,6 +275,12 @@ export default function Products() {
       product_id: product.id,
       product,
     });
+
+    trackAddToCart(
+      product.id,
+      product.name,
+      product.sale_price || product.price,
+    );
 
     toast({
       title: "Added to cart!",
