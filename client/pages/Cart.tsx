@@ -110,8 +110,8 @@ export default function Cart() {
       return sum + price * item.quantity;
     }, 0);
 
-    // Free shipping above ₹999, otherwise ₹99
-    setShippingCost(subtotal >= 999 ? 0 : 99);
+    // Shipping will be calculated at checkout based on location and method
+    setShippingCost(0);
   }
 
   async function applyCoupon() {
