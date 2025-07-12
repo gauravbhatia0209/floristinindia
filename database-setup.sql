@@ -295,6 +295,31 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop'),
 ('facebook_app_id', '', 'text', 'Facebook App ID for enhanced social sharing');
 
+-- Create admin update log table for AI cache management
+CREATE TABLE IF NOT EXISTS admin_update_log (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  update_type VARCHAR(50) NOT NULL,
+  update_data JSONB,
+  timestamp TIMESTAMPTZ DEFAULT NOW(),
+  ai_cache_invalidate BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Add index for efficient AI queries
+CREATE INDEX IF NOT EXISTS idx_admin_update_log_timestamp ON admin_update_log(timestamp);
+CREATE INDEX IF NOT EXISTS idx_admin_update_log_type ON admin_update_log(update_type);
+
+-- Enable RLS
+ALTER TABLE admin_update_log ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access for AI systems
+CREATE POLICY "Allow public read access for AI" ON admin_update_log
+  FOR SELECT USING (true);
+
+-- Allow authenticated admin write access
+CREATE POLICY "Allow admin write access" ON admin_update_log
+  FOR ALL USING (auth.role() = 'authenticated');
+
 -- Product Categories (Hierarchical)
 INSERT INTO product_categories (name, slug, description, is_active, sort_order, show_in_menu) VALUES
 ('Birthday Flowers', 'birthday-flowers', 'Beautiful flowers perfect for birthday celebrations', TRUE, 1, TRUE),
