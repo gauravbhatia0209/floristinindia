@@ -42,6 +42,7 @@ import {
   calculateShippingCost,
 } from "@/lib/shipping-service";
 import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
+import { useFacebookPixel } from "@/components/FacebookPixel";
 
 interface ShippingMethodCardProps {
   pincode: string;
@@ -367,6 +368,8 @@ export default function Checkout() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [gstRate, setGstRate] = useState(18); // Default fallback
   const { trackPurchase } = useGoogleAnalytics();
+  const { trackPurchase: trackFBPurchase, trackInitiateCheckout } =
+    useFacebookPixel();
 
   // Function to generate sequential order number
   async function generateOrderNumber(): Promise<string> {
@@ -405,6 +408,15 @@ export default function Checkout() {
       navigate("/cart");
     }
     fetchGstRate();
+
+    // Track checkout initiation for Facebook Pixel
+    if (items.length > 0) {
+      const checkoutValue = items.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0,
+      );
+      trackInitiateCheckout(checkoutValue, "INR", items.length);
+    }
   }, [items, navigate]);
 
   async function fetchGstRate() {
@@ -669,6 +681,10 @@ export default function Checkout() {
         price: item.product.price,
       }));
       trackPurchase(orderNumber, totals.total, orderItems);
+
+      // Track purchase in Facebook Pixel
+      const fbContentIds = items.map((item) => item.product.id);
+      trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
 
       // Clear cart
       clearCart();
