@@ -51,6 +51,7 @@ export default function Products() {
   const { slug: categorySlug } = useParams<{ slug: string }>();
 
   const { addItem } = useCart();
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
