@@ -187,6 +187,7 @@ export default function ShippingEnhanced() {
             description: methodData.description || null,
             type: methodData.type,
             rules: methodData.rules || null,
+            time_slot_required: methodData.time_slot_required,
             is_active: methodData.is_active,
             sort_order: maxOrder + 1,
           })
