@@ -71,15 +71,33 @@ export default function ShippingEnhanced() {
         .select("*")
         .order("name");
 
-      if (zonesError) throw zonesError;
+      if (zonesError) {
+        console.error("Zones fetch error:", zonesError);
+        throw zonesError;
+      }
 
-      // Fetch method templates
+      // Fetch method templates - check if table exists
       const { data: methodsData, error: methodsError } = await supabase
         .from("shipping_method_templates")
         .select("*")
         .order("sort_order");
 
-      if (methodsError) throw methodsError;
+      if (methodsError) {
+        console.error("Methods fetch error:", methodsError);
+        // If table doesn't exist, show helpful message
+        if (
+          methodsError.code === "PGRST116" ||
+          methodsError.message?.includes("does not exist")
+        ) {
+          alert(
+            "Enhanced shipping tables not found. Please run the database migration first.",
+          );
+          setZones(zonesData || []);
+          setMethods([]);
+          return;
+        }
+        throw methodsError;
+      }
 
       // Fetch zone configurations
       const { data: configsData, error: configsError } = await supabase.from(
@@ -89,7 +107,10 @@ export default function ShippingEnhanced() {
           zone:shipping_zones(*)
         `);
 
-      if (configsError) throw configsError;
+      if (configsError) {
+        console.error("Configs fetch error:", configsError);
+        throw configsError;
+      }
 
       // Combine data
       const methodsWithZones: ShippingMethodWithZones[] =
@@ -103,8 +124,13 @@ export default function ShippingEnhanced() {
 
       setZones(zonesData || []);
       setMethods(methodsWithZones);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch shipping data:", error);
+      if (error?.message?.includes("does not exist")) {
+        alert(
+          "Database tables are missing. Please run the enhanced shipping migration first.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
