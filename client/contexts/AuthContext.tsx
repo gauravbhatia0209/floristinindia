@@ -78,14 +78,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
 
-      // Verify session with database
-      const { data: session, error: sessionError } = await supabase
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Session check timeout")), 10000),
+      );
+
+      // Verify session with database (with timeout)
+      const sessionPromise = supabase
         .from("user_sessions")
         .select("*")
         .eq("session_token", sessionToken)
         .eq("is_active", true)
         .gte("expires_at", new Date().toISOString())
         .single();
+
+      const { data: session, error: sessionError } = (await Promise.race([
+        sessionPromise,
+        timeoutPromise,
+      ])) as any;
 
       if (sessionError || !session) {
         localStorage.removeItem("session_token");
