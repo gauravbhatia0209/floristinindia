@@ -660,6 +660,16 @@ export default function Checkout() {
           .eq("id", appliedCoupon.id);
       }
 
+      // Track purchase in Google Analytics
+      const orderItems = items.map((item) => ({
+        item_id: item.product.id,
+        item_name: item.product.name,
+        category: item.product.category_name,
+        quantity: item.quantity,
+        price: item.product.price,
+      }));
+      trackPurchase(orderNumber, totals.total, orderItems);
+
       // Clear cart
       clearCart();
 
