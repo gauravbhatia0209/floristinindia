@@ -219,7 +219,7 @@ export default function Cart() {
     (sum, item) => sum + getItemTotal(item),
     0,
   );
-  const finalTotal = subtotal + shippingCost - discount;
+  const finalTotal = subtotal - discount;
 
   if (isLoading) {
     return (
