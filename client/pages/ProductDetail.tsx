@@ -322,8 +322,21 @@ export default function ProductDetail() {
     );
   }
 
+  // Prepare product data for Facebook Shop Meta
+  const fbProduct = {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    sale_price: product.sale_price,
+    images: product.images,
+    category_name: product.category_name,
+    slug: product.slug,
+  };
+
   return (
     <div className="container py-8">
+      <FacebookShopMeta product={fbProduct} />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-primary">
