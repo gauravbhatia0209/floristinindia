@@ -464,12 +464,9 @@ export default function Cart() {
                   <span>Total</span>
                   <span>₹{finalTotal.toLocaleString()}</span>
                 </div>
-                {shippingCost > 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    Add ₹{(999 - subtotal).toLocaleString()} more for free
-                    shipping
-                  </p>
-                )}
+                <p className="text-xs text-muted-foreground">
+                  Final total including shipping will be calculated at checkout
+                </p>
               </CardContent>
             </Card>
 
