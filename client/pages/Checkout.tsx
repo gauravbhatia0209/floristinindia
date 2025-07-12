@@ -505,6 +505,11 @@ export default function Checkout() {
       return;
     }
 
+    if (!form.deliveryDate) {
+      setErrors({ deliveryDate: "Please select a delivery date" });
+      return;
+    }
+
     if (!form.acceptTerms) {
       setErrors({ terms: "Please accept the Terms & Conditions to continue" });
       return;
