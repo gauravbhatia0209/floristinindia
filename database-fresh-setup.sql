@@ -305,7 +305,8 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('business_hours', '{"monday": "9:00-21:00", "tuesday": "9:00-21:00", "wednesday": "9:00-21:00", "thursday": "9:00-21:00", "friday": "9:00-21:00", "saturday": "9:00-21:00", "sunday": "9:00-21:00"}', 'json', 'Business operating hours'),
 ('meta_title', 'Florist in India - Premium Fresh Flower Delivery', 'text', 'Default meta title'),
 ('meta_description', 'Order fresh flowers online for same-day delivery across India. Premium flower arrangements for all occasions with 100% freshness guarantee.', 'text', 'Default meta description'),
-('google_analytics_id', '', 'text', 'Google Analytics tracking ID (G-XXXXXXXXXX)');
+('google_analytics_id', '', 'text', 'Google Analytics tracking ID (G-XXXXXXXXXX)'),
+('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop');
 
 -- Insert Product Categories (Hierarchical)
 INSERT INTO product_categories (name, slug, description, is_active, sort_order, show_in_menu) VALUES
