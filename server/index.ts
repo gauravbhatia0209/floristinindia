@@ -28,5 +28,8 @@ export function createServer() {
   // Upload routes
   app.use("/api/upload", uploadRoutes);
 
+  // AI-readable data routes
+  app.use("/api/ai", aiDataRoutes);
+
   return app;
 }
