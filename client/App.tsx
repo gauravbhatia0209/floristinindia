@@ -68,6 +68,9 @@ function App() {
     window.addEventListener("error", handleError);
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
+    // Fetch Google Analytics ID
+    fetchGoogleAnalyticsId();
+
     return () => {
       window.removeEventListener("error", handleError);
       window.removeEventListener(
@@ -76,6 +79,22 @@ function App() {
       );
     };
   }, []);
+
+  async function fetchGoogleAnalyticsId() {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "google_analytics_id")
+        .single();
+
+      if (data && data.value) {
+        setGoogleAnalyticsId(data.value);
+      }
+    } catch (error) {
+      console.error("Error fetching Google Analytics ID:", error);
+    }
+  }
 
   return (
     <AuthProvider>
