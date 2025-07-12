@@ -34,7 +34,12 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const { signup, isAuthenticated, isLoading: authLoading } = useAuth();
+  const {
+    signup,
+    loginWithGoogle,
+    isAuthenticated,
+    isLoading: authLoading,
+  } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
