@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import AuthProvider from "@/contexts/AuthContext";
@@ -8,6 +8,8 @@ import ProtectedRoute, {
 } from "@/components/ProtectedRoute";
 import Layout from "@/components/layout/Layout";
 import AdminLayout from "@/components/admin/AdminLayout";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { supabase } from "@/lib/supabase";
 
 // Public pages
 import Index from "@/pages/Index";
