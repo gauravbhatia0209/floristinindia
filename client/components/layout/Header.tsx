@@ -98,6 +98,12 @@ export function Header() {
 
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Function to close mobile menu when link is clicked
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setExpandedMobileMenu(null);
+  };
+
   const handleLogout = async () => {
     await logout();
     navigate("/");
