@@ -418,6 +418,7 @@ export function Header() {
                           <Link
                             to={href}
                             target={item.target}
+                            onClick={closeMobileMenu}
                             className="block px-3 py-2 rounded-md hover:bg-accent text-left"
                           >
                             {item.name}
