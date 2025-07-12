@@ -64,6 +64,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     checkSession();
+
+    // Listen for Supabase auth changes (for OAuth)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        // Handle OAuth sign in
+        const user = session.user;
+
+        // Check if user exists in customers table
+        const { data: existingCustomer } = await supabase
+          .from("customers")
+          .select("*")
+          .eq("email", user.email)
+          .single();
+
+        if (existingCustomer) {
+          // Update last login
+          await supabase
+            .from("customers")
+            .update({ last_login: new Date().toISOString() })
+            .eq("id", existingCustomer.id);
+
+          const userObj: User = {
+            id: existingCustomer.id,
+            email: existingCustomer.email,
+            name: existingCustomer.name,
+            user_type: "customer",
+            email_verified: true,
+            phone: existingCustomer.phone,
+            last_login: new Date().toISOString(),
+          };
+
+          setUser(userObj);
+        }
+      } else if (event === "SIGNED_OUT") {
+        // Only clear user if it was an OAuth user (no local session)
+        const sessionToken = localStorage.getItem("session_token");
+        if (!sessionToken) {
+          setUser(null);
+        }
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const checkSession = async () => {
