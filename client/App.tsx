@@ -46,6 +46,7 @@ import ContactSubmissions from "@/pages/admin/ContactSubmissions";
 import DatabaseSetup from "@/pages/admin/DatabaseSetup";
 import DatabaseTest from "@/pages/admin/DatabaseTest";
 import FooterEditor from "@/pages/admin/FooterEditor";
+import CategoryImageMigration from "@/pages/admin/CategoryImageMigration";
 
 function App() {
   // Add error handling for navigation issues
@@ -158,6 +159,10 @@ function App() {
               <Route path="products/new" element={<ProductEdit />} />
               <Route path="products/:id/edit" element={<ProductEdit />} />
               <Route path="categories" element={<Categories />} />
+              <Route
+                path="categories/migrate-images"
+                element={<CategoryImageMigration />}
+              />
               <Route path="orders" element={<Orders />} />
               <Route path="customers" element={<Customers />} />
               <Route path="coupons" element={<Coupons />} />
