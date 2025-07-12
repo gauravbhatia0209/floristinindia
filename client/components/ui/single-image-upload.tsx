@@ -8,6 +8,9 @@ import {
   Image as ImageIcon,
   AlertCircle,
   Loader2,
+  CheckCircle,
+  Cloud,
+  AlertTriangle,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -32,7 +35,11 @@ export function SingleImageUpload({
 }: SingleImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isSupabaseUrl = imageUrl.includes("supabase.co");
+  const isLocalUrl = imageUrl.startsWith("/uploads/");
 
   const validateFile = (file: File): string | null => {
     // Check file size
@@ -64,6 +71,7 @@ export function SingleImageUpload({
 
   const handleFileSelect = async (file: File) => {
     setError("");
+    setSuccess("");
 
     const validationError = validateFile(file);
     if (validationError) {
@@ -76,6 +84,10 @@ export function SingleImageUpload({
     try {
       const uploadedUrl = await uploadImage(file);
       onImageChange(uploadedUrl);
+      setSuccess("Image uploaded successfully to Supabase storage!");
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Upload failed";
@@ -124,6 +136,36 @@ export function SingleImageUpload({
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
+      )}
+
+      {success && (
+        <Alert className="mt-2 bg-green-50 border-green-200 text-green-800">
+          <CheckCircle className="h-4 w-4" />
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
+      )}
+
+      {imageUrl && (
+        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+          {isSupabaseUrl ? (
+            <>
+              <Cloud className="h-3 w-3 text-green-600" />
+              <span className="text-green-700">Stored in Supabase Cloud</span>
+            </>
+          ) : isLocalUrl ? (
+            <>
+              <AlertTriangle className="h-3 w-3 text-orange-600" />
+              <span className="text-orange-700">
+                Local storage (needs migration)
+              </span>
+            </>
+          ) : (
+            <>
+              <ImageIcon className="h-3 w-3" />
+              <span>External image</span>
+            </>
+          )}
+        </div>
       )}
 
       <div className="mt-2">
