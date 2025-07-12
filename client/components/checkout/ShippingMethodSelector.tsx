@@ -41,18 +41,18 @@ export default function ShippingMethodSelector({
   >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   useEffect(() => {
     if (pincode) {
+      setHasAutoSelected(false); // Reset auto-selection flag for new pincode
       fetchShippingMethods();
     } else {
       setAvailableMethods([]);
+      setHasAutoSelected(false);
       onMethodSelect(null, 0);
     }
   }, [pincode]);
-
-  // Remove the problematic useEffect that was causing infinite loops
-  // The parent component will handle cost recalculation when needed
 
   async function fetchShippingMethods() {
     try {
@@ -70,14 +70,14 @@ export default function ShippingMethodSelector({
 
       setAvailableMethods(methods);
 
-      // Auto-select the first method ONLY if none is currently selected AND this is the initial load
-      if (
-        !selectedMethodId &&
-        methods.length > 0 &&
-        availableMethods.length === 0
-      ) {
+      // Auto-select the first method ONLY if:
+      // 1. No method is currently selected
+      // 2. We haven't auto-selected for this pincode yet
+      // 3. Methods are available
+      if (!selectedMethodId && !hasAutoSelected && methods.length > 0) {
         const firstMethod = methods[0];
         const cost = calculateShippingCost(firstMethod, orderValue);
+        setHasAutoSelected(true);
         onMethodSelect(firstMethod, cost);
       }
     } catch (error) {
