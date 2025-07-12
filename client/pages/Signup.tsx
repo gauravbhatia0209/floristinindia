@@ -152,6 +152,23 @@ export default function Signup() {
     if (error) setError("");
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const result = await loginWithGoogle();
+      if (!result.success) {
+        setError(result.error || "Google signup failed");
+      }
+      // Note: Don't navigate here - the OAuth flow will handle redirection
+    } catch (error) {
+      setError("Google signup failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getPasswordStrength = (password: string) => {
     let strength = 0;
     if (password.length >= 8) strength++;
