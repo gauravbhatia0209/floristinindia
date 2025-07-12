@@ -990,7 +990,9 @@ export default function Checkout() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div
+                        className={`grid gap-4 ${selectedShippingMethod?.time_slot_required ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
+                      >
                         <div>
                           <Label
                             htmlFor="deliveryDate"
@@ -1012,38 +1014,40 @@ export default function Checkout() {
                             className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
                           />
                         </div>
-                        <div>
-                          <Label
-                            htmlFor="deliverySlot"
-                            className="text-sm font-semibold text-gray-700 mb-2 block"
-                          >
-                            Time Slot
-                          </Label>
-                          <Select
-                            value={form.deliverySlot}
-                            onValueChange={(value) =>
-                              setForm({ ...form, deliverySlot: value })
-                            }
-                          >
-                            <SelectTrigger className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500">
-                              <SelectValue placeholder="Select time" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="9am-12pm">
-                                9:00 AM - 12:00 PM
-                              </SelectItem>
-                              <SelectItem value="12pm-3pm">
-                                12:00 PM - 3:00 PM
-                              </SelectItem>
-                              <SelectItem value="3pm-6pm">
-                                3:00 PM - 6:00 PM
-                              </SelectItem>
-                              <SelectItem value="6pm-9pm">
-                                6:00 PM - 9:00 PM
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        {selectedShippingMethod?.time_slot_required && (
+                          <div>
+                            <Label
+                              htmlFor="deliverySlot"
+                              className="text-sm font-semibold text-gray-700 mb-2 block"
+                            >
+                              Time Slot *
+                            </Label>
+                            <Select
+                              value={form.deliverySlot}
+                              onValueChange={(value) =>
+                                setForm({ ...form, deliverySlot: value })
+                              }
+                            >
+                              <SelectTrigger className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500">
+                                <SelectValue placeholder="Select time slot" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="9am-12pm">
+                                  9:00 AM - 12:00 PM
+                                </SelectItem>
+                                <SelectItem value="12pm-3pm">
+                                  12:00 PM - 3:00 PM
+                                </SelectItem>
+                                <SelectItem value="3pm-6pm">
+                                  3:00 PM - 6:00 PM
+                                </SelectItem>
+                                <SelectItem value="6pm-9pm">
+                                  6:00 PM - 9:00 PM
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
                       </div>
 
                       <div>
