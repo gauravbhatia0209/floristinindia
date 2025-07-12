@@ -43,6 +43,7 @@ import {
   fetchProductsWithCategories,
   getCategoriesWithProductCount,
 } from "@/lib/productUtils";
+import AIMetaTags from "@/components/AIMetaTags";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -313,6 +314,10 @@ export default function Products() {
 
   return (
     <div className="container py-8">
+      <AIMetaTags
+        page={currentCategory ? "category" : "products"}
+        category={currentCategory}
+      />
       {/* Header */}
       <div className="mb-8">
         {/* Breadcrumb */}
