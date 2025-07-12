@@ -265,6 +265,12 @@ export default function Products() {
       product_id: product.id,
       product,
     });
+
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+      variant: "default",
+    });
   }
 
   if (isLoading) {
