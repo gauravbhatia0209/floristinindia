@@ -707,155 +707,103 @@ export default function Checkout() {
                 </Card>
 
                 {/* 4. Shipping Methods */}
-                {availableShippingMethods.length > 0 && (
+                <ShippingMethodSelector
+                  pincode={form.pincode}
+                  orderValue={total}
+                  selectedMethodId={selectedShippingMethod?.config_id || null}
+                  onMethodSelect={handleShippingMethodSelect}
+                  className="shadow-xl border-0 bg-white/80 backdrop-blur-sm"
+                />
+
+                {/* 5. Delivery Schedule */}
+                {selectedShippingMethod && (
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
                         <div className="bg-white/20 rounded-lg p-2">
                           <Truck className="w-6 h-6" />
                         </div>
-                        Shipping Methods
+                        Delivery Schedule
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
-                      <div className="space-y-4">
-                        {availableShippingMethods.map((method) => (
-                          <div
-                            key={method.id}
-                            className={`p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                              selectedShippingMethod?.id === method.id
-                                ? "border-orange-500 bg-orange-50 shadow-lg ring-2 ring-orange-200"
-                                : "border-gray-200 hover:border-orange-300 bg-white"
-                            }`}
-                            onClick={() => setSelectedShippingMethod(method)}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label
+                            htmlFor="deliveryDate"
+                            className="text-sm font-semibold text-gray-700 mb-2 block"
                           >
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  {selectedShippingMethod?.id === method.id && (
-                                    <CheckCircle className="h-5 w-5 text-orange-600" />
-                                  )}
-                                  <h4 className="font-bold text-lg text-gray-900">
-                                    {method.name}
-                                  </h4>
-                                </div>
-                                <p className="text-gray-600 mb-2">
-                                  {method.description}
-                                </p>
-                                <div className="flex items-center gap-2">
-                                  <Package className="h-4 w-4 text-orange-600" />
-                                  <p className="text-sm font-semibold text-orange-600">
-                                    {method.delivery_time}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-2xl font-bold text-gray-900">
-                                  {method.price === 0
-                                    ? "FREE"
-                                    : `₹${method.price}`}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  shipping
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                            Preferred Date
+                          </Label>
+                          <Input
+                            id="deliveryDate"
+                            type="date"
+                            value={form.deliveryDate}
+                            onChange={(e) =>
+                              setForm({
+                                ...form,
+                                deliveryDate: e.target.value,
+                              })
+                            }
+                            min={new Date().toISOString().split("T")[0]}
+                            className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
+                          />
+                        </div>
+                        <div>
+                          <Label
+                            htmlFor="deliverySlot"
+                            className="text-sm font-semibold text-gray-700 mb-2 block"
+                          >
+                            Time Slot
+                          </Label>
+                          <Select
+                            value={form.deliverySlot}
+                            onValueChange={(value) =>
+                              setForm({ ...form, deliverySlot: value })
+                            }
+                          >
+                            <SelectTrigger className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500">
+                              <SelectValue placeholder="Select time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="9am-12pm">
+                                9:00 AM - 12:00 PM
+                              </SelectItem>
+                              <SelectItem value="12pm-3pm">
+                                12:00 PM - 3:00 PM
+                              </SelectItem>
+                              <SelectItem value="3pm-6pm">
+                                3:00 PM - 6:00 PM
+                              </SelectItem>
+                              <SelectItem value="6pm-9pm">
+                                6:00 PM - 9:00 PM
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
-                      {selectedShippingMethod && (
-                        <>
-                          <div className="border-t pt-6">
-                            <h4 className="font-semibold text-gray-900 mb-4">
-                              Delivery Schedule
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <Label
-                                  htmlFor="deliveryDate"
-                                  className="text-sm font-semibold text-gray-700 mb-2 block"
-                                >
-                                  Preferred Date
-                                </Label>
-                                <Input
-                                  id="deliveryDate"
-                                  type="date"
-                                  value={form.deliveryDate}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      deliveryDate: e.target.value,
-                                    })
-                                  }
-                                  min={new Date().toISOString().split("T")[0]}
-                                  className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500"
-                                />
-                              </div>
-                              <div>
-                                <Label
-                                  htmlFor="deliverySlot"
-                                  className="text-sm font-semibold text-gray-700 mb-2 block"
-                                >
-                                  Time Slot
-                                </Label>
-                                <Select
-                                  value={form.deliverySlot}
-                                  onValueChange={(value) =>
-                                    setForm({ ...form, deliverySlot: value })
-                                  }
-                                >
-                                  <SelectTrigger className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500">
-                                    <SelectValue placeholder="Select time" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="9am-12pm">
-                                      9:00 AM - 12:00 PM
-                                    </SelectItem>
-                                    <SelectItem value="12pm-3pm">
-                                      12:00 PM - 3:00 PM
-                                    </SelectItem>
-                                    <SelectItem value="3pm-6pm">
-                                      3:00 PM - 6:00 PM
-                                    </SelectItem>
-                                    <SelectItem value="6pm-9pm">
-                                      6:00 PM - 9:00 PM
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <Label
-                              htmlFor="specialInstructions"
-                              className="text-sm font-semibold text-gray-700 mb-2 block"
-                            >
-                              Special Delivery Instructions
-                            </Label>
-                            <Textarea
-                              id="specialInstructions"
-                              placeholder="Any special delivery instructions (e.g., ring doorbell, leave with security)..."
-                              value={form.specialInstructions}
-                              onChange={(e) =>
-                                setForm({
-                                  ...form,
-                                  specialInstructions: e.target.value,
-                                })
-                              }
-                              rows={3}
-                              className="text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500 resize-none"
-                            />
-                          </div>
-                        </>
-                      )}
-
-                      {errors.shipping && (
-                        <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-                          {errors.shipping}
-                        </p>
-                      )}
+                      <div>
+                        <Label
+                          htmlFor="specialInstructions"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Special Delivery Instructions
+                        </Label>
+                        <Textarea
+                          id="specialInstructions"
+                          placeholder="Any special delivery instructions (e.g., ring doorbell, leave with security)..."
+                          value={form.specialInstructions}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              specialInstructions: e.target.value,
+                            })
+                          }
+                          rows={3}
+                          className="text-lg border-2 border-gray-200 rounded-xl focus:border-orange-500 resize-none"
+                        />
+                      </div>
                     </CardContent>
                   </Card>
                 )}
