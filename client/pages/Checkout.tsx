@@ -137,36 +137,15 @@ export default function Checkout() {
     }
   }, [items, navigate]);
 
-  useEffect(() => {
-    if (form.pincode.length === 6) {
-      checkShippingAvailability();
-    }
-  }, [form.pincode]);
-
-  async function checkShippingAvailability() {
-    try {
-      const { data: zones } = await supabase
-        .from("shipping_zones")
-        .select("*, shipping_methods(*)")
-        .contains("pincodes", [form.pincode])
-        .eq("is_active", true);
-
-      if (zones && zones.length > 0) {
-        const methods =
-          zones[0].shipping_methods?.filter(
-            (method: any) => method.is_active,
-          ) || [];
-        setAvailableShippingMethods(methods);
-        if (methods.length > 0) {
-          setSelectedShippingMethod(methods[0]);
-        }
-      } else {
-        setAvailableShippingMethods([]);
-        setSelectedShippingMethod(null);
-        setErrors({ pincode: "Delivery not available to this pincode" });
-      }
-    } catch (error) {
-      console.error("Failed to check shipping:", error);
+  function handleShippingMethodSelect(
+    method: AvailableShippingMethod | null,
+    cost: number,
+  ) {
+    setSelectedShippingMethod(method);
+    setShippingCost(cost);
+    // Clear any shipping-related errors
+    if (errors.pincode || errors.shipping) {
+      setErrors({ ...errors, pincode: "", shipping: "" });
     }
   }
 
