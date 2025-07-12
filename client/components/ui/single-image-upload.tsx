@@ -51,25 +51,15 @@ export function SingleImageUpload({
   };
 
   const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("image", file);
+    const { uploadImageToSupabase } = await import("@/lib/supabase-storage");
 
-    const url = subdir
-      ? `/api/upload/image?subdir=${encodeURIComponent(subdir)}`
-      : "/api/upload/image";
+    const result = await uploadImageToSupabase(file, subdir, maxSizeMB);
 
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Upload failed");
+    if (!result.success) {
+      throw new Error(result.error || "Upload failed");
     }
 
-    const result = await response.json();
-    return result.imageUrl;
+    return result.publicUrl!;
   };
 
   const handleFileSelect = async (file: File) => {
@@ -96,8 +86,19 @@ export function SingleImageUpload({
   };
 
   const removeImage = async () => {
-    // If it's an uploaded image, try to delete from server
-    if (imageUrl.startsWith("/uploads/")) {
+    // Try to delete from Supabase storage
+    if (imageUrl.includes("supabase.co")) {
+      try {
+        const { deleteImageFromSupabase } = await import(
+          "@/lib/supabase-storage"
+        );
+        await deleteImageFromSupabase(imageUrl);
+      } catch (error) {
+        console.error("Failed to delete image from Supabase:", error);
+      }
+    }
+    // Also try to delete from local storage (for backwards compatibility)
+    else if (imageUrl.startsWith("/uploads/")) {
       try {
         const filename = imageUrl.split("/").pop();
         const url = subdir
@@ -170,8 +171,25 @@ export function SingleImageUpload({
                   src={imageUrl}
                   alt="Uploaded image"
                   className="w-full h-full object-cover"
-                  onError={() => {
-                    setError("Failed to load image");
+                  onError={async () => {
+                    setError(
+                      "Failed to load image - it may have been moved or deleted",
+                    );
+
+                    // Try to validate the URL
+                    try {
+                      const { validateImageUrl } = await import(
+                        "@/lib/supabase-storage"
+                      );
+                      const isValid = await validateImageUrl(imageUrl);
+                      if (!isValid) {
+                        setError(
+                          "Image is no longer accessible. Please upload a new image.",
+                        );
+                      }
+                    } catch (err) {
+                      console.error("Error validating image URL:", err);
+                    }
                   }}
                 />
 
