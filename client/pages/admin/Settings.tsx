@@ -901,7 +901,10 @@ export default function Settings() {
         <TabsContent value="seo" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>SEO & Analytics</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="w-5 h-5" />
+                Basic SEO Settings
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -914,6 +917,10 @@ export default function Settings() {
                   }
                   placeholder="Fresh Flowers Delivered Daily | Florist in India"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  This will be used as the default title for pages without a
+                  specific title
+                </p>
               </div>
 
               <div>
@@ -932,8 +939,34 @@ export default function Settings() {
                   placeholder="Premium flower delivery service across India. Same-day delivery available in 100+ cities."
                   rows={3}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Recommended length: 150-160 characters
+                </p>
               </div>
 
+              <div>
+                <Label htmlFor="meta_title_template">Meta Title Template</Label>
+                <Input
+                  id="meta_title_template"
+                  value={settings.meta_title_template}
+                  onChange={(e) =>
+                    handleInputChange("meta_title_template", e.target.value)
+                  }
+                  placeholder="%title% | %sitename%"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Use %title% for page title and %sitename% for site name.
+                  Example: "Product Name | Florist in India"
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics & Tracking</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="google_analytics_id">
