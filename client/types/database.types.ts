@@ -414,6 +414,10 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  name?: string;
   phone?: string;
   is_verified?: boolean;
+  role?: string;
+  user_type?: string;
+  last_login?: string;
 }
