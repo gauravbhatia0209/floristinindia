@@ -20,11 +20,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "server/index.ts": {
-      "maxDuration": 30
-    }
-  },
   "outputDirectory": "client/dist",
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
   "buildCommand": "cd client && npm run build && cd ../server && npm run build",
