@@ -5,7 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { CartItem } from "@shared/database.types";
+import { CartItem } from "@/types/database.types";
 
 interface CartContextType {
   items: CartItem[];
