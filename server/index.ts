@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import uploadRoutes from "./routes/upload";
-import aiDataRoutes from "./routes/ai-data";
-import sitemapRoutes from "./routes/sitemap";
-import adminUpdatesRoutes from "./routes/admin-updates";
+import handleDemo from "./routes/demo.js";
+import uploadRoutes from "./routes/upload.js";
+import aiDataRoutes from "./routes/ai-data.js";
+import sitemapRoutes from "./routes/sitemap.js";
+import adminUpdatesRoutes from "./routes/admin-updates.js";
 
 export function createServer() {
   const app = express();
