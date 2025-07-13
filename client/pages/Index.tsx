@@ -959,7 +959,8 @@ export default function Index() {
                                 ".fallback-emoji",
                               );
                             if (placeholder) {
-                              placeholder.style.display = "block";
+                              (placeholder as HTMLElement).style.display =
+                                "block";
                               placeholder.classList.remove("hidden");
                             }
                           }}
