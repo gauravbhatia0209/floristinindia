@@ -20,7 +20,7 @@ import {
   ProductCategory,
   Product,
   HomepageSection,
-} from "@shared/database.types";
+} from "@/types/database.types";
 
 export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
