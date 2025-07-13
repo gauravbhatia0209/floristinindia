@@ -406,7 +406,7 @@ function FeaturesSection({ content }: { content: any }) {
 function ProductCarouselSection({ content }: { content: any }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useCart();
+  const { addItem } = useCart();
 
   useEffect(() => {
     fetchProducts();
