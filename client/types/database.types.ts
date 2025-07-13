@@ -347,3 +347,73 @@ export type ShippingZone =
   Database["public"]["Tables"]["shipping_zones"]["Row"];
 export type ShippingMethod =
   Database["public"]["Tables"]["shipping_methods"]["Row"];
+
+// Additional missing types
+export interface CartItem {
+  id: string;
+  product_id: string;
+  product_name: string;
+  variant_id?: string;
+  variant_name?: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  image_url?: string;
+  uploaded_file?: File;
+  uploaded_file_name?: string;
+  uploaded_file_url?: string;
+}
+
+export interface HomepageSection {
+  id: string;
+  type: string;
+  title: string;
+  content: any;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductCategoryAssignment {
+  product_id: string;
+  category_id: string;
+  created_at: string;
+}
+
+export interface SingleImageUploadProps {
+  onImageChange: (url: string) => void;
+  uploadPath: string;
+  currentImage?: string;
+}
+
+export interface SectionTemplate {
+  id: string;
+  type: string;
+  name: string;
+  content: any;
+}
+
+export interface DeliveryPageData {
+  content: string;
+  updated_at?: string;
+}
+
+export interface PrivacyPageData {
+  content: string;
+  updated_at?: string;
+}
+
+export interface TermsPageData {
+  content: string;
+  updated_at?: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  is_verified?: boolean;
+}
