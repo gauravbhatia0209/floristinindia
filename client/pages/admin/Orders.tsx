@@ -330,6 +330,13 @@ export default function Orders() {
                             {order.customer.phone}
                           </p>
                         )}
+                        {order.receiver_name &&
+                          order.receiver_name !==
+                            `${order.customer.first_name} ${order.customer.last_name}` && (
+                            <p className="text-sm font-medium text-blue-600">
+                              📧 Receiver: {order.receiver_name}
+                            </p>
+                          )}
                       </div>
 
                       <div>
