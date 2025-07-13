@@ -367,6 +367,18 @@ export default function Orders() {
                             Track: {order.tracking_number}
                           </p>
                         )}
+                        {order.customer_message && (
+                          <p className="text-sm text-blue-600">
+                            💬 Has Message
+                          </p>
+                        )}
+                        {order.uploaded_files &&
+                          order.uploaded_files.length > 0 && (
+                            <p className="text-sm text-green-600">
+                              📎 {order.uploaded_files.length} File
+                              {order.uploaded_files.length !== 1 ? "s" : ""}
+                            </p>
+                          )}
                       </div>
                     </div>
                   </div>
