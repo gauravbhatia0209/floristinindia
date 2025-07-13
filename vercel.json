@@ -4,100 +4,45 @@
   "builds": [
     {
       "src": "server/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["server/**", "shared/**"]
-      }
+      "use": "@vercel/node"
     },
     {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "src": "client/dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/sitemap.txt",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/public/robots.txt"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
-  "outputDirectory": "client/dist",
-  "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
-  "buildCommand": "cd client && npm run build && cd ../server && npm run build",
-  "devCommand": "npm run dev",
-  "framework": null,
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/server/index.ts"
-    },
-    {
-      "source": "/sitemap.xml",
-      "destination": "/server/index.ts"
-    },
-    {
-      "source": "/sitemap.txt",
-      "destination": "/server/index.ts"
-    },
-    {
-      "source": "/uploads/(.*)",
-      "destination": "/server/index.ts"
+  "functions": {
+    "server/index.ts": {
+      "maxDuration": 30
     }
-  ],
-  "redirects": [
-    {
-      "source": "/robots.txt",
-      "destination": "/public/robots.txt",
-      "permanent": true
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "X-Content-Source",
-          "value": "real-time-database"
-        },
-        {
-          "key": "X-Admin-Configurable",
-          "value": "true"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "X-Powered-By",
-          "value": "Florist in India - AI-Ready E-commerce"
-        }
-      ]
-    }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  }
 }
