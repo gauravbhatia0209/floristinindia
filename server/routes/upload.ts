@@ -45,7 +45,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter for validation
-const fileFilter = (req, file, cb) => {
+const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
   const allowedTypes = [".jpg", ".jpeg", ".png", ".webp"];
   const extension = path.extname(file.originalname).toLowerCase();
 
@@ -146,7 +146,7 @@ router.delete("/image/:filename", (req, res) => {
 });
 
 // Error handling middleware
-router.use((error, req, res, next) => {
+router.use((error: any, req: any, res: any, next: any) => {
   if (error instanceof multer.MulterError) {
     if (error.code === "LIMIT_FILE_SIZE") {
       return res
