@@ -242,7 +242,7 @@ export default function Analytics() {
           product: 0,
           cart: 0,
           checkout: 0,
-          complete: ordersData.totalOrders,
+          complete: ordersData?.totalOrders || 0,
         },
       };
 
