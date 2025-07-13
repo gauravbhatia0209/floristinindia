@@ -16,7 +16,7 @@ interface PageData {
   id: string;
   title: string;
   slug: string;
-  content: string;
+  content: string | { blocks?: any[] };
   meta_title?: string;
   meta_description?: string;
   is_active: boolean;
