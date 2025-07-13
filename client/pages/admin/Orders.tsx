@@ -718,42 +718,73 @@ export default function Orders() {
                       {selectedOrder.uploaded_files &&
                         selectedOrder.uploaded_files.length > 0 && (
                           <div>
-                            <p className="font-medium">Uploaded Files:</p>
-                            <div className="space-y-2">
+                            <p className="font-medium">All Uploaded Files:</p>
+                            <div className="space-y-3 mt-2">
                               {selectedOrder.uploaded_files.map(
                                 (file: any, index: number) => (
                                   <div
                                     key={index}
-                                    className="text-sm bg-gray-50 p-2 rounded flex justify-between items-center"
+                                    className="bg-gray-50 p-3 rounded-lg border"
                                   >
-                                    <div>
-                                      <p className="font-medium">
-                                        {file.file_name}
-                                      </p>
-                                      <p className="text-muted-foreground">
-                                        Product: {file.product_name}
-                                      </p>
-                                      {file.file_size && (
-                                        <p className="text-xs text-muted-foreground">
-                                          Size:{" "}
-                                          {(
-                                            file.file_size /
-                                            1024 /
-                                            1024
-                                          ).toFixed(2)}{" "}
-                                          MB
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <p className="font-medium text-gray-900">
+                                          {file.file_name}
                                         </p>
-                                      )}
+                                        <p className="text-sm text-blue-600">
+                                          📦 Product: {file.product_name}
+                                        </p>
+                                        <div className="flex gap-4 mt-1">
+                                          {file.file_size && (
+                                            <p className="text-xs text-gray-500">
+                                              📏 Size:{" "}
+                                              {(
+                                                file.file_size /
+                                                1024 /
+                                                1024
+                                              ).toFixed(2)}{" "}
+                                              MB
+                                            </p>
+                                          )}
+                                          {file.file_type && (
+                                            <p className="text-xs text-gray-500">
+                                              📄 Type: {file.file_type}
+                                            </p>
+                                          )}
+                                        </div>
+                                        {file.file_url && (
+                                          <div className="mt-2">
+                                            <a
+                                              href={file.file_url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="inline-flex items-center text-sm text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded transition-colors"
+                                            >
+                                              📥 Download File
+                                            </a>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <Badge
+                                        variant={
+                                          file.status === "uploaded"
+                                            ? "default"
+                                            : "destructive"
+                                        }
+                                        className={
+                                          file.status === "uploaded"
+                                            ? "bg-green-100 text-green-800"
+                                            : ""
+                                        }
+                                      >
+                                        {file.status}
+                                      </Badge>
                                     </div>
-                                    <Badge
-                                      variant={
-                                        file.status === "uploaded"
-                                          ? "default"
-                                          : "secondary"
-                                      }
-                                    >
-                                      {file.status}
-                                    </Badge>
+                                    {file.error && (
+                                      <p className="text-xs text-red-500 mt-2 bg-red-50 p-2 rounded">
+                                        ❌ Error: {file.error}
+                                      </p>
+                                    )}
                                   </div>
                                 ),
                               )}
