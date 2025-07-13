@@ -852,7 +852,7 @@ function FeaturesEditor({
     key: string,
     value: string | number,
   ) => {
-    updateNestedContent(["features", index, key], value);
+    updateNestedContent(["features", index.toString(), key], value);
   };
 
   const removeFeature = (index: number) => {
