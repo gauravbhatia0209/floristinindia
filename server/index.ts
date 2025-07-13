@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { handleDemo } from "./routes/demo";
 import uploadRoutes from "./routes/upload";
 import aiDataRoutes from "./routes/ai-data";
 import sitemapRoutes from "./routes/sitemap";
@@ -25,8 +24,6 @@ export function createServer() {
   app.get("/api/ping", (_req, res) => {
     res.json({ message: "Hello from Express server v2!" });
   });
-
-  app.get("/api/demo", handleDemo);
 
   // Upload routes
   app.use("/api/upload", uploadRoutes);
