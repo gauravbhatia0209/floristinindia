@@ -53,6 +53,31 @@ export function HeroCarousel({
     setCurrentIndex(index);
   }, []);
 
+  // Touch event handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+
+    const distance = touchStartX - touchEndX;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance) {
+      nextSlide();
+    } else if (distance < -minSwipeDistance) {
+      prevSlide();
+    }
+
+    setTouchStartX(0);
+    setTouchEndX(0);
+  };
+
   // Auto-play functionality
   useEffect(() => {
     if (!autoplay || isHovered || images.length <= 1) return;
