@@ -30,12 +30,24 @@ export function validateFile(
     };
   }
 
-  // Check file type
-  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+  // Check file type - allow both images and common document types for order files
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "application/pdf",
+    "text/plain",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ];
   if (!allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      error: `File type ${file.type} not allowed. Use: JPG, PNG, or WebP`,
+      error: `File type ${file.type} not allowed. Use: JPG, PNG, WebP, PDF, DOC, DOCX, XLS, XLSX, or TXT`,
     };
   }
 
