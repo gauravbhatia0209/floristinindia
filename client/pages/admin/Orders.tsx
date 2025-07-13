@@ -567,6 +567,12 @@ export default function Orders() {
                         {selectedOrder.shipping_address.phone && (
                           <p>Phone: {selectedOrder.shipping_address.phone}</p>
                         )}
+                        {selectedOrder.shipping_address.alternate_phone && (
+                          <p>
+                            Alternate Phone:{" "}
+                            {selectedOrder.shipping_address.alternate_phone}
+                          </p>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
