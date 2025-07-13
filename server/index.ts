@@ -30,7 +30,7 @@ export function createServer() {
   app.use("/uploads", express.static(uploadsPath));
 
   // Also serve from public directory for static assets
-  app.use("/public", express.static(path.join(process.cwd(), "public")));
+  app.use("/public", express.static(path.join(process.cwd(), "..", "public")));
 
   // API routes
   app.get("/api/ping", (_req, res) => {
