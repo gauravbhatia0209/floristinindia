@@ -132,6 +132,7 @@ export default function Settings() {
   const [isSaving, setIsSaving] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [faviconUploading, setFaviconUploading] = useState(false);
+  const [ogImageUploading, setOgImageUploading] = useState(false);
 
   useEffect(() => {
     fetchSettings();
