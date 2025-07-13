@@ -73,11 +73,43 @@ export default function Orders() {
 
       if (data) {
         setOrders(data as OrderWithCustomer[]);
+        await fetchProductImagesForOrders(data as OrderWithCustomer[]);
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function fetchProductImagesForOrders(orders: OrderWithCustomer[]) {
+    try {
+      // Get all unique product IDs from all orders
+      const productIds = new Set<string>();
+      orders.forEach((order) => {
+        order.items.forEach((item: any) => {
+          if (item.product_id) {
+            productIds.add(item.product_id);
+          }
+        });
+      });
+
+      if (productIds.size > 0) {
+        const { data: products } = await supabase
+          .from("products")
+          .select("id, image_url")
+          .in("id", Array.from(productIds));
+
+        if (products) {
+          const imageMap: Record<string, string> = {};
+          products.forEach((product) => {
+            imageMap[product.id] = product.image_url;
+          });
+          setProductImages(imageMap);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch product images:", error);
     }
   }
 
