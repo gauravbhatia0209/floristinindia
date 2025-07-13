@@ -527,6 +527,25 @@ export default function Orders() {
                             <p className="text-sm text-muted-foreground">
                               Quantity: {item.quantity}
                             </p>
+                            {item.uploaded_file_name && (
+                              <p className="text-sm text-blue-600">
+                                📎 Uploaded File: {item.uploaded_file_name}
+                              </p>
+                            )}
+                            {item.uploaded_file_url &&
+                              item.uploaded_file_url !== "pending-upload" && (
+                                <p className="text-sm text-green-600">
+                                  📁 File Available:{" "}
+                                  <a
+                                    href={item.uploaded_file_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline"
+                                  >
+                                    View File
+                                  </a>
+                                </p>
+                              )}
                           </div>
                           <div className="text-right">
                             <p className="font-medium">
