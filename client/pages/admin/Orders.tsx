@@ -634,6 +634,36 @@ export default function Orders() {
                       )}
                     </CardContent>
                   </Card>
+
+                  {/* Additional Order Information */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Additional Information</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {selectedOrder.special_instructions &&
+                        selectedOrder.special_instructions.includes(
+                          "Customer Message:",
+                        ) && (
+                          <div>
+                            <p className="font-medium">Customer Message:</p>
+                            <p className="text-sm text-muted-foreground bg-gray-50 p-3 rounded">
+                              {selectedOrder.special_instructions
+                                .split("Customer Message: ")[1]
+                                ?.split("\n\n")[0] || ""}
+                            </p>
+                          </div>
+                        )}
+                      {selectedOrder.notes && (
+                        <div>
+                          <p className="font-medium">Admin Notes:</p>
+                          <p className="text-sm text-muted-foreground">
+                            {selectedOrder.notes}
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
               </TabsContent>
 
