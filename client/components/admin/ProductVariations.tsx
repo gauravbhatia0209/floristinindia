@@ -783,11 +783,11 @@ export function ProductVariations({
                   the main product image when the variation is selected.
                 </p>
                 <SingleImageUpload
-                  currentImage={formData.image_url}
+                  imageUrl={formData.image_url}
                   onImageChange={(url) =>
                     setFormData({ ...formData, image_url: url })
                   }
-                  uploadPath="products/variations"
+                  subdir="products/variations"
                 />
               </div>
 
