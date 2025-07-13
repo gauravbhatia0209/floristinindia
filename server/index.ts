@@ -40,6 +40,30 @@ export function createServer() {
   // Admin update notification routes for AI cache management
   app.use("/api/admin", adminUpdatesRoutes);
 
+  // Health check route
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      service: "florist-backend",
+    });
+  });
+
+  // Serve static files from client build in production
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(process.cwd(), "../client/dist")));
+
+    // Catch-all handler: send back React's index.html file for non-API routes
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(process.cwd(), "../client/dist/index.html"));
+    });
+  } else {
+    // In development, redirect to Vite dev server
+    app.get("*", (_req, res) => {
+      res.redirect("http://localhost:5173");
+    });
+  }
+
   return app;
 }
 
