@@ -148,14 +148,12 @@ function CategoryRow({
                 onCheckedChange={() =>
                   onToggleStatus(category.id, category.is_active)
                 }
-                size="sm"
               />
               <Switch
                 checked={category.show_in_menu}
                 onCheckedChange={() =>
                   onToggleMenuVisibility(category.id, category.show_in_menu)
                 }
-                size="sm"
               />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
