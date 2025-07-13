@@ -203,16 +203,27 @@ export function HeroCarousel({
 
       {/* Dots navigation */}
       {showDots && images.length > 1 && (
-        <div className="hero-carousel-dots absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+        <div
+          className={`hero-carousel-dots absolute left-1/2 transform -translate-x-1/2 flex z-10 ${
+            isMobile ? "bottom-2 space-x-1" : "bottom-4 space-x-2"
+          }`}
+        >
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`hero-carousel-dot w-3 h-3 rounded-full transition-all duration-200 ${
+              className={`hero-carousel-dot rounded-full transition-all duration-200 ${
+                isMobile ? "w-2 h-2 mx-1" : "w-3 h-3"
+              } ${
                 index === currentIndex
                   ? "bg-white shadow-lg scale-110"
-                  : "bg-white/50 hover:bg-white/75"
+                  : "bg-white/50 hover:bg-white/75 active:bg-white/90"
               }`}
+              style={{
+                minWidth: isMobile ? "16px" : "12px",
+                minHeight: isMobile ? "16px" : "12px",
+                touchAction: "manipulation",
+              }}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
