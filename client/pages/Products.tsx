@@ -44,6 +44,8 @@ import {
   getCategoriesWithProductCount,
 } from "@/lib/productUtils";
 import AIMetaTags from "@/components/AIMetaTags";
+import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
+import { useFacebookPixel } from "@/components/FacebookPixel";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
