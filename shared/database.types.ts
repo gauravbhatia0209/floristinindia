@@ -521,6 +521,13 @@ export interface Database {
           coupon_code?: string | null;
           tracking_number?: string | null;
           notes?: string | null;
+          customer_message?: string | null;
+          receiver_name?: string | null;
+          receiver_phone?: string | null;
+          alternate_phone?: string | null;
+          uploaded_files?: any[] | null;
+          delivery_instructions?: string | null;
+          order_source?: string | null;
           created_at?: string;
           updated_at?: string;
         };
