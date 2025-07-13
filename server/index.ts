@@ -48,12 +48,20 @@ export function createServer() {
 
   // Serve static files from client build in production
   if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(process.cwd(), "../client/dist")));
+    // In serverless environments, static files are handled by the platform
+    // This is a fallback for self-hosted deployments
+    const staticPath = process.env.VERCEL
+      ? "/tmp/client/dist"
+      : path.join(process.cwd(), "../client/dist");
 
-    // Catch-all handler: send back React's index.html file for non-API routes
-    app.get("*", (_req, res) => {
-      res.sendFile(path.join(process.cwd(), "../client/dist/index.html"));
-    });
+    if (!process.env.VERCEL) {
+      app.use(express.static(staticPath));
+
+      // Catch-all handler: send back React's index.html file for non-API routes
+      app.get("*", (_req, res) => {
+        res.sendFile(path.join(staticPath, "index.html"));
+      });
+    }
   } else {
     // In development, redirect to Vite dev server
     app.get("*", (_req, res) => {
