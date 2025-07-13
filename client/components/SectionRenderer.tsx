@@ -456,10 +456,12 @@ function ProductCarouselSection({ content }: { content: any }) {
 
   const handleAddToCart = (product: Product) => {
     addItem({
-      id: product.id,
-      name: product.name,
-      price: product.sale_price || product.price,
-      image: product.images?.[0] || "",
+      id: `${product.id}-${Date.now()}`,
+      product_id: product.id,
+      product_name: product.name,
+      unit_price: product.sale_price || product.price,
+      total_price: product.sale_price || product.price,
+      image_url: product.images?.[0] || "",
       quantity: 1,
     });
   };
