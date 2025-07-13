@@ -329,7 +329,18 @@ INSERT INTO site_settings (key, value, type, description) VALUES
 ('meta_title', 'Florist in India - Premium Fresh Flower Delivery', 'text', 'Default meta title'),
 ('meta_description', 'Order fresh flowers online for same-day delivery across India. Premium flower arrangements for all occasions with 100% freshness guarantee.', 'text', 'Default meta description'),
 ('google_analytics_id', '', 'text', 'Google Analytics tracking ID (G-XXXXXXXXXX)'),
-('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop');
+('facebook_pixel_id', '', 'text', 'Facebook Pixel ID for tracking and Facebook Shop'),
+('facebook_app_id', '', 'text', 'Facebook App ID for enhanced social sharing'),
+('meta_title_template', '%title% | %sitename%', 'text', 'Template for page titles'),
+('og_image_url', '', 'image', 'Default Open Graph image for social sharing'),
+('twitter_card_type', 'summary_large_image', 'text', 'Twitter card type for social sharing'),
+('twitter_site', '', 'text', 'Twitter site handle (@username)'),
+('canonical_url', '', 'text', 'Canonical URL for the website'),
+('robots_txt_content', '', 'text', 'Custom robots.txt content'),
+('schema_org_organization', '', 'text', 'JSON-LD organization schema markup'),
+('custom_head_tags', '', 'text', 'Custom HTML tags for the head section'),
+('sitemap_enabled', 'true', 'boolean', 'Enable automatic XML sitemap generation'),
+('breadcrumbs_enabled', 'true', 'boolean', 'Enable breadcrumb navigation');
 ON CONFLICT (key) DO NOTHING;
 
 -- Insert shipping zones and methods (only if they don't exist)
