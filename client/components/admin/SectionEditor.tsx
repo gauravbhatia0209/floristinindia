@@ -1104,7 +1104,7 @@ function TestimonialsEditor({
     key: string,
     value: string | number,
   ) => {
-    updateNestedContent(["testimonials", index, key], value);
+    updateNestedContent(["testimonials", index.toString(), key], value);
   };
 
   const removeTestimonial = (index: number) => {
