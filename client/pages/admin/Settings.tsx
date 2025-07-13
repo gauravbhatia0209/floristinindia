@@ -303,6 +303,37 @@ export default function Settings() {
     handleInputChange("favicon_url", "");
   }
 
+  async function handleOgImageUpload(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setOgImageUploading(true);
+    try {
+      // Delete old OG image if exists
+      if (settings.og_image_url) {
+        await deleteImageFromSupabase(settings.og_image_url);
+      }
+
+      const result = await uploadImageToSupabase(file, "og-images");
+      if (result.success && result.publicUrl) {
+        handleInputChange("og_image_url", result.publicUrl);
+      } else {
+        alert(result.error || "Failed to upload OG image");
+      }
+    } catch (error) {
+      console.error("OG image upload error:", error);
+      alert("Failed to upload OG image");
+    } finally {
+      setOgImageUploading(false);
+    }
+  }
+
+  function removeOgImage() {
+    handleInputChange("og_image_url", "");
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
