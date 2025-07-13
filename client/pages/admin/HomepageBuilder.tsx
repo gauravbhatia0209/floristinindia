@@ -51,7 +51,10 @@ import {
   ProductCategory,
 } from "@shared/database.types";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
-import { getSectionTemplatesForPage } from "@/lib/sectionLibrary";
+import {
+  getSectionTemplatesForPage,
+  SectionTemplate,
+} from "@/lib/sectionLibrary";
 import { SectionBuilder, Section } from "@/components/admin/SectionBuilder";
 import { SectionEditor } from "@/components/admin/SectionEditor";
 
