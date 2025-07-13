@@ -658,9 +658,9 @@ function CategoryGridSection({ content }: { content: any }) {
           >
             <Card className="border-0 shadow-lg overflow-hidden group-hover:shadow-xl transition-shadow">
               <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-square">
-                {category.image ? (
+                {category.image_url ? (
                   <img
-                    src={category.image}
+                    src={category.image_url}
                     alt={category.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
