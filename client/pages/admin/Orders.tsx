@@ -668,6 +668,51 @@ export default function Orders() {
                           </p>
                         </div>
                       )}
+                      {selectedOrder.uploaded_files &&
+                        selectedOrder.uploaded_files.length > 0 && (
+                          <div>
+                            <p className="font-medium">Uploaded Files:</p>
+                            <div className="space-y-2">
+                              {selectedOrder.uploaded_files.map(
+                                (file: any, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="text-sm bg-gray-50 p-2 rounded flex justify-between items-center"
+                                  >
+                                    <div>
+                                      <p className="font-medium">
+                                        {file.file_name}
+                                      </p>
+                                      <p className="text-muted-foreground">
+                                        Product: {file.product_name}
+                                      </p>
+                                      {file.file_size && (
+                                        <p className="text-xs text-muted-foreground">
+                                          Size:{" "}
+                                          {(
+                                            file.file_size /
+                                            1024 /
+                                            1024
+                                          ).toFixed(2)}{" "}
+                                          MB
+                                        </p>
+                                      )}
+                                    </div>
+                                    <Badge
+                                      variant={
+                                        file.status === "uploaded"
+                                          ? "default"
+                                          : "secondary"
+                                      }
+                                    >
+                                      {file.status}
+                                    </Badge>
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        )}
                       {selectedOrder.notes && (
                         <div>
                           <p className="font-medium">Admin Notes:</p>
