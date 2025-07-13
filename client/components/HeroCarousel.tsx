@@ -154,12 +154,12 @@ export function HeroCarousel({
       </div>
 
       {/* Navigation arrows */}
-      {showNavigation && images.length > 1 && (
+      {showNavigation && images.length > 1 && !isMobile && (
         <>
           <Button
             variant="outline"
             size="icon"
-            className="hero-carousel-nav absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10"
+            className="hero-carousel-nav absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10 transition-all duration-200"
             onClick={prevSlide}
             aria-label="Previous slide"
           >
@@ -168,11 +168,35 @@ export function HeroCarousel({
           <Button
             variant="outline"
             size="icon"
-            className="hero-carousel-nav absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10"
+            className="hero-carousel-nav absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white/90 border-white/20 shadow-lg z-10 transition-all duration-200"
             onClick={nextSlide}
             aria-label="Next slide"
           >
             <ChevronRight className="h-4 w-4" />
+          </Button>
+        </>
+      )}
+
+      {/* Mobile-friendly navigation arrows - smaller and positioned differently */}
+      {showNavigation && images.length > 1 && isMobile && (
+        <>
+          <Button
+            variant="outline"
+            size="sm"
+            className="hero-carousel-nav-mobile absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white/85 border-white/20 shadow-md z-10 w-8 h-8 p-0 rounded-full"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="hero-carousel-nav-mobile absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white/85 border-white/20 shadow-md z-10 w-8 h-8 p-0 rounded-full"
+            onClick={nextSlide}
+            aria-label="Next slide"
+          >
+            <ChevronRight className="h-3 w-3" />
           </Button>
         </>
       )}
