@@ -570,11 +570,36 @@ export default function Orders() {
                   <CardContent>
                     <div className="space-y-4">
                       {selectedOrder.items.map((item: any, index: number) => (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center border-b pb-4"
-                        >
-                          <div>
+                        <div key={index} className="flex gap-4 border-b pb-4">
+                          {/* Product Image */}
+                          <div className="flex-shrink-0">
+                            {productImages[item.product_id] ? (
+                              <div
+                                className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden cursor-pointer group hover:shadow-md transition-shadow"
+                                onClick={() =>
+                                  setSelectedImage(
+                                    productImages[item.product_id],
+                                  )
+                                }
+                              >
+                                <img
+                                  src={productImages[item.product_id]}
+                                  alt={item.product_name}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
+                                  <ZoomIn className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <Eye className="w-6 h-6 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Product Details */}
+                          <div className="flex-1">
                             <h4 className="font-medium">{item.product_name}</h4>
                             {item.variant_name && (
                               <p className="text-sm text-muted-foreground">
@@ -632,7 +657,9 @@ export default function Orders() {
                               </div>
                             )}
                           </div>
-                          <div className="text-right">
+
+                          {/* Price */}
+                          <div className="text-right flex-shrink-0">
                             <p className="font-medium">
                               ₹{item.total_price.toLocaleString()}
                             </p>
