@@ -192,15 +192,17 @@ export default function TrackOrder() {
       });
 
       // Verify the customer contact details
-      const customer = orderData.customers;
+      const customer = Array.isArray(orderData.customers)
+        ? orderData.customers[0]
+        : orderData.customers;
       const customerMatches =
         verificationType === "phone"
-          ? customer.phone === verificationField.trim() ||
-            customer.phone === `+91${verificationField.trim()}` ||
-            customer.phone
-              .replace(/\D/g, "")
+          ? customer?.phone === verificationField.trim() ||
+            customer?.phone === `+91${verificationField.trim()}` ||
+            customer?.phone
+              ?.replace(/\D/g, "")
               .endsWith(verificationField.trim().replace(/\D/g, ""))
-          : customer.email.toLowerCase() ===
+          : customer?.email?.toLowerCase() ===
             verificationField.trim().toLowerCase();
 
       if (!customerMatches) {
