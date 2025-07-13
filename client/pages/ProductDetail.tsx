@@ -332,7 +332,7 @@ export default function ProductDetail() {
     price: product.price,
     sale_price: product.sale_price,
     images: product.images,
-    category_name: product.category_name,
+
     slug: product.slug,
   };
 
@@ -377,7 +377,7 @@ export default function ProductDetail() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-6xl">
-                🌺
+                ��
               </div>
             )}
           </div>
