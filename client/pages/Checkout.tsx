@@ -628,6 +628,10 @@ export default function Checkout() {
       // Generate sequential order number with FII prefix
       const orderNumber = await generateOrderNumber();
 
+      // Upload files first
+      console.log("Uploading order files...");
+      const uploadedFiles = await uploadOrderFiles(orderNumber);
+
       // Create customer record
       const nameParts = form.fullName.trim().split(" ");
       const firstName = nameParts[0] || "";
@@ -672,25 +676,33 @@ export default function Checkout() {
           shipping_amount: totals.shipping,
           discount_amount: totals.discount,
           tax_amount: totals.tax,
-          items: items.map((item) => ({
-            product_id: item.product_id,
-            product_name: item.product.name,
-            variant_id: item.variant_id,
-            variant_name: item.variant?.name,
-            quantity: item.quantity,
-            unit_price:
-              item.variant?.sale_price ||
-              item.variant?.price ||
-              item.product.sale_price ||
-              item.product.price,
-            total_price:
-              (item.variant?.sale_price ||
+          items: items.map((item) => {
+            const uploadedFileData = uploadedFiles.find(
+              (f) => f.product_id === item.product_id,
+            );
+            return {
+              product_id: item.product_id,
+              product_name: item.product.name,
+              variant_id: item.variant_id,
+              variant_name: item.variant?.name,
+              quantity: item.quantity,
+              unit_price:
+                item.variant?.sale_price ||
                 item.variant?.price ||
                 item.product.sale_price ||
-                item.product.price) * item.quantity,
-            uploaded_file_url: item.uploaded_file ? "pending-upload" : null,
-            uploaded_file_name: item.uploaded_file?.name || null,
-          })),
+                item.product.price,
+              total_price:
+                (item.variant?.sale_price ||
+                  item.variant?.price ||
+                  item.product.sale_price ||
+                  item.product.price) * item.quantity,
+              uploaded_file_url: uploadedFileData?.file_url || null,
+              uploaded_file_name: uploadedFileData?.file_name || null,
+              uploaded_file_size: uploadedFileData?.file_size || null,
+              uploaded_file_type: uploadedFileData?.file_type || null,
+              upload_status: uploadedFileData?.status || null,
+            };
+          }),
           shipping_address: {
             name: form.receiverName,
             line1: form.addressLine1,
