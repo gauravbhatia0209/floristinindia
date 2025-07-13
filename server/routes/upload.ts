@@ -7,7 +7,10 @@ import crypto from "crypto";
 const router = express.Router();
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(process.cwd(), "public", "uploads");
+const uploadsDir = process.env.VERCEL
+  ? path.join("/tmp", "uploads")
+  : path.join(process.cwd(), "public", "uploads");
+
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
