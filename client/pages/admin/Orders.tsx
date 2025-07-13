@@ -573,7 +573,11 @@ export default function Orders() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-1">
-                        <p>{selectedOrder.shipping_address.name}</p>
+                        <p>
+                          <strong>Receiver:</strong>{" "}
+                          {selectedOrder.receiver_name ||
+                            selectedOrder.shipping_address.name}
+                        </p>
                         <p>{selectedOrder.shipping_address.address_line_1}</p>
                         {selectedOrder.shipping_address.address_line_2 && (
                           <p>{selectedOrder.shipping_address.address_line_2}</p>
@@ -583,13 +587,20 @@ export default function Orders() {
                           {selectedOrder.shipping_address.state}{" "}
                           {selectedOrder.shipping_address.pincode}
                         </p>
-                        {selectedOrder.shipping_address.phone && (
-                          <p>Phone: {selectedOrder.shipping_address.phone}</p>
+                        {(selectedOrder.receiver_phone ||
+                          selectedOrder.shipping_address.phone) && (
+                          <p>
+                            Phone:{" "}
+                            {selectedOrder.receiver_phone ||
+                              selectedOrder.shipping_address.phone}
+                          </p>
                         )}
-                        {selectedOrder.shipping_address.alternate_phone && (
+                        {(selectedOrder.alternate_phone ||
+                          selectedOrder.shipping_address.alternate_phone) && (
                           <p>
                             Alternate Phone:{" "}
-                            {selectedOrder.shipping_address.alternate_phone}
+                            {selectedOrder.alternate_phone ||
+                              selectedOrder.shipping_address.alternate_phone}
                           </p>
                         )}
                       </div>
@@ -641,19 +652,22 @@ export default function Orders() {
                       <CardTitle>Additional Information</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      {selectedOrder.special_instructions &&
-                        selectedOrder.special_instructions.includes(
-                          "Customer Message:",
-                        ) && (
-                          <div>
-                            <p className="font-medium">Customer Message:</p>
-                            <p className="text-sm text-muted-foreground bg-gray-50 p-3 rounded">
-                              {selectedOrder.special_instructions
-                                .split("Customer Message: ")[1]
-                                ?.split("\n\n")[0] || ""}
-                            </p>
-                          </div>
-                        )}
+                      {selectedOrder.customer_message && (
+                        <div>
+                          <p className="font-medium">Customer Message:</p>
+                          <p className="text-sm text-muted-foreground bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                            {selectedOrder.customer_message}
+                          </p>
+                        </div>
+                      )}
+                      {selectedOrder.delivery_instructions && (
+                        <div>
+                          <p className="font-medium">Delivery Instructions:</p>
+                          <p className="text-sm text-muted-foreground bg-yellow-50 p-3 rounded border-l-4 border-yellow-400">
+                            {selectedOrder.delivery_instructions}
+                          </p>
+                        </div>
+                      )}
                       {selectedOrder.notes && (
                         <div>
                           <p className="font-medium">Admin Notes:</p>
