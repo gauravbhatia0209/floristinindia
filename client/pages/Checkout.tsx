@@ -649,15 +649,23 @@ export default function Checkout() {
           },
           delivery_date: form.deliveryDate || null,
           delivery_slot: form.deliverySlot || null,
-          special_instructions:
-            [
-              form.specialInstructions,
-              form.orderMessage
-                ? `Customer Message: ${form.orderMessage}`
-                : null,
-            ]
-              .filter(Boolean)
-              .join("\n\n") || null,
+          special_instructions: form.specialInstructions || null,
+          customer_message: form.orderMessage || null,
+          receiver_name: form.receiverName || null,
+          receiver_phone:
+            `${form.receiverPhoneCountryCode}${form.receiverPhone}` || null,
+          alternate_phone: form.alternatePhone || null,
+          delivery_instructions: form.specialInstructions || null,
+          uploaded_files: items
+            .filter((item) => item.uploaded_file)
+            .map((item) => ({
+              product_id: item.product_id,
+              product_name: item.product.name,
+              file_name: item.uploaded_file?.name,
+              file_size: item.uploaded_file?.size,
+              file_type: item.uploaded_file?.type,
+              status: "pending-upload",
+            })),
           payment_method: form.paymentMethod,
           payment_status: "pending",
           coupon_code: appliedCoupon?.code || null,
