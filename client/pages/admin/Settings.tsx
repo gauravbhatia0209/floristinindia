@@ -1022,6 +1022,272 @@ export default function Settings() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="advanced-seo" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Share2 className="w-5 h-5" />
+                Open Graph & Social Media
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <Label>Default Open Graph Image</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  {settings.og_image_url ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center">
+                        <img
+                          src={settings.og_image_url}
+                          alt="OG image preview"
+                          className="max-h-32 max-w-full object-contain rounded"
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-center">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleOgImageUpload}
+                          disabled={ogImageUploading}
+                          className="hidden"
+                          id="og-image-upload"
+                        />
+                        <Label htmlFor="og-image-upload">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            disabled={ogImageUploading}
+                          >
+                            <span>
+                              {ogImageUploading ? "Uploading..." : "Change"}
+                            </span>
+                          </Button>
+                        </Label>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={removeOgImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center space-y-3">
+                      <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground" />
+                      <div>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleOgImageUpload}
+                          disabled={ogImageUploading}
+                          className="hidden"
+                          id="og-image-upload"
+                        />
+                        <Label htmlFor="og-image-upload">
+                          <Button
+                            variant="outline"
+                            asChild
+                            disabled={ogImageUploading}
+                          >
+                            <span>
+                              <Upload className="h-4 w-4 mr-2" />
+                              {ogImageUploading
+                                ? "Uploading..."
+                                : "Upload OG Image"}
+                            </span>
+                          </Button>
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        PNG, JPG, or WebP up to 3MB
+                        <br />
+                        Recommended: 1200×630px for optimal social sharing
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="twitter_card_type">Twitter Card Type</Label>
+                  <Input
+                    id="twitter_card_type"
+                    value={settings.twitter_card_type}
+                    onChange={(e) =>
+                      handleInputChange("twitter_card_type", e.target.value)
+                    }
+                    placeholder="summary_large_image"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Options: summary, summary_large_image, app, player
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="twitter_site">Twitter Site Handle</Label>
+                  <Input
+                    id="twitter_site"
+                    value={settings.twitter_site}
+                    onChange={(e) =>
+                      handleInputChange("twitter_site", e.target.value)
+                    }
+                    placeholder="@yoursite"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Your Twitter username (include @)
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="w-5 h-5" />
+                Technical SEO
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="canonical_url">Canonical URL</Label>
+                <Input
+                  id="canonical_url"
+                  value={settings.canonical_url}
+                  onChange={(e) =>
+                    handleInputChange("canonical_url", e.target.value)
+                  }
+                  placeholder="https://yourdomain.com"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  The primary domain for your website (helps prevent duplicate
+                  content issues)
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="sitemap_enabled">Enable XML Sitemap</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically generate sitemap for search engines
+                    </p>
+                  </div>
+                  <Switch
+                    id="sitemap_enabled"
+                    checked={settings.sitemap_enabled}
+                    onCheckedChange={(checked) =>
+                      handleInputChange("sitemap_enabled", checked)
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="breadcrumbs_enabled">
+                      Enable Breadcrumbs
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Show navigation breadcrumbs on pages
+                    </p>
+                  </div>
+                  <Switch
+                    id="breadcrumbs_enabled"
+                    checked={settings.breadcrumbs_enabled}
+                    onCheckedChange={(checked) =>
+                      handleInputChange("breadcrumbs_enabled", checked)
+                    }
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="robots_txt_content">Robots.txt Content</Label>
+                <Textarea
+                  id="robots_txt_content"
+                  value={settings.robots_txt_content}
+                  onChange={(e) =>
+                    handleInputChange("robots_txt_content", e.target.value)
+                  }
+                  placeholder={`User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://yourdomain.com/sitemap.xml`}
+                  rows={6}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Custom robots.txt content. Leave empty for default settings.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Code className="w-5 h-5" />
+                Structured Data & Custom Code
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="schema_org_organization">
+                  Organization Schema (JSON-LD)
+                </Label>
+                <Textarea
+                  id="schema_org_organization"
+                  value={settings.schema_org_organization}
+                  onChange={(e) =>
+                    handleInputChange("schema_org_organization", e.target.value)
+                  }
+                  placeholder={`{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Your Business Name",
+  "url": "https://yourdomain.com",
+  "logo": "https://yourdomain.com/logo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+91-XXXXXXXXXX",
+    "contactType": "customer service"
+  }
+}`}
+                  rows={8}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  JSON-LD structured data for your organization. This helps
+                  search engines understand your business.
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="custom_head_tags">Custom HTML Head Tags</Label>
+                <Textarea
+                  id="custom_head_tags"
+                  value={settings.custom_head_tags}
+                  onChange={(e) =>
+                    handleInputChange("custom_head_tags", e.target.value)
+                  }
+                  placeholder={`<!-- Custom meta tags, verification codes, etc. -->
+<meta name="google-site-verification" content="your-verification-code" />
+<meta name="msvalidate.01" content="your-bing-verification-code" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Additional custom code -->`}
+                  rows={6}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Custom HTML tags to be inserted in the &lt;head&gt; section.
+                  Use for verification codes, custom fonts, etc.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
