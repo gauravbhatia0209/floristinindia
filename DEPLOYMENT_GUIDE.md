@@ -88,11 +88,35 @@ vercel env add NODE_ENV production
 ### **Step 4: Deploy**
 
 ```bash
+# If you encounter config errors, use the simple config
+# Rename simple config: mv vercel.simple.json vercel.json
+
 # Deploy to Vercel
 vercel
 
 # For production deployment
 vercel --prod
+```
+
+**Troubleshooting Vercel Config:**
+
+If you get routing errors, you have two options:
+
+**Option A: Use Simple Config (Recommended)**
+
+```bash
+mv vercel.json vercel.advanced.json
+mv vercel.simple.json vercel.json
+vercel --prod
+```
+
+**Option B: Fix Build Issues**
+Ensure your build commands work locally first:
+
+```bash
+npm run build
+cd client && ls dist/  # Should show built files
+cd ../server && ls dist/  # Should show compiled JS files
 ```
 
 ### **Step 5: Configure Domain (Optional)**
