@@ -625,6 +625,7 @@ export default function Checkout() {
                 item.product.sale_price ||
                 item.product.price) * item.quantity,
             uploaded_file_url: item.uploaded_file ? "pending-upload" : null,
+            uploaded_file_name: item.uploaded_file?.name || null,
           })),
           shipping_address: {
             name: form.receiverName,
