@@ -43,6 +43,7 @@ import {
 } from "@/lib/shipping-service";
 import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
 import { useFacebookPixel } from "@/components/FacebookPixel";
+import { uploadImageToSupabase } from "@/lib/supabase-storage";
 
 interface ShippingMethodCardProps {
   pincode: string;
@@ -441,6 +442,69 @@ export default function Checkout() {
     } catch (error) {
       console.error("Error fetching GST rate:", error);
     }
+  }
+
+  async function uploadOrderFiles(orderNumber: string): Promise<any[]> {
+    const uploadedFiles = [];
+
+    for (const item of items) {
+      if (item.uploaded_file) {
+        try {
+          console.log(`Uploading file for product ${item.product.name}...`);
+
+          // Upload file to Supabase storage in order-files subdirectory
+          const result = await uploadImageToSupabase(
+            item.uploaded_file,
+            `order-files/${orderNumber}`,
+            10, // Allow up to 10MB for order files
+          );
+
+          if (result.success && result.publicUrl) {
+            uploadedFiles.push({
+              product_id: item.product_id,
+              product_name: item.product.name,
+              file_name: item.uploaded_file.name,
+              file_size: item.uploaded_file.size,
+              file_type: item.uploaded_file.type,
+              file_url: result.publicUrl,
+              status: "uploaded",
+            });
+          } else {
+            console.error(
+              `Failed to upload file for ${item.product.name}:`,
+              result.error,
+            );
+            uploadedFiles.push({
+              product_id: item.product_id,
+              product_name: item.product.name,
+              file_name: item.uploaded_file.name,
+              file_size: item.uploaded_file.size,
+              file_type: item.uploaded_file.type,
+              file_url: null,
+              status: "upload-failed",
+              error: result.error,
+            });
+          }
+        } catch (error) {
+          console.error(
+            `Error uploading file for ${item.product.name}:`,
+            error,
+          );
+          uploadedFiles.push({
+            product_id: item.product_id,
+            product_name: item.product.name,
+            file_name: item.uploaded_file.name,
+            file_size: item.uploaded_file.size,
+            file_type: item.uploaded_file.type,
+            file_url: null,
+            status: "upload-error",
+            error: error.message,
+          });
+        }
+      }
+    }
+
+    return uploadedFiles;
   }
 
   function handleShippingMethodSelect(
