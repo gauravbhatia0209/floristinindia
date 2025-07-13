@@ -68,6 +68,18 @@ interface SettingsData {
   google_analytics_id: string;
   facebook_pixel_id: string;
   facebook_app_id: string;
+
+  // Advanced SEO
+  meta_title_template: string;
+  og_image_url: string;
+  twitter_card_type: string;
+  twitter_site: string;
+  canonical_url: string;
+  robots_txt_content: string;
+  schema_org_organization: string;
+  custom_head_tags: string;
+  sitemap_enabled: boolean;
+  breadcrumbs_enabled: boolean;
 }
 
 export default function Settings() {
