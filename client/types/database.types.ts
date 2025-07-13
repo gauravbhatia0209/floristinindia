@@ -362,6 +362,9 @@ export interface CartItem {
   uploaded_file?: File;
   uploaded_file_name?: string;
   uploaded_file_url?: string;
+  product?: Product;
+  variant?: any;
+  name?: string;
 }
 
 export interface HomepageSection {
