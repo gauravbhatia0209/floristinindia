@@ -16,10 +16,19 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Serve static files from uploads directory
-  app.use(
-    "/uploads",
-    express.static(path.join(process.cwd(), "public", "uploads")),
-  );
+  const uploadsPath = process.env.VERCEL
+    ? path.join("/tmp", "uploads")
+    : path.join(process.cwd(), "public", "uploads");
+
+  // Ensure uploads directory exists
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+  }
+
+  app.use("/uploads", express.static(uploadsPath));
+
+  // Also serve from public directory for static assets
+  app.use("/public", express.static(path.join(process.cwd(), "public")));
 
   // API routes
   app.get("/api/ping", (_req, res) => {
