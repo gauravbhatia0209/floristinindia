@@ -694,10 +694,11 @@ export default function Index() {
   function renderCategoryGrid(section: HomepageSection) {
     const content = section.content as any;
     const showCount = content?.show_count || 8;
-    const displayTitle = section.title || "Shop by Occasion";
-    const displaySubtitle =
-      section.subtitle ||
-      "Find the perfect flowers for every special moment in life";
+
+    // Only use title/subtitle if they exist and are not empty
+    const hasTitle = section.title && section.title.trim() !== "";
+    const hasSubtitle = section.subtitle && section.subtitle.trim() !== "";
+    const hasAnyText = hasTitle || hasSubtitle;
 
     // Filter out any invalid categories and limit display count
     const validCategories = categories
@@ -708,16 +709,22 @@ export default function Index() {
 
     if (validCategories.length === 0) {
       return (
-        <section className="py-20">
+        <section className={`${hasAnyText ? "py-20" : "py-8"}`}>
           <div className="container">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                {displayTitle}
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                {displaySubtitle}
-              </p>
-            </div>
+            {hasAnyText && (
+              <div className="text-center mb-12">
+                {hasTitle && (
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    {section.title}
+                  </h2>
+                )}
+                {hasSubtitle && (
+                  <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    {section.subtitle}
+                  </p>
+                )}
+              </div>
+            )}
             <div className="text-center py-12 bg-muted/30 rounded-xl">
               <div className="text-6xl mb-4">🌸</div>
               <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
@@ -733,16 +740,22 @@ export default function Index() {
     }
 
     return (
-      <section className="py-20">
+      <section className={`${hasAnyText ? "py-20" : "py-8"}`}>
         <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {displayTitle}
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {displaySubtitle}
-            </p>
-          </div>
+          {hasAnyText && (
+            <div className="text-center mb-12">
+              {hasTitle && (
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  {section.title}
+                </h2>
+              )}
+              {hasSubtitle && (
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  {section.subtitle}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="flex justify-center">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-6xl">
