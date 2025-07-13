@@ -8,6 +8,11 @@ import aiDataRoutes from "./routes/ai-data.js";
 import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
 
+// Define uploads path at module level
+const uploadsPath = process.env.VERCEL
+  ? path.join("/tmp", "uploads")
+  : path.join(process.cwd(), "public", "uploads");
+
 export function createServer() {
   const app = express();
 
@@ -16,16 +21,12 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Serve static files from uploads directory
-  const uploadsPath = process.env.VERCEL
-    ? path.join("/tmp", "uploads")
-    : path.join(process.cwd(), "public", "uploads");
-
   // Ensure uploads directory exists
   if (!fs.existsSync(uploadsPath)) {
     fs.mkdirSync(uploadsPath, { recursive: true });
   }
 
+  // Serve static files from uploads directory
   app.use("/uploads", express.static(uploadsPath));
 
   // Also serve from public directory for static assets
