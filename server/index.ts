@@ -11,7 +11,7 @@ import adminUpdatesRoutes from "./routes/admin-updates.js";
 // Define uploads path at module level
 const uploadsPath = process.env.VERCEL
   ? path.join("/tmp", "uploads")
-  : path.join(process.cwd(), "public", "uploads");
+  : path.join(process.cwd(), "..", "public", "uploads");
 
 export function createServer() {
   const app = express();
