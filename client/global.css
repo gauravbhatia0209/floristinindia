@@ -476,6 +476,7 @@
     position: relative;
     width: 100%;
     overflow: hidden;
+    touch-action: pan-y pinch-zoom;
   }
 
   .hero-carousel-slide {
@@ -483,6 +484,7 @@
     background-position: center;
     background-repeat: no-repeat;
     transition: transform 0.5s ease-in-out;
+    will-change: transform;
   }
 
   .hero-carousel-dots {
@@ -495,6 +497,7 @@
   .hero-carousel-dot {
     transition: all 0.3s ease;
     backdrop-filter: blur(4px);
+    cursor: pointer;
   }
 
   .hero-carousel-dot:hover {
@@ -511,16 +514,146 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
-  /* Responsive carousel height */
+  .hero-carousel-nav-mobile {
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    touch-action: manipulation;
+  }
+
+  .hero-carousel-nav-mobile:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Mobile-first responsive carousel styling */
   @media (max-width: 768px) {
     .hero-carousel {
-      min-height: 300px;
+      min-height: 250px;
+      max-height: 400px;
+      height: auto;
+    }
+
+    .hero-carousel-slide {
+      background-size: cover;
+      background-position: center;
+      aspect-ratio: 16/9;
+    }
+
+    .hero-carousel-dots {
+      padding: 6px 10px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-carousel-dot {
+      width: 8px !important;
+      height: 8px !important;
+      min-width: 16px !important;
+      min-height: 16px !important;
+      margin: 0 2px;
+    }
+
+    .hero-carousel-nav-mobile {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
   }
 
   @media (max-width: 480px) {
     .hero-carousel {
-      min-height: 250px;
+      min-height: 200px;
+      max-height: 300px;
     }
+
+    .hero-carousel-slide {
+      aspect-ratio: 4/3;
+    }
+
+    .hero-carousel-dots {
+      padding: 4px 8px;
+      bottom: 8px !important;
+    }
+
+    .hero-carousel-dot {
+      width: 6px !important;
+      height: 6px !important;
+      min-width: 14px !important;
+      min-height: 14px !important;
+      margin: 0 1px;
+    }
+
+    .hero-carousel-nav-mobile {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  /* Landscape orientation adjustments for mobile */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .hero-carousel {
+      min-height: 180px;
+      max-height: 250px;
+    }
+
+    .hero-carousel-slide {
+      aspect-ratio: 21/9;
+    }
+  }
+
+  /* High-density displays optimization */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero-carousel-slide {
+      background-size: cover;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .hero-carousel-dot:hover {
+      transform: none;
+    }
+
+    .hero-carousel-dot:active {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-carousel-nav:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-carousel-slide {
+      transition: none;
+    }
+
+    .hero-carousel-dot {
+      transition: none;
+    }
+
+    .hero-carousel-nav,
+    .hero-carousel-nav-mobile {
+      transition: none;
+    }
+  }
+
+  /* Focus styles for keyboard navigation */
+  .hero-carousel-dot:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  .hero-carousel-nav:focus-visible,
+  .hero-carousel-nav-mobile:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
   }
 }
