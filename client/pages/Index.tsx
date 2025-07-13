@@ -272,13 +272,18 @@ export default function Index() {
           if (productsData && productsData.length > 0) {
             // Sort products by the order they were selected in admin
             const sortedProducts = selectedProductIds
-              .map((id: string) => productsData.find((prod) => prod.id === id))
-              .filter((product) => {
+              .map((id: string) => {
+                const product = productsData.find((prod) => prod.id === id);
                 if (!product) {
                   console.warn(
                     "⚠️ Product Showcase: Product not found for ID:",
                     id,
                   );
+                }
+                return product;
+              })
+              .filter((product) => {
+                if (!product) {
                   return false;
                 }
                 if (!product.images || product.images.length === 0) {
