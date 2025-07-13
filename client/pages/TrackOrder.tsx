@@ -43,7 +43,7 @@ interface OrderData {
     last_name: string;
     email: string;
     phone: string;
-  };
+  } | null;
 }
 
 export default function TrackOrder() {
