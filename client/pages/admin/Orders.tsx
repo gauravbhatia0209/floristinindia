@@ -547,24 +547,52 @@ export default function Orders() {
                               Quantity: {item.quantity}
                             </p>
                             {item.uploaded_file_name && (
-                              <p className="text-sm text-blue-600">
-                                📎 Uploaded File: {item.uploaded_file_name}
-                              </p>
-                            )}
-                            {item.uploaded_file_url &&
-                              item.uploaded_file_url !== "pending-upload" && (
-                                <p className="text-sm text-green-600">
-                                  📁 File Available:{" "}
-                                  <a
-                                    href={item.uploaded_file_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="underline"
-                                  >
-                                    View File
-                                  </a>
+                              <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                                <p className="text-sm font-medium text-blue-800">
+                                  📎 Customer Uploaded File
                                 </p>
-                              )}
+                                <p className="text-sm text-blue-600 font-mono">
+                                  {item.uploaded_file_name}
+                                </p>
+                                {item.uploaded_file_size && (
+                                  <p className="text-xs text-blue-500">
+                                    Size:{" "}
+                                    {(
+                                      item.uploaded_file_size /
+                                      1024 /
+                                      1024
+                                    ).toFixed(2)}{" "}
+                                    MB
+                                  </p>
+                                )}
+                                {item.uploaded_file_type && (
+                                  <p className="text-xs text-blue-500">
+                                    Type: {item.uploaded_file_type}
+                                  </p>
+                                )}
+                                {item.uploaded_file_url &&
+                                item.uploaded_file_url !== "pending-upload" ? (
+                                  <div className="mt-2">
+                                    <a
+                                      href={item.uploaded_file_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors"
+                                    >
+                                      📁 Download File
+                                    </a>
+                                  </div>
+                                ) : item.upload_status ? (
+                                  <p className="text-xs text-red-500 mt-1">
+                                    ❌ Upload Status: {item.upload_status}
+                                  </p>
+                                ) : (
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    File information available
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                           <div className="text-right">
                             <p className="font-medium">
