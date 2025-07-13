@@ -455,7 +455,7 @@ function ProductCarouselSection({ content }: { content: any }) {
   }
 
   const handleAddToCart = (product: Product) => {
-    addToCart({
+    addItem({
       id: product.id,
       name: product.name,
       price: product.sale_price || product.price,
