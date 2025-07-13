@@ -4,9 +4,13 @@ export default {
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./**/*.{ts,tsx}",
+    "./contexts/**/*.{ts,tsx}",
+    "./hooks/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
+    "./utils/**/*.{ts,tsx}",
     "./index.html",
+    "./main.tsx",
+    "./App.tsx",
   ],
   prefix: "",
   theme: {
