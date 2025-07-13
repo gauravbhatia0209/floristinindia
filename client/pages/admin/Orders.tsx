@@ -46,6 +46,10 @@ export default function Orders() {
   );
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [productImages, setProductImages] = useState<Record<string, string>>(
+    {},
+  );
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
