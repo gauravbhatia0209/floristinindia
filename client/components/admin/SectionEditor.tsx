@@ -1099,7 +1099,11 @@ function TestimonialsEditor({
     updateContent("testimonials", newTestimonials);
   };
 
-  const updateTestimonial = (index: number, key: string, value: any) => {
+  const updateTestimonial = (
+    index: number,
+    key: string,
+    value: string | number,
+  ) => {
     updateNestedContent(["testimonials", index, key], value);
   };
 
