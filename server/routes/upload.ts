@@ -104,7 +104,7 @@ router.post("/images", upload.array("images", 5), (req, res) => {
     }
 
     const subdir = req.query.subdir as string;
-    const imageUrls = req.files.map((file) => ({
+    const imageUrls = (req.files as Express.Multer.File[]).map((file) => ({
       url: subdir
         ? `/uploads/${subdir}/${file.filename}`
         : `/uploads/${file.filename}`,
