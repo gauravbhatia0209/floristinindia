@@ -371,6 +371,7 @@ export interface HomepageSection {
   id: string;
   type: string;
   title: string;
+  subtitle?: string;
   content: any;
   is_active: boolean;
   sort_order: number;
