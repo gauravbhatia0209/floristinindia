@@ -419,7 +419,7 @@ export interface User {
   last_name: string;
   name?: string;
   phone?: string;
-  is_verified?: boolean;
+  is_verified: boolean;
   role?: string;
   user_type?: string;
   last_login?: string;
