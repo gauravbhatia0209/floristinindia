@@ -114,6 +114,16 @@ export default function Settings() {
     google_analytics_id: "",
     facebook_pixel_id: "",
     facebook_app_id: "",
+    meta_title_template: "%title% | %sitename%",
+    og_image_url: "",
+    twitter_card_type: "summary_large_image",
+    twitter_site: "",
+    canonical_url: "",
+    robots_txt_content: "",
+    schema_org_organization: "",
+    custom_head_tags: "",
+    sitemap_enabled: true,
+    breadcrumbs_enabled: true,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
