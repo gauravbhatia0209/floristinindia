@@ -87,9 +87,14 @@ export function createServer() {
       });
     }
   } else {
-    // In development, redirect to Vite dev server
-    app.get("*", (_req, res) => {
-      res.redirect("http://localhost:5173");
+    // In development, redirect to Vite dev server for non-API/uploads routes
+    app.get("*", (req, res) => {
+      // Don't redirect API or uploads routes
+      if (req.path.startsWith("/api/") || req.path.startsWith("/uploads/")) {
+        res.status(404).json({ error: "Route not found" });
+      } else {
+        res.redirect("http://localhost:5173");
+      }
     });
   }
 
