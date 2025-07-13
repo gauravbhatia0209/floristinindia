@@ -29,6 +29,7 @@ interface TermsPageData {
   meta_title?: string;
   meta_description?: string;
   is_active: boolean;
+  updated_at?: string;
 }
 
 export default function TermsConditionsPage() {
