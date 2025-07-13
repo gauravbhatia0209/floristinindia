@@ -8,7 +8,9 @@
     "noFallthroughCasesInSwitch": false,
     "strict": false,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": false
+    "forceConsistentCasingInFileNames": false,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
