@@ -137,9 +137,15 @@ export function HeroCarousel({
         {images.map((image, index) => (
           <div
             key={index}
-            className="hero-carousel-slide w-full h-full flex-shrink-0"
+            className={`hero-carousel-slide w-full h-full flex-shrink-0 ${
+              isMobile ? "bg-cover bg-center" : ""
+            }`}
             style={{
               backgroundImage: `url(${image})`,
+              backgroundSize: isMobile ? "cover" : "cover",
+              backgroundPosition: isMobile ? "center center" : "center",
+              backgroundRepeat: "no-repeat",
+              aspectRatio: isMobile ? "16/9" : "auto",
             }}
             role="img"
             aria-label={`Slide ${index + 1} of ${images.length}`}
