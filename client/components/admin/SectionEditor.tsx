@@ -847,7 +847,11 @@ function FeaturesEditor({
     updateContent("features", newFeatures);
   };
 
-  const updateFeature = (index: number, key: string, value: string) => {
+  const updateFeature = (
+    index: number,
+    key: string,
+    value: string | number,
+  ) => {
     updateNestedContent(["features", index, key], value);
   };
 
