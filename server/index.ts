@@ -39,6 +39,18 @@ export function createServer() {
   // Upload routes
   app.use("/api/upload", uploadRoutes);
 
+  // Explicit route for serving uploaded files
+  app.get("/uploads/*", (req, res) => {
+    const filePath = req.path.replace("/uploads/", "");
+    const fullPath = path.join(uploadsPath, filePath);
+
+    if (fs.existsSync(fullPath)) {
+      res.sendFile(fullPath);
+    } else {
+      res.status(404).json({ error: "File not found" });
+    }
+  });
+
   // AI-readable data routes
   app.use("/api/ai", aiDataRoutes);
 
