@@ -229,19 +229,23 @@ export default function AIMetaTags({
 
       case "category":
         if (category) {
-          metaTitle = `${category.name} - ${siteName}`;
-          metaDescription = `${category.description || `Beautiful ${category.name.toLowerCase()} for all occasions.`} Fresh flowers with same-day delivery across India.`;
+          const categoryObj =
+            typeof category === "string"
+              ? { name: category, slug: category, description: "" }
+              : category;
+          metaTitle = `${categoryObj.name} - ${siteName}`;
+          metaDescription = `${categoryObj.description || `Beautiful ${categoryObj.name.toLowerCase()} for all occasions.`} Fresh flowers with same-day delivery across India.`;
           metaKeywords = [
             ...baseKeywords,
-            category.name.toLowerCase(),
-            category.slug,
+            categoryObj.name.toLowerCase(),
+            categoryObj.slug,
             "category",
           ];
           aiPurpose = "category-browse";
           contentType = "category-listing";
-          category = category.slug;
+          const categorySlug = categoryObj.slug;
           intent = "browse-category";
-          context = `${category.slug}-flowers`;
+          context = `${categorySlug}-flowers`;
         }
         break;
 
