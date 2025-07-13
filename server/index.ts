@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
 import handleDemo from "./routes/demo.js";
 import uploadRoutes from "./routes/upload.js";
 import aiDataRoutes from "./routes/ai-data.js";
