@@ -116,10 +116,18 @@ export function HeroCarousel({
 
   return (
     <div
+      ref={carouselRef}
       className="hero-carousel relative w-full overflow-hidden bg-gray-100"
-      style={{ height: `${height}px` }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        height: isMobile ? "auto" : `${height}px`,
+        minHeight: isMobile ? "250px" : "auto",
+        maxHeight: isMobile ? "400px" : "none",
+      }}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Image slides */}
       <div
