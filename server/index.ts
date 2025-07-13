@@ -45,18 +45,10 @@ export function createServer() {
     const filePath = req.path.replace("/uploads/", "");
     const fullPath = path.join(uploadsPath, filePath);
 
-    console.log("Upload request:", {
-      path: req.path,
-      filePath,
-      fullPath,
-      uploadsPath,
-      exists: fs.existsSync(fullPath),
-    });
-
     if (fs.existsSync(fullPath)) {
       res.sendFile(fullPath);
     } else {
-      res.status(404).json({ error: "File not found", path: fullPath });
+      res.status(404).json({ error: "File not found" });
     }
   });
 
