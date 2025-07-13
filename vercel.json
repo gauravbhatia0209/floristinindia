@@ -17,32 +17,6 @@
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/index.ts"
-    },
-    {
-      "src": "/sitemap.xml",
-      "dest": "/server/index.ts"
-    },
-    {
-      "src": "/sitemap.txt",
-      "dest": "/server/index.ts"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/public/robots.txt"
-    },
-    {
-      "src": "/uploads/(.*)",
-      "dest": "/server/index.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/dist/index.html"
-    }
-  ],
   "env": {
     "NODE_ENV": "production"
   },
@@ -59,7 +33,26 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/server/index.ts"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/server/index.ts"
+    },
+    {
+      "source": "/sitemap.txt",
+      "destination": "/server/index.ts"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "/server/index.ts"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/robots.txt",
+      "destination": "/public/robots.txt",
+      "permanent": true
     }
   ],
   "headers": [
@@ -77,6 +70,14 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "X-Content-Source",
+          "value": "real-time-database"
+        },
+        {
+          "key": "X-Admin-Configurable",
+          "value": "true"
         }
       ]
     },
@@ -94,8 +95,14 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Powered-By",
+          "value": "Florist in India - AI-Ready E-commerce"
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
