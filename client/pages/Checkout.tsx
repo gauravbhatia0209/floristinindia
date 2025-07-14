@@ -762,12 +762,7 @@ export default function Checkout() {
         payment_method: "pending",
         payment_status: "pending",
         coupon_code: appliedCoupon?.code || null,
-      };
-
-      console.log("Order data to be inserted:", orderData);
-
-      // Validate critical fields before insertion
-  async function createOrder(): Promise<string> {
+  async function handlePaymentMethodSelect(gateway: PaymentGateway) {
     const totals = calculateTotal();
 
     // Generate sequential order number with FII prefix
