@@ -711,14 +711,16 @@ export default function Checkout() {
             };
           }),
           shipping_address: {
-            name: form.receiverName,
+            name: form.receiverName || form.fullName,
             line1: form.addressLine1,
-            line2: form.addressLine2,
+            line2: form.addressLine2 || "",
             city: form.city,
             state: form.state,
             pincode: form.pincode,
-            phone: `${form.receiverPhoneCountryCode}${form.receiverPhone}`,
-            alternate_phone: form.alternatePhone,
+            phone: form.receiverPhone
+              ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+              : `${form.phoneCountryCode}${form.phone}`,
+            alternate_phone: form.alternatePhone || "",
           },
           billing_address: {
             name: form.fullName,
