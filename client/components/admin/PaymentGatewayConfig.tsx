@@ -105,6 +105,15 @@ export default function PaymentGatewayConfig() {
             max_amount: 10000000,
             processing_fee: 2.0,
             fixed_fee: 0,
+            // Checkout availability defaults
+            available_at_checkout: true,
+            checkout_display_name: method.name,
+            checkout_description: method.description,
+            checkout_icon: method.gateway,
+            checkout_priority: index + 1,
+            min_checkout_amount: 100,
+            max_checkout_amount: 10000000,
+            checkout_processing_message: `Processing payment via ${method.name}...`,
           })),
         );
       }
