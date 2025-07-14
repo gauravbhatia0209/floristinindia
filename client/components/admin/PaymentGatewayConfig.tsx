@@ -304,7 +304,7 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="priority"
                                 type="number"
-                                value={config.priority}
+                                value={config.priority || 0}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     priority: parseInt(e.target.value) || 0,
