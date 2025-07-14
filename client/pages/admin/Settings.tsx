@@ -808,6 +808,10 @@ export default function Settings() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="payments" className="space-y-6">
+          <PaymentGatewayConfig />
+        </TabsContent>
+
         <TabsContent value="features" className="space-y-6">
           <Card>
             <CardHeader>
