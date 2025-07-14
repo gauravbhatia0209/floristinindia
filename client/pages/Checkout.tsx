@@ -729,7 +729,6 @@ export default function Checkout() {
           phone: form.receiverPhone
             ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
             : `${form.phoneCountryCode}${form.phone}`,
-          alternate_phone: form.alternatePhone || "",
         },
         billing_address: {
           name: form.fullName,
