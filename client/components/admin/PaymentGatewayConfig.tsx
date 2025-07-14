@@ -390,7 +390,9 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="fixed-fee"
                                 type="number"
-                                value={config.fixed_fee / 100}
+                                value={
+                                  config.fixed_fee ? config.fixed_fee / 100 : 0
+                                }
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     fixed_fee:
