@@ -839,8 +839,7 @@ export default function Checkout() {
     try {
       const totals = calculateTotal();
 
-    // Generate sequential order number with FII prefix
-    const orderNumber = await generateOrderNumber();
+      const response = await fetch("/api/payments/create", {
 
     // Upload files first
     console.log("Uploading order files...");
