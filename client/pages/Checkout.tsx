@@ -36,6 +36,9 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/hooks/useCart";
 import { ShippingZone, ShippingMethod, Coupon } from "@shared/database.types";
+import { PaymentGateway } from "@shared/payment.types";
+import PaymentMethodSelector from "@/components/PaymentMethodSelector";
+import PaymentProcessor from "@/components/PaymentProcessor";
 import { AvailableShippingMethod } from "@/types/shipping";
 import {
   getAvailableShippingMethods,
