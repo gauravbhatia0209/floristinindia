@@ -635,9 +635,23 @@ export default function Checkout() {
     // Move to payment selection step
     setCurrentStep(2);
   }
-      const lastName = nameParts.slice(1).join(" ") || "";
 
-      const { data: customer, error: customerError } = await supabase
+  async function createOrder(): Promise<string> {
+    const totals = calculateTotal();
+
+    // Generate sequential order number with FII prefix
+    const orderNumber = await generateOrderNumber();
+
+    // Upload files first
+    console.log("Uploading order files...");
+    const uploadedFiles = await uploadOrderFiles(orderNumber);
+
+    // Create customer record
+    const nameParts = form.fullName.trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    const { data: customer, error: customerError } = await supabase
         .from("customers")
         .upsert(
           {
@@ -1865,7 +1879,7 @@ export default function Checkout() {
                     {totals.discount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount:</span>
-                        <span>-₹{totals.discount.toFixed(2)}</span>
+                        <span>-��{totals.discount.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
