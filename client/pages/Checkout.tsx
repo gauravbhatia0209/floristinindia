@@ -829,7 +829,15 @@ export default function Checkout() {
   }
 
   async function handlePaymentMethodSelect(gateway: PaymentGateway) {
-    const totals = calculateTotal();
+    setSelectedPaymentMethod(gateway);
+  }
+
+  async function handleProceedToPayment() {
+    if (!selectedPaymentMethod) return;
+
+    setIsSubmitting(true);
+    try {
+      const totals = calculateTotal();
 
     // Generate sequential order number with FII prefix
     const orderNumber = await generateOrderNumber();
