@@ -1,0 +1,23 @@
+# Development files
+.env.local
+.env.development
+.env.test
+
+# Documentation
+*.md
+docs/
+AGENTS.md
+AI_READABILITY_GUIDE.md
+DEPLOYMENT_GUIDE.md
+
+# Unused files
+waste.json
+waste2.json
+setup-*.sh
+
+# Keep these for deployment:
+# api/
+# uploads/
+# server/dist/
+# client/dist/
+# public/
