@@ -736,10 +736,11 @@ export default function Checkout() {
           delivery_slot: form.deliverySlot || null,
           special_instructions: form.specialInstructions || null,
           customer_message: form.orderMessage || null,
-          receiver_name: form.receiverName || null,
-          receiver_phone:
-            `${form.receiverPhoneCountryCode}${form.receiverPhone}` || null,
-          alternate_phone: form.alternatePhone || null,
+          receiver_name: form.receiverName || form.fullName,
+          receiver_phone: form.receiverPhone
+            ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+            : `${form.phoneCountryCode}${form.phone}`,
+          alternate_phone: form.alternatePhone || "",
           delivery_instructions: form.specialInstructions || null,
           uploaded_files: uploadedFiles,
           payment_method: "pending",
