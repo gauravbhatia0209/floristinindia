@@ -111,7 +111,7 @@ export default function PaymentGatewayConfig() {
     }
   }
 
-  async function saveConfig(config: PaymentGatewayConfig) {
+  async function saveConfig(config: PaymentGatewayConfigDB) {
     try {
       setSaving(config.id);
 
