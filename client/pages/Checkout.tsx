@@ -673,9 +673,15 @@ export default function Checkout() {
       if (customerError) throw customerError;
 
       // Create order
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
+      console.log("Creating order with data:", {
+        order_number: orderNumber,
+        customer_id: customer.id,
+        totals,
+        form: form,
+        items: items.length,
+      });
+
+      const orderData = {
           order_number: orderNumber,
           customer_id: customer.id,
           status: "pending",
@@ -717,9 +723,7 @@ export default function Checkout() {
             city: form.city,
             state: form.state,
             pincode: form.pincode,
-            phone: form.receiverPhone
-              ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
-              : `${form.phoneCountryCode}${form.phone}`,
+            phone: form.receiverPhone ? `${form.receiverPhoneCountryCode}${form.receiverPhone}` : `${form.phoneCountryCode}${form.phone}`,
             alternate_phone: form.alternatePhone || "",
           },
           billing_address: {
@@ -737,9 +741,9 @@ export default function Checkout() {
           special_instructions: form.specialInstructions || null,
           customer_message: form.orderMessage || null,
           receiver_name: form.receiverName || form.fullName,
-          receiver_phone: form.receiverPhone
-            ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
-            : `${form.phoneCountryCode}${form.phone}`,
+          receiver_phone: form.receiverPhone ?
+            `${form.receiverPhoneCountryCode}${form.receiverPhone}` :
+            `${form.phoneCountryCode}${form.phone}`,
           alternate_phone: form.alternatePhone || "",
           delivery_instructions: form.specialInstructions || null,
           uploaded_files: uploadedFiles,
