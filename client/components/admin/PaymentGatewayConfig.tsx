@@ -141,7 +141,7 @@ export default function PaymentGatewayConfig() {
 
   function updateConfig(
     gatewayId: PaymentGateway,
-    updates: Partial<PaymentGatewayConfig>,
+    updates: Partial<PaymentGatewayConfigDB>,
   ) {
     setConfigs((prev) =>
       prev.map((config) =>
