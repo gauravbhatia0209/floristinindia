@@ -24,6 +24,7 @@ import Checkout from "@/pages/Checkout";
 import TrackOrder from "@/pages/TrackOrder";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
+import Orders from "@/pages/Orders";
 import Account from "@/pages/Account";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
