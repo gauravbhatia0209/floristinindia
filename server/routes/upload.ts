@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import crypto from "crypto";
+import { supabase } from "../lib/supabase.js";
 
 const router = express.Router();
 
