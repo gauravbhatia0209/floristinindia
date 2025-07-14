@@ -502,7 +502,11 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="max-checkout-amount"
                                 type="number"
-                                value={config.max_checkout_amount / 100}
+                                value={
+                                  config.max_checkout_amount
+                                    ? config.max_checkout_amount / 100
+                                    : 100000
+                                }
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     max_checkout_amount:
