@@ -965,7 +965,7 @@ export default function Checkout() {
   }
 
   async function handleProceedToPayment() {
-    if (!selectedPaymentMethod || !orderCreated) return;
+    if (!selectedPaymentMethod) return;
 
     setIsSubmitting(true);
     try {
