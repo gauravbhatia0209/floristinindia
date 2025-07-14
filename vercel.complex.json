@@ -41,6 +41,10 @@
     {
       "source": "/uploads/(.*)",
       "destination": "/server/index.ts"
+    },
+     {
+      "source": "/(.*)",
+      "destination": "/"
     }
   ],
   "redirects": [
