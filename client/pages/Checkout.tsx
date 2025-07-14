@@ -1388,81 +1388,50 @@ export default function Checkout() {
                     </Card>
                   )}
 
-                  {/* 6. Payment Methods */}
+                  {/* 6. Payment Method Notice */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
                         <div className="bg-white/20 rounded-lg p-2">
                           <CreditCard className="w-6 h-6" />
                         </div>
-                        Payment Methods
+                        Payment Method
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <Label className="text-sm font-semibold text-gray-700 mb-3 block">
-                          Choose your preferred payment method *
-                        </Label>
-
-                        {[
-                          {
-                            value: "razorpay",
-                            label: "Credit/Debit Card",
-                            desc: "Visa, Mastercard, Rupay",
-                            icon: CreditCard,
-                          },
-                          {
-                            value: "upi",
-                            label: "UPI Payment",
-                            desc: "PhonePe, Google Pay, Paytm",
-                            icon: Phone,
-                          },
-                          {
-                            value: "netbanking",
-                            label: "Net Banking",
-                            desc: "All major banks supported",
-                            icon: Shield,
-                          },
-                          {
-                            value: "cod",
-                            label: "Cash on Delivery",
-                            desc: "Pay when you receive",
-                            icon: Package,
-                          },
-                        ].map((method) => {
-                          const IconComponent = method.icon;
-                          return (
-                            <div
-                              key={method.value}
-                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                                form.paymentMethod === method.value
-                                  ? "border-indigo-500 bg-indigo-50 shadow-lg ring-2 ring-indigo-200"
-                                  : "border-gray-200 hover:border-indigo-300 bg-white"
-                              }`}
-                              onClick={() =>
-                                setForm({
-                                  ...form,
-                                  paymentMethod: method.value,
-                                })
-                              }
-                            >
-                              <div className="flex items-center gap-3">
-                                {form.paymentMethod === method.value && (
-                                  <CheckCircle className="h-5 w-5 text-indigo-600" />
-                                )}
-                                <IconComponent className="h-6 w-6 text-indigo-600" />
-                                <div className="flex-1">
-                                  <h4 className="font-semibold text-gray-900">
-                                    {method.label}
-                                  </h4>
-                                  <p className="text-sm text-gray-600">
-                                    {method.desc}
-                                  </p>
-                                </div>
-                              </div>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-blue-100 rounded-full p-2 flex-shrink-0">
+                            <CreditCard className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-blue-900 mb-1">
+                              Payment Methods Available
+                            </h3>
+                            <p className="text-blue-800 text-sm mb-2">
+                              You'll choose your preferred payment method on the
+                              next step.
+                            </p>
+                            <div className="flex items-center gap-4 text-sm text-blue-700">
+                              <span className="flex items-center gap-1">
+                                <Phone className="w-4 h-4" />
+                                UPI
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <CreditCard className="w-4 h-4" />
+                                Cards
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Shield className="w-4 h-4" />
+                                NetBanking
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Globe className="w-4 h-4" />
+                                More
+                              </span>
                             </div>
-                          );
-                        })}
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
