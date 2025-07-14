@@ -742,6 +742,7 @@ export default function Checkout() {
         delivery_date: form.deliveryDate || null,
         delivery_slot: form.deliverySlot || null,
         special_instructions: form.specialInstructions || null,
+        customer_message: form.orderMessage || null,
         receiver_name: form.receiverName || form.fullName,
         receiver_phone: form.receiverPhone
           ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
