@@ -1,0 +1,749 @@
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  CreditCard,
+  Settings,
+  Save,
+  Eye,
+  EyeOff,
+  Smartphone,
+  Globe,
+  Banknote,
+} from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
+import {
+  PaymentGatewayConfig,
+  PaymentGateway,
+  DEFAULT_PAYMENT_METHODS,
+} from "../../../shared/payment.types";
+
+const GATEWAY_ICONS: Record<PaymentGateway, React.ReactNode> = {
+  phonepe: <Smartphone className="w-5 h-5" />,
+  razorpay: <CreditCard className="w-5 h-5" />,
+  cashfree: <Banknote className="w-5 h-5" />,
+  paypal: <Globe className="w-5 h-5" />,
+};
+
+const GATEWAY_DESCRIPTIONS: Record<PaymentGateway, string> = {
+  phonepe: "Popular UPI and digital payments in India",
+  razorpay: "Comprehensive payment gateway for India",
+  cashfree: "Payment solutions for businesses",
+  paypal: "International payment processing",
+};
+
+export default function PaymentGatewayConfig() {
+  const [configs, setConfigs] = useState<PaymentGatewayConfig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [showSecrets, setShowSecrets] = useState<Record<string, boolean>>({});
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadConfigs();
+  }, []);
+
+  async function loadConfigs() {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("payment_gateway_configs")
+        .select("*")
+        .order("priority");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setConfigs(data);
+      } else {
+        // Initialize with default configs
+        setConfigs(
+          DEFAULT_PAYMENT_METHODS.map((method, index) => ({
+            id: method.gateway,
+            name: method.name,
+            enabled: false,
+            sandbox: true,
+            priority: index + 1,
+            config: {},
+            supportedCurrencies: ["INR"],
+            minAmount: 100,
+            maxAmount: 10000000,
+            processingFee: 2.0,
+            fixedFee: 0,
+          })),
+        );
+      }
+    } catch (error) {
+      console.error("Error loading configs:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load payment gateway configurations",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function saveConfig(config: PaymentGatewayConfig) {
+    try {
+      setSaving(config.id);
+
+      const { error } = await supabase
+        .from("payment_gateway_configs")
+        .upsert(config);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${config.name} configuration saved successfully`,
+      });
+
+      await loadConfigs();
+    } catch (error) {
+      console.error("Error saving config:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save configuration",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(null);
+    }
+  }
+
+  function updateConfig(
+    gatewayId: PaymentGateway,
+    updates: Partial<PaymentGatewayConfig>,
+  ) {
+    setConfigs((prev) =>
+      prev.map((config) =>
+        config.id === gatewayId ? { ...config, ...updates } : config,
+      ),
+    );
+  }
+
+  function toggleSecretVisibility(gatewayId: string, field: string) {
+    setShowSecrets((prev) => ({
+      ...prev,
+      [`${gatewayId}_${field}`]: !prev[`${gatewayId}_${field}`],
+    }));
+  }
+
+  function formatAmount(amount: number) {
+    return `₹${(amount / 100).toLocaleString()}`;
+  }
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="w-5 h-5" />
+            Payment Gateways
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">Loading configurations...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="w-5 h-5" />
+            Payment Gateway Configuration
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Configure payment gateways to accept payments from customers
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {configs.map((config) => (
+              <Card key={config.id} className="border">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {GATEWAY_ICONS[config.id]}
+                      <div>
+                        <h3 className="font-semibold">{config.name}</h3>
+                        <p className="text-xs text-muted-foreground">
+                          {GATEWAY_DESCRIPTIONS[config.id]}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={config.enabled}
+                        onCheckedChange={(enabled) =>
+                          updateConfig(config.id, { enabled })
+                        }
+                      />
+                      <Badge variant={config.enabled ? "default" : "secondary"}>
+                        {config.enabled ? "Enabled" : "Disabled"}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Min Amount:</span>
+                      <div>{formatAmount(config.minAmount)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Max Amount:</span>
+                      <div>{formatAmount(config.maxAmount)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Fee:</span>
+                      <div>{config.processingFee}%</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Mode:</span>
+                      <Badge variant={config.sandbox ? "outline" : "default"}>
+                        {config.sandbox ? "Sandbox" : "Production"}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Configure
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                          {GATEWAY_ICONS[config.id]}
+                          Configure {config.name}
+                        </DialogTitle>
+                        <DialogDescription>
+                          Enter your {config.name} credentials and configuration
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <Tabs defaultValue="general" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="general">General</TabsTrigger>
+                          <TabsTrigger value="credentials">
+                            Credentials
+                          </TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="general" className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="priority">Priority</Label>
+                              <Input
+                                id="priority"
+                                type="number"
+                                value={config.priority}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    priority: parseInt(e.target.value) || 0,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="flex items-center space-x-2 pt-6">
+                              <Switch
+                                id="sandbox"
+                                checked={config.sandbox}
+                                onCheckedChange={(sandbox) =>
+                                  updateConfig(config.id, { sandbox })
+                                }
+                              />
+                              <Label htmlFor="sandbox">Sandbox Mode</Label>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="min-amount">
+                                Minimum Amount (₹)
+                              </Label>
+                              <Input
+                                id="min-amount"
+                                type="number"
+                                value={config.minAmount / 100}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    minAmount:
+                                      (parseFloat(e.target.value) || 0) * 100,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="max-amount">
+                                Maximum Amount (₹)
+                              </Label>
+                              <Input
+                                id="max-amount"
+                                type="number"
+                                value={config.maxAmount / 100}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    maxAmount:
+                                      (parseFloat(e.target.value) || 0) * 100,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="processing-fee">
+                                Processing Fee (%)
+                              </Label>
+                              <Input
+                                id="processing-fee"
+                                type="number"
+                                step="0.1"
+                                value={config.processingFee}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    processingFee:
+                                      parseFloat(e.target.value) || 0,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="fixed-fee">Fixed Fee (₹)</Label>
+                              <Input
+                                id="fixed-fee"
+                                type="number"
+                                value={config.fixedFee / 100}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    fixedFee:
+                                      (parseFloat(e.target.value) || 0) * 100,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="credentials" className="space-y-4">
+                          {config.id === "paypal" && (
+                            <>
+                              <div>
+                                <Label htmlFor="paypal-client-id">
+                                  Client ID
+                                </Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="paypal-client-id"
+                                    type={
+                                      showSecrets[`${config.id}_client_id`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={config.config.paypal_client_id || ""}
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          paypal_client_id: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your PayPal Client ID"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "client_id",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_client_id`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor="paypal-client-secret">
+                                  Client Secret
+                                </Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="paypal-client-secret"
+                                    type={
+                                      showSecrets[`${config.id}_client_secret`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={
+                                      config.config.paypal_client_secret || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          paypal_client_secret: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your PayPal Client Secret"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "client_secret",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[
+                                      `${config.id}_client_secret`
+                                    ] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+
+                          {config.id === "razorpay" && (
+                            <>
+                              <div>
+                                <Label htmlFor="razorpay-key-id">Key ID</Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="razorpay-key-id"
+                                    type={
+                                      showSecrets[`${config.id}_key_id`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={config.config.razorpay_key_id || ""}
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          razorpay_key_id: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your Razorpay Key ID"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "key_id",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_key_id`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor="razorpay-key-secret">
+                                  Key Secret
+                                </Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="razorpay-key-secret"
+                                    type={
+                                      showSecrets[`${config.id}_key_secret`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={
+                                      config.config.razorpay_key_secret || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          razorpay_key_secret: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your Razorpay Key Secret"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "key_secret",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_key_secret`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+
+                          {config.id === "cashfree" && (
+                            <>
+                              <div>
+                                <Label htmlFor="cashfree-app-id">App ID</Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="cashfree-app-id"
+                                    type={
+                                      showSecrets[`${config.id}_app_id`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={config.config.cashfree_app_id || ""}
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          cashfree_app_id: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your Cashfree App ID"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "app_id",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_app_id`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor="cashfree-secret-key">
+                                  Secret Key
+                                </Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="cashfree-secret-key"
+                                    type={
+                                      showSecrets[`${config.id}_secret_key`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={
+                                      config.config.cashfree_secret_key || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          cashfree_secret_key: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your Cashfree Secret Key"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "secret_key",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_secret_key`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+
+                          {config.id === "phonepe" && (
+                            <>
+                              <div>
+                                <Label htmlFor="phonepe-merchant-id">
+                                  Merchant ID
+                                </Label>
+                                <Input
+                                  id="phonepe-merchant-id"
+                                  value={
+                                    config.config.phonepe_merchant_id || ""
+                                  }
+                                  onChange={(e) =>
+                                    updateConfig(config.id, {
+                                      config: {
+                                        ...config.config,
+                                        phonepe_merchant_id: e.target.value,
+                                      },
+                                    })
+                                  }
+                                  placeholder="Your PhonePe Merchant ID"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="phonepe-salt-key">
+                                  Salt Key
+                                </Label>
+                                <div className="flex gap-2">
+                                  <Input
+                                    id="phonepe-salt-key"
+                                    type={
+                                      showSecrets[`${config.id}_salt_key`]
+                                        ? "text"
+                                        : "password"
+                                    }
+                                    value={config.config.phonepe_salt_key || ""}
+                                    onChange={(e) =>
+                                      updateConfig(config.id, {
+                                        config: {
+                                          ...config.config,
+                                          phonepe_salt_key: e.target.value,
+                                        },
+                                      })
+                                    }
+                                    placeholder="Your PhonePe Salt Key"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() =>
+                                      toggleSecretVisibility(
+                                        config.id,
+                                        "salt_key",
+                                      )
+                                    }
+                                  >
+                                    {showSecrets[`${config.id}_salt_key`] ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor="phonepe-salt-index">
+                                  Salt Index
+                                </Label>
+                                <Input
+                                  id="phonepe-salt-index"
+                                  value={config.config.phonepe_salt_index || ""}
+                                  onChange={(e) =>
+                                    updateConfig(config.id, {
+                                      config: {
+                                        ...config.config,
+                                        phonepe_salt_index: e.target.value,
+                                      },
+                                    })
+                                  }
+                                  placeholder="Salt Index (usually 1)"
+                                />
+                              </div>
+                            </>
+                          )}
+
+                          <Alert>
+                            <AlertDescription>
+                              <strong>Important:</strong> Keep your credentials
+                              secure. Never share them publicly or commit them
+                              to version control.
+                            </AlertDescription>
+                          </Alert>
+                        </TabsContent>
+                      </Tabs>
+
+                      <div className="flex justify-end gap-2 pt-4">
+                        <Button
+                          onClick={() => saveConfig(config)}
+                          disabled={saving === config.id}
+                        >
+                          {saving === config.id ? (
+                            <>
+                              <Settings className="w-4 h-4 mr-2 animate-spin" />
+                              Saving...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-4 h-4 mr-2" />
+                              Save Configuration
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
