@@ -410,7 +410,7 @@ export default function PaymentGatewayConfig() {
                           <div className="flex items-center space-x-2">
                             <Switch
                               id={`checkout-available-${config.id}`}
-                              checked={config.available_at_checkout}
+                              checked={config.available_at_checkout !== false}
                               onCheckedChange={(available_at_checkout) =>
                                 updateConfig(config.id, {
                                   available_at_checkout,
