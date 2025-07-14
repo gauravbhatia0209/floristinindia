@@ -11,8 +11,9 @@ This deployment uses Vercel's file-based routing instead of `vercel.json`:
 
 ### Upload Routes
 
-- `uploads/[...path].js` - Handles all `/uploads/*` requests
-- Serves uploaded images through Express server
+- `uploads/` - Static files served directly by Vercel
+- Contains existing uploaded images as static assets
+- New uploads use Supabase Storage in production
 
 ### Frontend
 
@@ -51,5 +52,7 @@ This deployment uses Vercel's file-based routing instead of `vercel.json`:
 
 - ✅ React Router SPA routing (no 404 on refresh)
 - ✅ API endpoints (`/api/*`)
-- ✅ File uploads and serving (`/uploads/*`)
+- ✅ Existing images served as static files (`/uploads/*`)
+- ✅ New uploads use Supabase Storage for persistence
+- ✅ Hybrid storage solution (local + cloud)
 - ✅ No `vercel.json` configuration needed
