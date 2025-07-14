@@ -835,66 +835,6 @@ export default function Checkout() {
     setSelectedPaymentMethod(gateway);
   }
 
-  async function handleProceedToPayment() {
-    if (!selectedPaymentMethod) return;
-
-    setIsSubmitting(true);
-    try {
-      const totals = calculateTotal();
-
-      const response = await fetch("/api/payments/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gateway_id: selectedPaymentMethod,
-          order_id: "", // Will be set by the order ID we created
-          amount: totals.total,
-          currency: "INR",
-          customer: {
-            name: form.fullName,
-            email: form.email,
-            phone: `${form.phoneCountryCode}${form.phone}`,
-            address: {
-              line1: form.addressLine1,
-              line2: form.addressLine2,
-              city: form.city,
-              state: form.state,
-              pincode: form.pincode,
-              country: "IN",
-            },
-          },
-          return_url: `${window.location.origin}/checkout/success`,
-          cancel_url: `${window.location.origin}/checkout/cancel`,
-          webhook_url: `${window.location.origin}/api/payments/webhook`,
-          metadata: {
-            order_number: "",
-          },
-        }),
-      });
-
-      const paymentData = await response.json();
-
-      if (paymentData.success) {
-        setPaymentIntentId(paymentData.payment_intent_id);
-        setCurrentStep(3); // Move to processing step
-
-        // Redirect to gateway payment page if available
-        if (paymentData.payment_url) {
-          window.location.href = paymentData.payment_url;
-        }
-      } else {
-        setErrors({ payment: paymentData.error || "Failed to create payment" });
-      }
-    } catch (error) {
-      console.error("Error creating payment:", error);
-      setErrors({ payment: "Failed to initialize payment" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
   async function handlePaymentSuccess(paymentIntent: any) {
     console.log("Creating order with data:", {
       order_number: orderNumber,
