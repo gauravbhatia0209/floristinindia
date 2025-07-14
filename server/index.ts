@@ -40,6 +40,9 @@ export function createServer() {
   // Upload routes
   app.use("/api/upload", uploadRoutes);
 
+  // Payment routes
+  app.use("/api/payments", paymentsRoutes);
+
   // Explicit route for serving uploaded files
   app.get("/uploads/*", (req, res) => {
     const filePath = req.path.replace("/uploads/", "");
@@ -129,7 +132,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const port = process.env.PORT || 3000;
 
   app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
+    console.log(`���� Server running on http://localhost:${port}`);
     console.log(`📡 API available at http://localhost:${port}/api`);
     console.log(`🔍 Health check: http://localhost:${port}/api/ping`);
   });
