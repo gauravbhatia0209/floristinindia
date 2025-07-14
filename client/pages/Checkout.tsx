@@ -611,6 +611,9 @@ export default function Checkout() {
     };
   }
 
+  // Calculate totals for display
+  const totals = calculateTotal();
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
