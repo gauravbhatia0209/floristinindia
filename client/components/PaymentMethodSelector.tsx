@@ -212,7 +212,8 @@ export default function PaymentMethodSelector({
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {PAYMENT_METHOD_DESCRIPTIONS[method.gateway]}
+                            {method.description ||
+                              PAYMENT_METHOD_DESCRIPTIONS[method.gateway]}
                           </p>
                           {fee > 0 && (
                             <p className="text-xs text-muted-foreground mt-1">
