@@ -27,11 +27,22 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import {
-  PaymentGatewayConfig,
-  PaymentGateway,
-  DEFAULT_PAYMENT_METHODS,
-} from "@shared/payment.types";
+import { PaymentGateway, DEFAULT_PAYMENT_METHODS } from "@shared/payment.types";
+
+// Local interface that matches database schema
+interface PaymentGatewayConfigDB {
+  id: PaymentGateway;
+  name: string;
+  enabled: boolean;
+  sandbox: boolean;
+  priority: number;
+  config: Record<string, any>;
+  supported_currencies: string[];
+  min_amount: number;
+  max_amount: number;
+  processing_fee: number;
+  fixed_fee: number;
+}
 
 const GATEWAY_ICONS: Record<PaymentGateway, React.ReactNode> = {
   phonepe: <Smartphone className="w-5 h-5" />,
