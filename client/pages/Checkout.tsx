@@ -791,6 +791,24 @@ export default function Checkout() {
     return null;
   }
 
+  // Payment processing step
+  if (currentStep === 3 && paymentIntentId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
+        <div className="container py-8">
+          <div className="max-w-4xl mx-auto">
+            <PaymentProcessor
+              paymentIntentId={paymentIntentId}
+              onSuccess={handlePaymentSuccess}
+              onFailure={handlePaymentFailure}
+              onCancel={handlePaymentCancel}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
       <div className="container py-8">
@@ -808,6 +826,20 @@ export default function Checkout() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-8">
+              {/* Step 2: Payment Method Selection */}
+              {currentStep === 2 && orderCreated && (
+                <PaymentMethodSelector
+                  amount={totals.total}
+                  currency="INR"
+                  selectedMethod={selectedPaymentMethod}
+                  onMethodSelect={handlePaymentMethodSelect}
+                  onProceed={handleProceedToPayment}
+                  isLoading={isSubmitting}
+                />
+              )}
+
+              {/* Step 1: Order Form */}
+              {currentStep === 1 && (
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* 1. Customer Information */}
                 <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
