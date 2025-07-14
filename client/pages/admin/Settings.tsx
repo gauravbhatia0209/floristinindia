@@ -29,7 +29,7 @@ import {
   uploadImageToSupabase,
   deleteImageFromSupabase,
 } from "@/lib/supabase-storage";
-import PaymentGatewayConfig from "@/components/admin/PaymentGatewayConfig";
+import PaymentGatewayConfigSimple from "@/components/admin/PaymentGatewayConfigSimple";
 
 interface SettingsData {
   // Site Info
