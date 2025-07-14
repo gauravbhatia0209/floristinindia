@@ -233,6 +233,18 @@ export default function PaymentGatewayConfig() {
                       <Badge variant={config.enabled ? "default" : "secondary"}>
                         {config.enabled ? "Enabled" : "Disabled"}
                       </Badge>
+                      {config.enabled && (
+                        <Badge
+                          variant={
+                            config.available_at_checkout ? "default" : "outline"
+                          }
+                          className="text-xs"
+                        >
+                          {config.available_at_checkout
+                            ? "At Checkout"
+                            : "Hidden"}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
