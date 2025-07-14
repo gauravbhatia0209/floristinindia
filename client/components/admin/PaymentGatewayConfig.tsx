@@ -252,15 +252,15 @@ export default function PaymentGatewayConfig() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-muted-foreground">Min Amount:</span>
-                      <div>{formatAmount(config.min_amount)}</div>
+                      <div>{formatAmount(config.min_amount || 100)}</div>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Max Amount:</span>
-                      <div>{formatAmount(config.max_amount)}</div>
+                      <div>{formatAmount(config.max_amount || 10000000)}</div>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Fee:</span>
-                      <div>{config.processing_fee}%</div>
+                      <div>{config.processing_fee || 0}%</div>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Mode:</span>
