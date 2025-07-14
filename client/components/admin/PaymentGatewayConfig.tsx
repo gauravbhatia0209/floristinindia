@@ -59,7 +59,7 @@ const GATEWAY_DESCRIPTIONS: Record<PaymentGateway, string> = {
 };
 
 export default function PaymentGatewayConfig() {
-  const [configs, setConfigs] = useState<PaymentGatewayConfig[]>([]);
+  const [configs, setConfigs] = useState<PaymentGatewayConfigDB[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [showSecrets, setShowSecrets] = useState<Record<string, boolean>>({});
