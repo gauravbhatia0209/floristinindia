@@ -778,7 +778,24 @@ export default function Checkout() {
       setCurrentStep(2); // Move to payment step
     } catch (error) {
       console.error("Failed to create order:", error);
-      setErrors({ submit: "Failed to create order. Please try again." });
+
+      let errorMessage = "Failed to create order. Please try again.";
+
+      if (error && typeof error === "object") {
+        if ("message" in error) {
+          errorMessage = `Order creation failed: ${error.message}`;
+        } else if ("error" in error) {
+          errorMessage = `Order creation failed: ${error.error}`;
+        } else if ("details" in error) {
+          errorMessage = `Order creation failed: ${error.details}`;
+        } else {
+          errorMessage = `Order creation failed: ${JSON.stringify(error)}`;
+        }
+      } else if (typeof error === "string") {
+        errorMessage = `Order creation failed: ${error}`;
+      }
+
+      setErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
