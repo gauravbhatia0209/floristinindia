@@ -821,6 +821,7 @@ export default function Checkout() {
       clearCart();
 
       setOrderCreated(true);
+      setCreatedOrderNumber(orderNumber); // Store the order number for later use
       setCurrentStep(2); // Move to payment step
     } catch (error) {
       console.error("❌ Order creation failed:");
@@ -1618,7 +1619,7 @@ export default function Checkout() {
                       <p className="text-green-800 text-sm">
                         ✓ Coupon "{appliedCoupon.code}" applied!
                         {appliedCoupon.discount_type === "flat"
-                          ? ` ���${appliedCoupon.discount_value} off`
+                          ? ` ₹${appliedCoupon.discount_value} off`
                           : ` ${appliedCoupon.discount_value}% off`}
                       </p>
                     </div>
