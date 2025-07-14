@@ -331,8 +331,7 @@ interface CheckoutForm {
   deliverySlot: string;
   specialInstructions: string;
 
-  // Payment
-  paymentMethod: string;
+  // Payment handled in step 2
 
   // Terms & Conditions
   acceptTerms: boolean;
