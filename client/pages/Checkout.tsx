@@ -953,11 +953,10 @@ export default function Checkout() {
     const fbContentIds = items.map((item) => item.product.id);
     trackFBPurchase(calculateTotal().total, "INR", fbContentIds, items.length);
 
-    // Clear cart
-    clearCart();
+    // Clear cart is already done during order creation
 
-    // Redirect to success page
-    navigate(`/checkout/success?payment_intent=${paymentIntent.id}`);
+    // Redirect to order confirmation page
+    navigate(`/order-confirmation/${createdOrderNumber}`);
   }
 
   function handlePaymentFailure(error: string) {
