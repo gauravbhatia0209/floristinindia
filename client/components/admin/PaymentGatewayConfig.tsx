@@ -439,7 +439,7 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="checkout-priority"
                                 type="number"
-                                value={config.checkout_priority}
+                                value={config.checkout_priority || 0}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     checkout_priority:
