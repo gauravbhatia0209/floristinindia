@@ -170,7 +170,7 @@ function App() {
               <Route path="checkout" element={<Checkout />} />
               <Route path="track-order" element={<TrackOrder />} />
               <Route
-                path="order-confirmation/:orderId"
+                path="order-confirmation/:orderNumber"
                 element={<OrderConfirmation />}
               />
               <Route
