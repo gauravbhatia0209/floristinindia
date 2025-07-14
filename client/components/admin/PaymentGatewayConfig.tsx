@@ -91,11 +91,11 @@ export default function PaymentGatewayConfig() {
             sandbox: true,
             priority: index + 1,
             config: {},
-            supportedCurrencies: ["INR"],
-            minAmount: 100,
-            maxAmount: 10000000,
-            processingFee: 2.0,
-            fixedFee: 0,
+            supported_currencies: ["INR"],
+            min_amount: 100,
+            max_amount: 10000000,
+            processing_fee: 2.0,
+            fixed_fee: 0,
           })),
         );
       }
