@@ -28,7 +28,8 @@ export default async function handler(req, res) {
       .from("payment_gateway_configs")
       .select("*")
       .eq("enabled", true)
-      .order("priority", { ascending: true });
+      .eq("available_at_checkout", true)
+      .order("checkout_priority", { ascending: true });
 
     if (error) {
       console.error("Error fetching payment methods:", error);
