@@ -82,61 +82,72 @@ router.post("/image", upload.single("image"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // In production/Vercel, use Supabase Storage
-    if (process.env.VERCEL || process.env.NODE_ENV === "production") {
-      try {
-        // Read file buffer
-        const fileBuffer = req.file.buffer || fs.readFileSync(req.file.path);
-        const subdir = req.query.subdir as string;
+    // Always use Supabase Storage for all uploads
+    try {
+      // Read file buffer
+      const fileBuffer = req.file.buffer || fs.readFileSync(req.file.path);
+      const subdir = req.query.subdir as string;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("media-assets")
-          .upload(`${subdir || "uploads"}/${req.file.filename}`, fileBuffer, {
-            contentType: req.file.mimetype,
-            cacheControl: "3600",
-            upsert: false,
-          });
+      // Generate unique filename with timestamp
+      const timestamp = Date.now();
+      const randomString = Math.random().toString(36).substring(2, 8);
+      const extension = path.extname(req.file.originalname).toLowerCase();
+      const cleanName = req.file.originalname
+        .replace(/\.[^/.]+$/, "") // Remove extension
+        .replace(/[^a-zA-Z0-9]/g, "-") // Replace special chars with dash
+        .substring(0, 20); // Limit length
 
-        if (uploadError) {
-          console.error("Supabase upload error:", uploadError);
-        } else {
-          // Get public URL
-          const { data: publicUrlData } = supabase.storage
-            .from("media-assets")
-            .getPublicUrl(uploadData.path);
+      const filename = `${timestamp}-${randomString}-${cleanName}${extension}`;
+      const filePath = subdir ? `${subdir}/${filename}` : `uploads/${filename}`;
 
-          if (publicUrlData?.publicUrl) {
-            return res.json({
-              success: true,
-              imageUrl: publicUrlData.publicUrl,
-              filename: req.file.filename,
-              originalName: req.file.originalname,
-              size: req.file.size,
-            });
-          }
-        }
-      } catch (supabaseError) {
-        console.error(
-          "Supabase upload failed, falling back to local:",
-          supabaseError,
-        );
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("media-assets")
+        .upload(filePath, fileBuffer, {
+          contentType: req.file.mimetype,
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Supabase upload error:", uploadError);
+        return res.status(500).json({
+          error: "Upload failed to cloud storage",
+          details: uploadError.message,
+        });
       }
+
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage
+        .from("media-assets")
+        .getPublicUrl(uploadData.path);
+
+      if (!publicUrlData?.publicUrl) {
+        // Cleanup uploaded file if we can't get public URL
+        await supabase.storage.from("media-assets").remove([uploadData.path]);
+        return res.status(500).json({
+          error: "Failed to generate public URL for uploaded image",
+        });
+      }
+
+      return res.json({
+        success: true,
+        imageUrl: publicUrlData.publicUrl,
+        filename: filename,
+        originalName: req.file.originalname,
+        size: req.file.size,
+        cloudPath: uploadData.path,
+      });
+    } catch (supabaseError) {
+      console.error("Supabase upload failed:", supabaseError);
+      return res.status(500).json({
+        error: "Cloud storage upload failed",
+        details:
+          supabaseError instanceof Error
+            ? supabaseError.message
+            : "Unknown error",
+      });
     }
-
-    // Local storage fallback
-    const subdir = req.query.subdir as string;
-    const imageUrl = subdir
-      ? `/uploads/${subdir}/${req.file.filename}`
-      : `/uploads/${req.file.filename}`;
-
-    res.json({
-      success: true,
-      imageUrl: imageUrl,
-      filename: req.file.filename,
-      originalName: req.file.originalname,
-      size: req.file.size,
-    });
   } catch (error) {
     console.error("Error uploading image:", error);
     res.status(500).json({ error: "Failed to upload image" });
