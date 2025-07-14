@@ -352,7 +352,11 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="max-amount"
                                 type="number"
-                                value={config.max_amount / 100}
+                                value={
+                                  config.max_amount
+                                    ? config.max_amount / 100
+                                    : 100000
+                                }
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     max_amount:
