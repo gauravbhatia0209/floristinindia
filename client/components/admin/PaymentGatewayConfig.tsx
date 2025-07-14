@@ -42,6 +42,15 @@ interface PaymentGatewayConfigDB {
   max_amount: number;
   processing_fee: number;
   fixed_fee: number;
+  // Checkout availability controls
+  available_at_checkout: boolean;
+  checkout_display_name: string;
+  checkout_description: string;
+  checkout_icon: string;
+  checkout_priority: number;
+  min_checkout_amount: number;
+  max_checkout_amount: number;
+  checkout_processing_message: string;
 }
 
 const GATEWAY_ICONS: Record<PaymentGateway, React.ReactNode> = {
