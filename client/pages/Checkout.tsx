@@ -791,43 +791,6 @@ export default function Checkout() {
         throw new Error(`Validation failed: ${validationErrors.join(", ")}`);
       }
 
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert(orderData)
-        .select()
-        .single();
-
-      console.log("Order creation result:", { order, orderError });
-
-      if (orderError) throw orderError;
-
-      // Update coupon usage if applied
-      if (appliedCoupon) {
-        await supabase
-          .from("coupons")
-          .update({ usage_count: appliedCoupon.usage_count + 1 })
-          .eq("id", appliedCoupon.id);
-      }
-
-      // Track purchase in Google Analytics
-      const orderItems = items.map((item) => ({
-        item_id: item.product.id,
-        item_name: item.product.name,
-        category: item.product.category_name,
-        quantity: item.quantity,
-        price: item.product.price,
-      }));
-      trackPurchase(orderNumber, totals.total, orderItems);
-
-      // Track purchase in Facebook Pixel
-      const fbContentIds = items.map((item) => item.product.id);
-      trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
-
-      // Clear cart
-      clearCart();
-
-
-
   async function createOrder(): Promise<string> {
     const totals = calculateTotal();
 
