@@ -105,11 +105,17 @@ router.post("/image", upload.single("image"), async (req, res) => {
       const filename = `${timestamp}-${randomString}-${cleanName}${extension}`;
       const filePath = subdir ? `${subdir}/${filename}` : `uploads/${filename}`;
 
-      // Upload to Supabase Storage
+      console.log("Uploading to Supabase:", {
+        filePath,
+        contentType: req.file.mimetype,
+        size: req.file.buffer.length,
+      });
+
+      // Upload to Supabase Storage with proper content type
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("media-assets")
-        .upload(filePath, fileBuffer, {
-          contentType: req.file.mimetype,
+        .upload(filePath, req.file.buffer, {
+          contentType: req.file.mimetype || "image/jpeg",
           cacheControl: "3600",
           upsert: false,
         });
@@ -117,8 +123,10 @@ router.post("/image", upload.single("image"), async (req, res) => {
       if (uploadError) {
         console.error("Supabase upload error:", uploadError);
         return res.status(500).json({
+          success: false,
           error: "Upload failed to cloud storage",
           details: uploadError.message,
+          supabaseError: uploadError,
         });
       }
 
