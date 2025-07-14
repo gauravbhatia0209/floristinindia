@@ -826,59 +826,7 @@ export default function Checkout() {
       // Clear cart
       clearCart();
 
-      setOrderCreated(true);
-      setCreatedOrderNumber(orderNumber); // Store the order number for later use
-      setCurrentStep(2); // Move to payment step
-    } catch (error) {
-      console.error("❌ Order creation failed:");
-      console.error("Error type:", typeof error);
-      console.error("Error object:", error);
-      console.error("Error stringified:", JSON.stringify(error, null, 2));
 
-      // Log error properties
-      if (error && typeof error === "object") {
-        console.error("Error keys:", Object.keys(error));
-        console.error("Error message:", error.message);
-        console.error("Error stack:", error.stack);
-      }
-
-      let errorMessage = "Failed to create order. Please try again.";
-
-      try {
-        if (error && typeof error === "object") {
-          // Handle Supabase errors
-          if (error.message) {
-            errorMessage = `Order creation failed: ${error.message}`;
-          } else if (error.error && error.error.message) {
-            errorMessage = `Database error: ${error.error.message}`;
-          } else if (error.details) {
-            errorMessage = `Error details: ${error.details}`;
-          } else if (error.hint) {
-            errorMessage = `Database hint: ${error.hint}`;
-          } else {
-            // Try to extract any meaningful error info
-            const errorStr = JSON.stringify(error);
-            if (errorStr && errorStr !== "{}") {
-              errorMessage = `Order creation failed: ${errorStr}`;
-            }
-          }
-        } else if (typeof error === "string") {
-          errorMessage = `Order creation failed: ${error}`;
-        }
-      } catch (parseError) {
-        console.error("Error parsing error:", parseError);
-        errorMessage = "Order creation failed due to an unexpected error.";
-      }
-
-      console.error("Final error message:", errorMessage);
-      setErrors({ submit: errorMessage });
-
-      // Also show alert for immediate debugging
-      alert(`DEBUG: ${errorMessage}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
 
   async function createOrder(): Promise<string> {
     const totals = calculateTotal();
