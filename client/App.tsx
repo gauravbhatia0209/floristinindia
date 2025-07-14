@@ -215,7 +215,7 @@ function App() {
                 path="categories/migrate-images"
                 element={<CategoryImageMigration />}
               />
-              <Route path="orders" element={<Orders />} />
+              <Route path="orders" element={<AdminOrders />} />
               <Route path="customers" element={<Customers />} />
               <Route path="coupons" element={<Coupons />} />
               <Route path="shipping" element={<ShippingEnhanced />} />
