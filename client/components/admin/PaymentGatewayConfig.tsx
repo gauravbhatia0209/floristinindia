@@ -336,10 +336,10 @@ export default function PaymentGatewayConfig() {
                                 id="processing-fee"
                                 type="number"
                                 step="0.1"
-                                value={config.processingFee}
+                                value={config.processing_fee}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
-                                    processingFee:
+                                    processing_fee:
                                       parseFloat(e.target.value) || 0,
                                   })
                                 }
@@ -350,10 +350,10 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="fixed-fee"
                                 type="number"
-                                value={config.fixedFee / 100}
+                                value={config.fixed_fee / 100}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
-                                    fixedFee:
+                                    fixed_fee:
                                       (parseFloat(e.target.value) || 0) * 100,
                                   })
                                 }
