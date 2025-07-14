@@ -300,10 +300,10 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="min-amount"
                                 type="number"
-                                value={config.minAmount / 100}
+                                value={config.min_amount / 100}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
-                                    minAmount:
+                                    min_amount:
                                       (parseFloat(e.target.value) || 0) * 100,
                                   })
                                 }
@@ -316,10 +316,10 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="max-amount"
                                 type="number"
-                                value={config.maxAmount / 100}
+                                value={config.max_amount / 100}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
-                                    maxAmount:
+                                    max_amount:
                                       (parseFloat(e.target.value) || 0) * 100,
                                   })
                                 }
