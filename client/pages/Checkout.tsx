@@ -867,26 +867,32 @@ export default function Checkout() {
           webhook_url: `${window.location.origin}/api/payments/webhook`,
           metadata: {
             order_number: "",
-              line1: form.addressLine1,
-              line2: form.addressLine2 || "",
-              city: form.city,
-              state: form.state,
-              pincode: form.pincode,
-              phone: form.receiverPhone
-                ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
-                : `${form.phoneCountryCode}${form.phone}`,
-              type: "shipping",
-            },
-          ],
-        },
-        { onConflict: "email" },
-      )
-      .select()
-      .single();
+          },
+        }),
+      });
 
-    if (customerError) throw customerError;
+      const paymentData = await response.json();
 
-    // Create order
+      if (paymentData.success) {
+        setPaymentIntentId(paymentData.payment_intent_id);
+        setCurrentStep(3); // Move to processing step
+
+        // Redirect to gateway payment page if available
+        if (paymentData.payment_url) {
+          window.location.href = paymentData.payment_url;
+        }
+      } else {
+        setErrors({ payment: paymentData.error || "Failed to create payment" });
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      setErrors({ payment: "Failed to initialize payment" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handlePaymentSuccess(paymentIntent: any) {
     console.log("Creating order with data:", {
       order_number: orderNumber,
       customer_id: customer.id,
