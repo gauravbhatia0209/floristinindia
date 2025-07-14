@@ -6,6 +6,7 @@ import uploadRoutes from "./routes/upload.js";
 import aiDataRoutes from "./routes/ai-data.js";
 import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
+import paymentsRoutes from "./routes/payments.js";
 
 // Define uploads path at module level
 const uploadsPath = process.env.VERCEL
