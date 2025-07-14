@@ -21,11 +21,15 @@
       "dest": "/server/index.ts"
     },
     {
-      "src": "/sitemap\\.(xml|txt)",
+      "src": "/sitemap.xml",
       "dest": "/server/index.ts"
     },
     {
-      "src": "/robots\\.txt",
+      "src": "/sitemap.txt",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/robots.txt",
       "dest": "/public/robots.txt"
     },
     {
