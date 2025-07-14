@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  Star,
   Heart,
   Share2,
   Truck,
@@ -414,11 +413,9 @@ export default function ProductDetail() {
             {product.has_variations && variants.length > 0 && (
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-gold text-gold" />
-                  ))}
+                  <StarRating rating={4.8} size="md" showNumber />
                   <span className="text-muted-foreground ml-2">
-                    (4.8) • 156 reviews
+                    • 156 reviews
                   </span>
                 </div>
               </div>
