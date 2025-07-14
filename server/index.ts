@@ -69,6 +69,28 @@ export function createServer() {
     });
   });
 
+  // Add error handling middleware for API routes
+  app.use("/api/*", (err: any, req: any, res: any, next: any) => {
+    console.error("API Error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details: err.message,
+      path: req.path,
+    });
+  });
+
+  // Handle 404 for API routes with JSON response
+  app.use("/api/*", (req: any, res: any) => {
+    console.log("API 404:", req.method, req.path);
+    res.status(404).json({
+      success: false,
+      error: "API endpoint not found",
+      details: `${req.method} ${req.path} not found`,
+      path: req.path,
+    });
+  });
+
   // Serve static files from client build in production
   if (process.env.NODE_ENV === "production") {
     // In serverless environments, static files are handled by the platform
