@@ -852,16 +852,21 @@ export default function Checkout() {
           customer: {
             name: form.fullName,
             email: form.email,
-      .upsert(
-        {
-          name: form.fullName,
-          email: form.email,
-          first_name: firstName,
-          last_name: lastName,
-          phone: `${form.phoneCountryCode}${form.phone}`,
-          addresses: [
-            {
-              name: form.receiverName || form.fullName,
+            phone: `${form.phoneCountryCode}${form.phone}`,
+            address: {
+              line1: form.addressLine1,
+              line2: form.addressLine2,
+              city: form.city,
+              state: form.state,
+              pincode: form.pincode,
+              country: "IN",
+            },
+          },
+          return_url: `${window.location.origin}/checkout/success`,
+          cancel_url: `${window.location.origin}/checkout/cancel`,
+          webhook_url: `${window.location.origin}/api/payments/webhook`,
+          metadata: {
+            order_number: "",
               line1: form.addressLine1,
               line2: form.addressLine2 || "",
               city: form.city,
