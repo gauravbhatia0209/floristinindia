@@ -76,12 +76,55 @@ const upload = multer({
 });
 
 // Upload single image endpoint
-router.post("/image", upload.single("image"), (req, res) => {
+router.post("/image", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    // In production/Vercel, use Supabase Storage
+    if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+      try {
+        // Read file buffer
+        const fileBuffer = req.file.buffer || fs.readFileSync(req.file.path);
+        const subdir = req.query.subdir as string;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("media-assets")
+          .upload(`${subdir || "uploads"}/${req.file.filename}`, fileBuffer, {
+            contentType: req.file.mimetype,
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Supabase upload error:", uploadError);
+        } else {
+          // Get public URL
+          const { data: publicUrlData } = supabase.storage
+            .from("media-assets")
+            .getPublicUrl(uploadData.path);
+
+          if (publicUrlData?.publicUrl) {
+            return res.json({
+              success: true,
+              imageUrl: publicUrlData.publicUrl,
+              filename: req.file.filename,
+              originalName: req.file.originalname,
+              size: req.file.size,
+            });
+          }
+        }
+      } catch (supabaseError) {
+        console.error(
+          "Supabase upload failed, falling back to local:",
+          supabaseError,
+        );
+      }
+    }
+
+    // Local storage fallback
     const subdir = req.query.subdir as string;
     const imageUrl = subdir
       ? `/uploads/${subdir}/${req.file.filename}`
