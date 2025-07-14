@@ -16,52 +16,36 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Support subdirectories via query parameter
-    const subdir = req.query.subdir as string;
-    let targetDir = uploadsDir;
-
-    if (subdir) {
-      targetDir = path.join(uploadsDir, subdir);
-      // Create subdirectory if it doesn't exist
-      if (!fs.existsSync(targetDir)) {
-        fs.mkdirSync(targetDir, { recursive: true });
-      }
-    }
-
-    cb(null, targetDir);
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename with timestamp and random string
-    const timestamp = Date.now();
-    const randomString = crypto.randomBytes(6).toString("hex");
-    const extension = path.extname(file.originalname).toLowerCase();
-    const sanitizedName = file.originalname
-      .replace(extension, "")
-      .replace(/[^a-zA-Z0-9]/g, "-")
-      .substring(0, 20);
-
-    const filename = `${timestamp}-${randomString}-${sanitizedName}${extension}`;
-    cb(null, filename);
-  },
-});
+// Configure multer for memory storage (better for serverless)
+const storage = multer.memoryStorage();
 
 // File filter for validation
 const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
-  const allowedTypes = [".jpg", ".jpeg", ".png", ".webp"];
+  const allowedTypes = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+  const allowedMimes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+  ];
   const extension = path.extname(file.originalname).toLowerCase();
 
-  if (allowedTypes.includes(extension)) {
+  console.log(
+    `Upload attempt - File: ${file.originalname}, MIME: ${file.mimetype}, Extension: ${extension}`,
+  );
+
+  if (
+    allowedTypes.includes(extension) &&
+    allowedMimes.includes(file.mimetype)
+  ) {
     cb(null, true);
   } else {
-    cb(
-      new Error(
-        "Invalid file type. Only JPG, JPEG, PNG, and WebP files are allowed.",
-      ),
-      false,
+    const error = new Error(
+      `Invalid file type. File: ${file.originalname}, MIME: ${file.mimetype}. Only JPG, JPEG, PNG, WebP, and GIF files are allowed.`,
     );
+    console.error("File filter rejected:", error.message);
+    cb(error, false);
   }
 };
 
