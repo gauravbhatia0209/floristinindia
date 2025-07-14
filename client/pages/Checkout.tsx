@@ -912,7 +912,7 @@ export default function Checkout() {
           cancel_url: `${window.location.origin}/checkout/cancel`,
           webhook_url: `${window.location.origin}/api/payments/webhook`,
           metadata: {
-            order_number: "", // Will be populated with actual order number
+            order_number: createdOrderNumber,
           },
         }),
       });
