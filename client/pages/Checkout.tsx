@@ -635,18 +635,6 @@ export default function Checkout() {
     // Move to payment selection step
     setCurrentStep(2);
   }
-      const totals = calculateTotal();
-
-      // Generate sequential order number with FII prefix
-      const orderNumber = await generateOrderNumber();
-
-      // Upload files first
-      console.log("Uploading order files...");
-      const uploadedFiles = await uploadOrderFiles(orderNumber);
-
-      // Create customer record
-      const nameParts = form.fullName.trim().split(" ");
-      const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
 
       const { data: customer, error: customerError } = await supabase
