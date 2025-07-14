@@ -375,6 +375,7 @@ export default function Checkout() {
     useState<PaymentGateway | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [orderCreated, setOrderCreated] = useState(false);
+  const [createdOrderNumber, setCreatedOrderNumber] = useState<string>("");
   const { trackPurchase } = useGoogleAnalytics();
   const { trackPurchase: trackFBPurchase, trackInitiateCheckout } =
     useFacebookPixel();
@@ -1617,7 +1618,7 @@ export default function Checkout() {
                       <p className="text-green-800 text-sm">
                         ✓ Coupon "{appliedCoupon.code}" applied!
                         {appliedCoupon.discount_type === "flat"
-                          ? ` ₹${appliedCoupon.discount_value} off`
+                          ? ` ���${appliedCoupon.discount_value} off`
                           : ` ${appliedCoupon.discount_value}% off`}
                       </p>
                     </div>
