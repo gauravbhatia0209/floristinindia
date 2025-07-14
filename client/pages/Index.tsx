@@ -1081,10 +1081,8 @@ export default function Index() {
             {testimonials.map((testimonial: any, index: number) => (
               <Card key={index} className="border-0 shadow-lg">
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-gold text-gold" />
-                    ))}
+                  <div className="mb-4">
+                    <StarRating rating={testimonial.rating || 5} size="md" />
                   </div>
                   <p className="text-muted-foreground mb-4 italic">
                     "{testimonial.review}"
