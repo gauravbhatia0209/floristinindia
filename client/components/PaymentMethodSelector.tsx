@@ -6,10 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Loader2, CreditCard, Smartphone, Globe, Banknote } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  PaymentMethodConfig,
-  PaymentGateway,
-} from "../../shared/payment.types";
+import { PaymentMethodConfig, PaymentGateway } from "@shared/payment.types";
 
 interface PaymentMethod {
   gateway: PaymentGateway;
