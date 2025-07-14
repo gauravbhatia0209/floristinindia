@@ -629,7 +629,11 @@ export default function Checkout() {
       return;
     }
 
-    setIsSubmitting(true);
+    // Clear any previous errors
+    setErrors({});
+
+    // Move to payment selection step
+    setCurrentStep(2);
     try {
       const totals = calculateTotal();
 
