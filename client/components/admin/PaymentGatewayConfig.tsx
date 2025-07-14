@@ -31,7 +31,7 @@ import {
   PaymentGatewayConfig,
   PaymentGateway,
   DEFAULT_PAYMENT_METHODS,
-} from "../../../shared/payment.types";
+} from "@shared/payment.types";
 
 const GATEWAY_ICONS: Record<PaymentGateway, React.ReactNode> = {
   phonepe: <Smartphone className="w-5 h-5" />,
