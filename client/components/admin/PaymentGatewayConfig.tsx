@@ -381,6 +381,157 @@ export default function PaymentGatewayConfig() {
                           </div>
                         </TabsContent>
 
+                        <TabsContent value="checkout" className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              id={`checkout-available-${config.id}`}
+                              checked={config.available_at_checkout}
+                              onCheckedChange={(available_at_checkout) =>
+                                updateConfig(config.id, {
+                                  available_at_checkout,
+                                })
+                              }
+                            />
+                            <Label htmlFor={`checkout-available-${config.id}`}>
+                              Show at Checkout
+                            </Label>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            When enabled, customers will see this payment method
+                            as an option during checkout.
+                          </p>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="checkout-display-name">
+                                Display Name at Checkout
+                              </Label>
+                              <Input
+                                id="checkout-display-name"
+                                value={
+                                  config.checkout_display_name || config.name
+                                }
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    checkout_display_name: e.target.value,
+                                  })
+                                }
+                                placeholder={config.name}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="checkout-priority">
+                                Checkout Priority
+                              </Label>
+                              <Input
+                                id="checkout-priority"
+                                type="number"
+                                value={config.checkout_priority}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    checkout_priority:
+                                      parseInt(e.target.value) || 0,
+                                  })
+                                }
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Lower numbers appear first
+                              </p>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="checkout-description">
+                              Customer Description
+                            </Label>
+                            <Textarea
+                              id="checkout-description"
+                              value={config.checkout_description || ""}
+                              onChange={(e) =>
+                                updateConfig(config.id, {
+                                  checkout_description: e.target.value,
+                                })
+                              }
+                              placeholder="Description shown to customers at checkout"
+                              rows={2}
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="min-checkout-amount">
+                                Minimum Order Amount (₹)
+                              </Label>
+                              <Input
+                                id="min-checkout-amount"
+                                type="number"
+                                value={config.min_checkout_amount / 100}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    min_checkout_amount:
+                                      (parseFloat(e.target.value) || 0) * 100,
+                                  })
+                                }
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Hide this payment method for orders below this
+                                amount
+                              </p>
+                            </div>
+                            <div>
+                              <Label htmlFor="max-checkout-amount">
+                                Maximum Order Amount (₹)
+                              </Label>
+                              <Input
+                                id="max-checkout-amount"
+                                type="number"
+                                value={config.max_checkout_amount / 100}
+                                onChange={(e) =>
+                                  updateConfig(config.id, {
+                                    max_checkout_amount:
+                                      (parseFloat(e.target.value) || 0) * 100,
+                                  })
+                                }
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Hide this payment method for orders above this
+                                amount
+                              </p>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="checkout-processing-message">
+                              Processing Message
+                            </Label>
+                            <Input
+                              id="checkout-processing-message"
+                              value={config.checkout_processing_message || ""}
+                              onChange={(e) =>
+                                updateConfig(config.id, {
+                                  checkout_processing_message: e.target.value,
+                                })
+                              }
+                              placeholder="Message shown while processing payment"
+                            />
+                          </div>
+
+                          <Alert>
+                            <AlertDescription>
+                              <strong>
+                                Checkout Availability vs System Enabled:
+                              </strong>
+                              <br />• <strong>System Enabled:</strong> Gateway
+                              is configured and functional
+                              <br />• <strong>Show at Checkout:</strong>{" "}
+                              Customers can select this payment method
+                              <br />
+                              You can enable a gateway but hide it from
+                              checkout, or show different limits at checkout.
+                            </AlertDescription>
+                          </Alert>
+                        </TabsContent>
+
                         <TabsContent value="credentials" className="space-y-4">
                           {config.id === "paypal" && (
                             <>
