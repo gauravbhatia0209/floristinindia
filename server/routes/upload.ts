@@ -155,25 +155,97 @@ router.post("/image", upload.single("image"), async (req, res) => {
 });
 
 // Upload multiple images endpoint
-router.post("/images", upload.array("images", 5), (req, res) => {
+router.post("/images", upload.array("images", 5), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No files uploaded" });
     }
 
     const subdir = req.query.subdir as string;
-    const imageUrls = (req.files as Express.Multer.File[]).map((file) => ({
-      url: subdir
-        ? `/uploads/${subdir}/${file.filename}`
-        : `/uploads/${file.filename}`,
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
-    }));
+    const uploadResults = [];
+    const errors = [];
+
+    // Upload each file to Supabase Storage
+    for (const file of req.files as Express.Multer.File[]) {
+      try {
+        // Read file buffer
+        const fileBuffer = file.buffer || fs.readFileSync(file.path);
+
+        // Generate unique filename
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(2, 8);
+        const extension = path.extname(file.originalname).toLowerCase();
+        const cleanName = file.originalname
+          .replace(/\.[^/.]+$/, "") // Remove extension
+          .replace(/[^a-zA-Z0-9]/g, "-") // Replace special chars with dash
+          .substring(0, 20); // Limit length
+
+        const filename = `${timestamp}-${randomString}-${cleanName}${extension}`;
+        const filePath = subdir
+          ? `${subdir}/${filename}`
+          : `uploads/${filename}`;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("media-assets")
+          .upload(filePath, fileBuffer, {
+            contentType: file.mimetype,
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error(
+            `Supabase upload error for ${file.originalname}:`,
+            uploadError,
+          );
+          errors.push({
+            filename: file.originalname,
+            error: uploadError.message,
+          });
+          continue;
+        }
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from("media-assets")
+          .getPublicUrl(uploadData.path);
+
+        if (!publicUrlData?.publicUrl) {
+          // Cleanup uploaded file if we can't get public URL
+          await supabase.storage.from("media-assets").remove([uploadData.path]);
+          errors.push({
+            filename: file.originalname,
+            error: "Failed to generate public URL",
+          });
+          continue;
+        }
+
+        uploadResults.push({
+          url: publicUrlData.publicUrl,
+          filename: filename,
+          originalName: file.originalname,
+          size: file.size,
+          cloudPath: uploadData.path,
+        });
+
+        // Small delay to avoid rate limiting
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } catch (fileError) {
+        console.error(`Error uploading ${file.originalname}:`, fileError);
+        errors.push({
+          filename: file.originalname,
+          error:
+            fileError instanceof Error ? fileError.message : "Unknown error",
+        });
+      }
+    }
 
     res.json({
-      success: true,
-      images: imageUrls,
+      success: uploadResults.length > 0,
+      images: uploadResults,
+      count: uploadResults.length,
+      errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
     console.error("Error uploading images:", error);
