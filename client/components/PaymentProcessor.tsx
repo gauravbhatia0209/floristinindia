@@ -10,7 +10,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PaymentGateway, PaymentIntent } from "../../shared/payment.types";
+import { PaymentGateway, PaymentIntent } from "@shared/payment.types";
 
 interface PaymentProcessorProps {
   paymentIntentId: string;
