@@ -874,6 +874,199 @@ export default function Checkout() {
     }
   }
 
+  async function createOrder(): Promise<string> {
+    const totals = calculateTotal();
+
+    // Generate sequential order number with FII prefix
+    const orderNumber = await generateOrderNumber();
+
+    // Upload files first
+    console.log("Uploading order files...");
+    const uploadedFiles = await uploadOrderFiles(orderNumber);
+
+    // Create customer record
+    const nameParts = form.fullName.trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    const { data: customer, error: customerError } = await supabase
+      .from("customers")
+      .upsert(
+        {
+          name: form.fullName,
+          email: form.email,
+          first_name: firstName,
+          last_name: lastName,
+          phone: `${form.phoneCountryCode}${form.phone}`,
+          addresses: [
+            {
+              name: form.receiverName || form.fullName,
+              line1: form.addressLine1,
+              line2: form.addressLine2 || "",
+              city: form.city,
+              state: form.state,
+              pincode: form.pincode,
+              phone: form.receiverPhone
+                ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+                : `${form.phoneCountryCode}${form.phone}`,
+              type: "shipping",
+            },
+          ],
+        },
+        { onConflict: "email" },
+      )
+      .select()
+      .single();
+
+    if (customerError) throw customerError;
+
+    // Create order
+    console.log("Creating order with data:", {
+      order_number: orderNumber,
+      customer_id: customer.id,
+      totals,
+      form: form,
+      items: items.length,
+    });
+
+    const orderData = {
+      order_number: orderNumber,
+      customer_id: customer.id,
+      status: "pending",
+      total_amount: totals.total,
+      shipping_amount: totals.shipping,
+      discount_amount: totals.discount,
+      tax_amount: totals.tax,
+      items: items.map((item) => {
+        const uploadedFileData = uploadedFiles.find(
+          (f) => f.product_id === item.product_id,
+        );
+
+        return {
+          product_id: item.product_id,
+          product_name: item.product.name,
+          variant_id: item.variant_id,
+          variant_name: item.variant?.name,
+          quantity: item.quantity,
+          unit_price:
+            item.variant?.sale_price ||
+            item.variant?.price ||
+            item.product.sale_price ||
+            item.product.price,
+          total_price:
+            (item.variant?.sale_price ||
+              item.variant?.price ||
+              item.product.sale_price ||
+              item.product.price) * item.quantity,
+          uploaded_file_url: uploadedFileData?.file_url || null,
+          uploaded_file_name: uploadedFileData?.file_name || null,
+          uploaded_file_size: uploadedFileData?.file_size || null,
+          uploaded_file_type: uploadedFileData?.file_type || null,
+          upload_status: uploadedFileData?.status || null,
+        };
+      }),
+      shipping_address: {
+        name: form.receiverName || form.fullName,
+        line1: form.addressLine1,
+        line2: form.addressLine2 || "",
+        city: form.city,
+        state: form.state,
+        pincode: form.pincode,
+        phone: form.receiverPhone
+          ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+          : `${form.phoneCountryCode}${form.phone}`,
+        alternate_phone: form.alternatePhone || "",
+      },
+      billing_address: {
+        name: form.fullName,
+        line1: form.addressLine1,
+        line2: form.addressLine2 || "",
+        city: form.city,
+        state: form.state,
+        pincode: form.pincode,
+        phone: `${form.phoneCountryCode}${form.phone}`,
+        alternate_phone: form.alternatePhone || "",
+      },
+      delivery_date: form.deliveryDate || null,
+      delivery_slot: form.deliverySlot || null,
+      special_instructions: form.specialInstructions || null,
+      customer_message: form.orderMessage || null,
+      receiver_name: form.receiverName || form.fullName,
+      receiver_phone: form.receiverPhone
+        ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+        : `${form.phoneCountryCode}${form.phone}`,
+      alternate_phone: form.alternatePhone || "",
+      delivery_instructions: form.specialInstructions || null,
+      uploaded_files: uploadedFiles,
+      payment_method: selectedPaymentMethod?.name || "pending",
+      payment_status: "paid", // Set to paid since payment was successful
+      coupon_code: appliedCoupon?.code || null,
+    };
+
+    console.log("Order data to be inserted:", orderData);
+
+    // Validate critical fields before insertion
+    const validationErrors = [];
+
+    if (!orderData.order_number) validationErrors.push("Missing order number");
+    if (!orderData.customer_id) validationErrors.push("Missing customer ID");
+    if (!orderData.total_amount || orderData.total_amount <= 0)
+      validationErrors.push("Invalid total amount");
+    if (!orderData.shipping_address?.name)
+      validationErrors.push("Missing shipping address name");
+    if (!orderData.shipping_address?.line1)
+      validationErrors.push("Missing shipping address");
+    if (!orderData.shipping_address?.city)
+      validationErrors.push("Missing shipping city");
+    if (!orderData.shipping_address?.state)
+      validationErrors.push("Missing shipping state");
+    if (!orderData.shipping_address?.pincode)
+      validationErrors.push("Missing shipping pincode");
+    if (!orderData.items || orderData.items.length === 0)
+      validationErrors.push("No items in order");
+
+    if (validationErrors.length > 0) {
+      throw new Error(`Validation failed: ${validationErrors.join(", ")}`);
+    }
+
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert(orderData)
+      .select()
+      .single();
+
+    console.log("Order creation result:", { order, orderError });
+
+    if (orderError) throw orderError;
+
+    // Update coupon usage if applied
+    if (appliedCoupon) {
+      await supabase
+        .from("coupons")
+        .update({ usage_count: appliedCoupon.usage_count + 1 })
+        .eq("id", appliedCoupon.id);
+    }
+
+    // Track purchase in Google Analytics
+    const orderItems = items.map((item) => ({
+      item_id: item.product.id,
+      item_name: item.product.name,
+      category: item.product.category_name,
+      quantity: item.quantity,
+      price: item.product.price,
+    }));
+    trackPurchase(orderNumber, totals.total, orderItems);
+
+    // Track purchase in Facebook Pixel
+    const fbContentIds = items.map((item) => item.product.id);
+    trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
+
+    // Clear cart
+    clearCart();
+
+    return orderNumber;
+  }
+
   async function handlePaymentMethodSelect(gateway: PaymentGateway) {
     setSelectedPaymentMethod(gateway);
   }
