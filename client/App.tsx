@@ -41,7 +41,7 @@ import Analytics from "@/pages/admin/Analytics";
 import AdminProducts from "@/pages/admin/Products";
 import ProductEdit from "@/pages/admin/ProductEdit";
 import Categories from "@/pages/admin/Categories";
-import Orders from "@/pages/admin/Orders";
+import AdminOrders from "@/pages/admin/Orders";
 import Customers from "@/pages/admin/Customers";
 import Coupons from "@/pages/admin/Coupons";
 import ShippingEnhanced from "@/pages/admin/ShippingEnhanced";
