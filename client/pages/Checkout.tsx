@@ -358,7 +358,6 @@ export default function Checkout() {
     deliveryDate: "",
     deliverySlot: "",
     specialInstructions: "",
-    paymentMethod: "",
     acceptTerms: false,
   });
 
