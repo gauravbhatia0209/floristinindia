@@ -11,12 +11,16 @@ import { PaymentMethodConfig, PaymentGateway } from "@shared/payment.types";
 interface PaymentMethod {
   gateway: PaymentGateway;
   name: string;
+  description?: string;
   enabled: boolean;
+  available_at_checkout: boolean;
   min_amount: number;
   max_amount: number;
   processing_fee: number;
   fixed_fee: number;
   supported_currencies: string[];
+  checkout_priority: number;
+  processing_message?: string;
 }
 
 interface PaymentMethodSelectorProps {
