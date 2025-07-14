@@ -648,19 +648,22 @@ export default function Checkout() {
         .from("customers")
         .upsert(
           {
+            name: form.fullName, // Add the required name field
             email: form.email,
             first_name: firstName,
             last_name: lastName,
             phone: `${form.phoneCountryCode}${form.phone}`,
             addresses: [
               {
-                name: form.receiverName,
+                name: form.receiverName || form.fullName,
                 line1: form.addressLine1,
-                line2: form.addressLine2,
+                line2: form.addressLine2 || "",
                 city: form.city,
                 state: form.state,
                 pincode: form.pincode,
-                phone: `${form.receiverPhoneCountryCode}${form.receiverPhone}`,
+                phone: form.receiverPhone
+                  ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+                  : `${form.phoneCountryCode}${form.phone}`,
                 type: "shipping",
               },
             ],
