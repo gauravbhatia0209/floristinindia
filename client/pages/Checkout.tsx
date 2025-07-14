@@ -756,6 +756,31 @@ export default function Checkout() {
 
       console.log("Order data to be inserted:", orderData);
 
+      // Validate critical fields before insertion
+      const validationErrors = [];
+
+      if (!orderData.order_number)
+        validationErrors.push("Missing order number");
+      if (!orderData.customer_id) validationErrors.push("Missing customer ID");
+      if (!orderData.total_amount || orderData.total_amount <= 0)
+        validationErrors.push("Invalid total amount");
+      if (!orderData.shipping_address?.name)
+        validationErrors.push("Missing shipping address name");
+      if (!orderData.shipping_address?.line1)
+        validationErrors.push("Missing shipping address");
+      if (!orderData.shipping_address?.city)
+        validationErrors.push("Missing shipping city");
+      if (!orderData.shipping_address?.state)
+        validationErrors.push("Missing shipping state");
+      if (!orderData.shipping_address?.pincode)
+        validationErrors.push("Missing shipping pincode");
+      if (!orderData.items || orderData.items.length === 0)
+        validationErrors.push("No items in order");
+
+      if (validationErrors.length > 0) {
+        throw new Error(`Validation failed: ${validationErrors.join(", ")}`);
+      }
+
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert(orderData)
