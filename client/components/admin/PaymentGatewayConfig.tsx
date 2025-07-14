@@ -376,7 +376,7 @@ export default function PaymentGatewayConfig() {
                                 id="processing-fee"
                                 type="number"
                                 step="0.1"
-                                value={config.processing_fee}
+                                value={config.processing_fee || 0}
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     processing_fee:
