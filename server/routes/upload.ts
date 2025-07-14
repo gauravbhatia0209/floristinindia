@@ -162,8 +162,8 @@ router.post("/images", upload.array("images", 5), async (req, res) => {
     }
 
     const subdir = req.query.subdir as string;
-    const uploadResults = [];
-    const errors = [];
+    const uploadResults: any[] = [];
+    const errors: any[] = [];
 
     // Upload each file to Supabase Storage
     for (const file of req.files as Express.Multer.File[]) {
