@@ -371,6 +371,11 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [gstRate, setGstRate] = useState(18); // Default fallback
+  const [currentStep, setCurrentStep] = useState(1); // 1: Form, 2: Payment, 3: Processing
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentGateway | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  const [orderCreated, setOrderCreated] = useState(false);
   const { trackPurchase } = useGoogleAnalytics();
   const { trackPurchase: trackFBPurchase, trackInitiateCheckout } =
     useFacebookPixel();
