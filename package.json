@@ -26,7 +26,9 @@
     "docker:dev": "docker-compose -f docker-compose.dev.yml up",
     "vercel:deploy": "vercel",
     "vercel:prod": "vercel --prod",
-    "health-check": "curl http://localhost:3000/api/health || echo 'Health check failed'"
+    "health-check": "curl http://localhost:3000/api/health || echo 'Health check failed'",
+    "migrate-media": "node scripts/migrate-to-supabase-storage.js",
+    "migrate-media:dry-run": "DRY_RUN=true node scripts/migrate-to-supabase-storage.js"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
