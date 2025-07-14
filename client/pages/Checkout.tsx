@@ -749,6 +749,7 @@ export default function Checkout() {
         receiver_phone: form.receiverPhone
           ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
           : `${form.phoneCountryCode}${form.phone}`,
+        alternate_phone: form.alternatePhone || "",
         delivery_instructions: form.specialInstructions || null,
         uploaded_files: uploadedFiles,
         payment_method: "pending",
