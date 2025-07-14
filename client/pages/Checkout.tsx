@@ -634,7 +634,7 @@ export default function Checkout() {
 
     // Move to payment selection step
     setCurrentStep(2);
-    try {
+  }
       const totals = calculateTotal();
 
       // Generate sequential order number with FII prefix
