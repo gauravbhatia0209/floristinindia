@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Star, Heart, Shield, Truck, Zap } from "lucide-react";
+import { Heart, Shield, Truck, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { StarRating } from "@/components/ui/star-rating";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
@@ -703,13 +704,8 @@ function TestimonialsSection({ content }: { content: any }) {
         {(content.testimonials || []).map((testimonial: any, index: number) => (
           <Card key={index}>
             <CardContent className="p-6">
-              <div className="flex mb-4">
-                {[...Array(testimonial.rating || 5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                  />
-                ))}
+              <div className="mb-4">
+                <StarRating rating={testimonial.rating || 5} size="md" />
               </div>
               <p className="text-gray-600 mb-4">"{testimonial.review}"</p>
               <div className="flex items-center gap-3">
