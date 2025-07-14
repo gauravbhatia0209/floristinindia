@@ -139,7 +139,9 @@ router.post("/image", upload.single("image"), async (req, res) => {
         // Cleanup uploaded file if we can't get public URL
         await supabase.storage.from("media-assets").remove([uploadData.path]);
         return res.status(500).json({
+          success: false,
           error: "Failed to generate public URL for uploaded image",
+          details: "Could not create accessible URL for the uploaded file",
         });
       }
 
@@ -154,16 +156,22 @@ router.post("/image", upload.single("image"), async (req, res) => {
     } catch (supabaseError) {
       console.error("Supabase upload failed:", supabaseError);
       return res.status(500).json({
+        success: false,
         error: "Cloud storage upload failed",
         details:
           supabaseError instanceof Error
             ? supabaseError.message
             : "Unknown error",
+        stack: supabaseError instanceof Error ? supabaseError.stack : undefined,
       });
     }
   } catch (error) {
     console.error("Error uploading image:", error);
-    res.status(500).json({ error: "Failed to upload image" });
+    return res.status(500).json({
+      success: false,
+      error: "Failed to upload image",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 });
 
