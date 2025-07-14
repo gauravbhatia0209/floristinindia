@@ -840,18 +840,18 @@ export default function Checkout() {
       const totals = calculateTotal();
 
       const response = await fetch("/api/payments/create", {
-
-    // Upload files first
-    console.log("Uploading order files...");
-    const uploadedFiles = await uploadOrderFiles(orderNumber);
-
-    // Create customer record
-    const nameParts = form.fullName.trim().split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-
-    const { data: customer, error: customerError } = await supabase
-      .from("customers")
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gateway_id: selectedPaymentMethod,
+          order_id: "", // Will be set by the order ID we created
+          amount: totals.total,
+          currency: "INR",
+          customer: {
+            name: form.fullName,
+            email: form.email,
       .upsert(
         {
           name: form.fullName,
