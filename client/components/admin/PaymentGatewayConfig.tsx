@@ -332,7 +332,11 @@ export default function PaymentGatewayConfig() {
                               <Input
                                 id="min-amount"
                                 type="number"
-                                value={config.min_amount / 100}
+                                value={
+                                  config.min_amount
+                                    ? config.min_amount / 100
+                                    : 1
+                                }
                                 onChange={(e) =>
                                   updateConfig(config.id, {
                                     min_amount:
