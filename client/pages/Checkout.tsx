@@ -1193,7 +1193,7 @@ export default function Checkout() {
               {/* Step 2: Payment Method Selection */}
               {currentStep === 2 && (
                 <PaymentMethodSelector
-                  amount={totals.total}
+                  amount={Math.round(totals.total * 100)}
                   currency="INR"
                   selectedMethod={selectedPaymentMethod}
                   onMethodSelect={handlePaymentMethodSelect}
