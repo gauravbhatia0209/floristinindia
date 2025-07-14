@@ -32,6 +32,7 @@ import FacebookShopMeta from "@/components/FacebookShopMeta";
 import StructuredData from "@/components/StructuredData";
 import AIMetaTags from "@/components/AIMetaTags";
 import { ProductVariationSelector } from "@/components/ProductVariationSelector";
+import { StarRating } from "@/components/ui/star-rating";
 import { toast } from "@/hooks/use-toast";
 import {
   Product,
