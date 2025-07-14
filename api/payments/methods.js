@@ -41,13 +41,17 @@ export default async function handler(req, res) {
 
     const methods = configs.map((config) => ({
       gateway: config.id,
-      name: config.name,
+      name: config.checkout_display_name || config.name,
+      description: config.checkout_description,
       enabled: config.enabled,
-      min_amount: config.min_amount,
-      max_amount: config.max_amount,
+      available_at_checkout: config.available_at_checkout,
+      min_amount: config.min_checkout_amount || config.min_amount,
+      max_amount: config.max_checkout_amount || config.max_amount,
       processing_fee: config.processing_fee,
       fixed_fee: config.fixed_fee,
       supported_currencies: config.supported_currencies,
+      checkout_priority: config.checkout_priority || config.priority,
+      processing_message: config.checkout_processing_message,
     }));
 
     res.status(200).json({ success: true, methods });
