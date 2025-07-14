@@ -42,10 +42,7 @@
       "source": "/uploads/(.*)",
       "destination": "/server/index.ts"
     },
-     {
-      "source": "/(.*)",
-      "destination": "/"
-    }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
     {
