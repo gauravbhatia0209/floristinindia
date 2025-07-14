@@ -1061,8 +1061,6 @@ export default function Checkout() {
     setPaymentIntentId(null);
   }
 
-  const totals = calculateTotal();
-
   if (items.length === 0) {
     return null;
   }
