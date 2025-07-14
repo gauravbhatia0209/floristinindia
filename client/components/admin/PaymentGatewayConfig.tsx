@@ -276,8 +276,9 @@ export default function PaymentGatewayConfig() {
                       </DialogHeader>
 
                       <Tabs defaultValue="general" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
+                        <TabsList className="grid w-full grid-cols-3">
                           <TabsTrigger value="general">General</TabsTrigger>
+                          <TabsTrigger value="checkout">Checkout</TabsTrigger>
                           <TabsTrigger value="credentials">
                             Credentials
                           </TabsTrigger>
