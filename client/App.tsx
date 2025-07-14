@@ -176,6 +176,7 @@ function App() {
                 path="order-confirmation/:orderNumber"
                 element={<OrderConfirmation />}
               />
+              <Route path="orders" element={<Orders />} />
               <Route
                 path="account"
                 element={
