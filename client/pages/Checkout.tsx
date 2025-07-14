@@ -1615,7 +1615,6 @@ export default function Checkout() {
                     disabled={
                       isSubmitting ||
                       !selectedShippingMethod ||
-                      !form.paymentMethod ||
                       !form.acceptTerms
                     }
                   >
