@@ -809,7 +809,7 @@ export default function Settings() {
         </TabsContent>
 
         <TabsContent value="payments" className="space-y-6">
-          <PaymentGatewayConfigSimple />
+          <PaymentGatewayConfig />
         </TabsContent>
 
         <TabsContent value="features" className="space-y-6">
