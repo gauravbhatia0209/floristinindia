@@ -1097,7 +1097,7 @@ export default function Checkout() {
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-8">
               {/* Step 2: Payment Method Selection */}
-              {currentStep === 2 && orderCreated && (
+              {currentStep === 2 && (
                 <PaymentMethodSelector
                   amount={totals.total}
                   currency="INR"
