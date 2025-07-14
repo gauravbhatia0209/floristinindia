@@ -236,11 +236,13 @@ export default function PaymentGatewayConfig() {
                       {config.enabled && (
                         <Badge
                           variant={
-                            config.available_at_checkout ? "default" : "outline"
+                            config.available_at_checkout !== false
+                              ? "default"
+                              : "outline"
                           }
                           className="text-xs"
                         >
-                          {config.available_at_checkout
+                          {config.available_at_checkout !== false
                             ? "At Checkout"
                             : "Hidden"}
                         </Badge>
