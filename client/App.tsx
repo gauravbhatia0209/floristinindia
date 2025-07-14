@@ -169,6 +169,7 @@ function App() {
               <Route path="product/:slug" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
               <Route path="checkout" element={<Checkout />} />
+              <Route path="checkout/success" element={<CheckoutSuccess />} />
               <Route path="track-order" element={<TrackOrder />} />
               <Route
                 path="order-confirmation/:orderNumber"
