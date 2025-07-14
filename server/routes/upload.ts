@@ -298,20 +298,45 @@ router.delete("/image/:filename", (req, res) => {
 
 // Error handling middleware
 router.use((error: any, req: any, res: any, next: any) => {
+  // Ensure JSON response
+  res.setHeader("Content-Type", "application/json");
+
   if (error instanceof multer.MulterError) {
     if (error.code === "LIMIT_FILE_SIZE") {
-      return res
-        .status(400)
-        .json({ error: "File too large. Maximum size is 3MB." });
+      return res.status(400).json({
+        success: false,
+        error: "File too large. Maximum size is 3MB.",
+        details: `File size limit exceeded`,
+      });
     }
     if (error.code === "LIMIT_FILE_COUNT") {
-      return res
-        .status(400)
-        .json({ error: "Too many files. Maximum is 5 images." });
+      return res.status(400).json({
+        success: false,
+        error: "Too many files. Maximum is 5 images.",
+        details: "Please select fewer files",
+      });
     }
+    return res.status(400).json({
+      success: false,
+      error: error.message,
+      details: "Multer upload error",
+    });
   }
 
-  res.status(400).json({ error: error.message });
+  if (error.message && error.message.includes("Invalid file type")) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid file type",
+      details: error.message,
+    });
+  }
+
+  console.error("Upload error:", error);
+  return res.status(500).json({
+    success: false,
+    error: "Internal server error",
+    details: error instanceof Error ? error.message : "Unknown error",
+  });
 });
 
 export default router;
