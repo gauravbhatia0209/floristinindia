@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test Upload Serving</title>
+  </head>
+  <body>
+    <h1>Test Image Serving</h1>
+    <h2>Existing Upload Test</h2>
+    <img
+      src="/uploads/1752079489364-1c9353e2ff96-Photo-1595078777283.webp"
+      alt="Test Product Image"
+      style="max-width: 300px; border: 1px solid #ccc"
+      onload="console.log('✅ Image loaded successfully')"
+      onerror="console.error('❌ Image failed to load')"
+    />
+
+    <h2>API Test</h2>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="apiResult"></div>
+
+    <script>
+      async function testAPI() {
+        try {
+          const response = await fetch("/api/ping");
+          const data = await response.json();
+          document.getElementById("apiResult").innerHTML =
+            `✅ API working: ${JSON.stringify(data)}`;
+        } catch (error) {
+          document.getElementById("apiResult").innerHTML =
+            `❌ API failed: ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>
