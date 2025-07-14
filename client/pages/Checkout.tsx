@@ -775,14 +775,110 @@ export default function Checkout() {
       // Clear cart
       clearCart();
 
-      // Redirect to order confirmation
-      navigate(`/order-confirmation/${order.id}`);
+      setOrderCreated(true);
+      setCurrentStep(2); // Move to payment step
     } catch (error) {
       console.error("Failed to create order:", error);
       setErrors({ submit: "Failed to create order. Please try again." });
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  async function handlePaymentMethodSelect(gateway: PaymentGateway) {
+    setSelectedPaymentMethod(gateway);
+  }
+
+  async function handleProceedToPayment() {
+    if (!selectedPaymentMethod || !orderCreated) return;
+
+    setIsSubmitting(true);
+    try {
+      const totals = calculateTotal();
+
+      const response = await fetch("/api/payments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gateway_id: selectedPaymentMethod,
+          order_id: "", // Will be set by the order ID we created
+          amount: totals.total,
+          currency: "INR",
+          customer: {
+            name: form.fullName,
+            email: form.email,
+            phone: `${form.phoneCountryCode}${form.phone}`,
+            address: {
+              line1: form.addressLine1,
+              line2: form.addressLine2,
+              city: form.city,
+              state: form.state,
+              pincode: form.pincode,
+              country: "IN",
+            },
+          },
+          return_url: `${window.location.origin}/checkout/success`,
+          cancel_url: `${window.location.origin}/checkout/cancel`,
+          webhook_url: `${window.location.origin}/api/payments/webhook`,
+          metadata: {
+            order_number: "", // Will be populated with actual order number
+          },
+        }),
+      });
+
+      const paymentData = await response.json();
+
+      if (paymentData.success) {
+        setPaymentIntentId(paymentData.payment_intent_id);
+        setCurrentStep(3); // Move to processing step
+
+        // Redirect to gateway payment page if available
+        if (paymentData.payment_url) {
+          window.location.href = paymentData.payment_url;
+        }
+      } else {
+        setErrors({ payment: paymentData.error || "Failed to create payment" });
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      setErrors({ payment: "Failed to initialize payment" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  function handlePaymentSuccess(paymentIntent: any) {
+    // Track purchase analytics
+    const orderItems = items.map((item) => ({
+      item_id: item.product.id,
+      item_name: item.product.name,
+      category: item.product.category_name,
+      quantity: item.quantity,
+      price: item.product.price,
+    }));
+    trackPurchase("", calculateTotal().total, orderItems);
+
+    // Track Facebook Pixel
+    const fbContentIds = items.map((item) => item.product.id);
+    trackFBPurchase(calculateTotal().total, "INR", fbContentIds, items.length);
+
+    // Clear cart
+    clearCart();
+
+    // Redirect to success page
+    navigate(`/checkout/success?payment_intent=${paymentIntent.id}`);
+  }
+
+  function handlePaymentFailure(error: string) {
+    setErrors({ payment: error });
+    setCurrentStep(2); // Go back to payment selection
+  }
+
+  function handlePaymentCancel() {
+    setCurrentStep(2); // Go back to payment selection
+    setPaymentIntentId(null);
   }
 
   const totals = calculateTotal();
