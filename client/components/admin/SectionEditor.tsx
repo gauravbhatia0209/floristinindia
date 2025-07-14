@@ -16,8 +16,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
 import { ImageUpload } from "@/components/ui/image-upload";
-import { Plus, Trash2, Star } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Section } from "./SectionBuilder";
+import { StarRating } from "@/components/ui/star-rating";
 import { getSectionTemplate } from "@/lib/sectionLibrary";
 import { supabase } from "@/lib/supabase";
 import { Product, ProductCategory } from "@shared/database.types";
@@ -1178,21 +1179,14 @@ function TestimonialsEditor({
                   <div>
                     <Label>Rating</Label>
                     <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          onClick={() =>
-                            updateTestimonial(index, "rating", star)
-                          }
-                          className={`text-lg ${
-                            star <= (testimonial.rating || 5)
-                              ? "text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                        >
-                          <Star className="w-4 h-4 fill-current" />
-                        </button>
-                      ))}
+                      <StarRating
+                        rating={testimonial.rating || 5}
+                        size="sm"
+                        interactive
+                        onRatingChange={(rating) =>
+                          updateTestimonial(index, "rating", rating)
+                        }
+                      />
                     </div>
                   </div>
 
