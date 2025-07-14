@@ -61,15 +61,36 @@ const upload = multer({
 
 // Upload single image endpoint
 router.post("/image", upload.single("image"), async (req, res) => {
+  // Ensure we always send JSON responses
+  res.setHeader("Content-Type", "application/json");
+
   try {
+    console.log("Upload request received:", {
+      hasFile: !!req.file,
+      fileOriginalName: req.file?.originalname,
+      fileMimetype: req.file?.mimetype,
+      fileSize: req.file?.size,
+    });
+
     if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      return res.status(400).json({
+        success: false,
+        error: "No file uploaded",
+        details: "Please select a file to upload",
+      });
+    }
+
+    // Validate file buffer
+    if (!req.file.buffer || req.file.buffer.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid file",
+        details: "File appears to be empty or corrupted",
+      });
     }
 
     // Always use Supabase Storage for all uploads
     try {
-      // Read file buffer
-      const fileBuffer = req.file.buffer || fs.readFileSync(req.file.path);
       const subdir = req.query.subdir as string;
 
       // Generate unique filename with timestamp
