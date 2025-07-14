@@ -742,7 +742,7 @@ export default function Checkout() {
           alternate_phone: form.alternatePhone || null,
           delivery_instructions: form.specialInstructions || null,
           uploaded_files: uploadedFiles,
-          payment_method: form.paymentMethod,
+          payment_method: "pending",
           payment_status: "pending",
           coupon_code: appliedCoupon?.code || null,
         })
