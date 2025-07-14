@@ -27,6 +27,7 @@
     "vercel:deploy": "vercel",
     "vercel:prod": "vercel --prod",
     "health-check": "curl http://localhost:3000/api/health || echo 'Health check failed'",
+    "setup-supabase-bucket": "node scripts/setup-supabase-bucket.js",
     "migrate-media": "node scripts/migrate-to-supabase-storage.js",
     "migrate-media:dry-run": "DRY_RUN=true node scripts/migrate-to-supabase-storage.js"
   },
