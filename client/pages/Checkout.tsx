@@ -1024,25 +1024,31 @@ export default function Checkout() {
     }
   }
 
-  function handlePaymentSuccess(paymentIntent: any) {
-    // Track purchase analytics
-    const orderItems = items.map((item) => ({
-      item_id: item.product.id,
-      item_name: item.product.name,
-      category: item.product.category_name,
-      quantity: item.quantity,
-      price: item.product.price,
-    }));
-    trackPurchase("", calculateTotal().total, orderItems);
+  async function handlePaymentSuccess(paymentIntent: any) {
+    try {
+      // Create order after successful payment
+      const orderNumber = await createOrder();
 
-    // Track Facebook Pixel
-    const fbContentIds = items.map((item) => item.product.id);
-    trackFBPurchase(calculateTotal().total, "INR", fbContentIds, items.length);
+      // Track purchase analytics
+      const orderItems = items.map((item) => ({
+        item_id: item.product.id,
+        item_name: item.product.name,
+        category: item.product.category_name,
+        quantity: item.quantity,
+        price: item.product.price,
+      }));
+      trackPurchase(orderNumber, calculateTotal().total, orderItems);
 
-    // Clear cart is already done during order creation
+      // Track Facebook Pixel
+      const fbContentIds = items.map((item) => item.product.id);
+      trackFBPurchase(calculateTotal().total, "INR", fbContentIds, items.length);
 
-    // Redirect to order confirmation page
-    navigate(`/order-confirmation/${createdOrderNumber}`);
+      // Redirect to order confirmation page
+      navigate(`/order-confirmation/${orderNumber}`);
+    } catch (error) {
+      console.error("Error creating order after payment:", error);
+      setErrors({ payment: "Payment successful but order creation failed. Please contact support." });
+    }
   }
 
   function handlePaymentFailure(error: string) {
