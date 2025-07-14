@@ -1,6 +1,7 @@
 /**
  * Image utilities for handling Supabase Storage URLs and fallbacks
  */
+import React from "react";
 
 export interface ImageConfig {
   src: string;
@@ -13,14 +14,16 @@ export interface ImageConfig {
  * Checks if a URL is a Supabase Storage URL
  */
 export function isSupabaseUrl(url: string): boolean {
-  return url.includes('supabase.co') && url.includes('/storage/v1/object/public/');
+  return (
+    url.includes("supabase.co") && url.includes("/storage/v1/object/public/")
+  );
 }
 
 /**
  * Checks if a URL is a legacy local upload URL
  */
 export function isLegacyUploadUrl(url: string): boolean {
-  return url.startsWith('/uploads/');
+  return url.startsWith("/uploads/");
 }
 
 /**
@@ -29,7 +32,7 @@ export function isLegacyUploadUrl(url: string): boolean {
 export function normalizeLegacyUrl(url: string): string {
   if (isLegacyUploadUrl(url)) {
     // Remove leading slash for proper static serving
-    return url.startsWith('/uploads/') ? url : `/uploads/${url}`;
+    return url.startsWith("/uploads/") ? url : `/uploads/${url}`;
   }
   return url;
 }
@@ -38,18 +41,18 @@ export function normalizeLegacyUrl(url: string): string {
  * Gets the best image URL, preferring Supabase Storage
  */
 export function getBestImageUrl(url: string | null | undefined): string {
-  if (!url) return '';
-  
+  if (!url) return "";
+
   // If it's already a Supabase URL, use it directly
   if (isSupabaseUrl(url)) {
     return url;
   }
-  
+
   // For legacy URLs, normalize them
   if (isLegacyUploadUrl(url)) {
     return normalizeLegacyUrl(url);
   }
-  
+
   return url;
 }
 
@@ -58,9 +61,9 @@ export function getBestImageUrl(url: string | null | undefined): string {
  */
 export async function validateImageUrl(url: string): Promise<boolean> {
   if (!url) return false;
-  
+
   try {
-    const response = await fetch(url, { method: 'HEAD' });
+    const response = await fetch(url, { method: "HEAD" });
     return response.ok;
   } catch {
     return false;
@@ -72,8 +75,8 @@ export async function validateImageUrl(url: string): Promise<boolean> {
  */
 export function getImageUrls(images: any): string[] {
   if (!images) return [];
-  
-  if (typeof images === 'string') {
+
+  if (typeof images === "string") {
     try {
       const parsed = JSON.parse(images);
       if (Array.isArray(parsed)) {
@@ -84,11 +87,11 @@ export function getImageUrls(images: any): string[] {
       return [getBestImageUrl(images)].filter(Boolean);
     }
   }
-  
+
   if (Array.isArray(images)) {
     return images.map(getBestImageUrl).filter(Boolean);
   }
-  
+
   return [];
 }
 
@@ -132,44 +135,40 @@ export function useImageWithFallback(src: string, fallback?: string) {
 /**
  * Component for displaying images with automatic fallback handling
  */
-export interface SmartImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface SmartImageProps
+  extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   fallback?: string;
   errorComponent?: React.ReactNode;
 }
 
-export function SmartImage({ 
-  src, 
-  alt, 
-  fallback = '/placeholder.svg', 
+export function SmartImage({
+  src,
+  alt,
+  fallback = "/placeholder.svg",
   errorComponent,
   onError,
   onLoad,
-  ...props 
+  ...props
 }: SmartImageProps) {
   const imageProps = useImageWithFallback(src, fallback);
 
   if (imageProps.isError && errorComponent) {
-    return <>{errorComponent}</>;
+    return errorComponent as React.ReactElement;
   }
 
-  return (
-    <img
-      {...props}
-      src={imageProps.src}
-      alt={alt}
-      onError={(e) => {
-        imageProps.onError();
-        onError?.(e);
-      }}
-      onLoad={(e) => {
-        imageProps.onLoad();
-        onLoad?.(e);
-      }}
-    />
-  );
+  return React.createElement("img", {
+    ...props,
+    src: imageProps.src,
+    alt: alt,
+    onError: (e: React.SyntheticEvent<HTMLImageElement>) => {
+      imageProps.onError();
+      onError?.(e);
+    },
+    onLoad: (e: React.SyntheticEvent<HTMLImageElement>) => {
+      imageProps.onLoad();
+      onLoad?.(e);
+    },
+  });
 }
-
-// Note: React import would be handled by the build system
-declare const React: any;
