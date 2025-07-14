@@ -412,7 +412,7 @@ export default function Checkout() {
   }
 
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !orderCreated) {
       navigate("/cart");
     }
     fetchGstRate();
