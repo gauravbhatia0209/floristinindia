@@ -989,6 +989,14 @@ export default function Checkout() {
   async function handleProceedToPayment() {
     if (!selectedPaymentMethod) return;
 
+    // Validate required fields
+    if (!form.fullName || !form.email || !form.phone) {
+      setErrors({
+        payment: "Please fill in all required customer information",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const totals = calculateTotal();
