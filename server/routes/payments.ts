@@ -123,16 +123,62 @@ router.post("/create", async (req, res) => {
     }
 
     // Create payment intent record
-    // Generate temporary order_id as UUID if not provided (payment-first flow)
-    const tempOrderId = order_id || crypto.randomUUID();
+    let finalOrderId = order_id;
+
+    // If no order_id provided, create a placeholder order (payment-first flow)
+    if (!order_id || order_id.trim() === "") {
+      try {
+        const placeholderOrder = {
+          order_number: `TEMP-${Date.now()}`,
+          status: "pending_payment",
+          total_amount: amount / 100, // Convert paise to rupees
+          shipping_amount: 0,
+          discount_amount: 0,
+          tax_amount: 0,
+          items: [],
+          shipping_address: customer.address || {},
+          billing_address: customer.address || {},
+          payment_status: "pending",
+          customer_id: null, // Will be updated later
+          delivery_date: null,
+          delivery_slot: null,
+          special_instructions: "Placeholder order for payment processing",
+          notes:
+            "This is a temporary order created for payment processing. Will be updated after payment completion.",
+        };
+
+        const { data: createdOrder, error: orderError } = await supabase
+          .from("orders")
+          .insert(placeholderOrder)
+          .select("id")
+          .single();
+
+        if (orderError) {
+          console.error("Error creating placeholder order:", orderError);
+          throw new Error("Failed to create placeholder order");
+        }
+
+        finalOrderId = createdOrder.id;
+        console.log(`Created placeholder order with ID: ${finalOrderId}`);
+      } catch (placeholderError) {
+        console.error("Placeholder order creation failed:", placeholderError);
+        return res.status(500).json({
+          success: false,
+          error: "Failed to initialize order for payment processing",
+        });
+      }
+    }
 
     const paymentIntent: Partial<PaymentIntent> = {
       gateway: gateway_id,
-      order_id: tempOrderId,
+      order_id: finalOrderId,
       amount,
       currency,
       status: "pending",
-      metadata: metadata || {},
+      metadata: {
+        ...metadata,
+        is_placeholder_order: !order_id, // Track if this uses a placeholder order
+      },
     };
 
     const { data: intentData, error: intentError } = await supabase
