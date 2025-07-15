@@ -128,39 +128,17 @@ export async function getCategoriesWithProductCount(): Promise<
 
     if (!categories) return [];
 
-    // Get product counts for each category
+    // Get product counts for each category using legacy approach
     const categoriesWithCounts = await Promise.all(
       categories.map(async (category) => {
-        // Try multi-category assignments first
-        const { data: assignments } = await supabase
-          .from("product_category_assignments")
-          .select("product_id")
-          .eq("category_id", category.id);
+        // Use legacy single category count
+        const { data: legacyProducts } = await supabase
+          .from("products")
+          .select("id")
+          .eq("category_id", category.id)
+          .eq("is_active", true);
 
-        let productCount = 0;
-
-        if (assignments && assignments.length > 0) {
-          // Verify products are active
-          const { data: activeProducts } = await supabase
-            .from("products")
-            .select("id")
-            .in(
-              "id",
-              assignments.map((a) => a.product_id),
-            )
-            .eq("is_active", true);
-
-          productCount = activeProducts?.length || 0;
-        } else {
-          // Fall back to legacy single category count
-          const { data: legacyProducts } = await supabase
-            .from("products")
-            .select("id")
-            .eq("category_id", category.id)
-            .eq("is_active", true);
-
-          productCount = legacyProducts?.length || 0;
-        }
+        const productCount = legacyProducts?.length || 0;
 
         return {
           ...category,
