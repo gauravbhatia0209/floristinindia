@@ -1017,6 +1017,14 @@ export default function Checkout() {
       return;
     }
 
+    // Cancel any existing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController();
+
     setIsSubmitting(true);
     submissionRef.current = true;
     setErrors({}); // Clear any existing errors
@@ -1025,7 +1033,8 @@ export default function Checkout() {
       const totals = calculateTotal();
       const paymentAmount = Math.round(totals.total * 100); // Convert to paise
 
-      const requestPayload = {
+      // Create payment data inline to ensure freshness
+      const paymentData = {
         gateway_id: selectedPaymentMethod,
         amount: paymentAmount,
         currency: "INR",
