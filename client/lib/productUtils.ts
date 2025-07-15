@@ -40,24 +40,14 @@ export async function fetchProductsWithCategories(
       }
 
       if (categoryId) {
-        // Try multi-category assignments first
-        const { data: assignments } = await supabase
-          .from("product_category_assignments")
-          .select("product_id")
-          .eq("category_id", categoryId);
+        // Use legacy single category
+        const { data: legacyProducts } = await supabase
+          .from("products")
+          .select("id")
+          .eq("category_id", categoryId)
+          .eq("is_active", options.includeInactive ? undefined : true);
 
-        if (assignments && assignments.length > 0) {
-          productIds = assignments.map((a) => a.product_id);
-        } else {
-          // Fall back to legacy single category
-          const { data: legacyProducts } = await supabase
-            .from("products")
-            .select("id")
-            .eq("category_id", categoryId)
-            .eq("is_active", options.includeInactive ? undefined : true);
-
-          productIds = legacyProducts?.map((p) => p.id) || [];
-        }
+        productIds = legacyProducts?.map((p) => p.id) || [];
       }
     }
 
