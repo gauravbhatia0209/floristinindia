@@ -1010,7 +1010,7 @@ export default function Checkout() {
         body: JSON.stringify({
           gateway_id: selectedPaymentMethod,
           order_id: "", // Will be set by the order ID we created
-          amount: totals.total,
+          amount: paymentAmount,
           currency: "INR",
           customer: {
             name: form.fullName,
