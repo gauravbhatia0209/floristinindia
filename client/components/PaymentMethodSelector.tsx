@@ -175,9 +175,6 @@ export default function PaymentMethodSelector({
               className="space-y-3"
             >
               {availableMethods.map((method) => {
-                const fee = calculateFee(method);
-                const totalAmount = amount + fee;
-
                 return (
                   <div key={method.gateway} className="relative">
                     <Label
@@ -215,27 +212,13 @@ export default function PaymentMethodSelector({
                             {method.description ||
                               PAYMENT_METHOD_DESCRIPTIONS[method.gateway]}
                           </p>
-                          {fee > 0 && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Processing fee: {formatAmount(fee)} (
-                              {method.processing_fee}%
-                              {method.fixed_fee > 0 &&
-                                ` + ${formatAmount(method.fixed_fee)}`}
-                              )
-                            </p>
-                          )}
                         </div>
 
-                        {/* Total Amount */}
+                        {/* Order Amount */}
                         <div className="text-right">
                           <p className="font-semibold">
-                            {formatAmount(totalAmount)}
+                            {formatAmount(amount)}
                           </p>
-                          {fee > 0 && (
-                            <p className="text-xs text-muted-foreground">
-                              + {formatAmount(fee)} fee
-                            </p>
-                          )}
                         </div>
                       </div>
                     </Label>
