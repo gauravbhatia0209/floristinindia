@@ -1026,7 +1026,11 @@ export default function Checkout() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`Payment API error (${response.status}):`, errorText);
+        throw new Error(
+          `HTTP error! status: ${response.status}, details: ${errorText}`,
+        );
       }
 
       const paymentData = await response.json();
