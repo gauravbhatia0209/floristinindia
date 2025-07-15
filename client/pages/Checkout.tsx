@@ -370,6 +370,7 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const submissionRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const [gstRate, setGstRate] = useState(18); // Default fallback
   const [currentStep, setCurrentStep] = useState(1); // 1: Form, 2: Payment, 3: Processing
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
