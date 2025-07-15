@@ -990,8 +990,8 @@ export default function Checkout() {
   async function handleProceedToPayment() {
     if (!selectedPaymentMethod) return;
 
-    // Prevent double submission
-    if (isSubmitting) {
+    // Prevent double submission using both state and ref
+    if (isSubmitting || submissionRef.current) {
       console.log(
         "Payment submission already in progress, ignoring duplicate call",
       );
