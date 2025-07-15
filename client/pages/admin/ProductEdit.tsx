@@ -145,45 +145,14 @@ export default function ProductEdit() {
 
   async function fetchProductCategories(productId: string) {
     try {
-      // First, try to fetch from the new junction table
-      const { data: assignments, error: assignmentsError } = await supabase
-        .from("product_category_assignments")
-        .select("category_id, is_primary")
-        .eq("product_id", productId);
-
-      if (assignmentsError) {
-        // If junction table doesn't exist yet, fall back to single category
-        console.log("Junction table not available, using single category");
-        const categoryId = formData.category_id;
-        if (categoryId) {
-          setSelectedCategoryIds([categoryId]);
-          setPrimaryCategoryId(categoryId);
-        }
-        return;
-      }
-
-      if (assignments && assignments.length > 0) {
-        const categoryIds = assignments.map((a) => a.category_id);
-        const primaryAssignment = assignments.find((a) => a.is_primary);
-
-        setSelectedCategoryIds(categoryIds);
-        setPrimaryCategoryId(primaryAssignment?.category_id || categoryIds[0]);
-      } else {
-        // No assignments found, check if we have a legacy category_id
-        const categoryId = formData.category_id;
-        if (categoryId) {
-          setSelectedCategoryIds([categoryId]);
-          setPrimaryCategoryId(categoryId);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to fetch product categories:", error);
-      // Fall back to single category if there's an error
+      // Use legacy single category approach
       const categoryId = formData.category_id;
       if (categoryId) {
         setSelectedCategoryIds([categoryId]);
         setPrimaryCategoryId(categoryId);
       }
+    } catch (error) {
+      console.error("Failed to fetch product categories:", error);
     }
   }
 
