@@ -1017,6 +1017,7 @@ export default function Checkout() {
     }
 
     setIsSubmitting(true);
+    submissionRef.current = true;
     setErrors({}); // Clear any existing errors
 
     try {
