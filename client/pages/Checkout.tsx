@@ -1020,7 +1020,7 @@ export default function Checkout() {
           cancel_url: `${window.location.origin}/checkout/cancel`,
           webhook_url: `${window.location.origin}/api/payments/webhook`,
           metadata: {
-            order_number: createdOrderNumber,
+            order_number: "", // Order will be created after successful payment
           },
         }),
       });
