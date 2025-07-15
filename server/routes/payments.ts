@@ -122,9 +122,14 @@ router.post("/create", async (req, res) => {
     }
 
     // Create payment intent record
+    // Generate temporary order_id if not provided (payment-first flow)
+    const tempOrderId =
+      order_id ||
+      `temp_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
     const paymentIntent: Partial<PaymentIntent> = {
       gateway: gateway_id,
-      order_id,
+      order_id: tempOrderId,
       amount,
       currency,
       status: "pending",
