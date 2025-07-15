@@ -130,7 +130,7 @@ router.post("/create", async (req, res) => {
       try {
         const placeholderOrder = {
           order_number: `TEMP-${Date.now()}`,
-          status: "pending_payment",
+          status: "pending",
           total_amount: amount / 100, // Convert paise to rupees
           shipping_amount: 0,
           discount_amount: 0,
