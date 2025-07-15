@@ -1002,13 +1002,52 @@ export default function Checkout() {
       const totals = calculateTotal();
       const paymentAmount = Math.round(totals.total * 100); // Convert to paise
 
-      console.log("Creating payment with data:", {
+      const requestPayload = {
         gateway_id: selectedPaymentMethod,
+        order_id: "", // Will be set by the order ID we created
         amount: paymentAmount,
         currency: "INR",
-        customer_name: form.fullName,
-        customer_email: form.email,
-      });
+        customer: {
+          name: form.fullName,
+          email: form.email,
+          phone: `${form.phoneCountryCode}${form.phone}`,
+          address: {
+            line1: form.addressLine1,
+            line2: form.addressLine2,
+            city: form.city,
+            state: form.state,
+            pincode: form.pincode,
+            country: "IN",
+          },
+        },
+        return_url: `${window.location.origin}/checkout/success`,
+        cancel_url: `${window.location.origin}/checkout/cancel`,
+        webhook_url: `${window.location.origin}/api/payments/webhook`,
+        metadata: {
+          order_number: "", // Order will be created after successful payment
+        },
+      };
+
+      console.log("Creating payment with complete payload:", requestPayload);
+
+      // Check for missing required fields
+      const missingFields = [];
+      if (!requestPayload.gateway_id) missingFields.push("gateway_id");
+      if (!requestPayload.amount) missingFields.push("amount");
+      if (!requestPayload.currency) missingFields.push("currency");
+      if (!requestPayload.customer?.name) missingFields.push("customer.name");
+      if (!requestPayload.customer?.email) missingFields.push("customer.email");
+      if (!requestPayload.customer?.phone) missingFields.push("customer.phone");
+      if (!requestPayload.customer?.address?.city)
+        missingFields.push("customer.address.city");
+      if (!requestPayload.customer?.address?.state)
+        missingFields.push("customer.address.state");
+      if (!requestPayload.customer?.address?.pincode)
+        missingFields.push("customer.address.pincode");
+
+      if (missingFields.length > 0) {
+        console.error("Missing required fields:", missingFields);
+      }
 
       const response = await fetch("/api/payments/create", {
         method: "POST",
