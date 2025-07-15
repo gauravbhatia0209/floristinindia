@@ -255,7 +255,7 @@ export default function PaymentMethodSelector({
                   Processing...
                 </>
               ) : (
-                `Proceed to Pay ${selectedMethod ? formatAmount(amount + (availableMethods.find((m) => m.gateway === selectedMethod) ? calculateFee(availableMethods.find((m) => m.gateway === selectedMethod)!) : 0)) : ""}`
+                `Proceed to Pay ${selectedMethod ? formatAmount(amount) : ""}`
               )}
             </Button>
           </>
