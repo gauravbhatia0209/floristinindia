@@ -992,6 +992,15 @@ export default function Checkout() {
     setIsSubmitting(true);
     try {
       const totals = calculateTotal();
+      const paymentAmount = Math.round(totals.total * 100); // Convert to paise
+
+      console.log("Creating payment with data:", {
+        gateway_id: selectedPaymentMethod,
+        amount: paymentAmount,
+        currency: "INR",
+        customer_name: form.fullName,
+        customer_email: form.email,
+      });
 
       const response = await fetch("/api/payments/create", {
         method: "POST",
