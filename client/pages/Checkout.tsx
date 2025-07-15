@@ -337,6 +337,75 @@ interface CheckoutForm {
   acceptTerms: boolean;
 }
 
+// Isolated payment request function to avoid body stream issues
+async function createPaymentRequest(
+  paymentData: any,
+  abortController: AbortController,
+) {
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[${requestId}] Starting payment request`);
+
+  try {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+        "X-Request-ID": requestId,
+      },
+      body: JSON.stringify(paymentData),
+      signal: abortController.signal,
+    };
+
+    console.log(`[${requestId}] Making fetch request`);
+    const response = await fetch("/api/payments/create", requestOptions);
+
+    if (abortController.signal.aborted) {
+      throw new Error("Request was cancelled");
+    }
+
+    console.log(`[${requestId}] Response received, status: ${response.status}`);
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error(
+        `[${requestId}] Payment API error (${response.status}):`,
+        responseText,
+      );
+      throw new Error(
+        `HTTP error! status: ${response.status}, details: ${responseText}`,
+      );
+    }
+
+    // Parse the successful response
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+      console.log(`[${requestId}] Successfully parsed response`);
+    } catch (parseError) {
+      console.error(
+        `[${requestId}] Failed to parse payment response:`,
+        parseError,
+      );
+      throw new Error("Invalid response from payment service");
+    }
+
+    return responseData;
+  } catch (error: any) {
+    if (error.name === "AbortError" || abortController.signal.aborted) {
+      console.log(`[${requestId}] Payment request was cancelled`);
+      throw new Error("CANCELLED");
+    }
+    console.error(
+      `[${requestId}] Network error during payment creation:`,
+      error,
+    );
+    throw new Error(
+      "Network error. Please check your connection and try again.",
+    );
+  }
+}
+
 export default function Checkout() {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCart();
