@@ -1016,6 +1016,8 @@ export default function Checkout() {
     }
 
     setIsSubmitting(true);
+    setErrors({}); // Clear any existing errors
+
     try {
       const totals = calculateTotal();
       const paymentAmount = Math.round(totals.total * 100); // Convert to paise
