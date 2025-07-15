@@ -1142,24 +1142,26 @@ export default function Checkout() {
       }
 
       // Parse the successful response
-      let paymentData;
+      let responseData;
       try {
-        paymentData = JSON.parse(responseText);
+        responseData = JSON.parse(responseText);
       } catch (parseError) {
         console.error("Failed to parse payment response:", parseError);
         throw new Error("Invalid response from payment service");
       }
 
-      if (paymentData.success) {
-        setPaymentIntentId(paymentData.payment_intent_id);
+      if (responseData.success) {
+        setPaymentIntentId(responseData.payment_intent_id);
         setCurrentStep(3); // Move to processing step
 
         // Redirect to gateway payment page if available
-        if (paymentData.payment_url) {
-          window.location.href = paymentData.payment_url;
+        if (responseData.payment_url) {
+          window.location.href = responseData.payment_url;
         }
       } else {
-        setErrors({ payment: paymentData.error || "Failed to create payment" });
+        setErrors({
+          payment: responseData.error || "Failed to create payment",
+        });
       }
     } catch (error) {
       console.error("Error creating payment:", error);
