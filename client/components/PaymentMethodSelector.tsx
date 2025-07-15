@@ -234,33 +234,10 @@ export default function PaymentMethodSelector({
                   Payment Details
                 </h4>
                 <div className="space-y-1 text-sm text-blue-800">
-                  <div className="flex justify-between">
-                    <span>Order Amount:</span>
+                  <div className="flex justify-between font-medium">
+                    <span>Total Amount:</span>
                     <span>{formatAmount(amount)}</span>
                   </div>
-                  {(() => {
-                    const method = availableMethods.find(
-                      (m) => m.gateway === selectedMethod,
-                    );
-                    const fee = method ? calculateFee(method) : 0;
-                    return fee > 0 ? (
-                      <>
-                        <div className="flex justify-between">
-                          <span>Processing Fee:</span>
-                          <span>{formatAmount(fee)}</span>
-                        </div>
-                        <div className="flex justify-between font-medium border-t border-blue-300 pt-1">
-                          <span>Total Amount:</span>
-                          <span>{formatAmount(amount + fee)}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="flex justify-between font-medium">
-                        <span>Total Amount:</span>
-                        <span>{formatAmount(amount)}</span>
-                      </div>
-                    );
-                  })()}
                 </div>
               </div>
             )}
