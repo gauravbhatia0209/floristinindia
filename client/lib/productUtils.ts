@@ -74,19 +74,7 @@ export async function fetchProductsWithCategories(
       return [];
     }
 
-    // Fetch category assignments for all products
-    const { data: assignments } = await supabase
-      .from("product_category_assignments")
-      .select(
-        `
-        *,
-        product_categories (*)
-      `,
-      )
-      .in(
-        "product_id",
-        products.map((p) => p.id),
-      );
+    // Skip multi-category assignments since table doesn't exist
 
     // Fetch all categories for fallback
     const { data: allCategories } = await supabase
