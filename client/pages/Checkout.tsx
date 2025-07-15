@@ -1085,15 +1085,24 @@ export default function Checkout() {
         body: JSON.stringify(requestPayload),
       });
 
+      // Read the response body once and handle both success and error cases
+      const responseText = await response.text();
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Payment API error (${response.status}):`, errorText);
+        console.error(`Payment API error (${response.status}):`, responseText);
         throw new Error(
-          `HTTP error! status: ${response.status}, details: ${errorText}`,
+          `HTTP error! status: ${response.status}, details: ${responseText}`,
         );
       }
 
-      const paymentData = await response.json();
+      // Parse the successful response
+      let paymentData;
+      try {
+        paymentData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Failed to parse payment response:", parseError);
+        throw new Error("Invalid response from payment service");
+      }
 
       if (paymentData.success) {
         setPaymentIntentId(paymentData.payment_intent_id);
