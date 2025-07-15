@@ -264,42 +264,9 @@ export default function ProductEdit() {
   }
 
   async function saveCategoryAssignments(productId: string) {
-    try {
-      // First, try to delete existing assignments
-      const { error: deleteError } = await supabase
-        .from("product_category_assignments")
-        .delete()
-        .eq("product_id", productId);
-
-      // If delete fails, the table might not exist yet - that's okay
-      if (deleteError && !deleteError.message.includes("does not exist")) {
-        console.warn("Could not delete existing assignments:", deleteError);
-      }
-
-      // Create new assignments
-      if (selectedCategoryIds.length > 0) {
-        const assignments = selectedCategoryIds.map((categoryId) => ({
-          product_id: productId,
-          category_id: categoryId,
-          is_primary: categoryId === primaryCategoryId,
-        }));
-
-        const { error: insertError } = await supabase
-          .from("product_category_assignments")
-          .insert(assignments);
-
-        if (insertError) {
-          // If the junction table doesn't exist, just continue with legacy single category
-          console.warn(
-            "Could not save category assignments, using legacy mode:",
-            insertError,
-          );
-        }
-      }
-    } catch (error) {
-      console.warn("Failed to save category assignments:", error);
-      // Don't throw here - the product was saved successfully
-    }
+    // Skip multi-category assignments since table doesn't exist
+    // Legacy single category is handled in the main product save
+    console.log("Using legacy single category mode for product:", productId);
   }
 
   if (isLoading) {
