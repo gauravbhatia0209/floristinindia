@@ -1025,6 +1025,10 @@ export default function Checkout() {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const paymentData = await response.json();
 
       if (paymentData.success) {
