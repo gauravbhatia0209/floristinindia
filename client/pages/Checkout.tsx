@@ -1054,31 +1054,7 @@ export default function Checkout() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          gateway_id: selectedPaymentMethod,
-          order_id: "", // Will be set by the order ID we created
-          amount: paymentAmount,
-          currency: "INR",
-          customer: {
-            name: form.fullName,
-            email: form.email,
-            phone: `${form.phoneCountryCode}${form.phone}`,
-            address: {
-              line1: form.addressLine1,
-              line2: form.addressLine2,
-              city: form.city,
-              state: form.state,
-              pincode: form.pincode,
-              country: "IN",
-            },
-          },
-          return_url: `${window.location.origin}/checkout/success`,
-          cancel_url: `${window.location.origin}/checkout/cancel`,
-          webhook_url: `${window.location.origin}/api/payments/webhook`,
-          metadata: {
-            order_number: "", // Order will be created after successful payment
-          },
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
       if (!response.ok) {
