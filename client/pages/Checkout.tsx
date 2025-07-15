@@ -1126,6 +1126,22 @@ export default function Checkout() {
       const totals = calculateTotal();
       const paymentAmount = Math.round(totals.total * 100); // Convert to paise
 
+      // Validate payment amount
+      if (paymentAmount <= 0) {
+        setErrors({
+          payment: "Invalid order amount. Please refresh and try again.",
+        });
+        return;
+      }
+
+      // Validate payment method
+      if (!selectedPaymentMethod || selectedPaymentMethod.trim() === "") {
+        setErrors({
+          payment: "Please select a payment method.",
+        });
+        return;
+      }
+
       // Create payment data inline to ensure freshness
       const paymentData = {
         gateway_id: selectedPaymentMethod,
