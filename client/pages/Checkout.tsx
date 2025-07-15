@@ -1258,15 +1258,29 @@ export default function Checkout() {
         return;
       }
 
-      if (error instanceof TypeError && error.message.includes("body stream")) {
-        setErrors({ payment: "Network error. Please try again." });
-      } else if (error.message.includes("Network error")) {
-        setErrors({ payment: error.message });
-      } else {
-        setErrors({
-          payment: "Failed to initialize payment. Please try again.",
-        });
+      // Categorize errors for better user experience
+      let errorMessage = "Failed to initialize payment. Please try again.";
+
+      if (error.message.includes("Network error") || error.message.includes("connection")) {
+        errorMessage = "Network connection issue. Please check your internet and try again.";
+      } else if (error.message.includes("timeout")) {
+        errorMessage = "Request timed out. Please try again.";
+      } else if (error.message.includes("Invalid payment gateway URL")) {
+        errorMessage = "Payment gateway configuration error. Please contact support.";
+      } else if (error.message.includes("Payment intent ID missing")) {
+        errorMessage = "Payment service error. Please try again or contact support.";
+      } else if (error.message.includes("HTTP error! status: 400")) {
+        errorMessage = "Invalid payment information. Please check your details and try again.";
+      } else if (error.message.includes("HTTP error! status: 500")) {
+        errorMessage = "Payment service temporarily unavailable. Please try again in a moment.";
+      } else if (error.message.includes("Amount must be between")) {
+        errorMessage = error.message; // Use the specific amount error
+      } else if (error.message.includes("Payment gateway not available")) {
+        errorMessage = "Selected payment method is currently unavailable. Please try a different method.";
       }
+
+      setErrors({ payment: errorMessage });
+    }
     } finally {
       setIsSubmitting(false);
       submissionRef.current = false;
