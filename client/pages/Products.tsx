@@ -114,51 +114,20 @@ export default function Products() {
             );
           }
 
-          // Try multi-category assignments first
-          const { data: assignments, error: assignmentError } = await supabase
-            .from("product_category_assignments")
-            .select(
-              `
-              product_id,
-              products!inner(*)
-            `,
-            )
-            .eq("category_id", currentCategoryData.id);
+          // Fetch products for this category
+          const { data: legacyProducts, error: legacyError } = await supabase
+            .from("products")
+            .select("*")
+            .eq("category_id", currentCategoryData.id)
+            .eq("is_active", true);
 
           if (import.meta.env.DEV) {
-            console.log("Multi-category assignments:", {
-              assignments,
-              assignmentError,
+            console.log("Products for category:", {
+              legacyProducts,
+              legacyError,
             });
           }
-
-          if (assignments && assignments.length > 0) {
-            // Use multi-category data
-            productsData = assignments
-              .map((a: any) => a.products)
-              .filter((p: Product) => p && p.is_active);
-            if (import.meta.env.DEV) {
-              console.log(
-                "Using multi-category data, found products:",
-                productsData.length,
-              );
-            }
-          } else {
-            // Fall back to legacy single category
-            if (import.meta.env.DEV) {
-              console.log("Falling back to legacy single category");
-            }
-            const { data: legacyProducts, error: legacyError } = await supabase
-              .from("products")
-              .select("*")
-              .eq("category_id", currentCategoryData.id)
-              .eq("is_active", true);
-
-            if (import.meta.env.DEV) {
-              console.log("Legacy products:", { legacyProducts, legacyError });
-            }
-            productsData = legacyProducts || [];
-          }
+          productsData = legacyProducts || [];
         } else {
           if (import.meta.env.DEV) {
             console.log("Category not found for slug:", categorySlug);
