@@ -1168,56 +1168,11 @@ export default function Checkout() {
         return;
       }
 
-      // Perform the payment API call with abort controller
-      let response;
-      let responseText;
-
-      try {
-        response = await fetch("/api/payments/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          body: JSON.stringify(paymentData),
-          signal: abortControllerRef.current.signal,
-        });
-
-        if (abortControllerRef.current.signal.aborted) {
-          throw new Error("Request was cancelled");
-        }
-
-        // Read response body once
-        responseText = await response.text();
-      } catch (fetchError: any) {
-        if (
-          fetchError.name === "AbortError" ||
-          abortControllerRef.current.signal.aborted
-        ) {
-          console.log("Payment request was cancelled");
-          return; // Don't show error for cancelled requests
-        }
-        console.error("Network error during payment creation:", fetchError);
-        throw new Error(
-          "Network error. Please check your connection and try again.",
-        );
-      }
-
-      if (!response.ok) {
-        console.error(`Payment API error (${response.status}):`, responseText);
-        throw new Error(
-          `HTTP error! status: ${response.status}, details: ${responseText}`,
-        );
-      }
-
-      // Parse the successful response
-      let responseData;
-      try {
-        responseData = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("Failed to parse payment response:", parseError);
-        throw new Error("Invalid response from payment service");
-      }
+      // Create payment request using isolated function
+      const responseData = await createPaymentRequest(
+        paymentData,
+        abortControllerRef.current,
+      );
 
       if (responseData.success) {
         setPaymentIntentId(responseData.payment_intent_id);
