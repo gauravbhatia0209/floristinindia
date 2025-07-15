@@ -152,7 +152,7 @@ router.post("/create", async (req, res) => {
 
     // Create payment request
     const paymentRequest: PaymentRequest = {
-      order_id,
+      order_id: tempOrderId,
       amount,
       currency,
       customer,
@@ -161,6 +161,7 @@ router.post("/create", async (req, res) => {
       webhook_url: webhook_url || `${req.get("origin")}/api/payments/webhook`,
       metadata: {
         payment_intent_id: intentData.id,
+        original_order_id: order_id, // Keep track of original (null) order_id
         ...metadata,
       },
     };
