@@ -1037,6 +1037,8 @@ export default function Checkout() {
       if (!requestPayload.customer?.name) missingFields.push("customer.name");
       if (!requestPayload.customer?.email) missingFields.push("customer.email");
       if (!requestPayload.customer?.phone) missingFields.push("customer.phone");
+      if (!requestPayload.customer?.address?.line1)
+        missingFields.push("customer.address.line1");
       if (!requestPayload.customer?.address?.city)
         missingFields.push("customer.address.city");
       if (!requestPayload.customer?.address?.state)
@@ -1044,8 +1046,25 @@ export default function Checkout() {
       if (!requestPayload.customer?.address?.pincode)
         missingFields.push("customer.address.pincode");
 
+      console.log("Field validation results:", {
+        gateway_id: requestPayload.gateway_id,
+        amount: requestPayload.amount,
+        customer_name: requestPayload.customer?.name,
+        customer_email: requestPayload.customer?.email,
+        customer_phone: requestPayload.customer?.phone,
+        address_line1: requestPayload.customer?.address?.line1,
+        address_city: requestPayload.customer?.address?.city,
+        address_state: requestPayload.customer?.address?.state,
+        address_pincode: requestPayload.customer?.address?.pincode,
+        missingFields: missingFields,
+      });
+
       if (missingFields.length > 0) {
-        console.error("Missing required fields:", missingFields);
+        console.error("Client-side missing required fields:", missingFields);
+        setErrors({
+          payment: `Missing required fields: ${missingFields.join(", ")}`,
+        });
+        return;
       }
 
       const response = await fetch("/api/payments/create", {
