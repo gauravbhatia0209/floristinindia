@@ -989,6 +989,14 @@ export default function Checkout() {
   async function handleProceedToPayment() {
     if (!selectedPaymentMethod) return;
 
+    // Prevent double submission
+    if (isSubmitting) {
+      console.log(
+        "Payment submission already in progress, ignoring duplicate call",
+      );
+      return;
+    }
+
     // Validate required fields
     if (
       !form.fullName ||
