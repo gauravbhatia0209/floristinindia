@@ -1198,18 +1198,56 @@ export default function Checkout() {
         abortControllerRef.current,
       );
 
+      // Enhanced response validation
+      if (!responseData) {
+        throw new Error("No response received from payment service");
+      }
+
       if (responseData.success) {
+        // Validate required fields in successful response
+        if (!responseData.payment_intent_id) {
+          throw new Error("Payment intent ID missing from response");
+        }
+
         setPaymentIntentId(responseData.payment_intent_id);
         setCurrentStep(3); // Move to processing step
 
         // Redirect to gateway payment page if available
         if (responseData.payment_url) {
-          window.location.href = responseData.payment_url;
+          // Validate URL before redirect
+          try {
+            new URL(responseData.payment_url);
+            console.log(
+              "Redirecting to payment gateway:",
+              responseData.payment_url,
+            );
+            window.location.href = responseData.payment_url;
+          } catch (urlError) {
+            console.error("Invalid payment URL:", responseData.payment_url);
+            throw new Error("Invalid payment gateway URL received");
+          }
+        } else {
+          console.warn(
+            "No payment URL provided - user may need to complete payment manually",
+          );
         }
       } else {
-        setErrors({
-          payment: responseData.error || "Failed to create payment",
-        });
+        // Handle specific error cases
+        const errorMessage = responseData.error || "Failed to create payment";
+        console.error("Payment creation failed:", errorMessage);
+
+        if (
+          responseData.missing_fields &&
+          responseData.missing_fields.length > 0
+        ) {
+          setErrors({
+            payment: `Missing required information: ${responseData.missing_fields.join(", ")}`,
+          });
+        } else {
+          setErrors({
+            payment: errorMessage,
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error creating payment:", error);
