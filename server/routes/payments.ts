@@ -197,7 +197,7 @@ router.post("/create", async (req, res) => {
 
     // Create payment request
     const paymentRequest: PaymentRequest = {
-      order_id: tempOrderId,
+      order_id: finalOrderId,
       amount,
       currency,
       customer,
@@ -207,6 +207,7 @@ router.post("/create", async (req, res) => {
       metadata: {
         payment_intent_id: intentData.id,
         original_order_id: order_id, // Keep track of original (null) order_id
+        placeholder_order_id: !order_id ? finalOrderId : null, // Track placeholder order
         ...metadata,
       },
     };
