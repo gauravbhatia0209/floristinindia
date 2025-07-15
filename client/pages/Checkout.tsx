@@ -1099,45 +1099,35 @@ export default function Checkout() {
         return;
       }
 
+      // Perform the payment API call with abort controller
       let response;
       let responseText;
 
       try {
-        // Create a fresh request body string to avoid any body stream issues
-        const requestBody = JSON.stringify({
-          gateway_id: requestPayload.gateway_id,
-          amount: requestPayload.amount,
-          currency: requestPayload.currency,
-          customer: {
-            name: requestPayload.customer.name,
-            email: requestPayload.customer.email,
-            phone: requestPayload.customer.phone,
-            address: {
-              line1: requestPayload.customer.address.line1,
-              line2: requestPayload.customer.address.line2,
-              city: requestPayload.customer.address.city,
-              state: requestPayload.customer.address.state,
-              pincode: requestPayload.customer.address.pincode,
-              country: requestPayload.customer.address.country,
-            },
-          },
-          return_url: requestPayload.return_url,
-          cancel_url: requestPayload.cancel_url,
-          webhook_url: requestPayload.webhook_url,
-          metadata: { ...requestPayload.metadata },
-        });
-
         response = await fetch("/api/payments/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
           },
-          body: requestBody,
+          body: JSON.stringify(paymentData),
+          signal: abortControllerRef.current.signal,
         });
 
-        // Read the response body once and handle both success and error cases
+        if (abortControllerRef.current.signal.aborted) {
+          throw new Error("Request was cancelled");
+        }
+
+        // Read response body once
         responseText = await response.text();
-      } catch (fetchError) {
+      } catch (fetchError: any) {
+        if (
+          fetchError.name === "AbortError" ||
+          abortControllerRef.current.signal.aborted
+        ) {
+          console.log("Payment request was cancelled");
+          return; // Don't show error for cancelled requests
+        }
         console.error("Network error during payment creation:", fetchError);
         throw new Error(
           "Network error. Please check your connection and try again.",
