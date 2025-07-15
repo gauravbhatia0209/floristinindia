@@ -1091,12 +1091,36 @@ export default function Checkout() {
       let responseText;
 
       try {
+        // Create a fresh request body string to avoid any body stream issues
+        const requestBody = JSON.stringify({
+          gateway_id: requestPayload.gateway_id,
+          amount: requestPayload.amount,
+          currency: requestPayload.currency,
+          customer: {
+            name: requestPayload.customer.name,
+            email: requestPayload.customer.email,
+            phone: requestPayload.customer.phone,
+            address: {
+              line1: requestPayload.customer.address.line1,
+              line2: requestPayload.customer.address.line2,
+              city: requestPayload.customer.address.city,
+              state: requestPayload.customer.address.state,
+              pincode: requestPayload.customer.address.pincode,
+              country: requestPayload.customer.address.country,
+            },
+          },
+          return_url: requestPayload.return_url,
+          cancel_url: requestPayload.cancel_url,
+          webhook_url: requestPayload.webhook_url,
+          metadata: { ...requestPayload.metadata },
+        });
+
         response = await fetch("/api/payments/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestPayload),
+          body: requestBody,
         });
 
         // Read the response body once and handle both success and error cases
