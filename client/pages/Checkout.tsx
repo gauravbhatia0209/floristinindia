@@ -1085,16 +1085,26 @@ export default function Checkout() {
         return;
       }
 
-      const response = await fetch("/api/payments/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestPayload),
-      });
+      let response;
+      let responseText;
 
-      // Read the response body once and handle both success and error cases
-      const responseText = await response.text();
+      try {
+        response = await fetch("/api/payments/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestPayload),
+        });
+
+        // Read the response body once and handle both success and error cases
+        responseText = await response.text();
+      } catch (fetchError) {
+        console.error("Network error during payment creation:", fetchError);
+        throw new Error(
+          "Network error. Please check your connection and try again.",
+        );
+      }
 
       if (!response.ok) {
         console.error(`Payment API error (${response.status}):`, responseText);
