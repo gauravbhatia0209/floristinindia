@@ -990,10 +990,20 @@ export default function Checkout() {
     if (!selectedPaymentMethod) return;
 
     // Validate required fields
-    if (!form.fullName || !form.email || !form.phone) {
+    if (
+      !form.fullName ||
+      !form.email ||
+      !form.phone ||
+      !form.addressLine1 ||
+      !form.city ||
+      !form.state ||
+      !form.pincode
+    ) {
       setErrors({
-        payment: "Please fill in all required customer information",
+        payment:
+          "Please complete all required information in step 1 before proceeding to payment",
       });
+      setCurrentStep(1); // Go back to form step
       return;
     }
 
