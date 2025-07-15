@@ -1980,31 +1980,33 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full py-4 text-sm sm:text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
-                    onClick={handleSubmit}
-                    disabled={
-                      isSubmitting ||
-                      !selectedShippingMethod ||
-                      !form.acceptTerms
-                    }
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                        <span className="truncate">Processing Order...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center gap-2 min-w-0">
-                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                        <span className="truncate">
-                          Proceed to Pay ₹{totals.total.toFixed(2)}
-                        </span>
-                      </div>
-                    )}
-                  </Button>
+                  {currentStep === 1 && (
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full py-4 text-sm sm:text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                      onClick={handleSubmit}
+                      disabled={
+                        isSubmitting ||
+                        !selectedShippingMethod ||
+                        !form.acceptTerms
+                      }
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                          <span className="truncate">Processing Order...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-2 min-w-0">
+                          <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                          <span className="truncate">
+                            Proceed to Pay ₹{totals.total.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+                    </Button>
+                  )}
 
                   {errors.submit && (
                     <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
