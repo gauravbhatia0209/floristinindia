@@ -1172,6 +1172,7 @@ export default function Checkout() {
       }
     } finally {
       setIsSubmitting(false);
+      submissionRef.current = false;
     }
   }
 
