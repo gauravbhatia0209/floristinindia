@@ -61,14 +61,7 @@ router.post("/create", async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (
-      !gateway_id ||
-      !order_id ||
-      !amount ||
-      !customer ||
-      !return_url ||
-      !cancel_url
-    ) {
+    if (!gateway_id || !amount || !customer || !return_url || !cancel_url) {
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
