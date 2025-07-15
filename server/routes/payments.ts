@@ -60,11 +60,41 @@ router.post("/create", async (req, res) => {
       metadata,
     } = req.body;
 
-    // Validate required fields
-    if (!gateway_id || !amount || !customer || !return_url || !cancel_url) {
+    // Validate required fields with detailed logging
+    const missingFields = [];
+    if (!gateway_id) missingFields.push("gateway_id");
+    if (!amount) missingFields.push("amount");
+    if (!customer) missingFields.push("customer");
+    if (!return_url) missingFields.push("return_url");
+    if (!cancel_url) missingFields.push("cancel_url");
+
+    // Validate customer object fields
+    if (customer) {
+      if (!customer.name) missingFields.push("customer.name");
+      if (!customer.email) missingFields.push("customer.email");
+      if (!customer.phone) missingFields.push("customer.phone");
+      if (!customer.address) missingFields.push("customer.address");
+      if (customer.address) {
+        if (!customer.address.line1)
+          missingFields.push("customer.address.line1");
+        if (!customer.address.city) missingFields.push("customer.address.city");
+        if (!customer.address.state)
+          missingFields.push("customer.address.state");
+        if (!customer.address.pincode)
+          missingFields.push("customer.address.pincode");
+      }
+    }
+
+    if (missingFields.length > 0) {
+      console.error("Payment API - Missing required fields:", missingFields);
+      console.error(
+        "Payment API - Request body:",
+        JSON.stringify(req.body, null, 2),
+      );
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
+        missing_fields: missingFields,
       });
     }
 
