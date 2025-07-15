@@ -337,73 +337,97 @@ interface CheckoutForm {
   acceptTerms: boolean;
 }
 
-// Isolated payment request function to avoid body stream issues
+// Payment request using XMLHttpRequest to avoid fetch body stream issues
 async function createPaymentRequest(
   paymentData: any,
   abortController: AbortController,
 ) {
   const requestId = Math.random().toString(36).substring(7);
-  console.log(`[${requestId}] Starting payment request`);
+  console.log(`[${requestId}] Starting payment request with XMLHttpRequest`);
 
-  try {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-        "X-Request-ID": requestId,
-      },
-      body: JSON.stringify(paymentData),
-      signal: abortController.signal,
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    // Handle abort signal
+    const onAbort = () => {
+      xhr.abort();
+      console.log(`[${requestId}] Request cancelled via abort controller`);
+      reject(new Error("CANCELLED"));
     };
 
-    console.log(`[${requestId}] Making fetch request`);
-    const response = await fetch("/api/payments/create", requestOptions);
-
     if (abortController.signal.aborted) {
-      throw new Error("Request was cancelled");
+      reject(new Error("CANCELLED"));
+      return;
     }
 
-    console.log(`[${requestId}] Response received, status: ${response.status}`);
-    const responseText = await response.text();
+    abortController.signal.addEventListener("abort", onAbort);
 
-    if (!response.ok) {
-      console.error(
-        `[${requestId}] Payment API error (${response.status}):`,
-        responseText,
-      );
-      throw new Error(
-        `HTTP error! status: ${response.status}, details: ${responseText}`,
-      );
-    }
+    xhr.open("POST", "/api/payments/create", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.setRequestHeader("X-Request-ID", requestId);
 
-    // Parse the successful response
-    let responseData;
+    xhr.onloadend = () => {
+      abortController.signal.removeEventListener("abort", onAbort);
+    };
+
+    xhr.onload = () => {
+      console.log(`[${requestId}] Response received, status: ${xhr.status}`);
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const responseData = JSON.parse(xhr.responseText);
+          console.log(`[${requestId}] Successfully parsed response`);
+          resolve(responseData);
+        } catch (parseError) {
+          console.error(
+            `[${requestId}] Failed to parse payment response:`,
+            parseError,
+          );
+          reject(new Error("Invalid response from payment service"));
+        }
+      } else {
+        console.error(
+          `[${requestId}] Payment API error (${xhr.status}):`,
+          xhr.responseText,
+        );
+        reject(
+          new Error(
+            `HTTP error! status: ${xhr.status}, details: ${xhr.responseText}`,
+          ),
+        );
+      }
+    };
+
+    xhr.onerror = () => {
+      console.error(`[${requestId}] Network error during payment creation`);
+      reject(
+        new Error("Network error. Please check your connection and try again."),
+      );
+    };
+
+    xhr.onabort = () => {
+      console.log(`[${requestId}] Request was aborted`);
+      reject(new Error("CANCELLED"));
+    };
+
+    xhr.ontimeout = () => {
+      console.error(`[${requestId}] Request timed out`);
+      reject(new Error("Request timed out. Please try again."));
+    };
+
+    // Set timeout to 30 seconds
+    xhr.timeout = 30000;
+
     try {
-      responseData = JSON.parse(responseText);
-      console.log(`[${requestId}] Successfully parsed response`);
-    } catch (parseError) {
-      console.error(
-        `[${requestId}] Failed to parse payment response:`,
-        parseError,
-      );
-      throw new Error("Invalid response from payment service");
+      const requestBody = JSON.stringify(paymentData);
+      console.log(`[${requestId}] Sending XMLHttpRequest`);
+      xhr.send(requestBody);
+    } catch (error) {
+      console.error(`[${requestId}] Error sending request:`, error);
+      reject(new Error("Failed to send payment request"));
     }
-
-    return responseData;
-  } catch (error: any) {
-    if (error.name === "AbortError" || abortController.signal.aborted) {
-      console.log(`[${requestId}] Payment request was cancelled`);
-      throw new Error("CANCELLED");
-    }
-    console.error(
-      `[${requestId}] Network error during payment creation:`,
-      error,
-    );
-    throw new Error(
-      "Network error. Please check your connection and try again.",
-    );
-  }
+  });
 }
 
 export default function Checkout() {
