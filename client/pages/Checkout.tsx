@@ -1187,10 +1187,19 @@ export default function Checkout() {
           payment: responseData.error || "Failed to create payment",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating payment:", error);
+
+      // Don't show errors for cancelled requests
+      if (error.message === "CANCELLED") {
+        console.log("Payment creation was cancelled, not showing error");
+        return;
+      }
+
       if (error instanceof TypeError && error.message.includes("body stream")) {
         setErrors({ payment: "Network error. Please try again." });
+      } else if (error.message.includes("Network error")) {
+        setErrors({ payment: error.message });
       } else {
         setErrors({
           payment: "Failed to initialize payment. Please try again.",
