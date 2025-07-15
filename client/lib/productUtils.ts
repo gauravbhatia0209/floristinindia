@@ -82,38 +82,19 @@ export async function fetchProductsWithCategories(
       .select("*")
       .eq("is_active", true);
 
-    // Combine data
+    // Combine data using legacy single category approach
     const productsWithCategories: ProductWithCategories[] = products.map(
       (product) => {
-        const productAssignments =
-          assignments?.filter((a) => a.product_id === product.id) || [];
-
         let assignedCategories: ProductCategory[] = [];
         let primaryCategory: ProductCategory | undefined;
 
-        if (productAssignments.length > 0) {
-          // Use multi-category assignments
-          assignedCategories = productAssignments
-            .map((a: any) => a.product_categories)
-            .filter(Boolean);
-
-          const primaryAssignment = productAssignments.find(
-            (a) => a.is_primary,
-          );
-          primaryCategory = primaryAssignment
-            ? assignedCategories.find(
-                (c) => c.id === primaryAssignment.category_id,
-              )
-            : assignedCategories[0];
-        } else {
-          // Fall back to legacy single category
-          const legacyCategory = allCategories?.find(
-            (c) => c.id === product.category_id,
-          );
-          if (legacyCategory) {
-            assignedCategories = [legacyCategory];
-            primaryCategory = legacyCategory;
-          }
+        // Use legacy single category
+        const legacyCategory = allCategories?.find(
+          (c) => c.id === product.category_id,
+        );
+        if (legacyCategory) {
+          assignedCategories = [legacyCategory];
+          primaryCategory = legacyCategory;
         }
 
         return {
