@@ -1044,7 +1044,13 @@ export default function Checkout() {
       }
     } catch (error) {
       console.error("Error creating payment:", error);
-      setErrors({ payment: "Failed to initialize payment" });
+      if (error instanceof TypeError && error.message.includes("body stream")) {
+        setErrors({ payment: "Network error. Please try again." });
+      } else {
+        setErrors({
+          payment: "Failed to initialize payment. Please try again.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
