@@ -61,7 +61,7 @@ router.post("/create", async (req, res) => {
     } = req.body;
 
     // Validate required fields with detailed logging
-    const missingFields = [];
+    const missingFields: string[] = [];
     if (!gateway_id) missingFields.push("gateway_id");
     if (!amount) missingFields.push("amount");
     if (!customer) missingFields.push("customer");
