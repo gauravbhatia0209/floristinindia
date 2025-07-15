@@ -1004,7 +1004,6 @@ export default function Checkout() {
 
       const requestPayload = {
         gateway_id: selectedPaymentMethod,
-        order_id: "", // Will be set by the order ID we created
         amount: paymentAmount,
         currency: "INR",
         customer: {
