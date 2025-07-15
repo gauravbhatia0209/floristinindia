@@ -1059,35 +1059,35 @@ export default function Checkout() {
         },
       };
 
-      console.log("Creating payment with complete payload:", requestPayload);
+      console.log("Creating payment with complete payload:", paymentData);
 
       // Check for missing required fields
       const missingFields = [];
-      if (!requestPayload.gateway_id) missingFields.push("gateway_id");
-      if (!requestPayload.amount) missingFields.push("amount");
-      if (!requestPayload.currency) missingFields.push("currency");
-      if (!requestPayload.customer?.name) missingFields.push("customer.name");
-      if (!requestPayload.customer?.email) missingFields.push("customer.email");
-      if (!requestPayload.customer?.phone) missingFields.push("customer.phone");
-      if (!requestPayload.customer?.address?.line1)
+      if (!paymentData.gateway_id) missingFields.push("gateway_id");
+      if (!paymentData.amount) missingFields.push("amount");
+      if (!paymentData.currency) missingFields.push("currency");
+      if (!paymentData.customer?.name) missingFields.push("customer.name");
+      if (!paymentData.customer?.email) missingFields.push("customer.email");
+      if (!paymentData.customer?.phone) missingFields.push("customer.phone");
+      if (!paymentData.customer?.address?.line1)
         missingFields.push("customer.address.line1");
-      if (!requestPayload.customer?.address?.city)
+      if (!paymentData.customer?.address?.city)
         missingFields.push("customer.address.city");
-      if (!requestPayload.customer?.address?.state)
+      if (!paymentData.customer?.address?.state)
         missingFields.push("customer.address.state");
-      if (!requestPayload.customer?.address?.pincode)
+      if (!paymentData.customer?.address?.pincode)
         missingFields.push("customer.address.pincode");
 
       console.log("Field validation results:", {
-        gateway_id: requestPayload.gateway_id,
-        amount: requestPayload.amount,
-        customer_name: requestPayload.customer?.name,
-        customer_email: requestPayload.customer?.email,
-        customer_phone: requestPayload.customer?.phone,
-        address_line1: requestPayload.customer?.address?.line1,
-        address_city: requestPayload.customer?.address?.city,
-        address_state: requestPayload.customer?.address?.state,
-        address_pincode: requestPayload.customer?.address?.pincode,
+        gateway_id: paymentData.gateway_id,
+        amount: paymentData.amount,
+        customer_name: paymentData.customer?.name,
+        customer_email: paymentData.customer?.email,
+        customer_phone: paymentData.customer?.phone,
+        address_line1: paymentData.customer?.address?.line1,
+        address_city: paymentData.customer?.address?.city,
+        address_state: paymentData.customer?.address?.state,
+        address_pincode: paymentData.customer?.address?.pincode,
         missingFields: missingFields,
       });
 
