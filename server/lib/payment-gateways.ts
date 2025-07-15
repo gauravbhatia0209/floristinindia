@@ -63,7 +63,7 @@ export class PayPalGateway extends BasePaymentGateway {
 
       this.accessToken = response.data.access_token;
       this.tokenExpiry = new Date(Date.now() + response.data.expires_in * 1000);
-      return this.accessToken;
+      return this.accessToken!;
     } catch (error) {
       throw new Error(`PayPal authentication failed: ${error}`);
     }
