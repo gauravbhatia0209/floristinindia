@@ -6,7 +6,7 @@ import {
   RefundRequest,
   RefundResponse,
   PaymentGatewayConfig,
-} from "../../shared/payment.types.js";
+} from "@shared/payment.types.js";
 import crypto from "crypto";
 import axios from "axios";
 
