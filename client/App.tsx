@@ -21,6 +21,7 @@ import ProductDetail from "@/pages/ProductDetail";
 import About from "@/pages/About";
 import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
+import RazorpayPayment from "@/pages/RazorpayPayment";
 import TrackOrder from "@/pages/TrackOrder";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
