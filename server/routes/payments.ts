@@ -213,9 +213,17 @@ router.post("/create", async (req, res) => {
         payment_intent_id: intentData.id,
         original_order_id: order_id, // Keep track of original (null) order_id
         placeholder_order_id: !order_id ? finalOrderId : null, // Track placeholder order
-        order_number: orderNumber, // Use actual order number instead of empty string
         customer_email: customer.email,
-        ...metadata,
+        // Filter out empty order_number from client metadata and use our server-generated one
+        ...(metadata
+          ? Object.fromEntries(
+              Object.entries(metadata).filter(
+                ([key, value]) =>
+                  !(key === "order_number" && (!value || value === "")),
+              ),
+            )
+          : {}),
+        order_number: orderNumber, // Use actual order number (placed after filtered metadata to ensure it's not overridden)
       },
     };
 
