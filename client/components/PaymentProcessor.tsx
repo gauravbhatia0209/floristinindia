@@ -136,64 +136,51 @@ export default function PaymentProcessor({
 
       console.log(`Checking payment status for intent: ${paymentIntentId}`);
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-      let response;
       let data;
 
-      try {
-        response = await fetch(`/api/payments/status/${paymentIntentId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          signal: controller.signal,
-        });
+      // Always use XMLHttpRequest to avoid third-party script interference
+      data = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `/api/payments/status/${paymentIntentId}`, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.timeout = 15000; // Increased timeout
 
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        data = await response.json();
-      } catch (fetchError: any) {
-        console.warn(
-          "Fetch failed, trying XMLHttpRequest fallback:",
-          fetchError,
-        );
-        clearTimeout(timeoutId);
-
-        // Fallback to XMLHttpRequest
-        data = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open("GET", `/api/payments/status/${paymentIntentId}`, true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.setRequestHeader("Cache-Control", "no-cache");
-          xhr.timeout = 10000;
-
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                resolve(JSON.parse(xhr.responseText));
-              } catch (e) {
-                reject(new Error("Invalid JSON response"));
-              }
-            } else {
-              reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              console.log("Payment status XHR response:", response);
+              resolve(response);
+            } catch (e) {
+              console.error("Failed to parse JSON response:", xhr.responseText);
+              reject(new Error("Invalid JSON response"));
             }
-          };
+          } else {
+            console.error(
+              `XHR failed with status ${xhr.status}:`,
+              xhr.statusText,
+            );
+            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+          }
+        };
 
-          xhr.onerror = () =>
-            reject(new Error("Network error with XMLHttpRequest"));
-          xhr.ontimeout = () =>
-            reject(new Error("Request timeout with XMLHttpRequest"));
+        xhr.onerror = (event) => {
+          console.error("XHR network error:", event);
+          reject(new Error("Network error with XMLHttpRequest"));
+        };
 
-          xhr.send();
-        });
-      }
+        xhr.ontimeout = () => {
+          console.error("XHR timeout");
+          reject(new Error("Request timeout with XMLHttpRequest"));
+        };
+
+        console.log(
+          "Sending XHR request to:",
+          `/api/payments/status/${paymentIntentId}`,
+        );
+        xhr.send();
+      });
       console.log("Payment status response:", data);
 
       if (data.success) {
