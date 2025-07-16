@@ -1,0 +1,254 @@
+import React, { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  CreditCard,
+  ArrowLeft,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+export default function RazorpayPayment() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [paymentData, setPaymentData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string>("");
+
+  const orderId = searchParams.get("order_id");
+  const paymentIntentId = searchParams.get("payment_intent");
+
+  useEffect(() => {
+    if (!orderId) {
+      setError("Missing order ID");
+      setLoading(false);
+      return;
+    }
+
+    loadRazorpayScript();
+    fetchPaymentData();
+  }, [orderId]);
+
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const fetchPaymentData = async () => {
+    try {
+      const response = await fetch(
+        `/api/payments/status/${paymentIntentId || orderId}`,
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setPaymentData(data.payment_intent);
+      } else {
+        setError(data.error || "Failed to fetch payment data");
+      }
+    } catch (err) {
+      setError("Failed to load payment information");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const initiatePayment = async () => {
+    if (!window.Razorpay) {
+      setError("Razorpay failed to load. Please refresh and try again.");
+      return;
+    }
+
+    setProcessing(true);
+
+    const options = {
+      key: paymentData.metadata.key_id,
+      amount: paymentData.metadata.amount,
+      currency: paymentData.metadata.currency,
+      name: "Florist in India",
+      description: `Order ${paymentData.metadata.order_number || paymentData.order_id}`,
+      order_id: paymentData.metadata.order_id,
+      handler: function (response: any) {
+        console.log("Payment successful:", response);
+        // Redirect to success page
+        navigate(
+          `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_signature=${response.razorpay_signature}`,
+        );
+      },
+      prefill: {
+        name: paymentData.metadata.customer_name,
+        email: paymentData.metadata.customer_email,
+        contact: paymentData.metadata.customer_phone,
+      },
+      theme: {
+        color: "#F97316", // Orange theme matching the site
+      },
+      modal: {
+        ondismiss: function () {
+          setProcessing(false);
+          console.log("Payment modal dismissed");
+        },
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on("payment.failed", function (response: any) {
+      console.error("Payment failed:", response.error);
+      setError(`Payment failed: ${response.error.description}`);
+      setProcessing(false);
+    });
+
+    rzp.open();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex items-center justify-center p-8">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-orange-600" />
+              <p className="text-gray-600">Loading payment information...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Payment Error
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/checkout")}
+                className="flex-1"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Checkout
+              </Button>
+              <Button
+                onClick={() => window.location.reload()}
+                className="flex-1"
+              >
+                Retry
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            Complete Payment
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {paymentData && (
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-medium mb-2">Order Summary</h3>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>Amount:</span>
+                    <span>
+                      ₹
+                      {(
+                        (paymentData.metadata.amount || paymentData.amount) /
+                        100
+                      ).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Currency:</span>
+                    <span>
+                      {paymentData.metadata.currency || paymentData.currency}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Order ID:</span>
+                    <span className="font-mono text-xs">
+                      {paymentData.metadata.order_number ||
+                        paymentData.order_id}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                onClick={initiatePayment}
+                disabled={processing}
+                className="w-full py-3 bg-orange-600 hover:bg-orange-700"
+                size="lg"
+              >
+                {processing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Pay ₹
+                    {(
+                      (paymentData.metadata.amount || paymentData.amount) / 100
+                    ).toLocaleString()}
+                  </>
+                )}
+              </Button>
+
+              <div className="text-center">
+                <Button
+                  variant="link"
+                  onClick={() => navigate("/checkout")}
+                  className="text-sm"
+                >
+                  <ArrowLeft className="h-3 w-3 mr-1" />
+                  Back to Checkout
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
