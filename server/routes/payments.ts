@@ -18,14 +18,45 @@ const router = express.Router();
 // Get available payment methods
 router.get("/methods", async (req, res) => {
   try {
+    console.log("Fetching payment gateway configs...");
+
     const { data: configs, error } = await supabase
       .from("payment_gateway_configs")
       .select("*")
       .eq("enabled", true)
       .order("priority", { ascending: true });
 
+    console.log("Payment gateway configs result:", { configs, error });
+
     if (error) {
-      return res.status(500).json({ error: "Failed to fetch payment methods" });
+      console.error("Supabase error:", error);
+      return res
+        .status(500)
+        .json({
+          success: false,
+          error: "Failed to fetch payment methods",
+          details: error.message,
+        });
+    }
+
+    if (!configs || configs.length === 0) {
+      console.log(
+        "No payment gateway configs found, returning default methods",
+      );
+      // Return default methods if no configs in database
+      const defaultMethods = [
+        {
+          gateway: "razorpay",
+          name: "Razorpay",
+          enabled: true,
+          min_amount: 100,
+          max_amount: 1000000,
+          processing_fee: 2.5,
+          fixed_fee: 0,
+          supported_currencies: ["INR"],
+        },
+      ];
+      return res.json({ success: true, methods: defaultMethods });
     }
 
     const methods = configs.map((config: any) => ({
@@ -39,10 +70,17 @@ router.get("/methods", async (req, res) => {
       supported_currencies: config.supported_currencies,
     }));
 
+    console.log("Returning payment methods:", methods);
     res.json({ success: true, methods });
   } catch (error) {
     console.error("Error fetching payment methods:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: "Internal server error",
+        details: error.message,
+      });
   }
 });
 
