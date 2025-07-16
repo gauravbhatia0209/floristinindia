@@ -29,15 +29,15 @@ export default function RazorpayPayment() {
   const paymentIntentId = searchParams.get("payment_intent");
 
   useEffect(() => {
-    if (!orderId) {
-      setError("Missing order ID");
+    if (!orderId && !paymentIntentId) {
+      setError("Missing order ID and payment intent ID");
       setLoading(false);
       return;
     }
 
     loadRazorpayScript();
     fetchPaymentData();
-  }, [orderId]);
+  }, [orderId, paymentIntentId]);
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
