@@ -124,12 +124,14 @@ router.post("/create", async (req, res) => {
 
     // Create payment intent record
     let finalOrderId = order_id;
+    let orderNumber = metadata?.order_number || "";
 
     // If no order_id provided, create a placeholder order (payment-first flow)
     if (!order_id || order_id.trim() === "") {
       try {
+        const tempOrderNumber = `TEMP-${Date.now()}`;
         const placeholderOrder = {
-          order_number: `TEMP-${Date.now()}`,
+          order_number: tempOrderNumber,
           status: "pending",
           total_amount: amount / 100, // Convert paise to rupees
           shipping_amount: 0,
@@ -150,7 +152,7 @@ router.post("/create", async (req, res) => {
         const { data: createdOrder, error: orderError } = await supabase
           .from("orders")
           .insert(placeholderOrder)
-          .select("id")
+          .select("id, order_number")
           .single();
 
         if (orderError) {
@@ -159,7 +161,10 @@ router.post("/create", async (req, res) => {
         }
 
         finalOrderId = createdOrder.id;
-        console.log(`Created placeholder order with ID: ${finalOrderId}`);
+        orderNumber = createdOrder.order_number;
+        console.log(
+          `Created placeholder order with ID: ${finalOrderId}, Order Number: ${orderNumber}`,
+        );
       } catch (placeholderError) {
         console.error("Placeholder order creation failed:", placeholderError);
         return res.status(500).json({
