@@ -250,12 +250,17 @@ export class RazorpayGateway extends BasePaymentGateway {
         },
       );
 
+      // Get the client URL from return_url (which already contains the correct origin)
+      const clientBaseUrl = request.return_url
+        .split("?")[0]
+        .replace("/checkout/success", "");
+
       return {
         success: true,
         payment_intent_id: response.data.id,
         gateway: "razorpay",
         gateway_order_id: response.data.id,
-        payment_url: `${process.env.CLIENT_URL || "http://localhost:5173"}/razorpay-payment?order_id=${response.data.id}&payment_intent=${request.metadata?.payment_intent_id}`,
+        payment_url: `${clientBaseUrl}/razorpay-payment?order_id=${response.data.id}&payment_intent=${request.metadata?.payment_intent_id}`,
         metadata: {
           razorpay_order: response.data,
           key_id: this.config.config.razorpay_key_id,
