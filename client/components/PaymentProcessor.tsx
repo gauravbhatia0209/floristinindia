@@ -361,10 +361,12 @@ export default function PaymentProcessor({
           </Alert>
         )}
 
-        {/* Gateway Status Details */}
-        {paymentStatus.gateway_status && (
+        {/* Gateway Status Details - Only show in development */}
+        {paymentStatus.gateway_status && import.meta.env.DEV && (
           <div className="bg-gray-50 p-3 rounded border">
-            <h4 className="text-sm font-medium mb-2">Gateway Details</h4>
+            <h4 className="text-sm font-medium mb-2">
+              Gateway Details (Dev Only)
+            </h4>
             <pre className="text-xs text-muted-foreground whitespace-pre-wrap">
               {JSON.stringify(paymentStatus.gateway_status, null, 2)}
             </pre>
