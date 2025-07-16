@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "outDir": "./dist",
-    "rootDir": "../",
+    "rootDir": "./",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -20,12 +20,11 @@
     "noEmitOnError": true,
     "paths": {
       "@/*": ["./*"],
-      "@/types/*": ["./types/*"],
-      "@shared/*": ["../shared/*"]
+      "@/types/*": ["./types/*"]
     }
   },
-  "include": ["**/*.ts", "types/**/*.ts", "../shared/**/*.ts"],
-  "exclude": ["node_modules", "dist", "../client"],
+  "include": ["**/*.ts", "types/**/*.ts"],
+  "exclude": ["node_modules", "dist"],
   "ts-node": {
     "esm": true
   }
