@@ -71,10 +71,50 @@ export default function RazorpayPayment() {
       }
 
       console.log(`Fetching payment data for identifier: ${identifier}`);
-      const response = await fetch(`/api/payments/status/${identifier}`);
-      const data = await response.json();
 
-      console.log("Payment data response:", data);
+      // Use XMLHttpRequest to avoid third-party script interference
+      const data = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `/api/payments/status/${identifier}`, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.timeout = 15000;
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              console.log("Payment data XHR response:", response);
+              resolve(response);
+            } catch (e) {
+              console.error("Failed to parse JSON response:", xhr.responseText);
+              reject(new Error("Invalid JSON response"));
+            }
+          } else {
+            console.error(
+              `XHR failed with status ${xhr.status}:`,
+              xhr.statusText,
+            );
+            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+          }
+        };
+
+        xhr.onerror = (event) => {
+          console.error("XHR network error:", event);
+          reject(new Error("Network error"));
+        };
+
+        xhr.ontimeout = () => {
+          console.error("XHR timeout");
+          reject(new Error("Request timeout"));
+        };
+
+        console.log(
+          "Sending XHR request to:",
+          `/api/payments/status/${identifier}`,
+        );
+        xhr.send();
+      });
 
       if (data.success) {
         setPaymentData(data.payment_intent);
