@@ -125,10 +125,37 @@ export default function PaymentProcessor({
   }, [paymentStatus]);
 
   async function checkPaymentStatus() {
+    if (!paymentIntentId) {
+      setError("No payment intent ID available");
+      return;
+    }
+
     try {
       setLoading(true);
-      const response = await fetch(`/api/payments/status/${paymentIntentId}`);
+      setError(null);
+
+      console.log(`Checking payment status for intent: ${paymentIntentId}`);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(`/api/payments/status/${paymentIntentId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
+      console.log("Payment status response:", data);
 
       if (data.success) {
         setPaymentStatus(data);
@@ -136,8 +163,20 @@ export default function PaymentProcessor({
       } else {
         setError(data.error || "Failed to check payment status");
       }
-    } catch (err) {
-      setError("Failed to check payment status");
+    } catch (err: any) {
+      console.error("Payment status check error:", err);
+
+      let errorMessage = "Failed to check payment status";
+
+      if (err.name === "AbortError") {
+        errorMessage = "Request timed out. Please try again.";
+      } else if (err.message.includes("fetch")) {
+        errorMessage = "Network error. Please check your connection.";
+      } else if (err.message.includes("HTTP")) {
+        errorMessage = `Server error: ${err.message}`;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
