@@ -28,6 +28,12 @@ export default function RazorpayPayment() {
   const orderId = searchParams.get("order_id");
   const paymentIntentId = searchParams.get("payment_intent");
 
+  console.log("RazorpayPayment initialized with:", {
+    orderId,
+    paymentIntentId,
+    searchParams: Object.fromEntries(searchParams.entries()),
+  });
+
   useEffect(() => {
     if (!orderId && !paymentIntentId) {
       setError("Missing order ID and payment intent ID");
