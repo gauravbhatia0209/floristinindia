@@ -20,46 +20,40 @@ router.get("/methods", async (req, res) => {
   try {
     console.log("Fetching payment gateway configs...");
 
+    // For now, return default payment methods since the table might not exist
+    // TODO: Add payment_gateway_configs table to database
+    const defaultMethods = [
+      {
+        gateway: "razorpay",
+        name: "Razorpay",
+        enabled: true,
+        min_amount: 100,
+        max_amount: 1000000,
+        processing_fee: 0, // No processing fee for customers
+        fixed_fee: 0,
+        supported_currencies: ["INR"],
+        description: "Pay with cards, UPI, wallets & netbanking",
+        icon: "💳",
+      },
+    ];
+
+    console.log("Returning default payment methods:", defaultMethods);
+    res.json({ success: true, methods: defaultMethods });
+
+    // Commented out database lookup for now
+    /*
     const { data: configs, error } = await supabase
       .from("payment_gateway_configs")
       .select("*")
       .eq("enabled", true)
       .order("priority", { ascending: true });
 
-    console.log("Payment gateway configs result:", { configs, error });
-
     if (error) {
       console.error("Supabase error:", error);
-      return res
-        .status(500)
-        .json({
-          success: false,
-          error: "Failed to fetch payment methods",
-          details: error.message,
-        });
+      return res.status(500).json({ success: false, error: "Failed to fetch payment methods", details: error.message });
     }
 
-    if (!configs || configs.length === 0) {
-      console.log(
-        "No payment gateway configs found, returning default methods",
-      );
-      // Return default methods if no configs in database
-      const defaultMethods = [
-        {
-          gateway: "razorpay",
-          name: "Razorpay",
-          enabled: true,
-          min_amount: 100,
-          max_amount: 1000000,
-          processing_fee: 2.5,
-          fixed_fee: 0,
-          supported_currencies: ["INR"],
-        },
-      ];
-      return res.json({ success: true, methods: defaultMethods });
-    }
-
-    const methods = configs.map((config: any) => ({
+    const methods = configs?.map((config: any) => ({
       gateway: config.id,
       name: config.name,
       enabled: config.enabled,
@@ -68,10 +62,10 @@ router.get("/methods", async (req, res) => {
       processing_fee: config.processing_fee,
       fixed_fee: config.fixed_fee,
       supported_currencies: config.supported_currencies,
-    }));
+    })) || defaultMethods;
 
-    console.log("Returning payment methods:", methods);
     res.json({ success: true, methods });
+    */
   } catch (error) {
     console.error("Error fetching payment methods:", error);
     res
