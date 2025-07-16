@@ -56,10 +56,19 @@ export default function RazorpayPayment() {
 
   const fetchPaymentData = async () => {
     try {
-      const response = await fetch(
-        `/api/payments/status/${paymentIntentId || orderId}`,
-      );
+      // Prefer payment_intent_id if available, fallback to order_id
+      const identifier = paymentIntentId || orderId;
+      if (!identifier) {
+        setError("No payment identifier found");
+        setLoading(false);
+        return;
+      }
+
+      console.log(`Fetching payment data for identifier: ${identifier}`);
+      const response = await fetch(`/api/payments/status/${identifier}`);
       const data = await response.json();
+
+      console.log("Payment data response:", data);
 
       if (data.success) {
         setPaymentData(data.payment_intent);
@@ -67,6 +76,7 @@ export default function RazorpayPayment() {
         setError(data.error || "Failed to fetch payment data");
       }
     } catch (err) {
+      console.error("Error fetching payment data:", err);
       setError("Failed to load payment information");
     } finally {
       setLoading(false);
