@@ -139,22 +139,61 @@ export default function PaymentProcessor({
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch(`/api/payments/status/${paymentIntentId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-        },
-        signal: controller.signal,
-      });
+      let response;
+      let data;
 
-      clearTimeout(timeoutId);
+      try {
+        response = await fetch(`/api/payments/status/${paymentIntentId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        data = await response.json();
+      } catch (fetchError: any) {
+        console.warn(
+          "Fetch failed, trying XMLHttpRequest fallback:",
+          fetchError,
+        );
+        clearTimeout(timeoutId);
+
+        // Fallback to XMLHttpRequest
+        data = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("GET", `/api/payments/status/${paymentIntentId}`, true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.setRequestHeader("Cache-Control", "no-cache");
+          xhr.timeout = 10000;
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                resolve(JSON.parse(xhr.responseText));
+              } catch (e) {
+                reject(new Error("Invalid JSON response"));
+              }
+            } else {
+              reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+            }
+          };
+
+          xhr.onerror = () =>
+            reject(new Error("Network error with XMLHttpRequest"));
+          xhr.ontimeout = () =>
+            reject(new Error("Request timeout with XMLHttpRequest"));
+
+          xhr.send();
+        });
       }
-
-      const data = await response.json();
       console.log("Payment status response:", data);
 
       if (data.success) {
