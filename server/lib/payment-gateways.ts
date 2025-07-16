@@ -255,9 +255,16 @@ export class RazorpayGateway extends BasePaymentGateway {
         payment_intent_id: response.data.id,
         gateway: "razorpay",
         gateway_order_id: response.data.id,
+        payment_url: `${process.env.CLIENT_URL || "http://localhost:5173"}/razorpay-payment?order_id=${response.data.id}`,
         metadata: {
           razorpay_order: response.data,
           key_id: this.config.config.razorpay_key_id,
+          order_id: response.data.id,
+          amount: response.data.amount,
+          currency: response.data.currency,
+          customer_email: request.customer.email,
+          customer_name: request.customer.name,
+          customer_phone: request.customer.phone,
         },
       };
     } catch (error: any) {
