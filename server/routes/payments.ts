@@ -11,7 +11,7 @@ import {
   PaymentGatewayConfig,
   PaymentIntent,
   RefundRequest,
-} from "@shared/payment.types.js";
+} from "../types/payment.types.js";
 
 const router = express.Router();
 
