@@ -72,8 +72,30 @@ export default function PaymentMethodSelector({
   async function fetchPaymentMethods() {
     try {
       setLoading(true);
-      const response = await fetch("/api/payments/methods");
-      const data = await response.json();
+
+      // Use XMLHttpRequest to avoid third-party script interference
+      const data = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "/api/payments/methods", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.timeout = 10000;
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              resolve(JSON.parse(xhr.responseText));
+            } catch (e) {
+              reject(new Error("Invalid JSON response"));
+            }
+          } else {
+            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error("Network error"));
+        xhr.ontimeout = () => reject(new Error("Request timeout"));
+        xhr.send();
+      });
 
       if (data.success) {
         setPaymentMethods(data.methods);
@@ -81,6 +103,7 @@ export default function PaymentMethodSelector({
         setError("Failed to load payment methods");
       }
     } catch (err) {
+      console.error("Error fetching payment methods:", err);
       setError("Failed to load payment methods");
     } finally {
       setLoading(false);
