@@ -284,17 +284,32 @@ router.get("/status/:payment_intent_id", async (req, res) => {
   try {
     const { payment_intent_id } = req.params;
 
-    const { data: intent, error } = await supabase
+    // First try to find by payment_intent_id
+    let { data: intent, error } = await supabase
       .from("payment_intents")
       .select("*")
       .eq("id", payment_intent_id)
       .single();
 
+    // If not found, try to find by gateway_order_id (for cases where order_id is passed)
     if (error || !intent) {
-      return res.status(404).json({
-        success: false,
-        error: "Payment intent not found",
-      });
+      console.log(
+        `Payment intent not found by ID ${payment_intent_id}, trying by gateway_order_id`,
+      );
+      const { data: intentByOrderId, error: orderError } = await supabase
+        .from("payment_intents")
+        .select("*")
+        .eq("gateway_order_id", payment_intent_id)
+        .single();
+
+      if (orderError || !intentByOrderId) {
+        return res.status(404).json({
+          success: false,
+          error: "Payment intent not found",
+        });
+      }
+
+      intent = intentByOrderId;
     }
 
     // Get gateway config and check status with gateway
