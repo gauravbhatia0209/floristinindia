@@ -213,6 +213,8 @@ router.post("/create", async (req, res) => {
         payment_intent_id: intentData.id,
         original_order_id: order_id, // Keep track of original (null) order_id
         placeholder_order_id: !order_id ? finalOrderId : null, // Track placeholder order
+        order_number: orderNumber, // Use actual order number instead of empty string
+        customer_email: customer.email,
         ...metadata,
       },
     };
