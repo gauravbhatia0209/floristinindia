@@ -160,9 +160,10 @@ router.post("/create", async (req, res) => {
           fixed_fee: 0,
           supported_currencies: ["INR"],
           config: {
-            razorpay_key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_default",
+            razorpay_key_id:
+              process.env.RAZORPAY_KEY_ID || "rzp_test_11Hm26VEZT4FGR",
             razorpay_key_secret:
-              process.env.RAZORPAY_KEY_SECRET || "test_secret_default",
+              process.env.RAZORPAY_KEY_SECRET || "dummy_secret_key_for_testing",
             razorpay_webhook_secret:
               process.env.RAZORPAY_WEBHOOK_SECRET || "test_webhook_secret",
           },
