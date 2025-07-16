@@ -68,13 +68,11 @@ router.get("/methods", async (req, res) => {
     */
   } catch (error) {
     console.error("Error fetching payment methods:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        error: "Internal server error",
-        details: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details: error.message,
+    });
   }
 });
 
@@ -131,19 +129,50 @@ router.post("/create", async (req, res) => {
       });
     }
 
-    // Get gateway configuration
-    const { data: config, error: configError } = await supabase
+    // Get gateway configuration or use default
+    let config;
+
+    // Try to get from database first
+    const { data: dbConfig, error: configError } = await supabase
       .from("payment_gateway_configs")
       .select("*")
       .eq("id", gateway_id)
       .eq("enabled", true)
       .single();
 
-    if (configError || !config) {
-      return res.status(400).json({
-        success: false,
-        error: "Payment gateway not available",
-      });
+    if (configError || !dbConfig) {
+      console.log(
+        "Gateway config not found in database, using default for:",
+        gateway_id,
+      );
+
+      // Use default configuration for Razorpay
+      if (gateway_id === "razorpay") {
+        config = {
+          id: "razorpay",
+          name: "Razorpay",
+          enabled: true,
+          sandbox: process.env.NODE_ENV !== "production",
+          priority: 1,
+          min_amount: 100, // 1 INR in paise
+          max_amount: 10000000, // 100,000 INR in paise
+          processing_fee: 0,
+          fixed_fee: 0,
+          supported_currencies: ["INR"],
+          config: {
+            razorpay_key_id: process.env.RAZORPAY_KEY_ID,
+            razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET,
+            razorpay_webhook_secret: process.env.RAZORPAY_WEBHOOK_SECRET,
+          },
+        };
+      } else {
+        return res.status(400).json({
+          success: false,
+          error: "Payment gateway not available",
+        });
+      }
+    } else {
+      config = dbConfig;
     }
 
     // Validate amount limits
