@@ -51,76 +51,8 @@ router.get("/methods", (req, res) => {
   console.log("✅ Payment methods prepared:", defaultMethods.length);
 
   // Set headers to ensure JSON response
-  res.setHeader('Content-Type', 'application/json');
+  res.setHeader("Content-Type", "application/json");
   res.status(200).json({ success: true, methods: defaultMethods });
-
-    // Commented out database lookup for now
-    /*
-    const { data: configs, error } = await supabase
-      .from("payment_gateway_configs")
-      .select("*")
-      .eq("enabled", true)
-      .order("priority", { ascending: true });
-
-    if (error) {
-      console.error("Supabase error:", error);
-      return res.status(500).json({
-        success: false,
-        error: "Failed to fetch payment methods",
-        details: isError(error) ? error.message : String(error)
-      });
-    }
-
-    const methods = configs?.map((config: any) => ({
-      gateway: config.id,
-      name: config.name,
-      enabled: config.enabled,
-      min_amount: config.min_amount,
-      max_amount: config.max_amount,
-      processing_fee: config.processing_fee,
-      fixed_fee: config.fixed_fee,
-      supported_currencies: config.supported_currencies,
-    })) || defaultMethods;
-
-    res.json({ success: true, methods });
-    */
-  } catch (error) {
-    console.error("❌ Error in payment methods endpoint:", error);
-
-    // Type-safe error handling
-    const errorInfo = isError(error)
-      ? {
-          message: error.message,
-          stack: error.stack,
-          name: error.name,
-        }
-      : {
-          message: String(error),
-          stack: undefined,
-          name: "UnknownError",
-        };
-
-    console.error("📊 Error details:", errorInfo);
-
-    // Always return methods even if there's an error to prevent UI breaking
-    const fallbackMethods = [
-      {
-        gateway: "razorpay",
-        name: "Razorpay",
-        enabled: true,
-        min_amount: 100,
-        max_amount: 1000000,
-        processing_fee: 0,
-        fixed_fee: 0,
-        supported_currencies: ["INR"],
-        description: "Pay with cards, UPI, wallets & netbanking",
-        icon: "💳",
-      },
-    ];
-
-    console.log("🔄 Returning fallback methods due to error");
-    res.status(200).json({ success: true, methods: fallbackMethods });
-  }
 });
 
 // Create payment intent
