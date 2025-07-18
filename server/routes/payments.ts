@@ -18,10 +18,10 @@ const router = express.Router();
 // Get available payment methods
 router.get("/methods", async (req, res) => {
   try {
-    console.log("Fetching payment gateway configs...");
+    console.log("📡 Payment methods endpoint called");
+    console.log("🌍 Environment:", process.env.NODE_ENV);
+    console.log("🕐 Timestamp:", new Date().toISOString());
 
-    // For now, return default payment methods since the table might not exist
-    // TODO: Add payment_gateway_configs table to database
     const defaultMethods = [
       {
         gateway: "razorpay",
@@ -29,7 +29,7 @@ router.get("/methods", async (req, res) => {
         enabled: true,
         min_amount: 100,
         max_amount: 1000000,
-        processing_fee: 0, // No processing fee for customers
+        processing_fee: 0,
         fixed_fee: 0,
         supported_currencies: ["INR"],
         description: "Pay with cards, UPI, wallets & netbanking",
@@ -37,8 +37,8 @@ router.get("/methods", async (req, res) => {
       },
     ];
 
-    console.log("Returning default payment methods:", defaultMethods);
-    res.json({ success: true, methods: defaultMethods });
+    console.log("✅ Payment methods prepared:", defaultMethods.length);
+    res.status(200).json({ success: true, methods: defaultMethods });
 
     // Commented out database lookup for now
     /*
