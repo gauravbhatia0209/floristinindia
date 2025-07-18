@@ -58,7 +58,7 @@ router.get("/methods", async (req, res) => {
       return res.status(500).json({
         success: false,
         error: "Failed to fetch payment methods",
-        details: error instanceof Error ? error.message : String(error)
+        details: isError(error) ? error.message : String(error)
       });
     }
 
