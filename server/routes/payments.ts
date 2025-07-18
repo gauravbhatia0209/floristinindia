@@ -26,6 +26,17 @@ router.use((req, res, next) => {
   next();
 });
 
+// Health check for payments API
+router.get("/health", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200).json({
+    success: true,
+    message: "Payments API is healthy",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 // Get available payment methods
 router.get("/methods", (req, res) => {
   console.log("📡 Payment methods endpoint called");
