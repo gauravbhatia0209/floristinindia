@@ -15,6 +15,11 @@ import {
 
 const router = express.Router();
 
+// Type guard for error handling
+function isError(error: unknown): error is Error {
+  return error instanceof Error;
+}
+
 // Get available payment methods
 router.get("/methods", async (req, res) => {
   try {
