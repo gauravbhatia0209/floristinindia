@@ -20,6 +20,12 @@ function isError(error: unknown): error is Error {
   return error instanceof Error;
 }
 
+// Debug middleware
+router.use((req, res, next) => {
+  console.log(`🔄 Payments route: ${req.method} ${req.path}`);
+  next();
+});
+
 // Get available payment methods
 router.get("/methods", async (req, res) => {
   try {
