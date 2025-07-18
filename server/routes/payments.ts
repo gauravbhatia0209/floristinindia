@@ -51,8 +51,9 @@ router.get("/methods", (req, res) => {
   console.log("✅ Payment methods prepared:", defaultMethods.length);
 
   // Set headers to ensure JSON response
-  res.setHeader("Content-Type", "application/json");
+  res.setHeader('Content-Type', 'application/json');
   res.status(200).json({ success: true, methods: defaultMethods });
+});
 });
 
 // Create payment intent
