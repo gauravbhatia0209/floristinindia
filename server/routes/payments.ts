@@ -27,29 +27,32 @@ router.use((req, res, next) => {
 });
 
 // Get available payment methods
-router.get("/methods", async (req, res) => {
-  try {
-    console.log("📡 Payment methods endpoint called");
-    console.log("🌍 Environment:", process.env.NODE_ENV);
-    console.log("🕐 Timestamp:", new Date().toISOString());
+router.get("/methods", (req, res) => {
+  console.log("📡 Payment methods endpoint called");
+  console.log("🌍 Environment:", process.env.NODE_ENV);
+  console.log("🕐 Timestamp:", new Date().toISOString());
 
-    const defaultMethods = [
-      {
-        gateway: "razorpay",
-        name: "Razorpay",
-        enabled: true,
-        min_amount: 100,
-        max_amount: 1000000,
-        processing_fee: 0,
-        fixed_fee: 0,
-        supported_currencies: ["INR"],
-        description: "Pay with cards, UPI, wallets & netbanking",
-        icon: "💳",
-      },
-    ];
+  // Always return hardcoded methods - no async operations that can fail
+  const defaultMethods = [
+    {
+      gateway: "razorpay",
+      name: "Razorpay",
+      enabled: true,
+      min_amount: 100,
+      max_amount: 1000000,
+      processing_fee: 0,
+      fixed_fee: 0,
+      supported_currencies: ["INR"],
+      description: "Pay with cards, UPI, wallets & netbanking",
+      icon: "💳",
+    },
+  ];
 
-    console.log("✅ Payment methods prepared:", defaultMethods.length);
-    res.status(200).json({ success: true, methods: defaultMethods });
+  console.log("✅ Payment methods prepared:", defaultMethods.length);
+
+  // Set headers to ensure JSON response
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).json({ success: true, methods: defaultMethods });
 
     // Commented out database lookup for now
     /*
