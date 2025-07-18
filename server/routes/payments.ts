@@ -50,7 +50,11 @@ router.get("/methods", async (req, res) => {
 
     if (error) {
       console.error("Supabase error:", error);
-      return res.status(500).json({ success: false, error: "Failed to fetch payment methods", details: error.message });
+      return res.status(500).json({
+        success: false,
+        error: "Failed to fetch payment methods",
+        details: error instanceof Error ? error.message : String(error)
+      });
     }
 
     const methods = configs?.map((config: any) => ({
