@@ -68,11 +68,22 @@ router.get("/methods", async (req, res) => {
     */
   } catch (error) {
     console.error("❌ Error in payment methods endpoint:", error);
-    console.error("📊 Error details:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-    });
+
+    // Type-safe error handling
+    const errorInfo =
+      error instanceof Error
+        ? {
+            message: error.message,
+            stack: error.stack,
+            name: error.name,
+          }
+        : {
+            message: String(error),
+            stack: undefined,
+            name: "UnknownError",
+          };
+
+    console.error("📊 Error details:", errorInfo);
 
     // Always return methods even if there's an error to prevent UI breaking
     const fallbackMethods = [
