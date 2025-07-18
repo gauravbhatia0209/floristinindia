@@ -22,6 +22,8 @@
     "clean": "rm -rf client/dist server/dist client/node_modules server/node_modules node_modules",
     "lint": "cd client && npm run lint",
     "test": "cd client && npm run test",
+    "test:checkout": "cd server && node tests/checkout-payment-flow.test.js",
+    "test:checkout:prod": "TEST_BASE_URL=https://www.floristinindia.com TEST_CLIENT_URL=https://www.floristinindia.com cd server && node tests/checkout-payment-flow.test.js",
     "docker:build": "docker build -t florist-in-india .",
     "docker:run": "docker run -p 3000:3000 florist-in-india",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up",
