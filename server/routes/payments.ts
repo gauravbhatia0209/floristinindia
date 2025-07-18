@@ -79,18 +79,17 @@ router.get("/methods", async (req, res) => {
     console.error("❌ Error in payment methods endpoint:", error);
 
     // Type-safe error handling
-    const errorInfo =
-      error instanceof Error
-        ? {
-            message: error.message,
-            stack: error.stack,
-            name: error.name,
-          }
-        : {
-            message: String(error),
-            stack: undefined,
-            name: "UnknownError",
-          };
+    const errorInfo = isError(error)
+      ? {
+          message: error.message,
+          stack: error.stack,
+          name: error.name,
+        }
+      : {
+          message: String(error),
+          stack: undefined,
+          name: "UnknownError",
+        };
 
     console.error("📊 Error details:", errorInfo);
 
