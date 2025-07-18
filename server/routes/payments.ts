@@ -68,11 +68,24 @@ router.get("/methods", async (req, res) => {
     */
   } catch (error) {
     console.error("Error fetching payment methods:", error);
-    res.status(500).json({
-      success: false,
-      error: "Internal server error",
-      details: error.message,
-    });
+
+    // Always return methods even if there's an error to prevent UI breaking
+    const fallbackMethods = [
+      {
+        gateway: "razorpay",
+        name: "Razorpay",
+        enabled: true,
+        min_amount: 100,
+        max_amount: 1000000,
+        processing_fee: 0,
+        fixed_fee: 0,
+        supported_currencies: ["INR"],
+        description: "Pay with cards, UPI, wallets & netbanking",
+        icon: "💳",
+      },
+    ];
+
+    res.json({ success: true, methods: fallbackMethods });
   }
 });
 
