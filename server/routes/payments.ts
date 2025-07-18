@@ -67,7 +67,12 @@ router.get("/methods", async (req, res) => {
     res.json({ success: true, methods });
     */
   } catch (error) {
-    console.error("Error fetching payment methods:", error);
+    console.error("❌ Error in payment methods endpoint:", error);
+    console.error("📊 Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
 
     // Always return methods even if there's an error to prevent UI breaking
     const fallbackMethods = [
@@ -85,7 +90,8 @@ router.get("/methods", async (req, res) => {
       },
     ];
 
-    res.json({ success: true, methods: fallbackMethods });
+    console.log("🔄 Returning fallback methods due to error");
+    res.status(200).json({ success: true, methods: fallbackMethods });
   }
 });
 
