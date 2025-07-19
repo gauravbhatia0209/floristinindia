@@ -66,27 +66,7 @@ export default function PaymentMethodSelector({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Always start with fallback methods immediately
-    const fallbackMethods = [
-      {
-        gateway: "razorpay",
-        name: "Razorpay",
-        enabled: true,
-        min_amount: 100,
-        max_amount: 1000000,
-        processing_fee: 0,
-        fixed_fee: 0,
-        supported_currencies: ["INR"],
-        description: "Pay with cards, UPI, wallets & netbanking",
-        icon: "💳",
-      },
-    ];
-
-    console.log("🚀 Using immediate fallback payment methods");
-    setPaymentMethods(fallbackMethods);
-    setLoading(false);
-
-    // Try to fetch from API in background, but don't wait for it
+    // Properly fetch payment methods from API first
     fetchPaymentMethods();
   }, []);
 
