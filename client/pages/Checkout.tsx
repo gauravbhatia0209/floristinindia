@@ -1362,23 +1362,7 @@ export default function Checkout() {
     return null;
   }
 
-  // Payment processing step
-  if (currentStep === 3 && paymentIntentId) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
-        <div className="container py-8">
-          <div className="max-w-4xl mx-auto">
-            <PaymentProcessor
-              paymentIntentId={paymentIntentId}
-              onSuccess={handlePaymentSuccess}
-              onFailure={handlePaymentFailure}
-              onCancel={handlePaymentCancel}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // No step 3 needed - we redirect immediately to payment gateway
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
