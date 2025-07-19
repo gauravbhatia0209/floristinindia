@@ -41,6 +41,7 @@ export function createServer() {
   app.use("/api/upload", uploadRoutes);
 
   // Payment routes
+  console.log("🔧 Mounting payment routes at /api/payments");
   app.use("/api/payments", paymentsRoutes);
 
   // Explicit route for serving uploaded files
