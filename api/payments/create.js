@@ -181,14 +181,80 @@ export default async function handler(req, res) {
       console.log("⚠️ Could not save payment intent:", intentError.message);
     }
 
-    // Generate Razorpay payment URL
+    // Create actual Razorpay order using their API
+    const auth = Buffer.from(
+      `${gatewayConfig.config.razorpay_key_id}:${gatewayConfig.config.razorpay_key_secret}`,
+    ).toString("base64");
+
+    const razorpayRequest = {
+      amount: amount, // Amount in paise
+      currency: currency,
+      receipt: orderNumber,
+      notes: {
+        order_number: orderNumber,
+        customer_email: customer.email,
+        customer_name: customer.name,
+        payment_intent_id: paymentIntentId,
+        ...metadata,
+      },
+    };
+
+    let razorpayOrder = null;
+    try {
+      console.log("🔄 Creating Razorpay order...");
+      const razorpayResponse = await fetch(
+        "https://api.razorpay.com/v1/orders",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${auth}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(razorpayRequest),
+        },
+      );
+
+      if (!razorpayResponse.ok) {
+        const errorData = await razorpayResponse.json();
+        console.error("❌ Razorpay order creation failed:", errorData);
+        return res.status(400).json({
+          success: false,
+          error: "Failed to create Razorpay order",
+          details: errorData.error?.description || "Unknown Razorpay error",
+          code: "RAZORPAY_ORDER_FAILED",
+        });
+      }
+
+      razorpayOrder = await razorpayResponse.json();
+      console.log("✅ Razorpay order created:", razorpayOrder.id);
+
+      // Update payment intent with actual Razorpay order ID
+      await supabase
+        .from("payment_intents")
+        .update({
+          gateway_order_id: razorpayOrder.id,
+          metadata: {
+            ...intentData.metadata,
+            razorpay_order_id: razorpayOrder.id,
+            razorpay_order: razorpayOrder,
+          },
+        })
+        .eq("id", paymentIntentId);
+    } catch (razorpayError) {
+      console.error("❌ Razorpay API error:", razorpayError);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to communicate with Razorpay",
+        code: "RAZORPAY_API_ERROR",
+      });
+    }
+
+    // Generate payment URL with actual Razorpay order ID
     const baseUrl =
       req.headers.origin ||
       req.headers.host ||
       "https://www.floristinindia.com";
-    const razorpayOrderId = `rzp_order_${Date.now()}`;
-
-    const paymentUrl = `${baseUrl}/razorpay-payment?order_id=${razorpayOrderId}&payment_intent=${paymentIntentId}`;
+    const paymentUrl = `${baseUrl}/razorpay-payment?order_id=${razorpayOrder.id}&payment_intent=${paymentIntentId}`;
 
     console.log("✅ Payment creation successful");
 
@@ -198,14 +264,15 @@ export default async function handler(req, res) {
       gateway: gateway_id,
       payment_url: paymentUrl,
       metadata: {
-        razorpay_order_id: razorpayOrderId,
+        razorpay_order_id: razorpayOrder.id,
         order_number: orderNumber,
         amount: amount,
         currency: currency,
-        key_id: gatewayConfig.config.razorpay_key_id, // Use actual Razorpay key from database
+        key_id: gatewayConfig.config.razorpay_key_id,
         customer_name: customer.name,
         customer_email: customer.email,
         customer_phone: customer.phone,
+        razorpay_order: razorpayOrder,
       },
     });
   } catch (error) {
