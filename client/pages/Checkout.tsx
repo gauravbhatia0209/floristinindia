@@ -1398,14 +1398,20 @@ export default function Checkout() {
             <div className="lg:col-span-2 space-y-8">
               {/* Step 2: Payment Method Selection */}
               {currentStep === 2 && (
-                <PaymentMethodSelector
-                  amount={Math.round(totals.total * 100)}
-                  currency="INR"
-                  selectedMethod={selectedPaymentMethod}
-                  onMethodSelect={handlePaymentMethodSelect}
-                  onProceed={handleProceedToPayment}
-                  isLoading={isSubmitting}
-                />
+                <>
+                  {console.log(
+                    "🎯 Rendering PaymentMethodSelector on step 2 with amount:",
+                    Math.round(totals.total * 100),
+                  )}
+                  <PaymentMethodSelector
+                    amount={Math.round(totals.total * 100)}
+                    currency="INR"
+                    selectedMethod={selectedPaymentMethod}
+                    onMethodSelect={handlePaymentMethodSelect}
+                    onProceed={handleProceedToPayment}
+                    isLoading={isSubmitting}
+                  />
+                </>
               )}
 
               {/* Step 1: Order Form */}
