@@ -22,10 +22,17 @@ export default async function handler(req, res) {
       message: "Payments API is healthy",
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || "production",
+      configuration: {
+        razorpay_key_configured: !!process.env.RAZORPAY_KEY_ID,
+        razorpay_key_preview: process.env.RAZORPAY_KEY_ID
+          ? process.env.RAZORPAY_KEY_ID.substring(0, 8) + "..."
+          : "not set",
+      },
       endpoints: {
         methods: "/api/payments/methods",
         create: "/api/payments/create",
         status: "/api/payments/status/[id]",
+        health: "/api/payments/health",
       },
     });
   } catch (error) {
