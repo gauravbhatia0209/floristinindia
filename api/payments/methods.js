@@ -54,25 +54,15 @@ export default async function handler(req, res) {
         throw new Error("No database configs available");
       }
     } catch (dbError) {
-      console.log(
-        "⚠️ Database query failed, using default methods:",
-        dbError.message,
-      );
+      console.log("❌ Database query failed:", dbError.message);
 
-      // Fallback to default methods if database query fails
-      methods = [
-        {
-          gateway: "razorpay",
-          name: "Razorpay",
-          description: "Pay with cards, UPI, wallets & netbanking",
-          enabled: true,
-          min_amount: 100,
-          max_amount: 1000000,
-          processing_fee: 0,
-          fixed_fee: 0,
-          supported_currencies: ["INR"],
-        },
-      ];
+      // Return error instead of hardcoded fallback
+      return res.status(500).json({
+        success: false,
+        error:
+          "Payment methods are not configured in the database. Please contact the administrator.",
+        details: dbError.message,
+      });
     }
 
     console.log("✅ Returning payment methods:", methods);
