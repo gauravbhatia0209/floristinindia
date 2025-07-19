@@ -34,7 +34,7 @@ import { supabase } from "@/lib/supabase";
 import { Order, Customer } from "@shared/database.types";
 
 interface OrderWithCustomer extends Order {
-  customer: Customer;
+  customer: Customer | null;
 }
 
 export default function Orders() {
