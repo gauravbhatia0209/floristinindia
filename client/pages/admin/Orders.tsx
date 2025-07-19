@@ -361,19 +361,20 @@ export default function Orders() {
                       <div>
                         <p className="font-medium">Customer</p>
                         <p>
-                          {order.customer.first_name} {order.customer.last_name}
+                          {order.customer?.first_name || "Unknown"}{" "}
+                          {order.customer?.last_name || "Customer"}
                         </p>
                         <p className="text-muted-foreground">
-                          {order.customer.email}
+                          {order.customer?.email || "No email provided"}
                         </p>
-                        {order.customer.phone && (
+                        {order.customer?.phone && (
                           <p className="text-muted-foreground">
                             {order.customer.phone}
                           </p>
                         )}
                         {order.receiver_name &&
                           order.receiver_name !==
-                            `${order.customer.first_name} ${order.customer.last_name}` && (
+                            `${order.customer?.first_name || ""} ${order.customer?.last_name || ""}`.trim() && (
                             <p className="text-sm font-medium text-blue-600">
                               📧 Receiver: {order.receiver_name}
                             </p>
