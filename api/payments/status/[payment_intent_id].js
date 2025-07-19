@@ -69,8 +69,10 @@ export default async function handler(req, res) {
     }
 
     if (!intent) {
-      // Return a mock pending payment intent for testing
-      console.log("⚠️ Payment intent not found, returning mock data");
+      // Return a mock pending payment intent with proper Razorpay data
+      console.log(
+        "⚠️ Payment intent not found, returning mock data with Razorpay config",
+      );
       return res.status(200).json({
         success: true,
         payment_intent: {
@@ -83,8 +85,16 @@ export default async function handler(req, res) {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           metadata: {
+            // Razorpay configuration for frontend
+            key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_11Hm26VEZT4FGR", // Test key
+            order_id: `rzp_order_${Date.now()}`,
+            amount: 50000,
+            currency: "INR",
+            customer_name: "Test Customer",
+            customer_email: "test@example.com",
+            customer_phone: "+919999999999",
+            order_number: `ORDER-${Date.now()}`,
             mock: true,
-            message: "This is a test payment intent",
           },
         },
       });
