@@ -226,9 +226,37 @@ export default function PaymentGatewayConfig() {
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={config.enabled}
-                        onCheckedChange={(enabled) =>
-                          updateConfig(config.id, { enabled })
-                        }
+                        onCheckedChange={async (enabled) => {
+                          // Update local state immediately for UI responsiveness
+                          updateConfig(config.id, { enabled });
+
+                          // Save to database immediately
+                          try {
+                            const updatedConfig = { ...config, enabled };
+                            const { error } = await supabase
+                              .from("payment_gateway_configs")
+                              .upsert(updatedConfig);
+
+                            if (error) throw error;
+
+                            toast({
+                              title: "Success",
+                              description: `${config.name} ${enabled ? "enabled" : "disabled"} successfully`,
+                            });
+                          } catch (error) {
+                            console.error(
+                              "Error updating enabled status:",
+                              error,
+                            );
+                            // Revert local state on error
+                            updateConfig(config.id, { enabled: !enabled });
+                            toast({
+                              title: "Error",
+                              description: `Failed to ${enabled ? "enable" : "disable"} ${config.name}`,
+                              variant: "destructive",
+                            });
+                          }
+                        }}
                       />
                       <Badge variant={config.enabled ? "default" : "secondary"}>
                         {config.enabled ? "Enabled" : "Disabled"}
