@@ -2092,7 +2092,7 @@ export default function Checkout() {
                         <div className="flex items-center justify-center gap-2 min-w-0">
                           <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                           <span className="truncate">
-                            Proceed to Pay ₹{totals.total.toFixed(2)}
+                            Choose Payment Method
                           </span>
                         </div>
                       )}
