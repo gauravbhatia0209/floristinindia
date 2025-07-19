@@ -369,7 +369,7 @@ export default function Orders() {
                 // Safe render with error protection
                 try {
                   return (
-              <div key={order.id} className="border rounded-lg p-4">
+                    <div key={order.id} className="border rounded-lg p-4">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
