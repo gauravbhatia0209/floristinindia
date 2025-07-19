@@ -1372,6 +1372,53 @@ export default function Checkout() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Complete your order details below for fast and secure delivery
             </p>
+
+            {/* Progress Indicator */}
+            <div className="flex items-center justify-center mt-8 max-w-md mx-auto">
+              <div className="flex items-center">
+                <div
+                  className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                    currentStep >= 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-300 text-gray-600"
+                  }`}
+                >
+                  1
+                </div>
+                <span
+                  className={`ml-2 text-sm font-medium ${
+                    currentStep >= 1 ? "text-blue-600" : "text-gray-500"
+                  }`}
+                >
+                  Order Details
+                </span>
+              </div>
+
+              <div
+                className={`flex-1 h-0.5 mx-4 ${
+                  currentStep >= 2 ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              ></div>
+
+              <div className="flex items-center">
+                <div
+                  className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                    currentStep >= 2
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-300 text-gray-600"
+                  }`}
+                >
+                  2
+                </div>
+                <span
+                  className={`ml-2 text-sm font-medium ${
+                    currentStep >= 2 ? "text-blue-600" : "text-gray-500"
+                  }`}
+                >
+                  Payment
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
