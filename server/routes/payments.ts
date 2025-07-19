@@ -47,6 +47,14 @@ router.get("/test", (req, res) => {
   });
 });
 
+// Ultra-simple backup methods endpoint
+router.get("/methods-simple", (req, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(
+    '{"success":true,"methods":[{"gateway":"razorpay","name":"Razorpay","enabled":true,"min_amount":100,"max_amount":1000000,"processing_fee":0,"fixed_fee":0,"supported_currencies":["INR"],"description":"Pay with cards, UPI, wallets & netbanking","icon":"💳"}]}',
+  );
+});
+
 // Get available payment methods - completely error-proof version
 router.get("/methods", (req, res) => {
   // Wrap everything in try-catch to prevent any possible errors
