@@ -128,15 +128,18 @@ export default function Orders() {
           order.order_number
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
-          order.customer.first_name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          order.customer.last_name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          order.customer.email
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
+          (order.customer?.first_name &&
+            order.customer.first_name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())) ||
+          (order.customer?.last_name &&
+            order.customer.last_name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())) ||
+          (order.customer?.email &&
+            order.customer.email
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())),
       );
     }
 
