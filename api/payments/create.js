@@ -163,6 +163,10 @@ export default async function handler(req, res) {
         order_number: orderNumber,
         amount: amount,
         currency: currency,
+        key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_11Hm26VEZT4FGR", // Include Razorpay key
+        customer_name: customer.name,
+        customer_email: customer.email,
+        customer_phone: customer.phone,
       },
     });
   } catch (error) {
