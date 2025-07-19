@@ -359,7 +359,16 @@ export default function Orders() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredOrders.map((order) => (
+            {filteredOrders.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No orders found</p>
+                {searchQuery && <p>Try adjusting your search criteria</p>}
+              </div>
+            ) : (
+              filteredOrders.map((order) => {
+                // Safe render with error protection
+                try {
+                  return (
               <div key={order.id} className="border rounded-lg p-4">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
