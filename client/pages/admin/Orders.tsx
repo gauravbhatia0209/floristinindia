@@ -588,106 +588,111 @@ export default function Orders() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {selectedOrder.items.map((item: any, index: number) => (
-                        <div key={index} className="flex gap-4 border-b pb-4">
-                          {/* Product Image */}
-                          <div className="flex-shrink-0">
-                            {productImages[item.product_id] ? (
-                              <div
-                                className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden cursor-pointer group hover:shadow-md transition-shadow"
-                                onClick={() =>
-                                  setSelectedImage(
-                                    productImages[item.product_id],
-                                  )
-                                }
-                              >
-                                <img
-                                  src={productImages[item.product_id]}
-                                  alt={item.product_name}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
-                                  <ZoomIn className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                                <Eye className="w-6 h-6 text-gray-400" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Product Details */}
-                          <div className="flex-1">
-                            <h4 className="font-medium">{item.product_name}</h4>
-                            {item.variant_name && (
-                              <p className="text-sm text-muted-foreground">
-                                Variant: {item.variant_name}
-                              </p>
-                            )}
-                            <p className="text-sm text-muted-foreground">
-                              Quantity: {item.quantity}
-                            </p>
-                            {item.uploaded_file_name && (
-                              <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
-                                <p className="text-sm font-medium text-blue-800">
-                                  📎 Customer Uploaded File
-                                </p>
-                                <p className="text-sm text-blue-600 font-mono">
-                                  {item.uploaded_file_name}
-                                </p>
-                                {item.uploaded_file_size && (
-                                  <p className="text-xs text-blue-500">
-                                    Size:{" "}
-                                    {(
-                                      item.uploaded_file_size /
-                                      1024 /
-                                      1024
-                                    ).toFixed(2)}{" "}
-                                    MB
-                                  </p>
-                                )}
-                                {item.uploaded_file_type && (
-                                  <p className="text-xs text-blue-500">
-                                    Type: {item.uploaded_file_type}
-                                  </p>
-                                )}
-                                {item.uploaded_file_url &&
-                                item.uploaded_file_url !== "pending-upload" ? (
-                                  <div className="mt-2">
-                                    <a
-                                      href={item.uploaded_file_url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="inline-flex items-center text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors"
-                                    >
-                                      📁 Download File
-                                    </a>
+                      {(selectedOrder.items || []).map(
+                        (item: any, index: number) => (
+                          <div key={index} className="flex gap-4 border-b pb-4">
+                            {/* Product Image */}
+                            <div className="flex-shrink-0">
+                              {productImages[item.product_id] ? (
+                                <div
+                                  className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden cursor-pointer group hover:shadow-md transition-shadow"
+                                  onClick={() =>
+                                    setSelectedImage(
+                                      productImages[item.product_id],
+                                    )
+                                  }
+                                >
+                                  <img
+                                    src={productImages[item.product_id]}
+                                    alt={item.product_name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
+                                    <ZoomIn className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                                   </div>
-                                ) : item.upload_status ? (
-                                  <p className="text-xs text-red-500 mt-1">
-                                    ❌ Upload Status: {item.upload_status}
-                                  </p>
-                                ) : (
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    File information available
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </div>
+                                </div>
+                              ) : (
+                                <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                                  <Eye className="w-6 h-6 text-gray-400" />
+                                </div>
+                              )}
+                            </div>
 
-                          {/* Price */}
-                          <div className="text-right flex-shrink-0">
-                            <p className="font-medium">
-                              ₹{item.total_price.toLocaleString()}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              ₹{item.unit_price} each
-                            </p>
+                            {/* Product Details */}
+                            <div className="flex-1">
+                              <h4 className="font-medium">
+                                {item.product_name}
+                              </h4>
+                              {item.variant_name && (
+                                <p className="text-sm text-muted-foreground">
+                                  Variant: {item.variant_name}
+                                </p>
+                              )}
+                              <p className="text-sm text-muted-foreground">
+                                Quantity: {item.quantity}
+                              </p>
+                              {item.uploaded_file_name && (
+                                <div className="mt-2 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                                  <p className="text-sm font-medium text-blue-800">
+                                    📎 Customer Uploaded File
+                                  </p>
+                                  <p className="text-sm text-blue-600 font-mono">
+                                    {item.uploaded_file_name}
+                                  </p>
+                                  {item.uploaded_file_size && (
+                                    <p className="text-xs text-blue-500">
+                                      Size:{" "}
+                                      {(
+                                        item.uploaded_file_size /
+                                        1024 /
+                                        1024
+                                      ).toFixed(2)}{" "}
+                                      MB
+                                    </p>
+                                  )}
+                                  {item.uploaded_file_type && (
+                                    <p className="text-xs text-blue-500">
+                                      Type: {item.uploaded_file_type}
+                                    </p>
+                                  )}
+                                  {item.uploaded_file_url &&
+                                  item.uploaded_file_url !==
+                                    "pending-upload" ? (
+                                    <div className="mt-2">
+                                      <a
+                                        href={item.uploaded_file_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors"
+                                      >
+                                        📁 Download File
+                                      </a>
+                                    </div>
+                                  ) : item.upload_status ? (
+                                    <p className="text-xs text-red-500 mt-1">
+                                      ❌ Upload Status: {item.upload_status}
+                                    </p>
+                                  ) : (
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      File information available
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Price */}
+                            <div className="text-right flex-shrink-0">
+                              <p className="font-medium">
+                                ₹{item.total_price.toLocaleString()}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                ₹{item.unit_price} each
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ),
+                      )}
                     </div>
                   </CardContent>
                 </Card>
