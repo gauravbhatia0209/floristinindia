@@ -91,33 +91,31 @@ export default function PaymentMethodSelector({
   }, []);
 
   async function fetchPaymentMethods() {
+    // This function now runs in background and only updates if successful
+    // The UI always starts with working fallback methods
     try {
-      setLoading(true);
-      setError("");
+      console.log(
+        "🔄 Attempting to fetch payment methods from API (background)",
+      );
 
-      // Try multiple endpoints in order of preference
       const endpoints = [
         "/api/payments/methods",
         "/api/payments/methods-simple",
       ];
-      let lastError = null;
 
       for (const endpoint of endpoints) {
         try {
-          console.log(`Trying payment methods endpoint: ${endpoint}`);
-
           const data = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", endpoint, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.timeout = 15000;
+            xhr.timeout = 8000; // Shorter timeout
 
             xhr.onload = () => {
               if (xhr.status >= 200 && xhr.status < 300) {
                 try {
                   const response = JSON.parse(xhr.responseText);
-                  console.log(`Success from ${endpoint}:`, response);
                   resolve(response);
                 } catch (e) {
                   reject(new Error("Invalid JSON response"));
@@ -132,42 +130,29 @@ export default function PaymentMethodSelector({
             xhr.send();
           });
 
-          if (data.success && data.methods) {
+          if (data.success && data.methods && data.methods.length > 0) {
+            console.log(
+              "✅ API payment methods loaded successfully, updating UI:",
+              data.methods,
+            );
             setPaymentMethods(data.methods);
-            console.log("Payment methods loaded successfully:", data.methods);
-            return; // Success - exit the function
+            setError("");
+            return; // Success - exit
           }
         } catch (err) {
-          console.error(`Error with endpoint ${endpoint}:`, err);
-          lastError = err;
-          continue; // Try next endpoint
+          console.log(`❌ Endpoint ${endpoint} failed:`, err.message);
+          continue;
         }
       }
 
-      // If all endpoints failed, use fallback methods
-      console.warn("All payment endpoints failed, using fallback methods");
-      const fallbackMethods = [
-        {
-          gateway: "razorpay",
-          name: "Razorpay",
-          enabled: true,
-          min_amount: 100,
-          max_amount: 1000000,
-          processing_fee: 0,
-          fixed_fee: 0,
-          supported_currencies: ["INR"],
-          description: "Pay with cards, UPI, wallets & netbanking",
-          icon: "💳",
-        },
-      ];
-
-      setPaymentMethods(fallbackMethods);
-      console.log("Using fallback payment methods:", fallbackMethods);
+      console.log(
+        "ℹ️ All API endpoints failed, keeping fallback methods active",
+      );
     } catch (err) {
-      console.error("Critical error in fetchPaymentMethods:", err);
-      setError("Failed to load payment methods");
-    } finally {
-      setLoading(false);
+      console.log(
+        "ℹ️ Background API fetch failed, keeping fallback methods active:",
+        err.message,
+      );
     }
   }
 
