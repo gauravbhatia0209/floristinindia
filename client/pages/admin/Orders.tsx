@@ -72,8 +72,21 @@ export default function Orders() {
         .order("created_at", { ascending: false });
 
       if (data) {
-        setOrders(data as OrderWithCustomer[]);
-        await fetchProductImagesForOrders(data as OrderWithCustomer[]);
+        const ordersWithCustomer = data as OrderWithCustomer[];
+
+        // Log any orders with null customers for debugging
+        const ordersWithNullCustomer = ordersWithCustomer.filter(
+          (order) => !order.customer,
+        );
+        if (ordersWithNullCustomer.length > 0) {
+          console.warn(
+            `Found ${ordersWithNullCustomer.length} orders with null customer data:`,
+            ordersWithNullCustomer.map((order) => order.order_number),
+          );
+        }
+
+        setOrders(ordersWithCustomer);
+        await fetchProductImagesForOrders(ordersWithCustomer);
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
