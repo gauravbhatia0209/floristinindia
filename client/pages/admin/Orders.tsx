@@ -370,118 +370,147 @@ export default function Orders() {
                 try {
                   return (
                     <div key={order.id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold">#{order.order_number}</h3>
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status.toUpperCase()}
-                      </Badge>
-                      <Badge variant="outline">
-                        {order.payment_status.toUpperCase()}
-                      </Badge>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold">
+                              #{order.order_number}
+                            </h3>
+                            <Badge className={getStatusColor(order.status)}>
+                              {order.status.toUpperCase()}
+                            </Badge>
+                            <Badge variant="outline">
+                              {order.payment_status.toUpperCase()}
+                            </Badge>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <p className="font-medium">Customer</p>
+                              <p>
+                                {order.customer?.first_name || "Unknown"}{" "}
+                                {order.customer?.last_name || "Customer"}
+                              </p>
+                              <p className="text-muted-foreground">
+                                {order.customer?.email || "No email provided"}
+                              </p>
+                              {order.customer?.phone && (
+                                <p className="text-muted-foreground">
+                                  {order.customer.phone}
+                                </p>
+                              )}
+                              {order.receiver_name &&
+                                order.receiver_name !==
+                                  `${order.customer?.first_name || ""} ${order.customer?.last_name || ""}`.trim() && (
+                                  <p className="text-sm font-medium text-blue-600">
+                                    📧 Receiver: {order.receiver_name}
+                                  </p>
+                                )}
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Order Details</p>
+                              <p>₹{order.total_amount.toLocaleString()}</p>
+                              <p className="text-muted-foreground">
+                                {order.items.length} item
+                                {order.items.length !== 1 ? "s" : ""}
+                              </p>
+                              <p className="text-muted-foreground">
+                                {formatDate(order.created_at)}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Delivery</p>
+                              {order.delivery_date && (
+                                <p>
+                                  Date:{" "}
+                                  {new Date(
+                                    order.delivery_date,
+                                  ).toLocaleDateString()}
+                                </p>
+                              )}
+                              {order.delivery_slot && (
+                                <p>Slot: {order.delivery_slot}</p>
+                              )}
+                              {order.tracking_number && (
+                                <p className="text-muted-foreground">
+                                  Track: {order.tracking_number}
+                                </p>
+                              )}
+                              {order.customer_message && (
+                                <p className="text-sm text-blue-600">
+                                  💬 Has Message
+                                </p>
+                              )}
+                              {order.uploaded_files &&
+                                order.uploaded_files.length > 0 && (
+                                  <p className="text-sm text-green-600">
+                                    📎 {order.uploaded_files.length} File
+                                    {order.uploaded_files.length !== 1
+                                      ? "s"
+                                      : ""}
+                                  </p>
+                                )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={order.status}
+                            onValueChange={(value: Order["status"]) =>
+                              updateOrderStatus(order.id, value)
+                            }
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="confirmed">
+                                Confirmed
+                              </SelectItem>
+                              <SelectItem value="processing">
+                                Processing
+                              </SelectItem>
+                              <SelectItem value="shipped">Shipped</SelectItem>
+                              <SelectItem value="delivered">
+                                Delivered
+                              </SelectItem>
+                              <SelectItem value="cancelled">
+                                Cancelled
+                              </SelectItem>
+                              <SelectItem value="refunded">Refunded</SelectItem>
+                            </SelectContent>
+                          </Select>
+
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setSelectedOrder(order)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="font-medium">Customer</p>
-                        <p>
-                          {order.customer?.first_name || "Unknown"}{" "}
-                          {order.customer?.last_name || "Customer"}
-                        </p>
-                        <p className="text-muted-foreground">
-                          {order.customer?.email || "No email provided"}
-                        </p>
-                        {order.customer?.phone && (
-                          <p className="text-muted-foreground">
-                            {order.customer.phone}
-                          </p>
-                        )}
-                        {order.receiver_name &&
-                          order.receiver_name !==
-                            `${order.customer?.first_name || ""} ${order.customer?.last_name || ""}`.trim() && (
-                            <p className="text-sm font-medium text-blue-600">
-                              📧 Receiver: {order.receiver_name}
-                            </p>
-                          )}
-                      </div>
-
-                      <div>
-                        <p className="font-medium">Order Details</p>
-                        <p>₹{order.total_amount.toLocaleString()}</p>
-                        <p className="text-muted-foreground">
-                          {order.items.length} item
-                          {order.items.length !== 1 ? "s" : ""}
-                        </p>
-                        <p className="text-muted-foreground">
-                          {formatDate(order.created_at)}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="font-medium">Delivery</p>
-                        {order.delivery_date && (
-                          <p>
-                            Date:{" "}
-                            {new Date(order.delivery_date).toLocaleDateString()}
-                          </p>
-                        )}
-                        {order.delivery_slot && (
-                          <p>Slot: {order.delivery_slot}</p>
-                        )}
-                        {order.tracking_number && (
-                          <p className="text-muted-foreground">
-                            Track: {order.tracking_number}
-                          </p>
-                        )}
-                        {order.customer_message && (
-                          <p className="text-sm text-blue-600">
-                            💬 Has Message
-                          </p>
-                        )}
-                        {order.uploaded_files &&
-                          order.uploaded_files.length > 0 && (
-                            <p className="text-sm text-green-600">
-                              📎 {order.uploaded_files.length} File
-                              {order.uploaded_files.length !== 1 ? "s" : ""}
-                            </p>
-                          )}
-                      </div>
+                  );
+                } catch (error) {
+                  console.error("Error rendering order:", order.id, error);
+                  return (
+                    <div
+                      key={order.id}
+                      className="border rounded-lg p-4 bg-red-50"
+                    >
+                      <p className="text-red-600">
+                        Error loading order #{order.order_number}
+                      </p>
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Select
-                      value={order.status}
-                      onValueChange={(value: Order["status"]) =>
-                        updateOrderStatus(order.id, value)
-                      }
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="confirmed">Confirmed</SelectItem>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="shipped">Shipped</SelectItem>
-                        <SelectItem value="delivered">Delivered</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                        <SelectItem value="refunded">Refunded</SelectItem>
-                      </SelectContent>
-                    </Select>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSelectedOrder(order)}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                  );
+                }
+              })
+            )}
           </div>
         </CardContent>
       </Card>
@@ -861,7 +890,7 @@ export default function Orders() {
                                               rel="noopener noreferrer"
                                               className="inline-flex items-center text-sm text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded transition-colors"
                                             >
-                                              📥 Download File
+                                              �� Download File
                                             </a>
                                           </div>
                                         )}
