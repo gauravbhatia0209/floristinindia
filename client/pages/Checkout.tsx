@@ -1427,6 +1427,17 @@ export default function Checkout() {
               {/* Step 2: Payment Method Selection */}
               {currentStep === 2 && (
                 <>
+                  {/* Back Button */}
+                  <div className="mb-6">
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentStep(1)}
+                      className="flex items-center gap-2"
+                    >
+                      ← Back to Order Details
+                    </Button>
+                  </div>
+
                   {console.log(
                     "🎯 Rendering PaymentMethodSelector on step 2 with amount:",
                     Math.round(totals.total * 100),
