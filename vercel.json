@@ -1,4 +1,15 @@
 {
   "buildCommand": "cd client && npm run build",
-  "outputDirectory": "client/dist"
+  "outputDirectory": "client/dist",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!api).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
