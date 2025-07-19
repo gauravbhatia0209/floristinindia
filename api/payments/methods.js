@@ -75,26 +75,11 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("❌ Critical error in payment methods API:", error);
 
-    // Always return something usable, even if everything fails
-    const fallbackMethods = [
-      {
-        gateway: "razorpay",
-        name: "Razorpay",
-        description: "Pay with cards, UPI, wallets & netbanking",
-        enabled: true,
-        min_amount: 100,
-        max_amount: 1000000,
-        processing_fee: 0,
-        fixed_fee: 0,
-        supported_currencies: ["INR"],
-      },
-    ];
-
-    res.status(200).json({
-      success: true,
-      methods: fallbackMethods,
+    res.status(500).json({
+      success: false,
+      error: "Failed to load payment methods from database",
+      details: error.message,
       timestamp: new Date().toISOString(),
-      source: "fallback",
     });
   }
 }
