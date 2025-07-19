@@ -1226,9 +1226,8 @@ export default function Checkout() {
         }
 
         setPaymentIntentId(responseData.payment_intent_id);
-        setCurrentStep(3); // Move to processing step
 
-        // Redirect to gateway payment page if available
+        // Redirect immediately to gateway payment page
         if (responseData.payment_url) {
           // Validate URL before redirect
           try {
@@ -1237,14 +1236,16 @@ export default function Checkout() {
               "Redirecting to payment gateway:",
               responseData.payment_url,
             );
+            // Immediate redirect - no step 3 needed
             window.location.href = responseData.payment_url;
+            return; // Exit function after redirect
           } catch (urlError) {
             console.error("Invalid payment URL:", responseData.payment_url);
             throw new Error("Invalid payment gateway URL received");
           }
         } else {
-          console.warn(
-            "No payment URL provided - user may need to complete payment manually",
+          throw new Error(
+            "Payment gateway URL not provided - cannot complete payment",
           );
         }
       } else {
