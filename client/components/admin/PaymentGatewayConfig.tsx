@@ -439,11 +439,47 @@ export default function PaymentGatewayConfig() {
                             <Switch
                               id={`checkout-available-${config.id}`}
                               checked={config.available_at_checkout !== false}
-                              onCheckedChange={(available_at_checkout) =>
+                              onCheckedChange={async (
+                                available_at_checkout,
+                              ) => {
+                                // Update local state immediately for UI responsiveness
                                 updateConfig(config.id, {
                                   available_at_checkout,
-                                })
-                              }
+                                });
+
+                                // Save to database immediately
+                                try {
+                                  const updatedConfig = {
+                                    ...config,
+                                    available_at_checkout,
+                                  };
+                                  const { error } = await supabase
+                                    .from("payment_gateway_configs")
+                                    .upsert(updatedConfig);
+
+                                  if (error) throw error;
+
+                                  toast({
+                                    title: "Success",
+                                    description: `${config.name} checkout availability ${available_at_checkout ? "enabled" : "disabled"}`,
+                                  });
+                                } catch (error) {
+                                  console.error(
+                                    "Error updating checkout availability:",
+                                    error,
+                                  );
+                                  // Revert local state on error
+                                  updateConfig(config.id, {
+                                    available_at_checkout:
+                                      !available_at_checkout,
+                                  });
+                                  toast({
+                                    title: "Error",
+                                    description: `Failed to update ${config.name} checkout availability`,
+                                    variant: "destructive",
+                                  });
+                                }
+                              }}
                             />
                             <Label htmlFor={`checkout-available-${config.id}`}>
                               Show at Checkout
