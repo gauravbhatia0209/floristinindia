@@ -152,15 +152,22 @@ export default function RazorpayPayment() {
 
     console.log("🔧 Initializing Razorpay with key:", razorpayKey);
 
+    // Get the actual Razorpay order ID from various possible locations
+    const razorpayOrderId =
+      paymentData.gateway_order_id ||
+      paymentData.metadata?.razorpay_order_id ||
+      paymentData.metadata?.order_id ||
+      orderId;
+
+    console.log("🎫 Using Razorpay order ID:", razorpayOrderId);
+
     const options = {
       key: razorpayKey,
       amount: paymentData.metadata?.amount || paymentData.amount,
       currency: paymentData.metadata?.currency || paymentData.currency || "INR",
       name: "Florist in India",
       description: `Order ${paymentData.metadata?.order_number || paymentData.order_id || "N/A"}`,
-      order_id:
-        paymentData.metadata?.order_id ||
-        paymentData.metadata?.razorpay_order_id,
+      order_id: razorpayOrderId,
       handler: function (response: any) {
         console.log("Payment successful:", response);
         // Redirect to success page
