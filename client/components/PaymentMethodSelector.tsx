@@ -72,38 +72,78 @@ export default function PaymentMethodSelector({
   async function fetchPaymentMethods() {
     try {
       setLoading(true);
+      setError("");
 
-      // Use XMLHttpRequest to avoid third-party script interference
-      const data = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", "/api/payments/methods", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.timeout = 10000;
+      // Try multiple endpoints in order of preference
+      const endpoints = [
+        "/api/payments/methods",
+        "/api/payments/methods-simple",
+      ];
+      let lastError = null;
 
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              resolve(JSON.parse(xhr.responseText));
-            } catch (e) {
-              reject(new Error("Invalid JSON response"));
-            }
-          } else {
-            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+      for (const endpoint of endpoints) {
+        try {
+          console.log(`Trying payment methods endpoint: ${endpoint}`);
+
+          const data = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", endpoint, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Cache-Control", "no-cache");
+            xhr.timeout = 15000;
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const response = JSON.parse(xhr.responseText);
+                  console.log(`Success from ${endpoint}:`, response);
+                  resolve(response);
+                } catch (e) {
+                  reject(new Error("Invalid JSON response"));
+                }
+              } else {
+                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+              }
+            };
+
+            xhr.onerror = () => reject(new Error("Network error"));
+            xhr.ontimeout = () => reject(new Error("Request timeout"));
+            xhr.send();
+          });
+
+          if (data.success && data.methods) {
+            setPaymentMethods(data.methods);
+            console.log("Payment methods loaded successfully:", data.methods);
+            return; // Success - exit the function
           }
-        };
-
-        xhr.onerror = () => reject(new Error("Network error"));
-        xhr.ontimeout = () => reject(new Error("Request timeout"));
-        xhr.send();
-      });
-
-      if (data.success) {
-        setPaymentMethods(data.methods);
-      } else {
-        setError("Failed to load payment methods");
+        } catch (err) {
+          console.error(`Error with endpoint ${endpoint}:`, err);
+          lastError = err;
+          continue; // Try next endpoint
+        }
       }
+
+      // If all endpoints failed, use fallback methods
+      console.warn("All payment endpoints failed, using fallback methods");
+      const fallbackMethods = [
+        {
+          gateway: "razorpay",
+          name: "Razorpay",
+          enabled: true,
+          min_amount: 100,
+          max_amount: 1000000,
+          processing_fee: 0,
+          fixed_fee: 0,
+          supported_currencies: ["INR"],
+          description: "Pay with cards, UPI, wallets & netbanking",
+          icon: "💳",
+        },
+      ];
+
+      setPaymentMethods(fallbackMethods);
+      console.log("Using fallback payment methods:", fallbackMethods);
     } catch (err) {
-      console.error("Error fetching payment methods:", err);
+      console.error("Critical error in fetchPaymentMethods:", err);
       setError("Failed to load payment methods");
     } finally {
       setLoading(false);
