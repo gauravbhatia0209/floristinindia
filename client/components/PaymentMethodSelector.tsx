@@ -71,12 +71,11 @@ export default function PaymentMethodSelector({
   }, []);
 
   async function fetchPaymentMethods() {
-    // This function now runs in background and only updates if successful
-    // The UI always starts with working fallback methods
     try {
-      console.log(
-        "🔄 Attempting to fetch payment methods from API (background)",
-      );
+      setLoading(true);
+      setError("");
+
+      console.log("🔄 Fetching payment methods from API");
 
       const endpoints = [
         "/api/payments/methods",
@@ -85,12 +84,14 @@ export default function PaymentMethodSelector({
 
       for (const endpoint of endpoints) {
         try {
+          console.log(`Trying endpoint: ${endpoint}`);
+
           const data = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", endpoint, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.timeout = 8000; // Shorter timeout
+            xhr.timeout = 10000;
 
             xhr.onload = () => {
               if (xhr.status >= 200 && xhr.status < 300) {
@@ -111,13 +112,12 @@ export default function PaymentMethodSelector({
           });
 
           if (data.success && data.methods && data.methods.length > 0) {
-            console.log(
-              "✅ API payment methods loaded successfully, updating UI:",
-              data.methods,
-            );
+            console.log("✅ Payment methods loaded from API:", data.methods);
             setPaymentMethods(data.methods);
             setError("");
             return; // Success - exit
+          } else {
+            console.log(`❌ ${endpoint} returned invalid data:`, data);
           }
         } catch (err) {
           console.log(`❌ Endpoint ${endpoint} failed:`, err.message);
@@ -125,14 +125,20 @@ export default function PaymentMethodSelector({
         }
       }
 
-      console.log(
-        "ℹ️ All API endpoints failed, keeping fallback methods active",
+      // Only if ALL endpoints fail, show error - no hardcoded fallbacks
+      console.error("❌ All payment method endpoints failed");
+      setError(
+        "Failed to load payment methods. Please refresh the page or contact support.",
       );
+      setPaymentMethods([]);
     } catch (err) {
-      console.log(
-        "ℹ️ Background API fetch failed, keeping fallback methods active:",
-        err.message,
+      console.error("❌ Critical error in fetchPaymentMethods:", err);
+      setError(
+        "Failed to load payment methods. Please refresh the page or contact support.",
       );
+      setPaymentMethods([]);
+    } finally {
+      setLoading(false);
     }
   }
 
