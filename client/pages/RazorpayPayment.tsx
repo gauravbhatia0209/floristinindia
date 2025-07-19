@@ -137,13 +137,27 @@ export default function RazorpayPayment() {
 
     setProcessing(true);
 
+    // Fallback Razorpay key if not provided in metadata
+    const razorpayKey =
+      paymentData.metadata?.key_id || "rzp_test_11Hm26VEZT4FGR";
+
+    if (!razorpayKey) {
+      setError("Razorpay configuration missing. Please try again.");
+      setProcessing(false);
+      return;
+    }
+
+    console.log("🔧 Initializing Razorpay with key:", razorpayKey);
+
     const options = {
-      key: paymentData.metadata.key_id,
-      amount: paymentData.metadata.amount,
-      currency: paymentData.metadata.currency,
+      key: razorpayKey,
+      amount: paymentData.metadata?.amount || paymentData.amount,
+      currency: paymentData.metadata?.currency || paymentData.currency || "INR",
       name: "Florist in India",
-      description: `Order ${paymentData.metadata.order_number || paymentData.order_id}`,
-      order_id: paymentData.metadata.order_id,
+      description: `Order ${paymentData.metadata?.order_number || paymentData.order_id || "N/A"}`,
+      order_id:
+        paymentData.metadata?.order_id ||
+        paymentData.metadata?.razorpay_order_id,
       handler: function (response: any) {
         console.log("Payment successful:", response);
         // Redirect to success page
