@@ -85,11 +85,19 @@ export default function Orders() {
           );
         }
 
-        setOrders(ordersWithCustomer);
-        await fetchProductImagesForOrders(ordersWithCustomer);
+        // Ensure all orders have a safe customer object structure
+        const safeOrders = ordersWithCustomer.map((order) => ({
+          ...order,
+          customer: order.customer || null,
+        }));
+
+        setOrders(safeOrders);
+        await fetchProductImagesForOrders(safeOrders);
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
+      // Set empty array on error to prevent crashes
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
