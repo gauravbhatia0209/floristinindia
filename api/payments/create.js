@@ -67,11 +67,43 @@ export default async function handler(req, res) {
       });
     }
 
+    // Get gateway configuration from database
+    let gatewayConfig = null;
+    try {
+      const { data: configs, error } = await supabase
+        .from("payment_gateway_configs")
+        .select("*")
+        .eq("id", gateway_id)
+        .eq("enabled", true)
+        .single();
+
+      if (!error && configs) {
+        gatewayConfig = configs;
+      }
+    } catch (configError) {
+      console.log(
+        "⚠️ Could not fetch gateway config from database:",
+        configError.message,
+      );
+    }
+
     // For now, only support Razorpay
     if (gateway_id !== "razorpay") {
       return res.status(400).json({
         success: false,
         error: "Only Razorpay gateway is currently supported",
+      });
+    }
+
+    if (
+      !gatewayConfig ||
+      !gatewayConfig.config ||
+      !gatewayConfig.config.razorpay_key_id
+    ) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "Razorpay payment gateway is not properly configured. Please contact support.",
       });
     }
 
