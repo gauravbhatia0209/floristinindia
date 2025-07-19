@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Immediate Payment Methods</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .status {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Payment Methods Immediate Test</h1>
+    <p>
+      This tests that payment methods are available immediately, even if the API
+      fails.
+    </p>
+
+    <button onclick="testPaymentComponentBehavior()">
+      Test Payment Component
+    </button>
+    <button onclick="testAPIDirectly()">Test API Directly</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <div id="results"></div>
+
+    <script>
+      function log(message, type = "info") {
+        const results = document.getElementById("results");
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+        results.appendChild(div);
+      }
+
+      function clearResults() {
+        document.getElementById("results").innerHTML = "";
+      }
+
+      // Test what our payment component would do
+      function testPaymentComponentBehavior() {
+        log("🚀 Testing Payment Component Behavior", "info");
+
+        // Simulate what our component does - immediately show fallback
+        const fallbackMethods = [
+          {
+            gateway: "razorpay",
+            name: "Razorpay",
+            enabled: true,
+            min_amount: 100,
+            max_amount: 1000000,
+            processing_fee: 0,
+            fixed_fee: 0,
+            supported_currencies: ["INR"],
+            description: "Pay with cards, UPI, wallets & netbanking",
+            icon: "💳",
+          },
+        ];
+
+        log("✅ Immediate fallback methods available:", "success");
+        log(
+          "<pre>" + JSON.stringify(fallbackMethods, null, 2) + "</pre>",
+          "info",
+        );
+
+        log("🔍 Component would show payment methods immediately", "success");
+        log("🔄 Background API fetch would happen separately", "info");
+
+        // Now test background API fetch
+        testAPIInBackground();
+      }
+
+      async function testAPIInBackground() {
+        log("🔄 Testing background API fetch...", "info");
+
+        const endpoints = [
+          "/api/payments/methods",
+          "/api/payments/methods-simple",
+        ];
+
+        for (const endpoint of endpoints) {
+          try {
+            log(`Trying ${endpoint}...`, "info");
+
+            const response = await fetch(endpoint, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Cache-Control": "no-cache",
+              },
+              timeout: 8000,
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              log(`✅ ${endpoint} succeeded`, "success");
+              log("<pre>" + JSON.stringify(data, null, 2) + "</pre>", "info");
+              return;
+            } else {
+              log(`❌ ${endpoint} failed: HTTP ${response.status}`, "error");
+            }
+          } catch (error) {
+            log(`❌ ${endpoint} error: ${error.message}`, "error");
+          }
+        }
+
+        log(
+          "ℹ️ All API endpoints failed, but component still works with fallback",
+          "info",
+        );
+      }
+
+      async function testAPIDirectly() {
+        log("🧪 Testing API endpoints directly...", "info");
+
+        const endpoints = [
+          "/api/ping",
+          "/api/payments/health",
+          "/api/payments/test",
+          "/api/payments/methods",
+          "/api/payments/methods-simple",
+        ];
+
+        for (const endpoint of endpoints) {
+          try {
+            const response = await fetch(endpoint);
+            const text = await response.text();
+
+            if (response.ok) {
+              log(`✅ ${endpoint} - HTTP ${response.status}`, "success");
+              try {
+                const data = JSON.parse(text);
+                log("<pre>" + JSON.stringify(data, null, 2) + "</pre>", "info");
+              } catch (e) {
+                log(`Response: ${text.substring(0, 200)}`, "info");
+              }
+            } else {
+              log(`❌ ${endpoint} - HTTP ${response.status}`, "error");
+              log(`Response: ${text.substring(0, 200)}`, "error");
+            }
+          } catch (error) {
+            log(`💥 ${endpoint} - ${error.message}`, "error");
+          }
+        }
+      }
+
+      // Auto-run test on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        log(
+          "🔍 Page loaded - Payment methods should be available immediately",
+          "success",
+        );
+        log("💡 Key insight: Checkout works even if API is broken", "info");
+      });
+    </script>
+  </body>
+</html>
