@@ -166,9 +166,9 @@ export default function RazorpayPayment() {
         );
       },
       prefill: {
-        name: paymentData.metadata.customer_name,
-        email: paymentData.metadata.customer_email,
-        contact: paymentData.metadata.customer_phone,
+        name: paymentData.metadata?.customer_name || "Customer",
+        email: paymentData.metadata?.customer_email || "customer@example.com",
+        contact: paymentData.metadata?.customer_phone || "+919999999999",
       },
       theme: {
         color: "#F97316", // Orange theme matching the site
