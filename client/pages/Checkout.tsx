@@ -926,10 +926,6 @@ export default function Checkout() {
     return orderNumber;
   }
 
-  async function handlePaymentMethodSelect(gateway: PaymentGateway) {
-    setSelectedPaymentMethod(gateway);
-  }
-
   async function handlePaymentSuccess(paymentIntent: any) {
     console.log("Creating order with data:", {
       order_number: orderNumber,
