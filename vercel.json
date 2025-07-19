@@ -21,6 +21,10 @@
   ],
   "rewrites": [
     {
+      "source": "/admin/(.*)",
+      "destination": "/client/dist/index.html"
+    },
+    {
       "source": "/((?!api).*)",
       "destination": "/client/dist/index.html"
     }
