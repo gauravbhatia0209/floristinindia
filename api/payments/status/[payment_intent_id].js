@@ -94,9 +94,17 @@ export default async function handler(req, res) {
       }
 
       if (!razorpayConfig || !razorpayConfig.razorpay_key_id) {
+        console.log("❌ Razorpay configuration missing in database");
         return res.status(400).json({
           success: false,
-          error: "Razorpay is not properly configured. Please contact support.",
+          error:
+            "Payment gateway configuration is missing. Please set up Razorpay credentials in the admin panel.",
+          code: "GATEWAY_NOT_CONFIGURED",
+          next_steps: [
+            "Go to Admin Panel > Settings > Payment Gateways",
+            "Configure Razorpay with valid API keys",
+            "Enable Razorpay payment method",
+          ],
         });
       }
 
