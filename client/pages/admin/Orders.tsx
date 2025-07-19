@@ -136,23 +136,18 @@ export default function Orders() {
 
     // Filter by search query
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (order) =>
-          order.order_number
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
+          order.order_number.toLowerCase().includes(query) ||
           (order.customer?.first_name &&
-            order.customer.first_name
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())) ||
+            order.customer.first_name.toLowerCase().includes(query)) ||
           (order.customer?.last_name &&
-            order.customer.last_name
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())) ||
+            order.customer.last_name.toLowerCase().includes(query)) ||
           (order.customer?.email &&
-            order.customer.email
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())),
+            order.customer.email.toLowerCase().includes(query)) ||
+          (order.receiver_name &&
+            order.receiver_name.toLowerCase().includes(query)),
       );
     }
 
