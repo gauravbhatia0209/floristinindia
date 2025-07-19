@@ -37,6 +37,16 @@ router.get("/health", (req, res) => {
   });
 });
 
+// Simple test endpoint that always works
+router.get("/test", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200).json({
+    success: true,
+    message: "Test endpoint working",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Get available payment methods - completely error-proof version
 router.get("/methods", (req, res) => {
   // Wrap everything in try-catch to prevent any possible errors
