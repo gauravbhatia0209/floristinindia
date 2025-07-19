@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Dynamic Payment Methods</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .test-result {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+      .pass {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .fail {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        font-weight: normal;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Dynamic Payment Methods Test</h1>
+    <p>
+      This test verifies that payment methods are loaded dynamically from the
+      API/database, not hardcoded.
+    </p>
+
+    <button onclick="testPaymentMethods()">Test Payment Methods API</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <div id="results"></div>
+
+    <h2>📋 What to Expect:</h2>
+    <ul>
+      <li>✅ Multiple payment methods (not just Razorpay)</li>
+      <li>✅ Proper gateway names from database</li>
+      <li>✅ Different processing fees per gateway</li>
+      <li>❌ No hardcoded descriptions like "Pay with cards, UPI, wallets"</li>
+    </ul>
+
+    <script>
+      function log(message, type = "info") {
+        const results = document.getElementById("results");
+        const div = document.createElement("div");
+        div.className = `test-result ${type}`;
+        div.innerHTML = message;
+        results.appendChild(div);
+      }
+
+      function clearResults() {
+        document.getElementById("results").innerHTML = "";
+      }
+
+      async function testPaymentMethods() {
+        clearResults();
+        log("🔄 Testing Payment Methods API...", "info");
+
+        try {
+          const response = await fetch("/api/payments/methods", {
+            method: "GET",
+            headers: {
+              "Cache-Control": "no-cache",
+            },
+          });
+
+          log(`📊 API Response: ${response.status} ${response.statusText}`);
+
+          const data = await response.json();
+          log(
+            `<pre>${JSON.stringify(data, null, 2)}</pre>`,
+            response.ok ? "info" : "fail",
+          );
+
+          if (!response.ok) {
+            log("❌ API request failed", "fail");
+            return;
+          }
+
+          if (!data.success) {
+            log("��� API returned success: false", "fail");
+            return;
+          }
+
+          if (!Array.isArray(data.methods)) {
+            log("❌ Methods is not an array", "fail");
+            return;
+          }
+
+          if (data.methods.length === 0) {
+            log("❌ No payment methods returned", "fail");
+            return;
+          }
+
+          log(`✅ Found ${data.methods.length} payment methods`, "pass");
+
+          // Check if this looks like hardcoded data
+          const hasOnlyRazorpay =
+            data.methods.length === 1 && data.methods[0].gateway === "razorpay";
+          const hasHardcodedDescription = data.methods.some((method) =>
+            method.description?.includes("Pay with cards, UPI, wallets"),
+          );
+
+          if (hasOnlyRazorpay && hasHardcodedDescription) {
+            log("❌ This appears to be HARDCODED data!", "fail");
+          } else {
+            log("✅ This appears to be DYNAMIC data from database", "pass");
+          }
+
+          // Analyze each method
+          data.methods.forEach((method, index) => {
+            log(
+              `<strong>Method ${index + 1}: ${method.name} (${method.gateway})</strong><br>` +
+                `Enabled: ${method.enabled}<br>` +
+                `Processing Fee: ${method.processing_fee}%<br>` +
+                `Description: ${method.description}`,
+              "info",
+            );
+          });
+
+          // Check for multiple gateways (sign of dynamic loading)
+          const uniqueGateways = new Set(data.methods.map((m) => m.gateway))
+            .size;
+          if (uniqueGateways > 1) {
+            log(
+              `✅ Multiple gateways found (${uniqueGateways}) - indicates dynamic loading`,
+              "pass",
+            );
+          } else {
+            log(
+              `⚠️ Only one gateway found - might be hardcoded or limited config`,
+              "info",
+            );
+          }
+
+          // Check for different processing fees (sign of database config)
+          const uniqueFees = new Set(data.methods.map((m) => m.processing_fee))
+            .size;
+          if (uniqueFees > 1) {
+            log(
+              `✅ Different processing fees found - indicates database config`,
+              "pass",
+            );
+          }
+        } catch (error) {
+          log(`💥 Error: ${error.message}`, "fail");
+        }
+      }
+
+      // Auto-run test on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        log("🔍 Page loaded - ready to test dynamic payment methods", "info");
+      });
+    </script>
+  </body>
+</html>
