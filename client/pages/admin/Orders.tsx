@@ -494,14 +494,14 @@ export default function Orders() {
                     <CardContent className="space-y-2">
                       <p>
                         <span className="font-medium">Name:</span>{" "}
-                        {selectedOrder.customer.first_name}{" "}
-                        {selectedOrder.customer.last_name}
+                        {selectedOrder.customer?.first_name || "Unknown"}{" "}
+                        {selectedOrder.customer?.last_name || "Customer"}
                       </p>
                       <p>
                         <span className="font-medium">Email:</span>{" "}
-                        {selectedOrder.customer.email}
+                        {selectedOrder.customer?.email || "No email provided"}
                       </p>
-                      {selectedOrder.customer.phone && (
+                      {selectedOrder.customer?.phone && (
                         <p>
                           <span className="font-medium">Phone:</span>{" "}
                           {selectedOrder.customer.phone}
@@ -509,11 +509,13 @@ export default function Orders() {
                       )}
                       <p>
                         <span className="font-medium">Total Orders:</span>{" "}
-                        {selectedOrder.customer.total_orders}
+                        {selectedOrder.customer?.total_orders || 0}
                       </p>
                       <p>
                         <span className="font-medium">Total Spent:</span> ₹
-                        {selectedOrder.customer.total_spent.toLocaleString()}
+                        {(
+                          selectedOrder.customer?.total_spent || 0
+                        ).toLocaleString()}
                       </p>
                     </CardContent>
                   </Card>
