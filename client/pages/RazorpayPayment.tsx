@@ -117,8 +117,11 @@ export default function RazorpayPayment() {
       });
 
       if (data.success) {
+        console.log("✅ Payment data loaded:", data.payment_intent);
+        console.log("🔍 Payment metadata:", data.payment_intent.metadata);
         setPaymentData(data.payment_intent);
       } else {
+        console.error("❌ Payment data fetch failed:", data);
         setError(data.error || "Failed to fetch payment data");
       }
     } catch (err) {
