@@ -9,22 +9,10 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/client/dist/assets/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/client/dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "source": "/((?!api).*)",
+      "destination": "/client/dist/index.html"
     }
   ]
 }
