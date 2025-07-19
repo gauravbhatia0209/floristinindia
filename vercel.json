@@ -9,14 +9,22 @@
       }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/((?!api).*)",
-      "destination": "/client/dist/index.html"
+      "src": "/assets/(.*)",
+      "dest": "/client/dist/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/client/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html"
     }
   ]
 }
