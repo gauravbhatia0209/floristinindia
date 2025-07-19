@@ -69,69 +69,11 @@ export default async function handler(req, res) {
     }
 
     if (!intent) {
-      console.log(
-        "⚠️ Payment intent not found, trying to get Razorpay config from database",
-      );
-
-      // Try to get Razorpay configuration from database
-      let razorpayConfig = null;
-      try {
-        const { data: configs, error } = await supabase
-          .from("payment_gateway_configs")
-          .select("*")
-          .eq("id", "razorpay")
-          .eq("enabled", true)
-          .single();
-
-        if (!error && configs) {
-          razorpayConfig = configs.config;
-        }
-      } catch (configError) {
-        console.log(
-          "⚠️ Could not fetch Razorpay config from database:",
-          configError.message,
-        );
-      }
-
-      if (!razorpayConfig || !razorpayConfig.razorpay_key_id) {
-        console.log("❌ Razorpay configuration missing in database");
-        return res.status(400).json({
-          success: false,
-          error:
-            "Payment gateway configuration is missing. Please set up Razorpay credentials in the admin panel.",
-          code: "GATEWAY_NOT_CONFIGURED",
-          next_steps: [
-            "Go to Admin Panel > Settings > Payment Gateways",
-            "Configure Razorpay with valid API keys",
-            "Enable Razorpay payment method",
-          ],
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        payment_intent: {
-          id: payment_intent_id,
-          gateway: "razorpay",
-          order_id: null,
-          amount: 50000, // Mock amount
-          currency: "INR",
-          status: "pending",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          metadata: {
-            // Razorpay configuration from database
-            key_id: razorpayConfig.razorpay_key_id,
-            order_id: `rzp_order_${Date.now()}`,
-            amount: 50000,
-            currency: "INR",
-            customer_name: "Test Customer",
-            customer_email: "test@example.com",
-            customer_phone: "+919999999999",
-            order_number: `ORDER-${Date.now()}`,
-            mock: true,
-          },
-        },
+      console.log("❌ Payment intent not found:", payment_intent_id);
+      return res.status(404).json({
+        success: false,
+        error: "Payment intent not found",
+        code: "PAYMENT_INTENT_NOT_FOUND",
       });
     }
 
