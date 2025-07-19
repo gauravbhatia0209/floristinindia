@@ -69,10 +69,37 @@ export default async function handler(req, res) {
     }
 
     if (!intent) {
-      // Return a mock pending payment intent with proper Razorpay data
       console.log(
-        "⚠️ Payment intent not found, returning mock data with Razorpay config",
+        "⚠️ Payment intent not found, trying to get Razorpay config from database",
       );
+
+      // Try to get Razorpay configuration from database
+      let razorpayConfig = null;
+      try {
+        const { data: configs, error } = await supabase
+          .from("payment_gateway_configs")
+          .select("*")
+          .eq("id", "razorpay")
+          .eq("enabled", true)
+          .single();
+
+        if (!error && configs) {
+          razorpayConfig = configs.config;
+        }
+      } catch (configError) {
+        console.log(
+          "⚠️ Could not fetch Razorpay config from database:",
+          configError.message,
+        );
+      }
+
+      if (!razorpayConfig || !razorpayConfig.razorpay_key_id) {
+        return res.status(400).json({
+          success: false,
+          error: "Razorpay is not properly configured. Please contact support.",
+        });
+      }
+
       return res.status(200).json({
         success: true,
         payment_intent: {
@@ -85,8 +112,8 @@ export default async function handler(req, res) {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           metadata: {
-            // Razorpay configuration for frontend
-            key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_11Hm26VEZT4FGR", // Test key
+            // Razorpay configuration from database
+            key_id: razorpayConfig.razorpay_key_id,
             order_id: `rzp_order_${Date.now()}`,
             amount: 50000,
             currency: "INR",
