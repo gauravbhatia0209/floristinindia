@@ -1223,27 +1223,13 @@ export default function Checkout() {
 
         setPaymentIntentId(responseData.payment_intent_id);
 
-        // Redirect immediately to gateway payment page
-        if (responseData.payment_url) {
-          // Validate URL before redirect
-          try {
-            new URL(responseData.payment_url);
-            console.log(
-              "Redirecting to payment gateway:",
-              responseData.payment_url,
-            );
-            // Immediate redirect - no step 3 needed
-            window.location.href = responseData.payment_url;
-            return; // Exit function after redirect
-          } catch (urlError) {
-            console.error("Invalid payment URL:", responseData.payment_url);
-            throw new Error("Invalid payment gateway URL received");
-          }
-        } else {
-          throw new Error(
-            "Payment gateway URL not provided - cannot complete payment",
-          );
-        }
+        // Redirect to local payment page with order data
+        const orderId = responseData.order_id || `order_${Date.now()}`;
+        const paymentUrl = `/razorpay-payment?order_id=${orderId}&payment_intent=${responseData.payment_intent_id}&amount=${paymentAmount}&customer_name=${encodeURIComponent(form.fullName)}&customer_email=${encodeURIComponent(form.email)}&customer_phone=${encodeURIComponent(`${form.phoneCountryCode}${form.phone}`)}`;
+
+        console.log("Redirecting to local payment page:", paymentUrl);
+        navigate(paymentUrl);
+        return;
       } else {
         // Handle specific error cases
         const errorMessage = responseData.error || "Failed to create payment";
@@ -2047,7 +2033,7 @@ export default function Checkout() {
                   {appliedCoupon && (
                     <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded">
                       <p className="text-green-800 text-sm">
-                        ✓ Coupon "{appliedCoupon.code}" applied!
+                        �� Coupon "{appliedCoupon.code}" applied!
                         {appliedCoupon.discount_type === "flat"
                           ? ` ₹${appliedCoupon.discount_value} off`
                           : ` ${appliedCoupon.discount_value}% off`}
