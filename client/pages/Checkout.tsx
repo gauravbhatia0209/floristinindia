@@ -1372,8 +1372,8 @@ export default function Checkout() {
   // No step 3 needed - we redirect immediately to payment gateway
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
-      <div className="container py-8">
+    <div className="bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50">
+      <div className="container py-8 min-h-screen">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
