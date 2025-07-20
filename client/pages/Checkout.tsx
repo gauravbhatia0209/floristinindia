@@ -291,7 +291,7 @@ function ShippingMethodCard({
                     );
                     if (method) {
                       const cost = calculateShippingCost(method, orderValue);
-                      return cost === 0 ? "FREE" : `���${cost}`;
+                      return cost === 0 ? "FREE" : `₹${cost}`;
                     }
                     return "₹0";
                   })()}
@@ -1401,7 +1401,7 @@ export default function Checkout() {
                     currentStep >= 1 ? "text-blue-600" : "text-gray-500"
                   }`}
                 >
-                  Order Details
+                  Complete Order
                 </span>
               </div>
 
