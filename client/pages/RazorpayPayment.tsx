@@ -226,11 +226,27 @@ export default function RazorpayPayment() {
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", function (response: any) {
       console.error("Payment failed:", response.error);
-      setError(`Payment failed: ${response.error.description}`);
+
+      let errorMessage = response.error.description || "Payment failed";
+
+      // Provide specific guidance for merchant issues
+      if (response.error.code === 'BAD_REQUEST_ERROR' ||
+          errorMessage.includes('merchant') ||
+          errorMessage.includes('account')) {
+        errorMessage = `Payment gateway issue: ${errorMessage}. This usually means the merchant account needs activation or KYC completion. Please contact support.`;
+      }
+
+      setError(errorMessage);
       setProcessing(false);
     });
 
-    rzp.open();
+    try {
+      rzp.open();
+    } catch (initError) {
+      console.error("Error initializing payment:", initError);
+      setError("Failed to initialize payment gateway. Please try again or contact support.");
+      setProcessing(false);
+    }
   };
 
   if (loading) {
