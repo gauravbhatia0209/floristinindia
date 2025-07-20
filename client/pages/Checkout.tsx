@@ -1976,7 +1976,7 @@ export default function Checkout() {
             </div>
 
             {/* Order Summary Sidebar */}
-            <div className="space-y-6 sticky top-24 self-start">
+            <div className="space-y-6 sticky top-32 self-start">
               {/* Coupon */}
               <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader>
