@@ -245,8 +245,8 @@ export default function RazorpayPayment() {
             {isConfigurationError && (
               <Alert>
                 <AlertDescription className="text-sm">
-                  <strong>For Admin:</strong> Please update the Razorpay Key ID
-                  in the code:
+                  <strong>For Admin:</strong> Please configure Razorpay in the
+                  admin panel:
                   <br />
                   1. Go to{" "}
                   <a
@@ -257,8 +257,8 @@ export default function RazorpayPayment() {
                     Razorpay Dashboard
                   </a>
                   <br />
-                  2. Copy your Key ID and replace "rzp_live_YOUR_KEY_HERE" in
-                  RazorpayPayment.tsx
+                  2. Copy your Key ID and configure it in Admin → Payment
+                  Gateways → Razorpay
                 </AlertDescription>
               </Alert>
             )}
