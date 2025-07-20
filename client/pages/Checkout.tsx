@@ -1913,7 +1913,7 @@ export default function Checkout() {
                     </Card>
                   )}
 
-                  {/* 6. Payment Method Notice */}
+                  {/* 6. Payment Method Selection */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
@@ -1924,29 +1924,20 @@ export default function Checkout() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="bg-blue-100 rounded-full p-2 flex-shrink-0">
-                            <CreditCard className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-blue-900 mb-1">
-                              Payment Methods Available
-                            </h3>
-                            <p className="text-blue-800 text-sm mb-2">
-                              You'll choose your preferred payment method on the
-                              next step.
-                            </p>
-                            <div className="flex items-center gap-4 text-sm text-blue-700">
-                              <span className="flex items-center gap-1">
-                                <Phone className="w-4 h-4" />
-                                UPI
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <CreditCard className="w-4 h-4" />
-                                Cards
-                              </span>
-                              <span className="flex items-center gap-1">
+                      <PaymentMethodSelector
+                        amount={Math.round(calculateTotal().total * 100)}
+                        currency="INR"
+                        selectedMethod={selectedPaymentMethod}
+                        onMethodSelect={handlePaymentMethodSelect}
+                        onProceed={() => {}} // Will be handled by form submit
+                        isLoading={isSubmitting}
+                        hideSubmitButton={true} // Hide the selector's submit button since we have form submit
+                      />
+                      {errors.payment && (
+                        <Alert variant="destructive" className="mt-4">
+                          <AlertDescription>{errors.payment}</AlertDescription>
+                        </Alert>
+                      )}
                                 <Shield className="w-4 h-4" />
                                 NetBanking
                               </span>
