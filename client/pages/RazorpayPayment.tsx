@@ -62,7 +62,6 @@ export default function RazorpayPayment() {
 
   const fetchPaymentData = async () => {
     try {
-      // Prefer payment_intent_id if available, fallback to order_id
       const identifier = paymentIntentId || orderId;
       if (!identifier) {
         setError("No payment identifier found");
@@ -70,62 +69,35 @@ export default function RazorpayPayment() {
         return;
       }
 
-      console.log(`Fetching payment data for identifier: ${identifier}`);
+      console.log(`Creating mock payment data for identifier: ${identifier}`);
 
-      // Use XMLHttpRequest to avoid third-party script interference
-      const data = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", `/api/payments/status/${identifier}`, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Cache-Control", "no-cache");
-        xhr.timeout = 15000;
+      // Create mock payment data for Razorpay direct integration
+      const mockPaymentData = {
+        id: identifier,
+        gateway: "razorpay",
+        order_id: orderId,
+        amount: 50000, // ₹500 - you can get this from URL params if needed
+        currency: "INR",
+        status: "pending",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        gateway_order_id: orderId,
+        metadata: {
+          key_id: "rzp_test_11Hm26VEZT4FGR", // Replace with your actual Razorpay key
+          order_id: orderId,
+          amount: 50000,
+          currency: "INR",
+          customer_name: "Customer",
+          customer_email: "customer@example.com",
+          customer_phone: "+919999999999",
+          order_number: `ORDER-${Date.now()}`,
+        },
+      };
 
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              const response = JSON.parse(xhr.responseText);
-              console.log("Payment data XHR response:", response);
-              resolve(response);
-            } catch (e) {
-              console.error("Failed to parse JSON response:", xhr.responseText);
-              reject(new Error("Invalid JSON response"));
-            }
-          } else {
-            console.error(
-              `XHR failed with status ${xhr.status}:`,
-              xhr.statusText,
-            );
-            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
-          }
-        };
-
-        xhr.onerror = (event) => {
-          console.error("XHR network error:", event);
-          reject(new Error("Network error"));
-        };
-
-        xhr.ontimeout = () => {
-          console.error("XHR timeout");
-          reject(new Error("Request timeout"));
-        };
-
-        console.log(
-          "Sending XHR request to:",
-          `/api/payments/status/${identifier}`,
-        );
-        xhr.send();
-      });
-
-      if (data.success) {
-        console.log("✅ Payment data loaded:", data.payment_intent);
-        console.log("🔍 Payment metadata:", data.payment_intent.metadata);
-        setPaymentData(data.payment_intent);
-      } else {
-        console.error("❌ Payment data fetch failed:", data);
-        setError(data.error || "Failed to fetch payment data");
-      }
+      console.log("✅ Mock payment data created:", mockPaymentData);
+      setPaymentData(mockPaymentData);
     } catch (err) {
-      console.error("Error fetching payment data:", err);
+      console.error("Error creating payment data:", err);
       setError("Failed to load payment information");
     } finally {
       setLoading(false);
