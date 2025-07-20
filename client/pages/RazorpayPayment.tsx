@@ -121,12 +121,11 @@ export default function RazorpayPayment() {
 
     setProcessing(true);
 
-    // Fallback Razorpay key if not provided in metadata
-    const razorpayKey =
-      paymentData.metadata?.key_id || "rzp_test_11Hm26VEZT4FGR";
+    const razorpayKey = paymentData.metadata?.key_id;
 
-    if (!razorpayKey) {
-      setError("Razorpay configuration missing. Please try again.");
+    // Check if Razorpay key is configured
+    if (!razorpayKey || razorpayKey === "rzp_live_YOUR_KEY_HERE") {
+      setError("Razorpay is not configured. Please contact the website administrator to set up payment gateway credentials.");
       setProcessing(false);
       return;
     }
