@@ -104,8 +104,8 @@ export default function RazorpayPayment() {
         },
       };
 
-      console.log("✅ Mock payment data created:", mockPaymentData);
-      setPaymentData(mockPaymentData);
+      console.log("✅ Payment data created:", paymentData);
+      setPaymentData(paymentData);
     } catch (err) {
       console.error("Error creating payment data:", err);
       setError("Failed to load payment information");
