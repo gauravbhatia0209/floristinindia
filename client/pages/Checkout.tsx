@@ -291,7 +291,7 @@ function ShippingMethodCard({
                     );
                     if (method) {
                       const cost = calculateShippingCost(method, orderValue);
-                      return cost === 0 ? "FREE" : `₹${cost}`;
+                      return cost === 0 ? "FREE" : `���${cost}`;
                     }
                     return "₹0";
                   })()}
@@ -722,6 +722,11 @@ export default function Checkout() {
       return;
     }
 
+    if (!selectedPaymentMethod) {
+      setErrors({ payment: "Please select a payment method" });
+      return;
+    }
+
     if (!form.acceptTerms) {
       setErrors({ terms: "Please accept the Terms & Conditions to continue" });
       return;
@@ -730,8 +735,8 @@ export default function Checkout() {
     // Clear any previous errors
     setErrors({});
 
-    // Move to payment selection step
-    setCurrentStep(2);
+    // Directly proceed to payment since everything is on one page now
+    await handleProceedToPayment();
   }
 
   async function createOrder(): Promise<string> {
