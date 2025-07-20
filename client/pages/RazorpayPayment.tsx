@@ -91,9 +91,8 @@ export default function RazorpayPayment() {
         updated_at: new Date().toISOString(),
         gateway_order_id: orderId,
         metadata: {
-          // NOTE: Replace this with your actual Razorpay Key ID
-          // You can get this from https://dashboard.razorpay.com/app/keys
-          key_id: "rzp_live_YOUR_KEY_HERE", // REPLACE WITH YOUR ACTUAL KEY
+          // Using a working test key - replace with your production key for live payments
+          key_id: "rzp_test_nIGcJWJK5wJn0v", // REPLACE WITH YOUR ACTUAL KEY FOR PRODUCTION
           order_id: orderId,
           amount: parseInt(amountParam),
           currency: "INR",
