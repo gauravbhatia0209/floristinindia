@@ -149,6 +149,11 @@ export default function RazorpayPayment() {
       return;
     }
 
+    if (!paymentData || !paymentData.metadata) {
+      setError("Payment data is not available. Please refresh and try again.");
+      return;
+    }
+
     setProcessing(true);
 
     const razorpayKey = paymentData.metadata?.key_id;
