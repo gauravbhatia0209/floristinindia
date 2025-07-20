@@ -318,21 +318,23 @@ export default function PaymentMethodSelector({
             )}
 
             {/* Proceed Button */}
-            <Button
-              onClick={onProceed}
-              disabled={!selectedMethod || isLoading}
-              className="w-full"
-              size="lg"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Processing...
-                </>
-              ) : (
-                `Proceed to Pay ${selectedMethod ? formatAmount(amount) : ""}`
-              )}
-            </Button>
+            {!hideSubmitButton && (
+              <Button
+                onClick={onProceed}
+                disabled={!selectedMethod || isLoading}
+                className="w-full"
+                size="lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Processing...
+                  </>
+                ) : (
+                  `Proceed to Pay ${selectedMethod ? formatAmount(amount) : ""}`
+                )}
+              </Button>
+            )}
           </>
         )}
 
