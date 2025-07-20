@@ -98,7 +98,9 @@ export default function RazorpayPayment() {
 
       // Fallback to test key if no database config found
       if (!razorpayKeyId) {
-        console.warn("Using fallback test key - please configure in admin panel");
+        console.warn(
+          "Using fallback test key - please configure in admin panel",
+        );
         razorpayKeyId = "rzp_test_nIGcJWJK5wJn0v"; // Fallback test key
       }
 
@@ -174,11 +176,13 @@ export default function RazorpayPayment() {
     console.log("🔧 Initializing Razorpay with key:", razorpayKey);
 
     // Check if using live key and provide warning
-    const isLiveKey = razorpayKey.startsWith('rzp_live_');
-    const isTestKey = razorpayKey.startsWith('rzp_test_');
+    const isLiveKey = razorpayKey.startsWith("rzp_live_");
+    const isTestKey = razorpayKey.startsWith("rzp_test_");
 
     if (isLiveKey) {
-      console.warn("⚠️ Using LIVE Razorpay key - ensure account is activated and KYC completed");
+      console.warn(
+        "⚠️ Using LIVE Razorpay key - ensure account is activated and KYC completed",
+      );
     }
 
     // For direct payments without server API, we don't need to pass order_id
@@ -195,7 +199,7 @@ export default function RazorpayPayment() {
       handler: function (response: any) {
         console.log("Payment successful:", response);
         // Redirect to success page with available response data
-        let successUrl = `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id || ''}`;
+        let successUrl = `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id || ""}`;
 
         // Add order_id and signature if available (they might not be present in direct payments)
         if (response.razorpay_order_id) {
@@ -230,9 +234,11 @@ export default function RazorpayPayment() {
       let errorMessage = response.error.description || "Payment failed";
 
       // Provide specific guidance for merchant issues
-      if (response.error.code === 'BAD_REQUEST_ERROR' ||
-          errorMessage.includes('merchant') ||
-          errorMessage.includes('account')) {
+      if (
+        response.error.code === "BAD_REQUEST_ERROR" ||
+        errorMessage.includes("merchant") ||
+        errorMessage.includes("account")
+      ) {
         errorMessage = `Payment gateway issue: ${errorMessage}. This usually means the merchant account needs activation or KYC completion. Please contact support.`;
       }
 
@@ -244,7 +250,9 @@ export default function RazorpayPayment() {
       rzp.open();
     } catch (initError) {
       console.error("Error initializing payment:", initError);
-      setError("Failed to initialize payment gateway. Please try again or contact support.");
+      setError(
+        "Failed to initialize payment gateway. Please try again or contact support.",
+      );
       setProcessing(false);
     }
   };
@@ -349,15 +357,18 @@ export default function RazorpayPayment() {
                     <span>
                       ₹
                       {(
-                        (paymentData.metadata?.amount || paymentData.amount || 0) /
-                        100
+                        (paymentData.metadata?.amount ||
+                          paymentData.amount ||
+                          0) / 100
                       ).toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Currency:</span>
                     <span>
-                      {paymentData.metadata?.currency || paymentData.currency || "INR"}
+                      {paymentData.metadata?.currency ||
+                        paymentData.currency ||
+                        "INR"}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -387,7 +398,9 @@ export default function RazorpayPayment() {
                     <CreditCard className="h-4 w-4 mr-2" />
                     Pay ₹
                     {(
-                      (paymentData.metadata?.amount || paymentData.amount || 0) / 100
+                      (paymentData.metadata?.amount ||
+                        paymentData.amount ||
+                        0) / 100
                     ).toLocaleString()}
                   </>
                 )}

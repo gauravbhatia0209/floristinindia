@@ -1217,7 +1217,10 @@ export default function Checkout() {
           abortControllerRef.current,
         );
       } catch (apiError) {
-        console.warn("Payment API unavailable, proceeding with direct payment:", apiError);
+        console.warn(
+          "Payment API unavailable, proceeding with direct payment:",
+          apiError,
+        );
         // Generate a fallback payment intent ID and order ID
         const fallbackPaymentIntentId = `pi_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
         const fallbackOrderId = `order_${Date.now()}`;
@@ -1244,7 +1247,9 @@ export default function Checkout() {
 
       if (responseData.success) {
         // Validate required fields in successful response
-        const paymentIntentId = responseData.payment_intent_id || `pi_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+        const paymentIntentId =
+          responseData.payment_intent_id ||
+          `pi_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
         const orderId = responseData.order_id || `order_${Date.now()}`;
 
         setPaymentIntentId(paymentIntentId);
@@ -1435,8 +1440,6 @@ export default function Checkout() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-8">
-
-
               {/* Step 1: Order Form */}
               {currentStep === 1 && (
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -2110,9 +2113,7 @@ export default function Checkout() {
                       ) : (
                         <div className="flex items-center justify-center gap-2 min-w-0">
                           <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                          <span className="truncate">
-                            Proceed to Payment
-                          </span>
+                          <span className="truncate">Proceed to Payment</span>
                         </div>
                       )}
                     </Button>
