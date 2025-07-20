@@ -223,6 +223,9 @@ export default function RazorpayPayment() {
         ondismiss: function () {
           setProcessing(false);
           console.log("Payment modal dismissed");
+          // Restore scroll functionality that Razorpay might have disabled
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
         },
       },
     };
