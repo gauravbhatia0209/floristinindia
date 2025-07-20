@@ -71,25 +71,34 @@ export default function RazorpayPayment() {
 
       console.log(`Creating mock payment data for identifier: ${identifier}`);
 
-      // Create mock payment data for Razorpay direct integration
-      const mockPaymentData = {
+      // Get payment amount from URL params or use default
+      const urlParams = new URLSearchParams(window.location.search);
+      const amountParam = urlParams.get('amount') || '50000';
+      const customerName = urlParams.get('customer_name') || 'Customer';
+      const customerEmail = urlParams.get('customer_email') || 'customer@example.com';
+      const customerPhone = urlParams.get('customer_phone') || '+919999999999';
+
+      // Create payment data for direct Razorpay integration
+      const paymentData = {
         id: identifier,
         gateway: "razorpay",
         order_id: orderId,
-        amount: 50000, // ₹500 - you can get this from URL params if needed
+        amount: parseInt(amountParam),
         currency: "INR",
         status: "pending",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         gateway_order_id: orderId,
         metadata: {
-          key_id: "rzp_test_11Hm26VEZT4FGR", // Replace with your actual Razorpay key
+          // NOTE: Replace this with your actual Razorpay Key ID
+          // You can get this from https://dashboard.razorpay.com/app/keys
+          key_id: "rzp_live_YOUR_KEY_HERE", // REPLACE WITH YOUR ACTUAL KEY
           order_id: orderId,
-          amount: 50000,
+          amount: parseInt(amountParam),
           currency: "INR",
-          customer_name: "Customer",
-          customer_email: "customer@example.com",
-          customer_phone: "+919999999999",
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone,
           order_number: `ORDER-${Date.now()}`,
         },
       };
