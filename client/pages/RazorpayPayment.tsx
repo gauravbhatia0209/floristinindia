@@ -173,6 +173,14 @@ export default function RazorpayPayment() {
 
     console.log("🔧 Initializing Razorpay with key:", razorpayKey);
 
+    // Check if using live key and provide warning
+    const isLiveKey = razorpayKey.startsWith('rzp_live_');
+    const isTestKey = razorpayKey.startsWith('rzp_test_');
+
+    if (isLiveKey) {
+      console.warn("⚠️ Using LIVE Razorpay key - ensure account is activated and KYC completed");
+    }
+
     // For direct payments without server API, we don't need to pass order_id
     // Razorpay will handle the payment processing directly
     console.log("🎫 Creating direct payment without order_id");
