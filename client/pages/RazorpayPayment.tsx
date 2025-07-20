@@ -360,7 +360,7 @@ export default function RazorpayPayment() {
                     <CreditCard className="h-4 w-4 mr-2" />
                     Pay ₹
                     {(
-                      (paymentData.metadata.amount || paymentData.amount) / 100
+                      (paymentData.metadata?.amount || paymentData.amount || 0) / 100
                     ).toLocaleString()}
                   </>
                 )}
