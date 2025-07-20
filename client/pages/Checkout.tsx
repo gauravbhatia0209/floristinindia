@@ -1426,7 +1426,7 @@ export default function Checkout() {
                     currentStep >= 2 ? "text-blue-600" : "text-gray-500"
                   }`}
                 >
-                  Payment
+                  Processing
                 </span>
               </div>
             </div>
