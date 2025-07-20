@@ -73,10 +73,11 @@ export default function RazorpayPayment() {
 
       // Get payment amount from URL params or use default
       const urlParams = new URLSearchParams(window.location.search);
-      const amountParam = urlParams.get('amount') || '50000';
-      const customerName = urlParams.get('customer_name') || 'Customer';
-      const customerEmail = urlParams.get('customer_email') || 'customer@example.com';
-      const customerPhone = urlParams.get('customer_phone') || '+919999999999';
+      const amountParam = urlParams.get("amount") || "50000";
+      const customerName = urlParams.get("customer_name") || "Customer";
+      const customerEmail =
+        urlParams.get("customer_email") || "customer@example.com";
+      const customerPhone = urlParams.get("customer_phone") || "+919999999999";
 
       // Create payment data for direct Razorpay integration
       const paymentData = {
@@ -125,7 +126,9 @@ export default function RazorpayPayment() {
 
     // Check if Razorpay key is configured
     if (!razorpayKey || razorpayKey === "rzp_live_YOUR_KEY_HERE") {
-      setError("Razorpay is not configured. Please contact the website administrator to set up payment gateway credentials.");
+      setError(
+        "Razorpay is not configured. Please contact the website administrator to set up payment gateway credentials.",
+      );
       setProcessing(false);
       return;
     }
@@ -197,7 +200,8 @@ export default function RazorpayPayment() {
   }
 
   if (error) {
-    const isConfigurationError = error.includes("not configured") || error.includes("administrator");
+    const isConfigurationError =
+      error.includes("not configured") || error.includes("administrator");
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
@@ -205,7 +209,9 @@ export default function RazorpayPayment() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-600">
               <AlertCircle className="h-5 w-5" />
-              {isConfigurationError ? "Configuration Required" : "Payment Error"}
+              {isConfigurationError
+                ? "Configuration Required"
+                : "Payment Error"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -216,11 +222,20 @@ export default function RazorpayPayment() {
             {isConfigurationError && (
               <Alert>
                 <AlertDescription className="text-sm">
-                  <strong>For Admin:</strong> Please update the Razorpay Key ID in the code:
+                  <strong>For Admin:</strong> Please update the Razorpay Key ID
+                  in the code:
                   <br />
-                  1. Go to <a href="https://dashboard.razorpay.com/app/keys" target="_blank" className="text-blue-600 underline">Razorpay Dashboard</a>
+                  1. Go to{" "}
+                  <a
+                    href="https://dashboard.razorpay.com/app/keys"
+                    target="_blank"
+                    className="text-blue-600 underline"
+                  >
+                    Razorpay Dashboard
+                  </a>
                   <br />
-                  2. Copy your Key ID and replace "rzp_live_YOUR_KEY_HERE" in RazorpayPayment.tsx
+                  2. Copy your Key ID and replace "rzp_live_YOUR_KEY_HERE" in
+                  RazorpayPayment.tsx
                 </AlertDescription>
               </Alert>
             )}
