@@ -124,7 +124,7 @@ export default function RazorpayPayment() {
     const razorpayKey = paymentData.metadata?.key_id;
 
     // Check if Razorpay key is configured
-    if (!razorpayKey || razorpayKey === "rzp_live_YOUR_KEY_HERE") {
+    if (!razorpayKey || razorpayKey.includes("YOUR_KEY_HERE")) {
       setError(
         "Razorpay is not configured. Please contact the website administrator to set up payment gateway credentials.",
       );
