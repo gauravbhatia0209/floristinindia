@@ -187,7 +187,7 @@ export default function RazorpayPayment() {
       handler: function (response: any) {
         console.log("Payment successful:", response);
         // Redirect to success page with available response data
-        const successUrl = `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id || ''}`;
+        let successUrl = `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id || ''}`;
 
         // Add order_id and signature if available (they might not be present in direct payments)
         if (response.razorpay_order_id) {
