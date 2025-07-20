@@ -61,6 +61,7 @@ export default function PaymentMethodSelector({
   onMethodSelect,
   onProceed,
   isLoading = false,
+  hideSubmitButton = false,
 }: PaymentMethodSelectorProps) {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
