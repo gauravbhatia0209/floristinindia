@@ -1938,17 +1938,6 @@ export default function Checkout() {
                           <AlertDescription>{errors.payment}</AlertDescription>
                         </Alert>
                       )}
-                                <Shield className="w-4 h-4" />
-                                NetBanking
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Globe className="w-4 h-4" />
-                                More
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                     </CardContent>
                   </Card>
 
