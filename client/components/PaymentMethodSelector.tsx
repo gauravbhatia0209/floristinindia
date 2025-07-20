@@ -30,6 +30,7 @@ interface PaymentMethodSelectorProps {
   onMethodSelect: (gateway: PaymentGateway) => void;
   onProceed: () => void;
   isLoading?: boolean;
+  hideSubmitButton?: boolean;
 }
 
 const PAYMENT_METHOD_ICONS: Record<PaymentGateway, React.ReactNode> = {
