@@ -70,7 +70,31 @@ export default function RazorpayPayment() {
         return;
       }
 
-      console.log(`Creating mock payment data for identifier: ${identifier}`);
+      console.log(`Fetching payment data for identifier: ${identifier}`);
+
+      // Fetch Razorpay configuration from database
+      const { data: razorpayConfig, error: configError } = await supabase
+        .from("payment_gateway_configs")
+        .select("*")
+        .eq("id", "razorpay")
+        .eq("enabled", true)
+        .single();
+
+      if (configError || !razorpayConfig) {
+        console.error("Error fetching Razorpay config:", configError);
+        setError("Razorpay payment gateway is not configured or disabled. Please contact support.");
+        setLoading(false);
+        return;
+      }
+
+      // Check if Razorpay key is configured
+      const razorpayKeyId = razorpayConfig.config?.razorpay_key_id;
+      if (!razorpayKeyId) {
+        console.error("Razorpay key ID not found in config");
+        setError("Razorpay payment gateway is not properly configured. Please contact support.");
+        setLoading(false);
+        return;
+      }
 
       // Get payment amount from URL params or use default
       const urlParams = new URLSearchParams(window.location.search);
@@ -92,8 +116,7 @@ export default function RazorpayPayment() {
         updated_at: new Date().toISOString(),
         gateway_order_id: orderId,
         metadata: {
-          // Using a working test key - replace with your production key for live payments
-          key_id: "rzp_test_nIGcJWJK5wJn0v", // REPLACE WITH YOUR ACTUAL KEY FOR PRODUCTION
+          key_id: razorpayKeyId, // Use the key from database
           order_id: orderId,
           amount: parseInt(amountParam),
           currency: "INR",
@@ -104,7 +127,7 @@ export default function RazorpayPayment() {
         },
       };
 
-      console.log("✅ Payment data created:", paymentData);
+      console.log("✅ Payment data created with key:", razorpayKeyId);
       setPaymentData(paymentData);
     } catch (err) {
       console.error("Error creating payment data:", err);
