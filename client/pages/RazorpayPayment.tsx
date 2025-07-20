@@ -186,10 +186,18 @@ export default function RazorpayPayment() {
       // Remove order_id for direct payments
       handler: function (response: any) {
         console.log("Payment successful:", response);
-        // Redirect to success page
-        navigate(
-          `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_signature=${response.razorpay_signature}`,
-        );
+        // Redirect to success page with available response data
+        const successUrl = `/checkout/success?payment_intent=${paymentIntentId}&razorpay_payment_id=${response.razorpay_payment_id || ''}`;
+
+        // Add order_id and signature if available (they might not be present in direct payments)
+        if (response.razorpay_order_id) {
+          successUrl += `&razorpay_order_id=${response.razorpay_order_id}`;
+        }
+        if (response.razorpay_signature) {
+          successUrl += `&razorpay_signature=${response.razorpay_signature}`;
+        }
+
+        navigate(successUrl);
       },
       prefill: {
         name: paymentData.metadata?.customer_name || "Customer",
