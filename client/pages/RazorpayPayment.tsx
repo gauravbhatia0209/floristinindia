@@ -322,7 +322,7 @@ export default function RazorpayPayment() {
                     <span>
                       ₹
                       {(
-                        (paymentData.metadata.amount || paymentData.amount) /
+                        (paymentData.metadata?.amount || paymentData.amount || 0) /
                         100
                       ).toLocaleString()}
                     </span>
@@ -330,14 +330,15 @@ export default function RazorpayPayment() {
                   <div className="flex justify-between">
                     <span>Currency:</span>
                     <span>
-                      {paymentData.metadata.currency || paymentData.currency}
+                      {paymentData.metadata?.currency || paymentData.currency || "INR"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Order ID:</span>
                     <span className="font-mono text-xs">
-                      {paymentData.metadata.order_number ||
-                        paymentData.order_id}
+                      {paymentData.metadata?.order_number ||
+                        paymentData.order_id ||
+                        "N/A"}
                     </span>
                   </div>
                 </div>
