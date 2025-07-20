@@ -44,6 +44,12 @@ export default function RazorpayPayment() {
 
     loadRazorpayScript();
     fetchPaymentData();
+
+    // Cleanup function to restore scroll when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
   }, [orderId, paymentIntentId]);
 
   const loadRazorpayScript = () => {
