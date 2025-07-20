@@ -173,14 +173,9 @@ export default function RazorpayPayment() {
 
     console.log("🔧 Initializing Razorpay with key:", razorpayKey);
 
-    // Get the actual Razorpay order ID from various possible locations
-    const razorpayOrderId =
-      paymentData.gateway_order_id ||
-      paymentData.metadata?.razorpay_order_id ||
-      paymentData.metadata?.order_id ||
-      orderId;
-
-    console.log("🎫 Using Razorpay order ID:", razorpayOrderId);
+    // For direct payments without server API, we don't need to pass order_id
+    // Razorpay will handle the payment processing directly
+    console.log("🎫 Creating direct payment without order_id");
 
     const options = {
       key: razorpayKey,
@@ -188,7 +183,7 @@ export default function RazorpayPayment() {
       currency: paymentData.metadata?.currency || paymentData.currency || "INR",
       name: "Florist in India",
       description: `Order ${paymentData.metadata?.order_number || paymentData.order_id || "N/A"}`,
-      order_id: razorpayOrderId,
+      // Remove order_id for direct payments
       handler: function (response: any) {
         console.log("Payment successful:", response);
         // Redirect to success page
