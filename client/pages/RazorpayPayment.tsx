@@ -47,8 +47,8 @@ export default function RazorpayPayment() {
 
     // Cleanup function to restore scroll when component unmounts
     return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
   }, [orderId, paymentIntentId]);
 
@@ -230,8 +230,8 @@ export default function RazorpayPayment() {
           setProcessing(false);
           console.log("Payment modal dismissed");
           // Restore scroll functionality that Razorpay might have disabled
-          document.body.style.overflow = '';
-          document.documentElement.style.overflow = '';
+          document.body.style.overflow = "";
+          document.documentElement.style.overflow = "";
         },
       },
     };
@@ -254,8 +254,8 @@ export default function RazorpayPayment() {
       setError(errorMessage);
       setProcessing(false);
       // Restore scroll functionality in case of payment failure
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     });
 
     try {
