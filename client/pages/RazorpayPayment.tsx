@@ -197,19 +197,34 @@ export default function RazorpayPayment() {
   }
 
   if (error) {
+    const isConfigurationError = error.includes("not configured") || error.includes("administrator");
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-600">
               <AlertCircle className="h-5 w-5" />
-              Payment Error
+              {isConfigurationError ? "Configuration Required" : "Payment Error"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
+
+            {isConfigurationError && (
+              <Alert>
+                <AlertDescription className="text-sm">
+                  <strong>For Admin:</strong> Please update the Razorpay Key ID in the code:
+                  <br />
+                  1. Go to <a href="https://dashboard.razorpay.com/app/keys" target="_blank" className="text-blue-600 underline">Razorpay Dashboard</a>
+                  <br />
+                  2. Copy your Key ID and replace "rzp_live_YOUR_KEY_HERE" in RazorpayPayment.tsx
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -219,12 +234,14 @@ export default function RazorpayPayment() {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Checkout
               </Button>
-              <Button
-                onClick={() => window.location.reload()}
-                className="flex-1"
-              >
-                Retry
-              </Button>
+              {!isConfigurationError && (
+                <Button
+                  onClick={() => window.location.reload()}
+                  className="flex-1"
+                >
+                  Retry
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
