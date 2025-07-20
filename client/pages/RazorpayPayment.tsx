@@ -247,6 +247,9 @@ export default function RazorpayPayment() {
 
       setError(errorMessage);
       setProcessing(false);
+      // Restore scroll functionality in case of payment failure
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     });
 
     try {
