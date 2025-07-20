@@ -82,7 +82,9 @@ export default function RazorpayPayment() {
 
       if (configError || !razorpayConfig) {
         console.error("Error fetching Razorpay config:", configError);
-        setError("Razorpay payment gateway is not configured or disabled. Please contact support.");
+        setError(
+          "Razorpay payment gateway is not configured or disabled. Please contact support.",
+        );
         setLoading(false);
         return;
       }
@@ -91,7 +93,9 @@ export default function RazorpayPayment() {
       const razorpayKeyId = razorpayConfig.config?.razorpay_key_id;
       if (!razorpayKeyId) {
         console.error("Razorpay key ID not found in config");
-        setError("Razorpay payment gateway is not properly configured. Please contact support.");
+        setError(
+          "Razorpay payment gateway is not properly configured. Please contact support.",
+        );
         setLoading(false);
         return;
       }
@@ -148,7 +152,11 @@ export default function RazorpayPayment() {
     const razorpayKey = paymentData.metadata?.key_id;
 
     // Check if Razorpay key is configured
-    if (!razorpayKey || razorpayKey.includes("YOUR_KEY_HERE") || razorpayKey.includes("REPLACE")) {
+    if (
+      !razorpayKey ||
+      razorpayKey.includes("YOUR_KEY_HERE") ||
+      razorpayKey.includes("REPLACE")
+    ) {
       setError(
         "Razorpay is not configured. Please contact the website administrator to set up payment gateway credentials.",
       );
