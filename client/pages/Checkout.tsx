@@ -1435,34 +1435,7 @@ export default function Checkout() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Checkout Form */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Step 2: Payment Method Selection */}
-              {currentStep === 2 && (
-                <>
-                  {/* Back Button */}
-                  <div className="mb-6">
-                    <Button
-                      variant="outline"
-                      onClick={() => setCurrentStep(1)}
-                      className="flex items-center gap-2"
-                    >
-                      ← Back to Order Details
-                    </Button>
-                  </div>
 
-                  {console.log(
-                    "🎯 Rendering PaymentMethodSelector on step 2 with amount:",
-                    Math.round(totals.total * 100),
-                  )}
-                  <PaymentMethodSelector
-                    amount={Math.round(totals.total * 100)}
-                    currency="INR"
-                    selectedMethod={selectedPaymentMethod}
-                    onMethodSelect={handlePaymentMethodSelect}
-                    onProceed={handleProceedToPayment}
-                    isLoading={isSubmitting}
-                  />
-                </>
-              )}
 
               {/* Step 1: Order Form */}
               {currentStep === 1 && (
