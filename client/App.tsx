@@ -20,6 +20,17 @@ import StructuredData from "@/components/StructuredData";
 import AIMetaTags from "@/components/AIMetaTags";
 import { supabase } from "@/lib/supabase";
 
+// ScrollToTop component to handle scroll restoration
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 // Public pages
 import Index from "@/pages/Index";
 import Products from "@/pages/Products";
