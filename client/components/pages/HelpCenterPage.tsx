@@ -35,6 +35,7 @@ interface HelpPageData {
 }
 
 export default function HelpCenterPage() {
+  const navigate = useNavigate();
   const [pageData, setPageData] = useState<HelpPageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
