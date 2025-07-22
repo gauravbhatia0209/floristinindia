@@ -192,6 +192,7 @@ function App() {
               <Route path="help" element={<Page />} />
               <Route path="terms" element={<Page />} />
               <Route path="privacy-policy" element={<Page />} />
+              <Route path="privacy" element={<Navigate to="/privacy-policy" replace />} />
               <Route path="return-refunds" element={<Page />} />
               <Route path="returns" element={<Navigate to="/return-refunds" replace />} />
               <Route path="delivery-info" element={<Page />} />
