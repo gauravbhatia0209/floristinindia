@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import AuthProvider from "@/contexts/AuthContext";
