@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import AuthProvider from "@/contexts/AuthContext";
 import ProtectedRoute, {
@@ -192,9 +197,15 @@ function App() {
               <Route path="help" element={<Page />} />
               <Route path="terms" element={<Page />} />
               <Route path="privacy-policy" element={<Page />} />
-              <Route path="privacy" element={<Navigate to="/privacy-policy" replace />} />
+              <Route
+                path="privacy"
+                element={<Navigate to="/privacy-policy" replace />}
+              />
               <Route path="return-refunds" element={<Page />} />
-              <Route path="returns" element={<Navigate to="/return-refunds" replace />} />
+              <Route
+                path="returns"
+                element={<Navigate to="/return-refunds" replace />}
+              />
               <Route path="delivery-info" element={<Page />} />
               {/* Dynamic pages from CMS - must be last */}
               <Route path=":slug" element={<Page />} />
