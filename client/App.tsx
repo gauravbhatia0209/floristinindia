@@ -193,7 +193,7 @@ function App() {
               <Route path="terms" element={<Page />} />
               <Route path="privacy-policy" element={<Page />} />
               <Route path="return-refunds" element={<Page />} />
-              <Route path="returns" element={<Page />} />
+              <Route path="returns" element={<Navigate to="/return-refunds" replace />} />
               <Route path="delivery-info" element={<Page />} />
               {/* Dynamic pages from CMS - must be last */}
               <Route path=":slug" element={<Page />} />
