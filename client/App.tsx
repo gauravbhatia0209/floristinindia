@@ -145,6 +145,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
           {googleAnalyticsId && (
             <GoogleAnalytics trackingId={googleAnalyticsId} />
           )}
