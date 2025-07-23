@@ -58,7 +58,7 @@ export default function Orders() {
 
   useEffect(() => {
     filterOrders();
-  }, [orders, statusFilter, searchQuery]);
+  }, [orders, statusFilter, searchQuery, deliveryDateFilter]);
 
   async function fetchOrders() {
     try {
