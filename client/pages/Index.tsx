@@ -997,7 +997,7 @@ export default function Index() {
 
                       if (!hasValidImage) {
                         console.log(
-                          `⚠️ Product "${product.name}" has no valid images:`,
+                          `���️ Product "${product.name}" has no valid images:`,
                           product.images,
                         );
                       }
@@ -1078,6 +1078,18 @@ export default function Index() {
                           const hasDiscount =
                             effectivePrice.salePrice &&
                             effectivePrice.salePrice < effectivePrice.price;
+
+                          // Debug logging
+                          console.log(`🔍 Pricing for ${product.name}:`, {
+                            has_variations: product.has_variations,
+                            variants_count: product.variants?.length || 0,
+                            base_price: product.price,
+                            base_sale_price: product.sale_price,
+                            effective_price: effectivePrice.price,
+                            effective_sale_price: effectivePrice.salePrice,
+                            display_price: displayPrice,
+                            has_discount: hasDiscount
+                          });
 
                           return (
                             <>
