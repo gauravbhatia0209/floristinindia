@@ -250,7 +250,7 @@ export default function Index() {
             .eq("is_active", true);
 
           console.log(
-            "������ Product Showcase: Raw query results:",
+            "�������� Product Showcase: Raw query results:",
             productsData,
           );
           console.log(
@@ -1053,7 +1053,7 @@ export default function Index() {
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                         {(() => {
                           const effectivePrice = getProductEffectivePriceSync(
                             product,
@@ -1065,7 +1065,21 @@ export default function Index() {
                             effectivePrice.salePrice &&
                             effectivePrice.salePrice < effectivePrice.price;
 
-
+                          // Debug logging for Test Product
+                          if (product.name === "Test Product") {
+                            console.log("🔍 DEBUG: Test Product pricing analysis:");
+                            console.log("Product data:", {
+                              id: product.id,
+                              name: product.name,
+                              basePrice: product.price,
+                              baseSalePrice: product.sale_price,
+                              hasVariations: product.has_variations,
+                              variantsCount: product.variants?.length || 0,
+                            });
+                            console.log("Variants data:", product.variants);
+                            console.log("Effective pricing result:", effectivePrice);
+                            console.log("Final display price:", displayPrice);
+                          }
 
                           return (
                             <>
