@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS product_category_assignments (
     is_primary BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    
+
     -- Ensure unique product-category pairs
     UNIQUE(product_id, category_id)
 );
@@ -31,21 +31,21 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_product_category_assignments_updated_at 
-    BEFORE UPDATE ON product_category_assignments 
+CREATE TRIGGER update_product_category_assignments_updated_at
+    BEFORE UPDATE ON product_category_assignments
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Migrate existing product-category relationships
 -- This will preserve existing single category assignments by marking them as primary
 INSERT INTO product_category_assignments (product_id, category_id, is_primary)
 SELECT id, category_id, TRUE
-FROM products 
+FROM products
 WHERE category_id IS NOT NULL
 ON CONFLICT (product_id, category_id) DO NOTHING;
 
 -- Create view for easy querying of products with their categories
 CREATE OR REPLACE VIEW products_with_categories AS
-SELECT 
+SELECT
     p.*,
     COALESCE(
         JSON_AGG(
@@ -65,7 +65,6 @@ GROUP BY p.id;
 
 -- Grant necessary permissions
 GRANT ALL ON product_category_assignments TO authenticated;
-GRANT ALL ON SEQUENCE product_category_assignments_id_seq TO authenticated;
 GRANT SELECT ON products_with_categories TO authenticated;
 
 -- Add comments for documentation
@@ -78,9 +77,9 @@ CREATE OR REPLACE FUNCTION get_primary_category_id(product_uuid UUID)
 RETURNS UUID AS $$
 BEGIN
     RETURN (
-        SELECT category_id 
-        FROM product_category_assignments 
-        WHERE product_id = product_uuid AND is_primary = TRUE 
+        SELECT category_id
+        FROM product_category_assignments
+        WHERE product_id = product_uuid AND is_primary = TRUE
         LIMIT 1
     );
 END;
