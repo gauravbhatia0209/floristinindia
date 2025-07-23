@@ -146,18 +146,7 @@ export default function ProductEdit() {
     }
   }
 
-  async function fetchProductCategories(productId: string) {
-    try {
-      // Use legacy single category approach
-      const categoryId = formData.category_id;
-      if (categoryId) {
-        setSelectedCategoryIds([categoryId]);
-        setPrimaryCategoryId(categoryId);
-      }
-    } catch (error) {
-      console.error("Failed to fetch product categories:", error);
-    }
-  }
+
 
   // Auto-generate slug from name
   useEffect(() => {
