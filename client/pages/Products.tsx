@@ -36,7 +36,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/lib/supabase";
-import { Product, ProductCategory, ProductVariant } from "@shared/database.types";
+import {
+  Product,
+  ProductCategory,
+  ProductVariant,
+} from "@shared/database.types";
 import { getProductEffectivePriceSync } from "@/lib/productUtils";
 
 interface ProductWithVariants extends Product {
@@ -55,7 +59,9 @@ import { useFacebookPixel } from "@/components/FacebookPixel";
 export default function Products() {
   const [products, setProducts] = useState<ProductWithVariants[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductWithVariants[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<
+    ProductWithVariants[]
+  >([]);
   const [currentCategory, setCurrentCategory] =
     useState<ProductCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -158,9 +164,11 @@ export default function Products() {
       setCategories(categoriesWithCounts);
 
       // Fetch variants for products that have variations enabled
-      const productsWithVariations = productsData.filter(p => p.has_variations);
+      const productsWithVariations = productsData.filter(
+        (p) => p.has_variations,
+      );
       if (productsWithVariations.length > 0) {
-        const productIds = productsWithVariations.map(p => p.id);
+        const productIds = productsWithVariations.map((p) => p.id);
         const { data: allVariants } = await supabase
           .from("product_variants")
           .select("*")
@@ -170,29 +178,40 @@ export default function Products() {
           .order("display_order", { ascending: true });
 
         // Group variants by product_id
-        const variantsByProduct = (allVariants || []).reduce((acc, variant) => {
-          if (!acc[variant.product_id]) {
-            acc[variant.product_id] = [];
-          }
-          acc[variant.product_id].push(variant);
-          return acc;
-        }, {} as Record<string, ProductVariant[]>);
+        const variantsByProduct = (allVariants || []).reduce(
+          (acc, variant) => {
+            if (!acc[variant.product_id]) {
+              acc[variant.product_id] = [];
+            }
+            acc[variant.product_id].push(variant);
+            return acc;
+          },
+          {} as Record<string, ProductVariant[]>,
+        );
 
         // Add variants to products
-        const productsWithVariants = productsData.map(product => ({
+        const productsWithVariants = productsData.map((product) => ({
           ...product,
-          variants: variantsByProduct[product.id] || []
+          variants: variantsByProduct[product.id] || [],
         }));
 
         if (import.meta.env.DEV) {
-          console.log("Setting products data:", productsWithVariants.length, "products");
+          console.log(
+            "Setting products data:",
+            productsWithVariants.length,
+            "products",
+          );
         }
         setProducts(productsWithVariants);
       } else {
         if (import.meta.env.DEV) {
-          console.log("Setting products data:", productsData.length, "products");
+          console.log(
+            "Setting products data:",
+            productsData.length,
+            "products",
+          );
         }
-        setProducts(productsData.map(p => ({ ...p, variants: [] })));
+        setProducts(productsData.map((p) => ({ ...p, variants: [] })));
       }
     } catch (error) {
       console.error("Failed to fetch products:", error);
@@ -261,7 +280,10 @@ export default function Products() {
 
     // Filter by price range
     filtered = filtered.filter((product) => {
-      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+      const effectivePrice = getProductEffectivePriceSync(
+        product,
+        product.variants,
+      );
       const price = effectivePrice.salePrice || effectivePrice.price;
       return price >= priceRange[0] && price <= priceRange[1];
     });
@@ -304,20 +326,14 @@ export default function Products() {
       product,
     });
 
-    const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+    const effectivePrice = getProductEffectivePriceSync(
+      product,
+      product.variants,
+    );
     const price = effectivePrice.salePrice || effectivePrice.price;
 
-    trackAddToCart(
-      product.id,
-      product.name,
-      price,
-    );
-    trackFBAddToCart(
-      product.name,
-      product.id,
-      price,
-      "INR",
-    );
+    trackAddToCart(product.id, product.name, price);
+    trackFBAddToCart(product.name, product.id, price, "INR");
 
     toast({
       title: "Added to cart!",
@@ -711,13 +727,20 @@ export default function Products() {
                   <span className="text-6xl animate-pulse">🌺</span>
                 )}
                 {(() => {
-                  const effectivePrice = getProductEffectivePriceSync(product, product.variants);
-                  const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+                  const effectivePrice = getProductEffectivePriceSync(
+                    product,
+                    product.variants,
+                  );
+                  const hasDiscount =
+                    effectivePrice.salePrice &&
+                    effectivePrice.salePrice < effectivePrice.price;
 
-                  return hasDiscount && (
-                    <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
-                      SALE
-                    </Badge>
+                  return (
+                    hasDiscount && (
+                      <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                        SALE
+                      </Badge>
+                    )
                   );
                 })()}
               </div>
@@ -738,9 +761,15 @@ export default function Products() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     {(() => {
-                      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
-                      const displayPrice = effectivePrice.salePrice || effectivePrice.price;
-                      const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+                      const effectivePrice = getProductEffectivePriceSync(
+                        product,
+                        product.variants,
+                      );
+                      const displayPrice =
+                        effectivePrice.salePrice || effectivePrice.price;
+                      const hasDiscount =
+                        effectivePrice.salePrice &&
+                        effectivePrice.salePrice < effectivePrice.price;
 
                       return (
                         <>

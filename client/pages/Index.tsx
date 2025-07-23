@@ -31,7 +31,9 @@ interface ProductWithVariants extends Product {
 export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<ProductWithVariants[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<
+    ProductWithVariants[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addItem } = useCart();
 
@@ -72,7 +74,7 @@ export default function Index() {
     if (fallbackData && fallbackData.length > 0) {
       console.log("✅ Loaded fallback featured products:", fallbackData);
       // Add empty variants array for fallback products
-      setFeaturedProducts(fallbackData.map(p => ({ ...p, variants: [] })));
+      setFeaturedProducts(fallbackData.map((p) => ({ ...p, variants: [] })));
     } else {
       console.warn("⚠️ No fallback products found either");
       setFeaturedProducts([]);
@@ -321,9 +323,11 @@ export default function Index() {
 
             if (sortedProducts.length > 0) {
               // Fetch variants for products that have variations enabled
-              const productsWithVariations = sortedProducts.filter(p => p.has_variations);
+              const productsWithVariations = sortedProducts.filter(
+                (p) => p.has_variations,
+              );
               if (productsWithVariations.length > 0) {
-                const productIds = productsWithVariations.map(p => p.id);
+                const productIds = productsWithVariations.map((p) => p.id);
                 const { data: allVariants } = await supabase
                   .from("product_variants")
                   .select("*")
@@ -333,23 +337,28 @@ export default function Index() {
                   .order("display_order", { ascending: true });
 
                 // Group variants by product_id
-                const variantsByProduct = (allVariants || []).reduce((acc, variant) => {
-                  if (!acc[variant.product_id]) {
-                    acc[variant.product_id] = [];
-                  }
-                  acc[variant.product_id].push(variant);
-                  return acc;
-                }, {} as Record<string, ProductVariant[]>);
+                const variantsByProduct = (allVariants || []).reduce(
+                  (acc, variant) => {
+                    if (!acc[variant.product_id]) {
+                      acc[variant.product_id] = [];
+                    }
+                    acc[variant.product_id].push(variant);
+                    return acc;
+                  },
+                  {} as Record<string, ProductVariant[]>,
+                );
 
                 // Add variants to products
-                const productsWithVariants = sortedProducts.map(product => ({
+                const productsWithVariants = sortedProducts.map((product) => ({
                   ...product,
-                  variants: variantsByProduct[product.id] || []
+                  variants: variantsByProduct[product.id] || [],
                 }));
 
                 setFeaturedProducts(productsWithVariants);
               } else {
-                setFeaturedProducts(sortedProducts.map(p => ({ ...p, variants: [] })));
+                setFeaturedProducts(
+                  sortedProducts.map((p) => ({ ...p, variants: [] })),
+                );
               }
             } else {
               console.warn(
@@ -1017,13 +1026,20 @@ export default function Index() {
                       🌺
                     </span>
                     {(() => {
-                      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
-                      const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+                      const effectivePrice = getProductEffectivePriceSync(
+                        product,
+                        product.variants,
+                      );
+                      const hasDiscount =
+                        effectivePrice.salePrice &&
+                        effectivePrice.salePrice < effectivePrice.price;
 
-                      return hasDiscount && (
-                        <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
-                          SALE
-                        </Badge>
+                      return (
+                        hasDiscount && (
+                          <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                            SALE
+                          </Badge>
+                        )
                       );
                     })()}
                   </div>
@@ -1034,9 +1050,15 @@ export default function Index() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         {(() => {
-                          const effectivePrice = getProductEffectivePriceSync(product, product.variants);
-                          const displayPrice = effectivePrice.salePrice || effectivePrice.price;
-                          const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+                          const effectivePrice = getProductEffectivePriceSync(
+                            product,
+                            product.variants,
+                          );
+                          const displayPrice =
+                            effectivePrice.salePrice || effectivePrice.price;
+                          const hasDiscount =
+                            effectivePrice.salePrice &&
+                            effectivePrice.salePrice < effectivePrice.price;
 
                           return (
                             <>

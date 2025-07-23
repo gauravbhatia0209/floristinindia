@@ -242,7 +242,7 @@ export async function getProductEffectivePrice(product: Product): Promise<{
  */
 export function getProductEffectivePriceSync(
   product: Product,
-  variants?: ProductVariant[]
+  variants?: ProductVariant[],
 ): {
   price: number;
   salePrice: number | null;
@@ -261,7 +261,7 @@ export function getProductEffectivePriceSync(
   // If variants are provided, use them
   if (variants && variants.length > 0) {
     const activeVariants = variants
-      .filter(v => v.is_active)
+      .filter((v) => v.is_active)
       .sort((a, b) => {
         if (a.sort_order !== b.sort_order) {
           return a.sort_order - b.sort_order;
