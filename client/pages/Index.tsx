@@ -252,7 +252,7 @@ export default function Index() {
             productsData,
           );
           console.log(
-            "🎯 Product Showcase: Query error (if any):",
+            "��� Product Showcase: Query error (if any):",
             productsError,
           );
           console.log("🕐 Query executed at:", new Date().toISOString());
@@ -1016,12 +1016,16 @@ export default function Index() {
                     >
                       🌺
                     </span>
-                    {product.sale_price &&
-                      product.sale_price < product.price && (
+                    {(() => {
+                      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+                      const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+
+                      return hasDiscount && (
                         <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
                           SALE
                         </Badge>
-                      )}
+                      );
+                    })()}
                   </div>
                   <CardContent className="p-4">
                     <h3 className="font-semibold mb-2 line-clamp-2">
