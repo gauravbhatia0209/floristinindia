@@ -320,10 +320,10 @@ export default function ProductEdit() {
           console.log("Primary category was invalid, using first selected category:", validPrimaryId);
         }
 
-        const assignments = selectedCategoryIds.map((categoryId, index) => ({
+        const assignments = validCategoryIds.map((categoryId, index) => ({
           product_id: productId,
           category_id: categoryId,
-          is_primary: categoryId === primaryCategoryId,
+          is_primary: categoryId === validPrimaryId,
         }));
 
         console.log("Debug: Assignments to insert:", JSON.stringify(assignments, null, 2));
