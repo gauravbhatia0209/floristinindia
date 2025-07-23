@@ -326,15 +326,24 @@ export default function Index() {
               const productsWithVariations = sortedProducts.filter(
                 (p) => p.has_variations,
               );
+
+              console.log("🔍 Products with variations:", productsWithVariations.length);
+              console.log("🔍 Products with has_variations=true:", productsWithVariations.map(p => ({ name: p.name, has_variations: p.has_variations })));
+
               if (productsWithVariations.length > 0) {
                 const productIds = productsWithVariations.map((p) => p.id);
-                const { data: allVariants } = await supabase
+                console.log("🔍 Fetching variants for product IDs:", productIds);
+
+                const { data: allVariants, error: variantsError } = await supabase
                   .from("product_variants")
                   .select("*")
                   .in("product_id", productIds)
                   .eq("is_active", true)
                   .order("sort_order", { ascending: true })
                   .order("display_order", { ascending: true });
+
+                console.log("🔍 Fetched variants:", allVariants);
+                console.log("🔍 Variants error:", variantsError);
 
                 // Group variants by product_id
                 const variantsByProduct = (allVariants || []).reduce(
@@ -348,11 +357,21 @@ export default function Index() {
                   {} as Record<string, ProductVariant[]>,
                 );
 
+                console.log("🔍 Variants by product:", variantsByProduct);
+
                 // Add variants to products
                 const productsWithVariants = sortedProducts.map((product) => ({
                   ...product,
                   variants: variantsByProduct[product.id] || [],
                 }));
+
+                console.log("🔍 Final products with variants:", productsWithVariants.map(p => ({
+                  name: p.name,
+                  has_variations: p.has_variations,
+                  variants_count: p.variants?.length || 0,
+                  base_price: p.price,
+                  base_sale_price: p.sale_price
+                })));
 
                 setFeaturedProducts(productsWithVariants);
               } else {
