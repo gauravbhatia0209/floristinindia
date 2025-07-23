@@ -74,12 +74,49 @@ export default function AdminProducts() {
       const categoriesData =
         results[1].status === "fulfilled" ? results[1].value.data || [] : [];
 
+      // Fetch category assignments for all products
+      let productsWithAssignments: ProductWithCategoryAssignments[] = productsData;
+
+      try {
+        const { data: allAssignments, error: assignmentsError } = await supabase
+          .from("product_category_assignments")
+          .select("product_id, category_id, is_primary");
+
+        if (assignmentsError && assignmentsError.code !== "42P01") {
+          console.warn("Error fetching category assignments:", assignmentsError);
+        }
+
+        if (allAssignments) {
+          // Group assignments by product_id
+          const assignmentsByProduct = allAssignments.reduce((acc, assignment) => {
+            if (!acc[assignment.product_id]) {
+              acc[assignment.product_id] = [];
+            }
+            acc[assignment.product_id].push({
+              category_id: assignment.category_id,
+              is_primary: assignment.is_primary,
+            });
+            return acc;
+          }, {} as Record<string, { category_id: string; is_primary: boolean }[]>);
+
+          // Add assignments to products
+          productsWithAssignments = productsData.map(product => ({
+            ...product,
+            categoryAssignments: assignmentsByProduct[product.id] || [],
+          }));
+
+          console.log("Added category assignments to products");
+        }
+      } catch (error) {
+        console.log("Multi-category assignments not available, using legacy categories");
+      }
+
       console.log("Fetched:", {
-        products: productsData.length,
+        products: productsWithAssignments.length,
         categories: categoriesData.length,
       });
 
-      setProducts(productsData);
+      setProducts(productsWithAssignments);
       setCategories(categoriesData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
