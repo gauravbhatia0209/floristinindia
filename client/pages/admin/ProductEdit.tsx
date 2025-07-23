@@ -128,8 +128,11 @@ export default function ProductEdit() {
           weight: data.weight?.toString() || "",
         });
 
-        // Fetch category assignments
-        await fetchProductCategories(productId);
+        // Set category assignments from the product data
+        if (data.category_id) {
+          setSelectedCategoryIds([data.category_id]);
+          setPrimaryCategoryId(data.category_id);
+        }
       } else {
         throw new Error("Product not found");
       }
