@@ -328,12 +328,13 @@ export default function Index() {
                 const allProductIds = sortedProducts.map((p) => p.id);
 
                 // Fetch variants for all products (whether they have variations or not)
-                const { data: allVariants, error: variantsError } = await supabase
-                  .from("product_variants")
-                  .select("*")
-                  .in("product_id", allProductIds)
-                  .eq("is_active", true)
-                  .order("sort_order", { ascending: true });
+                const { data: allVariants, error: variantsError } =
+                  await supabase
+                    .from("product_variants")
+                    .select("*")
+                    .in("product_id", allProductIds)
+                    .eq("is_active", true)
+                    .order("sort_order", { ascending: true });
 
                 if (variantsError) {
                   console.warn("Error fetching variants:", variantsError);
@@ -1053,7 +1054,7 @@ export default function Index() {
                       {product.name}
                     </h3>
                     <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
                         {(() => {
                           const effectivePrice = getProductEffectivePriceSync(
                             product,
@@ -1064,8 +1065,6 @@ export default function Index() {
                           const hasDiscount =
                             effectivePrice.salePrice &&
                             effectivePrice.salePrice < effectivePrice.price;
-
-
 
                           return (
                             <>

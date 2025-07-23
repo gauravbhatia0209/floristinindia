@@ -146,8 +146,6 @@ export default function ProductEdit() {
     }
   }
 
-
-
   // Auto-generate slug from name
   useEffect(() => {
     if (formData.name && (!product || formData.slug === product.slug)) {

@@ -775,8 +775,6 @@ export default function Products() {
                         effectivePrice.salePrice &&
                         effectivePrice.salePrice < effectivePrice.price;
 
-
-
                       return (
                         <>
                           <span className="text-lg font-bold text-primary">
