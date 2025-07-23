@@ -71,7 +71,8 @@ export default function Index() {
 
     if (fallbackData && fallbackData.length > 0) {
       console.log("✅ Loaded fallback featured products:", fallbackData);
-      setFeaturedProducts(fallbackData);
+      // Add empty variants array for fallback products
+      setFeaturedProducts(fallbackData.map(p => ({ ...p, variants: [] })));
     } else {
       console.warn("⚠️ No fallback products found either");
       setFeaturedProducts([]);
