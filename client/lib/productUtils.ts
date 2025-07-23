@@ -249,22 +249,8 @@ export function getProductEffectivePriceSync(
   hasVariants: boolean;
   defaultVariant?: ProductVariant;
 } {
-  // Debug logging for Test Product
-  if (product.name === "Test Product") {
-    console.log(`🔍 getProductEffectivePriceSync Debug for Test Product:`, {
-      product_name: product.name,
-      has_variations: product.has_variations,
-      variants_provided: !!variants,
-      variants_length: variants?.length || 0,
-      raw_variants: variants
-    });
-  }
-
   // If product doesn't have variations, return base pricing
   if (!product.has_variations) {
-    if (product.name === "Test Product") {
-      console.log(`🔍 Test Product: No variations, returning base pricing`);
-    }
     return {
       price: product.price,
       salePrice: product.sale_price,
@@ -278,19 +264,8 @@ export function getProductEffectivePriceSync(
       .filter((v) => v.is_active)
       .sort((a, b) => a.sort_order - b.sort_order);
 
-    if (product.name === "Test Product") {
-      console.log(`🔍 Test Product: Active variants after filtering/sorting:`, activeVariants);
-    }
-
     if (activeVariants.length > 0) {
       const defaultVariant = activeVariants[0];
-      if (product.name === "Test Product") {
-        console.log(`🔍 Test Product: Using variant pricing:`, {
-          variant_name: defaultVariant.name,
-          variant_price: defaultVariant.price,
-          variant_sale_price: defaultVariant.sale_price
-        });
-      }
       return {
         price: defaultVariant.price,
         salePrice: defaultVariant.sale_price,
@@ -301,9 +276,6 @@ export function getProductEffectivePriceSync(
   }
 
   // Fallback to base pricing
-  if (product.name === "Test Product") {
-    console.log(`🔍 Test Product: Falling back to base pricing`);
-  }
   return {
     price: product.price,
     salePrice: product.sale_price,
