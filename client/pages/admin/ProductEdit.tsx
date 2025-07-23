@@ -256,6 +256,37 @@ export default function ProductEdit() {
     }
   }
 
+  async function loadCategoryAssignments(productId: string) {
+    try {
+      const { data: assignments, error } = await supabase
+        .from("product_category_assignments")
+        .select("category_id, is_primary")
+        .eq("product_id", productId);
+
+      if (error) {
+        console.warn("Could not load category assignments:", error);
+        return; // Fall back to legacy single category mode
+      }
+
+      if (assignments && assignments.length > 0) {
+        const categoryIds = assignments.map(a => a.category_id);
+        const primaryAssignment = assignments.find(a => a.is_primary);
+
+        setSelectedCategoryIds(categoryIds);
+        if (primaryAssignment) {
+          setPrimaryCategoryId(primaryAssignment.category_id);
+        } else if (categoryIds.length > 0) {
+          // If no primary is marked, use the first one
+          setPrimaryCategoryId(categoryIds[0]);
+        }
+
+        console.log(`✅ Loaded ${assignments.length} category assignments for product ${productId}`);
+      }
+    } catch (error) {
+      console.error("Error loading category assignments:", error);
+    }
+  }
+
   async function saveCategoryAssignments(productId: string) {
     try {
       // First, delete existing category assignments for this product
