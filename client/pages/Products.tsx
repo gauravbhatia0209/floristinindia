@@ -173,8 +173,7 @@ export default function Products() {
           .select("*")
           .in("product_id", allProductIds)
           .eq("is_active", true)
-          .order("sort_order", { ascending: true })
-          .order("display_order", { ascending: true });
+          .order("sort_order", { ascending: true });
 
         if (variantsError) {
           console.warn("Error fetching variants:", variantsError);
