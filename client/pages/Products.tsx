@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/lib/supabase";
 import { Product, ProductCategory } from "@shared/database.types";
+import { getProductEffectivePriceSync } from "@/lib/productUtils";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import {
