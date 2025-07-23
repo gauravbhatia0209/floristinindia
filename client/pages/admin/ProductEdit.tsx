@@ -335,11 +335,19 @@ export default function ProductEdit() {
           .limit(1);
 
         if (tableError) {
-          console.error("Table check failed:", tableError);
+          console.error("Table check failed:");
+          console.error("Error message:", tableError.message);
+          console.error("Error code:", tableError.code);
+          console.error("Error details:", tableError.details);
+          console.error("Error hint:", tableError.hint);
+          console.error("Full table error object:", JSON.stringify(tableError, null, 2));
+
           if (tableError.code === "42P01") {
             console.log("Multi-category table does not exist, using legacy single category mode");
             return;
           }
+          // Continue with fallback for other errors
+          console.log("Table check failed but continuing anyway, might be permissions issue");
         } else {
           console.log("Multi-category table exists, proceeding with insert");
         }
