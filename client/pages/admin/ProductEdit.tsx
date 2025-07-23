@@ -288,78 +288,76 @@ export default function ProductEdit() {
   }
 
   async function saveCategoryAssignments(productId: string) {
+    // Skip multi-category if no categories selected
+    if (selectedCategoryIds.length === 0) {
+      console.log("No categories selected, skipping multi-category assignments");
+      return;
+    }
+
     try {
-      // First, delete existing category assignments for this product
-      const { error: deleteError } = await supabase
+      console.log("💾 Attempting to save multi-category assignments...");
+      console.log("Selected categories:", selectedCategoryIds);
+      console.log("Primary category:", primaryCategoryId);
+      console.log("Product ID:", productId);
+
+      // Validate category IDs
+      const validCategoryIds = selectedCategoryIds.filter(id => id && id.trim() !== '');
+      if (validCategoryIds.length === 0) {
+        console.warn("No valid category IDs found, skipping multi-category save");
+        return;
+      }
+
+      // Ensure primary category is valid
+      let validPrimaryId = primaryCategoryId;
+      if (!validPrimaryId || !validCategoryIds.includes(validPrimaryId)) {
+        validPrimaryId = validCategoryIds[0];
+        setPrimaryCategoryId(validPrimaryId); // Update state
+        console.log("Primary category corrected to:", validPrimaryId);
+      }
+
+      // First try to delete existing assignments (ignore errors)
+      await supabase
         .from("product_category_assignments")
         .delete()
         .eq("product_id", productId);
 
-      if (deleteError) {
-        console.warn("Warning: Could not delete existing assignments:", deleteError);
-        // Continue anyway - might be first time assignment
-      }
+      // Create assignments
+      const assignments = validCategoryIds.map(categoryId => ({
+        product_id: productId,
+        category_id: categoryId,
+        is_primary: categoryId === validPrimaryId,
+      }));
 
-      // Create new category assignments
-      if (selectedCategoryIds.length > 0) {
-        console.log("Debug: Selected categories:", selectedCategoryIds);
-        console.log("Debug: Primary category:", primaryCategoryId);
-        console.log("Debug: Product ID:", productId);
+      console.log("Inserting assignments:", assignments);
 
-        // Validate that all category IDs are valid UUIDs
-        const validCategoryIds = selectedCategoryIds.filter(id => id && id.trim() !== '');
-        if (validCategoryIds.length === 0) {
-          console.warn("No valid category IDs found");
+      // Insert new assignments
+      const { error: insertError } = await supabase
+        .from("product_category_assignments")
+        .insert(assignments);
+
+      if (insertError) {
+        if (insertError.code === "42P01") {
+          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+          console.log("   node apply-multi-category-migration.js");
           return;
         }
 
-        // Ensure primary category is set to one of the selected categories
-        let validPrimaryId = primaryCategoryId;
-        if (!validPrimaryId || !validCategoryIds.includes(validPrimaryId)) {
-          validPrimaryId = validCategoryIds[0];
-          console.log("Primary category was invalid, using first selected category:", validPrimaryId);
-        }
+        console.error("❌ Failed to save multi-category assignments:");
+        console.error("Code:", insertError.code);
+        console.error("Message:", insertError.message);
+        console.error("Details:", insertError.details);
+        console.error("Hint:", insertError.hint);
 
-        const assignments = validCategoryIds.map((categoryId, index) => ({
-          product_id: productId,
-          category_id: categoryId,
-          is_primary: categoryId === validPrimaryId,
-        }));
-
-        console.log("Debug: Assignments to insert:", JSON.stringify(assignments, null, 2));
-
-        // Try to insert directly - if table doesn't exist, we'll get a clear error
-        const { error: insertError } = await supabase
-          .from("product_category_assignments")
-          .insert(assignments);
-
-        if (insertError) {
-          console.error("Failed to save category assignments:");
-          console.error("Error message:", insertError.message);
-          console.error("Error code:", insertError.code);
-          console.error("Error details:", insertError.details);
-          console.error("Error hint:", insertError.hint);
-          console.error("Full error object:", JSON.stringify(insertError, null, 2));
-
-          // If multi-category table doesn't exist, fall back to legacy mode
-          if (insertError.code === "42P01") { // Table doesn't exist
-            console.log("Multi-category table not found, using legacy single category mode");
-            return;
-          }
-          throw insertError;
-        }
-
-        console.log(`✅ Saved ${assignments.length} category assignments for product ${productId}`);
+        // Don't throw - let the legacy single category handle it
+        return;
       }
-    } catch (error: any) {
-      console.error("Error in saveCategoryAssignments:");
-      console.error("Error message:", error?.message);
-      console.error("Error code:", error?.code);
-      console.error("Error details:", error?.details);
-      console.error("Full error object:", JSON.stringify(error, null, 2));
 
-      // Don't throw error to prevent blocking the main save operation
-      // The primary category is still saved via the legacy category_id field
+      console.log(`✅ Successfully saved ${assignments.length} category assignments`);
+
+    } catch (error: any) {
+      console.error("❌ Unexpected error in multi-category save:");
+      console.error("Error:", error);
+      // Continue silently - legacy single category will still work
     }
   }
 
