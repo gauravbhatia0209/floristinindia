@@ -344,6 +344,15 @@ export default function Orders() {
                 />
               </div>
             </div>
+            <div className="w-48">
+              <Input
+                type="date"
+                placeholder="Filter by delivery date"
+                value={deliveryDateFilter}
+                onChange={(e) => setDeliveryDateFilter(e.target.value)}
+                className="w-full"
+              />
+            </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filter by status" />
@@ -359,6 +368,20 @@ export default function Orders() {
                 <SelectItem value="refunded">Refunded</SelectItem>
               </SelectContent>
             </Select>
+            {(deliveryDateFilter || statusFilter !== "all") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setDeliveryDateFilter("");
+                  setStatusFilter("all");
+                }}
+                className="px-3"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Clear
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
