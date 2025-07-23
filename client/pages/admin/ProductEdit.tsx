@@ -373,7 +373,7 @@ export default function ProductEdit() {
       console.log("Inserting assignments:", assignments);
 
       // Insert new assignments
-      console.log("🔄 Inserting assignments into database...");
+      console.log("�� Inserting assignments into database...");
       const { data: insertData, error: insertError } = await supabase
         .from("product_category_assignments")
         .insert(assignments)
@@ -669,6 +669,13 @@ export default function ProductEdit() {
               <CardTitle>Categories</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Debug info */}
+              <div className="bg-gray-100 p-2 rounded text-xs">
+                <div><strong>Selected IDs:</strong> {JSON.stringify(selectedCategoryIds)}</div>
+                <div><strong>Primary ID:</strong> {primaryCategoryId}</div>
+                <div><strong>Total Categories:</strong> {categories.length}</div>
+              </div>
+
               <MultiCategorySelect
                 categories={categories}
                 selectedCategoryIds={selectedCategoryIds}
