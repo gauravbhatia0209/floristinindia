@@ -399,7 +399,18 @@ export default function AdminProducts() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {getCategoryName(product.category_id)}
+                        <div className="flex flex-wrap gap-1">
+                          {getAllCategoriesForProduct(product).map((category, index) => (
+                            <Badge
+                              key={index}
+                              variant={category.isPrimary ? "default" : "secondary"}
+                              className="text-xs"
+                            >
+                              {category.name}
+                              {category.isPrimary && " (Primary)"}
+                            </Badge>
+                          ))}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div>
