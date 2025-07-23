@@ -147,6 +147,36 @@ export default function AdminProducts() {
     return category?.name || "Unknown";
   }
 
+  function getAllCategoriesForProduct(product: ProductWithCategoryAssignments) {
+    // First try to get categories from multi-category assignments
+    if (product.categoryAssignments && product.categoryAssignments.length > 0) {
+      const categoryNames = product.categoryAssignments
+        .map(assignment => {
+          const category = categories.find(cat => cat.id === assignment.category_id);
+          return {
+            name: category?.name || "Unknown",
+            isPrimary: assignment.is_primary,
+          };
+        })
+        .sort((a, b) => {
+          // Sort primary category first
+          if (a.isPrimary && !b.isPrimary) return -1;
+          if (!a.isPrimary && b.isPrimary) return 1;
+          return a.name.localeCompare(b.name);
+        });
+
+      return categoryNames;
+    }
+
+    // Fallback to legacy single category
+    if (product.category_id) {
+      const categoryName = getCategoryName(product.category_id);
+      return [{ name: categoryName, isPrimary: true }];
+    }
+
+    return [{ name: "Uncategorized", isPrimary: true }];
+  }
+
   function getStockStatus(stock: number) {
     if (stock === 0)
       return { label: "Out of Stock", variant: "destructive" as const };
