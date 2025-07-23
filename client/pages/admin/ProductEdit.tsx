@@ -262,7 +262,7 @@ export default function ProductEdit() {
     }
   }
 
-  async function loadCategoryAssignments(productId: string) {
+  async function loadCategoryAssignments(productId: string): Promise<boolean> {
     try {
       const { data: assignments, error } = await supabase
         .from("product_category_assignments")
@@ -272,10 +272,10 @@ export default function ProductEdit() {
       if (error) {
         if (error.code === "42P01") {
           console.log("📝 Multi-category table doesn't exist - using legacy single category mode");
-          return; // Silently fall back to legacy mode
+          return false; // Explicitly return false for fallback
         }
         console.warn("Could not load category assignments:", error);
-        return;
+        return false;
       }
 
       if (assignments && assignments.length > 0) {
@@ -289,10 +289,14 @@ export default function ProductEdit() {
           setPrimaryCategoryId(categoryIds[0]);
         }
 
-        console.log(`✅ Loaded ${assignments.length} category assignments for product ${productId}`);
+        console.log(`✅ Loaded ${assignments.length} category assignments for product ${productId}:`, categoryIds);
+        return true; // Successfully loaded multi-category data
       }
+
+      return false; // No assignments found, use fallback
     } catch (error) {
       console.log("📝 Multi-category not available - using legacy single category mode");
+      return false;
     }
   }
 
