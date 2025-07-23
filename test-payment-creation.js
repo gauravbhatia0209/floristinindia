@@ -27,7 +27,7 @@ async function testPaymentCreation() {
     cancel_url: `${BASE_URL}/checkout`,
     metadata: {
       test_payment: true,
-      order_number: `TEST-${Date.now()}`,
+      order_number: `FII${Date.now().toString().slice(-5)}`,
     },
   };
 
