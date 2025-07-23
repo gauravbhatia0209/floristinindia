@@ -19,8 +19,14 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import {
   ProductCategory,
   Product,
+  ProductVariant,
   HomepageSection,
 } from "@/types/database.types";
+import { getProductEffectivePriceSync } from "@/lib/productUtils";
+
+interface ProductWithVariants extends Product {
+  variants?: ProductVariant[];
+}
 
 export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
