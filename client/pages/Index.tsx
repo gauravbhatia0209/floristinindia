@@ -31,7 +31,7 @@ interface ProductWithVariants extends Product {
 export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<ProductWithVariants[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addItem } = useCart();
 
