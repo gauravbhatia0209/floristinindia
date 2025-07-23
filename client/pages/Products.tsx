@@ -163,27 +163,22 @@ export default function Products() {
       const categoriesWithCounts = await getCategoriesWithProductCount();
       setCategories(categoriesWithCounts);
 
-      // Fetch variants for products that have variations enabled
-      const productsWithVariations = productsData.filter(
-        (p) => p.has_variations,
-      );
+      // Fetch variants for all products
+      try {
+        const allProductIds = productsData.map((p) => p.id);
 
-      console.log("🔍 Products page - Products with variations:", productsWithVariations.length);
-
-      if (productsWithVariations.length > 0) {
-        const productIds = productsWithVariations.map((p) => p.id);
-        console.log("🔍 Products page - Fetching variants for:", productIds);
-
+        // Fetch variants for all products
         const { data: allVariants, error: variantsError } = await supabase
           .from("product_variants")
           .select("*")
-          .in("product_id", productIds)
+          .in("product_id", allProductIds)
           .eq("is_active", true)
           .order("sort_order", { ascending: true })
           .order("display_order", { ascending: true });
 
-        console.log("🔍 Products page - Fetched variants:", allVariants);
-        console.log("🔍 Products page - Variants error:", variantsError);
+        if (variantsError) {
+          console.warn("Error fetching variants:", variantsError);
+        }
 
         // Group variants by product_id
         const variantsByProduct = (allVariants || []).reduce(
@@ -197,7 +192,7 @@ export default function Products() {
           {} as Record<string, ProductVariant[]>,
         );
 
-        // Add variants to products
+        // Add variants to all products
         const productsWithVariants = productsData.map((product) => ({
           ...product,
           variants: variantsByProduct[product.id] || [],
@@ -211,10 +206,12 @@ export default function Products() {
           );
         }
         setProducts(productsWithVariants);
-      } else {
+      } catch (variantError) {
+        console.warn("Error processing variants:", variantError);
+        // Fallback: add empty variants array
         if (import.meta.env.DEV) {
           console.log(
-            "Setting products data:",
+            "Setting products data (fallback):",
             productsData.length,
             "products",
           );
