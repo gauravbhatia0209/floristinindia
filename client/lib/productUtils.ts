@@ -249,16 +249,7 @@ export function getProductEffectivePriceSync(
   hasVariants: boolean;
   defaultVariant?: ProductVariant;
 } {
-  // If product doesn't have variations, return base pricing
-  if (!product.has_variations) {
-    return {
-      price: product.price,
-      salePrice: product.sale_price,
-      hasVariants: false,
-    };
-  }
-
-  // If variants are provided, use them
+  // Check if variants are provided and active
   if (variants && variants.length > 0) {
     const activeVariants = variants
       .filter((v) => v.is_active)
@@ -275,7 +266,16 @@ export function getProductEffectivePriceSync(
     }
   }
 
-  // Fallback to base pricing
+  // If product has variations flag set but no active variants, return base pricing
+  if (product.has_variations) {
+    return {
+      price: product.price,
+      salePrice: product.sale_price,
+      hasVariants: true,
+    };
+  }
+
+  // Default fallback to base pricing
   return {
     price: product.price,
     salePrice: product.sale_price,
