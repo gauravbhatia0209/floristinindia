@@ -306,6 +306,20 @@ export default function ProductEdit() {
         console.log("Debug: Primary category:", primaryCategoryId);
         console.log("Debug: Product ID:", productId);
 
+        // Validate that all category IDs are valid UUIDs
+        const validCategoryIds = selectedCategoryIds.filter(id => id && id.trim() !== '');
+        if (validCategoryIds.length === 0) {
+          console.warn("No valid category IDs found");
+          return;
+        }
+
+        // Ensure primary category is set to one of the selected categories
+        let validPrimaryId = primaryCategoryId;
+        if (!validPrimaryId || !validCategoryIds.includes(validPrimaryId)) {
+          validPrimaryId = validCategoryIds[0];
+          console.log("Primary category was invalid, using first selected category:", validPrimaryId);
+        }
+
         const assignments = selectedCategoryIds.map((categoryId, index) => ({
           product_id: productId,
           category_id: categoryId,
