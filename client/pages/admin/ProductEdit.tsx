@@ -224,7 +224,12 @@ export default function ProductEdit() {
       }
 
       // Save category assignments
+      console.log("🔄 About to save category assignments...");
+      console.log("Product ID for category save:", productId);
+      console.log("Selected categories before save:", selectedCategoryIds);
+      console.log("Primary category before save:", primaryCategoryId);
       await saveCategoryAssignments(productId);
+      console.log("✅ Category assignments save completed");
 
       alert(
         isNew
