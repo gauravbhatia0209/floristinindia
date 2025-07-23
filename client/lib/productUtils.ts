@@ -276,12 +276,7 @@ export function getProductEffectivePriceSync(
   if (variants && variants.length > 0) {
     const activeVariants = variants
       .filter((v) => v.is_active)
-      .sort((a, b) => {
-        if (a.sort_order !== b.sort_order) {
-          return a.sort_order - b.sort_order;
-        }
-        return a.display_order - b.display_order;
-      });
+      .sort((a, b) => a.sort_order - b.sort_order);
 
     if (product.name === "Test Product") {
       console.log(`🔍 Test Product: Active variants after filtering/sorting:`, activeVariants);
