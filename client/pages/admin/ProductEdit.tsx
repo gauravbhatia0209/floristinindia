@@ -254,9 +254,47 @@ export default function ProductEdit() {
   }
 
   async function saveCategoryAssignments(productId: string) {
-    // Skip multi-category assignments since table doesn't exist
-    // Legacy single category is handled in the main product save
-    console.log("Using legacy single category mode for product:", productId);
+    try {
+      // First, delete existing category assignments for this product
+      const { error: deleteError } = await supabase
+        .from("product_category_assignments")
+        .delete()
+        .eq("product_id", productId);
+
+      if (deleteError) {
+        console.warn("Warning: Could not delete existing assignments:", deleteError);
+        // Continue anyway - might be first time assignment
+      }
+
+      // Create new category assignments
+      if (selectedCategoryIds.length > 0) {
+        const assignments = selectedCategoryIds.map((categoryId, index) => ({
+          product_id: productId,
+          category_id: categoryId,
+          is_primary: categoryId === primaryCategoryId,
+        }));
+
+        const { error: insertError } = await supabase
+          .from("product_category_assignments")
+          .insert(assignments);
+
+        if (insertError) {
+          console.error("Failed to save category assignments:", insertError);
+          // If multi-category table doesn't exist, fall back to legacy mode
+          if (insertError.code === "42P01") { // Table doesn't exist
+            console.log("Multi-category table not found, using legacy single category mode");
+            return;
+          }
+          throw insertError;
+        }
+
+        console.log(`✅ Saved ${assignments.length} category assignments for product ${productId}`);
+      }
+    } catch (error) {
+      console.error("Error in saveCategoryAssignments:", error);
+      // Don't throw error to prevent blocking the main save operation
+      // The primary category is still saved via the legacy category_id field
+    }
   }
 
   if (isLoading) {
