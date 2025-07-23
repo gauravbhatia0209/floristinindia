@@ -261,7 +261,8 @@ export default function Products() {
 
     // Filter by price range
     filtered = filtered.filter((product) => {
-      const price = product.sale_price || product.price;
+      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+      const price = effectivePrice.salePrice || effectivePrice.price;
       return price >= priceRange[0] && price <= priceRange[1];
     });
 
@@ -269,9 +270,25 @@ export default function Products() {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price_low":
-          return (a.sale_price || a.price) - (b.sale_price || b.price);
+          const priceA = (() => {
+            const effective = getProductEffectivePriceSync(a, a.variants);
+            return effective.salePrice || effective.price;
+          })();
+          const priceB = (() => {
+            const effective = getProductEffectivePriceSync(b, b.variants);
+            return effective.salePrice || effective.price;
+          })();
+          return priceA - priceB;
         case "price_high":
-          return (b.sale_price || b.price) - (a.sale_price || a.price);
+          const priceHighA = (() => {
+            const effective = getProductEffectivePriceSync(a, a.variants);
+            return effective.salePrice || effective.price;
+          })();
+          const priceHighB = (() => {
+            const effective = getProductEffectivePriceSync(b, b.variants);
+            return effective.salePrice || effective.price;
+          })();
+          return priceHighB - priceHighA;
         case "name":
         default:
           return a.name.localeCompare(b.name);
