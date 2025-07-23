@@ -379,9 +379,6 @@ export default function Orders() {
                             <Badge className={getStatusColor(order.status)}>
                               {order.status.toUpperCase()}
                             </Badge>
-                            <Badge variant="outline">
-                              {order.payment_status.toUpperCase()}
-                            </Badge>
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
