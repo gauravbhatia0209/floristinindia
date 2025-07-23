@@ -241,7 +241,7 @@ router.post("/create", async (req, res) => {
     // If no order_id provided, create a placeholder order (payment-first flow)
     if (!order_id || order_id.trim() === "") {
       try {
-        const tempOrderNumber = `TEMP-${Date.now()}`;
+        const tempOrderNumber = `FII${Date.now().toString().slice(-5)}`;
         const placeholderOrder = {
           order_number: tempOrderNumber,
           status: "pending",
