@@ -775,26 +775,7 @@ export default function Products() {
                         effectivePrice.salePrice &&
                         effectivePrice.salePrice < effectivePrice.price;
 
-                      // Debug logging for Test Product
-                      if (product.name === "Test Product") {
-                        console.log(`🔍 Products Page - Test Product Debug:`, {
-                          product_name: product.name,
-                          has_variations: product.has_variations,
-                          base_price: product.price,
-                          base_sale_price: product.sale_price,
-                          variants_count: product.variants?.length || 0,
-                          variants: product.variants?.map(v => ({
-                            name: v.name,
-                            price: v.price,
-                            sale_price: v.sale_price,
-                            is_active: v.is_active,
-                            sort_order: v.sort_order,
-                            display_order: v.display_order
-                          })),
-                          effective_price_result: effectivePrice,
-                          final_display_price: displayPrice
-                        });
-                      }
+
 
                       return (
                         <>
