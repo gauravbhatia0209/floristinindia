@@ -302,11 +302,33 @@ export default function ProductEdit() {
 
       // Create new category assignments
       if (selectedCategoryIds.length > 0) {
+        console.log("Debug: Selected categories:", selectedCategoryIds);
+        console.log("Debug: Primary category:", primaryCategoryId);
+        console.log("Debug: Product ID:", productId);
+
         const assignments = selectedCategoryIds.map((categoryId, index) => ({
           product_id: productId,
           category_id: categoryId,
           is_primary: categoryId === primaryCategoryId,
         }));
+
+        console.log("Debug: Assignments to insert:", JSON.stringify(assignments, null, 2));
+
+        // First check if table exists
+        const { data: tableCheck, error: tableError } = await supabase
+          .from("product_category_assignments")
+          .select("id")
+          .limit(1);
+
+        if (tableError) {
+          console.error("Table check failed:", tableError);
+          if (tableError.code === "42P01") {
+            console.log("Multi-category table does not exist, using legacy single category mode");
+            return;
+          }
+        } else {
+          console.log("Multi-category table exists, proceeding with insert");
+        }
 
         const { error: insertError } = await supabase
           .from("product_category_assignments")
