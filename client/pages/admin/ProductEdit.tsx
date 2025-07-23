@@ -336,17 +336,29 @@ export default function ProductEdit() {
         .insert(assignments);
 
       if (insertError) {
-        if (insertError.code === "42P01") {
-          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
-          console.log("   node apply-multi-category-migration.js");
-          return;
-        }
-
         console.error("❌ Failed to save multi-category assignments:");
+        console.error("Full error object:", insertError);
+        console.error("Error type:", typeof insertError);
+        console.error("Error keys:", Object.keys(insertError));
+        console.error("Error as JSON:", JSON.stringify(insertError, null, 2));
+
+        // Check different possible error properties
         console.error("Code:", insertError.code);
         console.error("Message:", insertError.message);
         console.error("Details:", insertError.details);
         console.error("Hint:", insertError.hint);
+        console.error("Error:", insertError.error);
+        console.error("Status:", insertError.status);
+        console.error("StatusText:", insertError.statusText);
+
+        // Check if it's a table doesn't exist error
+        if (insertError.code === "42P01" ||
+            (insertError.message && insertError.message.includes("does not exist")) ||
+            (insertError.error && insertError.error.includes("does not exist"))) {
+          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+          console.log("   node apply-multi-category-migration.js");
+          return;
+        }
 
         // Don't throw - let the legacy single category handle it
         return;
