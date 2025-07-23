@@ -43,7 +43,9 @@ interface ProductWithCategoryAssignments extends Product {
 }
 
 export default function AdminProducts() {
-  const [products, setProducts] = useState<ProductWithCategoryAssignments[]>([]);
+  const [products, setProducts] = useState<ProductWithCategoryAssignments[]>(
+    [],
+  );
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,7 +77,8 @@ export default function AdminProducts() {
         results[1].status === "fulfilled" ? results[1].value.data || [] : [];
 
       // Fetch category assignments for all products
-      let productsWithAssignments: ProductWithCategoryAssignments[] = productsData;
+      let productsWithAssignments: ProductWithCategoryAssignments[] =
+        productsData;
 
       try {
         const { data: allAssignments, error: assignmentsError } = await supabase
@@ -83,24 +86,33 @@ export default function AdminProducts() {
           .select("product_id, category_id, is_primary");
 
         if (assignmentsError && assignmentsError.code !== "42P01") {
-          console.warn("Error fetching category assignments:", assignmentsError);
+          console.warn(
+            "Error fetching category assignments:",
+            assignmentsError,
+          );
         }
 
         if (allAssignments) {
           // Group assignments by product_id
-          const assignmentsByProduct = allAssignments.reduce((acc, assignment) => {
-            if (!acc[assignment.product_id]) {
-              acc[assignment.product_id] = [];
-            }
-            acc[assignment.product_id].push({
-              category_id: assignment.category_id,
-              is_primary: assignment.is_primary,
-            });
-            return acc;
-          }, {} as Record<string, { category_id: string; is_primary: boolean }[]>);
+          const assignmentsByProduct = allAssignments.reduce(
+            (acc, assignment) => {
+              if (!acc[assignment.product_id]) {
+                acc[assignment.product_id] = [];
+              }
+              acc[assignment.product_id].push({
+                category_id: assignment.category_id,
+                is_primary: assignment.is_primary,
+              });
+              return acc;
+            },
+            {} as Record<
+              string,
+              { category_id: string; is_primary: boolean }[]
+            >,
+          );
 
           // Add assignments to products
-          productsWithAssignments = productsData.map(product => ({
+          productsWithAssignments = productsData.map((product) => ({
             ...product,
             categoryAssignments: assignmentsByProduct[product.id] || [],
           }));
@@ -108,7 +120,9 @@ export default function AdminProducts() {
           console.log("Added category assignments to products");
         }
       } catch (error) {
-        console.log("Multi-category assignments not available, using legacy categories");
+        console.log(
+          "Multi-category assignments not available, using legacy categories",
+        );
       }
 
       console.log("Fetched:", {
@@ -151,8 +165,10 @@ export default function AdminProducts() {
     // First try to get categories from multi-category assignments
     if (product.categoryAssignments && product.categoryAssignments.length > 0) {
       const categoryNames = product.categoryAssignments
-        .map(assignment => {
-          const category = categories.find(cat => cat.id === assignment.category_id);
+        .map((assignment) => {
+          const category = categories.find(
+            (cat) => cat.id === assignment.category_id,
+          );
           return {
             name: category?.name || "Unknown",
             isPrimary: assignment.is_primary,
@@ -400,16 +416,20 @@ export default function AdminProducts() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {getAllCategoriesForProduct(product).map((category, index) => (
-                            <Badge
-                              key={index}
-                              variant={category.isPrimary ? "default" : "secondary"}
-                              className="text-xs"
-                            >
-                              {category.name}
-                              {category.isPrimary && " (Primary)"}
-                            </Badge>
-                          ))}
+                          {getAllCategoriesForProduct(product).map(
+                            (category, index) => (
+                              <Badge
+                                key={index}
+                                variant={
+                                  category.isPrimary ? "default" : "secondary"
+                                }
+                                className="text-xs"
+                              >
+                                {category.name}
+                                {category.isPrimary && " (Primary)"}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>

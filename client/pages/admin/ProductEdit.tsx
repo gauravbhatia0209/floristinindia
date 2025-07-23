@@ -133,7 +133,10 @@ export default function ProductEdit() {
 
         // Fallback to legacy single category only if multi-category loading failed
         if (!multiCategoryLoaded && data.category_id) {
-          console.log("Using legacy single category fallback:", data.category_id);
+          console.log(
+            "Using legacy single category fallback:",
+            data.category_id,
+          );
           setSelectedCategoryIds([data.category_id]);
           setPrimaryCategoryId(data.category_id);
         }
@@ -271,7 +274,9 @@ export default function ProductEdit() {
 
       if (error) {
         if (error.code === "42P01") {
-          console.log("📝 Multi-category table doesn't exist - using legacy single category mode");
+          console.log(
+            "📝 Multi-category table doesn't exist - using legacy single category mode",
+          );
           return false; // Explicitly return false for fallback
         }
         console.warn("Could not load category assignments:", error);
@@ -279,8 +284,8 @@ export default function ProductEdit() {
       }
 
       if (assignments && assignments.length > 0) {
-        const categoryIds = assignments.map(a => a.category_id);
-        const primaryAssignment = assignments.find(a => a.is_primary);
+        const categoryIds = assignments.map((a) => a.category_id);
+        const primaryAssignment = assignments.find((a) => a.is_primary);
 
         setSelectedCategoryIds(categoryIds);
         if (primaryAssignment) {
@@ -289,13 +294,18 @@ export default function ProductEdit() {
           setPrimaryCategoryId(categoryIds[0]);
         }
 
-        console.log(`✅ Loaded ${assignments.length} category assignments for product ${productId}:`, categoryIds);
+        console.log(
+          `✅ Loaded ${assignments.length} category assignments for product ${productId}:`,
+          categoryIds,
+        );
         return true; // Successfully loaded multi-category data
       }
 
       return false; // No assignments found, use fallback
     } catch (error) {
-      console.log("📝 Multi-category not available - using legacy single category mode");
+      console.log(
+        "📝 Multi-category not available - using legacy single category mode",
+      );
       return false;
     }
   }
@@ -303,12 +313,16 @@ export default function ProductEdit() {
   async function saveCategoryAssignments(productId: string) {
     // Skip multi-category if no categories selected
     if (selectedCategoryIds.length === 0) {
-      console.log("No categories selected, skipping multi-category assignments");
+      console.log(
+        "No categories selected, skipping multi-category assignments",
+      );
       return;
     }
 
     // Multi-category functionality is now enabled
-    console.log("💾 Multi-category enabled - will save all selected categories");
+    console.log(
+      "💾 Multi-category enabled - will save all selected categories",
+    );
     console.log("Selected categories:", selectedCategoryIds);
     console.log("Primary category:", primaryCategoryId);
 
@@ -319,9 +333,13 @@ export default function ProductEdit() {
       console.log("Product ID:", productId);
 
       // Validate category IDs
-      const validCategoryIds = selectedCategoryIds.filter(id => id && id.trim() !== '');
+      const validCategoryIds = selectedCategoryIds.filter(
+        (id) => id && id.trim() !== "",
+      );
       if (validCategoryIds.length === 0) {
-        console.warn("No valid category IDs found, skipping multi-category save");
+        console.warn(
+          "No valid category IDs found, skipping multi-category save",
+        );
         return;
       }
 
@@ -342,13 +360,23 @@ export default function ProductEdit() {
 
       if (tableCheckError) {
         console.error("Table check error:", tableCheckError);
-        console.error("Table check error JSON:", JSON.stringify(tableCheckError, null, 2));
+        console.error(
+          "Table check error JSON:",
+          JSON.stringify(tableCheckError, null, 2),
+        );
 
-        if (tableCheckError.code === "42P01" ||
-            (tableCheckError.message && tableCheckError.message.toLowerCase().includes("does not exist"))) {
-          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+        if (
+          tableCheckError.code === "42P01" ||
+          (tableCheckError.message &&
+            tableCheckError.message.toLowerCase().includes("does not exist"))
+        ) {
+          console.log(
+            "📝 Multi-category table doesn't exist. Please run the migration:",
+          );
           console.log("   node apply-multi-category-migration.js");
-          console.log("   OR manually run database-multi-category-migration.sql in Supabase dashboard");
+          console.log(
+            "   OR manually run database-multi-category-migration.sql in Supabase dashboard",
+          );
           return;
         }
       } else {
@@ -369,7 +397,7 @@ export default function ProductEdit() {
       }
 
       // Create assignments
-      const assignments = validCategoryIds.map(categoryId => ({
+      const assignments = validCategoryIds.map((categoryId) => ({
         product_id: productId,
         category_id: categoryId,
         is_primary: categoryId === validPrimaryId,
@@ -384,7 +412,10 @@ export default function ProductEdit() {
         .insert(assignments)
         .select();
 
-      console.log("📊 Insert result:", { data: insertData, error: insertError });
+      console.log("📊 Insert result:", {
+        data: insertData,
+        error: insertError,
+      });
 
       if (insertError) {
         console.error("❌ Failed to save multi-category assignments:");
@@ -403,10 +434,15 @@ export default function ProductEdit() {
         console.error("StatusText:", insertError.statusText);
 
         // Check if it's a table doesn't exist error
-        if (insertError.code === "42P01" ||
-            (insertError.message && insertError.message.includes("does not exist")) ||
-            (insertError.error && insertError.error.includes("does not exist"))) {
-          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+        if (
+          insertError.code === "42P01" ||
+          (insertError.message &&
+            insertError.message.includes("does not exist")) ||
+          (insertError.error && insertError.error.includes("does not exist"))
+        ) {
+          console.log(
+            "📝 Multi-category table doesn't exist. Please run the migration:",
+          );
           console.log("   node apply-multi-category-migration.js");
           return;
         }
@@ -415,9 +451,10 @@ export default function ProductEdit() {
         return;
       }
 
-      console.log(`✅ Successfully saved ${assignments.length} category assignments`);
+      console.log(
+        `✅ Successfully saved ${assignments.length} category assignments`,
+      );
       console.log("📊 Saved data:", insertData);
-
     } catch (error: any) {
       console.error("❌ Unexpected error in multi-category save:");
       console.error("Error:", error);
@@ -676,9 +713,16 @@ export default function ProductEdit() {
             <CardContent className="space-y-4">
               {/* Debug info */}
               <div className="bg-gray-100 p-2 rounded text-xs">
-                <div><strong>Selected IDs:</strong> {JSON.stringify(selectedCategoryIds)}</div>
-                <div><strong>Primary ID:</strong> {primaryCategoryId}</div>
-                <div><strong>Total Categories:</strong> {categories.length}</div>
+                <div>
+                  <strong>Selected IDs:</strong>{" "}
+                  {JSON.stringify(selectedCategoryIds)}
+                </div>
+                <div>
+                  <strong>Primary ID:</strong> {primaryCategoryId}
+                </div>
+                <div>
+                  <strong>Total Categories:</strong> {categories.length}
+                </div>
               </div>
 
               <MultiCategorySelect
