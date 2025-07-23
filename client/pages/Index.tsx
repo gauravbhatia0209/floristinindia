@@ -79,7 +79,7 @@ export default function Index() {
     }
   }
 
-  function handleAddToCart(product: Product, e: React.MouseEvent) {
+  function handleAddToCart(product: ProductWithVariants, e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
