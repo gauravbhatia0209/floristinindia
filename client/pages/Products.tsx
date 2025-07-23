@@ -125,20 +125,71 @@ export default function Products() {
             );
           }
 
-          // Fetch products for this category
-          const { data: legacyProducts, error: legacyError } = await supabase
-            .from("products")
-            .select("*")
-            .eq("category_id", currentCategoryData.id)
-            .eq("is_active", true);
+          // Fetch products for this category using multi-category assignments
+          try {
+            // First try to get products via multi-category assignments
+            const { data: categoryAssignments, error: assignmentsError } = await supabase
+              .from("product_category_assignments")
+              .select("product_id")
+              .eq("category_id", currentCategoryData.id);
 
-          if (import.meta.env.DEV) {
-            console.log("Products for category:", {
-              legacyProducts,
-              legacyError,
-            });
+            if (assignmentsError && assignmentsError.code !== "42P01") {
+              console.warn("Error fetching category assignments:", assignmentsError);
+            }
+
+            let productIds: string[] = [];
+
+            if (categoryAssignments && categoryAssignments.length > 0) {
+              // Use multi-category assignments
+              productIds = categoryAssignments.map(a => a.product_id);
+              console.log(`Found ${productIds.length} products via multi-category assignments`);
+            } else {
+              // Fallback to legacy category_id approach
+              console.log("No multi-category assignments found, using legacy approach");
+              const { data: legacyProducts, error: legacyError } = await supabase
+                .from("products")
+                .select("id")
+                .eq("category_id", currentCategoryData.id)
+                .eq("is_active", true);
+
+              productIds = legacyProducts?.map(p => p.id) || [];
+            }
+
+            if (productIds.length > 0) {
+              // Fetch full product data for the found product IDs
+              const { data: fullProducts, error: productsError } = await supabase
+                .from("products")
+                .select("*")
+                .in("id", productIds)
+                .eq("is_active", true);
+
+              if (productsError) {
+                console.error("Error fetching full product data:", productsError);
+                productsData = [];
+              } else {
+                productsData = fullProducts || [];
+                console.log(`Fetched ${productsData.length} products for category`);
+              }
+            } else {
+              productsData = [];
+            }
+          } catch (error) {
+            console.error("Error in multi-category fetch, falling back to legacy:", error);
+            // Complete fallback to legacy approach
+            const { data: legacyProducts, error: legacyError } = await supabase
+              .from("products")
+              .select("*")
+              .eq("category_id", currentCategoryData.id)
+              .eq("is_active", true);
+
+            if (import.meta.env.DEV) {
+              console.log("Legacy fallback products:", {
+                legacyProducts,
+                legacyError,
+              });
+            }
+            productsData = legacyProducts || [];
           }
-          productsData = legacyProducts || [];
         } else {
           if (import.meta.env.DEV) {
             console.log("Category not found for slug:", categorySlug);
