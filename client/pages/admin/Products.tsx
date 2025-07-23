@@ -38,8 +38,12 @@ import {
 import { supabase } from "@/lib/supabase";
 import { Product, ProductCategory } from "@shared/database.types";
 
+interface ProductWithCategoryAssignments extends Product {
+  categoryAssignments?: { category_id: string; is_primary: boolean }[];
+}
+
 export default function AdminProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithCategoryAssignments[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
