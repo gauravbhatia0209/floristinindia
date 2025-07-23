@@ -264,8 +264,12 @@ export default function ProductEdit() {
         .eq("product_id", productId);
 
       if (error) {
+        if (error.code === "42P01") {
+          console.log("📝 Multi-category table doesn't exist - using legacy single category mode");
+          return; // Silently fall back to legacy mode
+        }
         console.warn("Could not load category assignments:", error);
-        return; // Fall back to legacy single category mode
+        return;
       }
 
       if (assignments && assignments.length > 0) {
@@ -276,14 +280,13 @@ export default function ProductEdit() {
         if (primaryAssignment) {
           setPrimaryCategoryId(primaryAssignment.category_id);
         } else if (categoryIds.length > 0) {
-          // If no primary is marked, use the first one
           setPrimaryCategoryId(categoryIds[0]);
         }
 
         console.log(`✅ Loaded ${assignments.length} category assignments for product ${productId}`);
       }
     } catch (error) {
-      console.error("Error loading category assignments:", error);
+      console.log("📝 Multi-category not available - using legacy single category mode");
     }
   }
 
@@ -335,7 +338,7 @@ export default function ProductEdit() {
 
         if (tableCheckError.code === "42P01" ||
             (tableCheckError.message && tableCheckError.message.toLowerCase().includes("does not exist"))) {
-          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+          console.log("���� Multi-category table doesn't exist. Please run the migration:");
           console.log("   node apply-multi-category-migration.js");
           console.log("   OR manually run database-multi-category-migration.sql in Supabase dashboard");
           return;
