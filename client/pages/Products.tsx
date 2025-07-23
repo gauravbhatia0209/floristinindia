@@ -690,11 +690,16 @@ export default function Products() {
                 ) : (
                   <span className="text-6xl animate-pulse">🌺</span>
                 )}
-                {product.sale_price && (
-                  <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
-                    SALE
-                  </Badge>
-                )}
+                {(() => {
+                  const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+                  const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+
+                  return hasDiscount && (
+                    <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground">
+                      SALE
+                    </Badge>
+                  );
+                })()}
               </div>
 
               <CardContent className="p-4 flex-1">
