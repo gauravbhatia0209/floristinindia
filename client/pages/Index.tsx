@@ -1070,11 +1070,11 @@ export default function Index() {
                           return (
                             <>
                               <span className="text-lg font-bold text-primary">
-                                ₹{displayPrice.toFixed(2)}
+                                ₹{displayPrice}
                               </span>
                               {hasDiscount && (
                                 <span className="text-sm text-muted-foreground line-through">
-                                  ₹{effectivePrice.price.toFixed(2)}
+                                  ₹{effectivePrice.price}
                                 </span>
                               )}
                             </>
