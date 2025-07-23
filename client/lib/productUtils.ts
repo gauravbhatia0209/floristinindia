@@ -3,6 +3,7 @@ import {
   Product,
   ProductCategory,
   ProductCategoryAssignment,
+  ProductVariant,
 } from "@/types/database.types";
 
 export interface ProductWithCategories extends Product {
