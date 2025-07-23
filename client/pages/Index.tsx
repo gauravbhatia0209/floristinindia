@@ -252,7 +252,7 @@ export default function Index() {
             productsData,
           );
           console.log(
-            "��� Product Showcase: Query error (if any):",
+            "🎯 Product Showcase: Query error (if any):",
             productsError,
           );
           console.log("🕐 Query executed at:", new Date().toISOString());
@@ -1033,19 +1033,24 @@ export default function Index() {
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-primary">
-                          ₹
-                          {product.sale_price &&
-                          product.sale_price < product.price
-                            ? product.sale_price.toFixed(2)
-                            : product.price.toFixed(2)}
-                        </span>
-                        {product.sale_price &&
-                          product.sale_price < product.price && (
-                            <span className="text-sm text-muted-foreground line-through">
-                              ₹{product.price.toFixed(2)}
-                            </span>
-                          )}
+                        {(() => {
+                          const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+                          const displayPrice = effectivePrice.salePrice || effectivePrice.price;
+                          const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+
+                          return (
+                            <>
+                              <span className="text-lg font-bold text-primary">
+                                ₹{displayPrice.toFixed(2)}
+                              </span>
+                              {hasDiscount && (
+                                <span className="text-sm text-muted-foreground line-through">
+                                  ₹{effectivePrice.price.toFixed(2)}
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                     <Button
