@@ -350,11 +350,18 @@ export default function ProductEdit() {
         console.log("✅ Multi-category table exists");
       }
 
-      // First try to delete existing assignments (ignore errors)
-      await supabase
+      // First try to delete existing assignments
+      console.log("🗑️ Deleting existing category assignments...");
+      const { error: deleteError } = await supabase
         .from("product_category_assignments")
         .delete()
         .eq("product_id", productId);
+
+      if (deleteError) {
+        console.warn("⚠️ Warning during delete:", deleteError);
+      } else {
+        console.log("✅ Successfully deleted existing assignments");
+      }
 
       // Create assignments
       const assignments = validCategoryIds.map(categoryId => ({
