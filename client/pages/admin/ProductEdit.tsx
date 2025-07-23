@@ -378,32 +378,45 @@ export default function ProductEdit() {
               <CardTitle>Pricing & Inventory</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="price">Regular Price (��) *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price: e.target.value })
-                    }
-                    placeholder="999"
-                  />
+              {!formData.has_variations ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Regular Price (₹) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) =>
+                        setFormData({ ...formData, price: e.target.value })
+                      }
+                      placeholder="999"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sale_price">Sale Price (₹)</Label>
+                    <Input
+                      id="sale_price"
+                      type="number"
+                      value={formData.sale_price}
+                      onChange={(e) =>
+                        setFormData({ ...formData, sale_price: e.target.value })
+                      }
+                      placeholder="799"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="sale_price">Sale Price (₹)</Label>
-                  <Input
-                    id="sale_price"
-                    type="number"
-                    value={formData.sale_price}
-                    onChange={(e) =>
-                      setFormData({ ...formData, sale_price: e.target.value })
-                    }
-                    placeholder="799"
-                  />
+              ) : (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Package className="h-4 w-4 text-blue-600" />
+                    <h4 className="font-medium text-blue-900">Product Variations Enabled</h4>
+                  </div>
+                  <p className="text-sm text-blue-700">
+                    Pricing is managed through individual product variants below.
+                    The base pricing fields are disabled when variations are enabled.
+                  </p>
                 </div>
-              </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
