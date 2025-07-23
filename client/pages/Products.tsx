@@ -712,14 +712,24 @@ export default function Products() {
 
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-primary">
-                      ₹{product.sale_price || product.price}
-                    </span>
-                    {product.sale_price && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        ₹{product.price}
-                      </span>
-                    )}
+                    {(() => {
+                      const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+                      const displayPrice = effectivePrice.salePrice || effectivePrice.price;
+                      const hasDiscount = effectivePrice.salePrice && effectivePrice.salePrice < effectivePrice.price;
+
+                      return (
+                        <>
+                          <span className="text-lg font-bold text-primary">
+                            ₹{displayPrice}
+                          </span>
+                          {hasDiscount && (
+                            <span className="text-sm text-muted-foreground line-through">
+                              ₹{effectivePrice.price}
+                            </span>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
