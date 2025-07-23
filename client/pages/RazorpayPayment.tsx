@@ -137,7 +137,7 @@ export default function RazorpayPayment() {
           customer_name: customerName,
           customer_email: customerEmail,
           customer_phone: customerPhone,
-          order_number: `ORDER-${Date.now()}`,
+          order_number: `FII${Date.now().toString().slice(-5)}`,
         },
       };
 
