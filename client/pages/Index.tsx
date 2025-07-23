@@ -359,7 +359,9 @@ export default function Index() {
                 }));
 
                 setFeaturedProducts(productsWithVariants);
-              } else {
+              } catch (variantError) {
+                console.warn("Error processing variants:", variantError);
+                // Fallback: add empty variants array
                 setFeaturedProducts(
                   sortedProducts.map((p) => ({ ...p, variants: [] })),
                 );
