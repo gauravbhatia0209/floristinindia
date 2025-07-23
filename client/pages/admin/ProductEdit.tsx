@@ -330,8 +330,13 @@ export default function ProductEdit() {
 
         console.log(`✅ Saved ${assignments.length} category assignments for product ${productId}`);
       }
-    } catch (error) {
-      console.error("Error in saveCategoryAssignments:", error);
+    } catch (error: any) {
+      console.error("Error in saveCategoryAssignments:");
+      console.error("Error message:", error?.message);
+      console.error("Error code:", error?.code);
+      console.error("Error details:", error?.details);
+      console.error("Full error object:", JSON.stringify(error, null, 2));
+
       // Don't throw error to prevent blocking the main save operation
       // The primary category is still saved via the legacy category_id field
     }
