@@ -298,21 +298,24 @@ export default function Products() {
     setFilteredProducts(filtered);
   }
 
-  function handleAddToCart(product: Product) {
+  function handleAddToCart(product: ProductWithVariants) {
     addItem({
       product_id: product.id,
       product,
     });
 
+    const effectivePrice = getProductEffectivePriceSync(product, product.variants);
+    const price = effectivePrice.salePrice || effectivePrice.price;
+
     trackAddToCart(
       product.id,
       product.name,
-      product.sale_price || product.price,
+      price,
     );
     trackFBAddToCart(
       product.name,
       product.id,
-      product.sale_price || product.price,
+      price,
       "INR",
     );
 
