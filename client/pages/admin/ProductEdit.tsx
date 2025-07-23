@@ -297,12 +297,10 @@ export default function ProductEdit() {
       return;
     }
 
-    // TEMPORARY: Skip multi-category until migration is confirmed working
-    // Remove this block once the table is verified to exist
-    console.log("🔧 Multi-category temporarily disabled - using legacy single category only");
+    // Multi-category functionality is now enabled
+    console.log("💾 Multi-category enabled - will save all selected categories");
     console.log("Selected categories:", selectedCategoryIds);
-    console.log("Primary category (will be saved as legacy category_id):", primaryCategoryId);
-    return;
+    console.log("Primary category:", primaryCategoryId);
 
     try {
       console.log("💾 Attempting to save multi-category assignments...");
@@ -338,7 +336,7 @@ export default function ProductEdit() {
 
         if (tableCheckError.code === "42P01" ||
             (tableCheckError.message && tableCheckError.message.toLowerCase().includes("does not exist"))) {
-          console.log("���� Multi-category table doesn't exist. Please run the migration:");
+          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
           console.log("   node apply-multi-category-migration.js");
           console.log("   OR manually run database-multi-category-migration.sql in Supabase dashboard");
           return;
