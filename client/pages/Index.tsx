@@ -319,7 +319,37 @@ export default function Index() {
             );
 
             if (sortedProducts.length > 0) {
-              setFeaturedProducts(sortedProducts);
+              // Fetch variants for products that have variations enabled
+              const productsWithVariations = sortedProducts.filter(p => p.has_variations);
+              if (productsWithVariations.length > 0) {
+                const productIds = productsWithVariations.map(p => p.id);
+                const { data: allVariants } = await supabase
+                  .from("product_variants")
+                  .select("*")
+                  .in("product_id", productIds)
+                  .eq("is_active", true)
+                  .order("sort_order", { ascending: true })
+                  .order("display_order", { ascending: true });
+
+                // Group variants by product_id
+                const variantsByProduct = (allVariants || []).reduce((acc, variant) => {
+                  if (!acc[variant.product_id]) {
+                    acc[variant.product_id] = [];
+                  }
+                  acc[variant.product_id].push(variant);
+                  return acc;
+                }, {} as Record<string, ProductVariant[]>);
+
+                // Add variants to products
+                const productsWithVariants = sortedProducts.map(product => ({
+                  ...product,
+                  variants: variantsByProduct[product.id] || []
+                }));
+
+                setFeaturedProducts(productsWithVariants);
+              } else {
+                setFeaturedProducts(sortedProducts.map(p => ({ ...p, variants: [] })));
+              }
             } else {
               console.warn(
                 "⚠️ Product Showcase: All selected products filtered out, using fallback",
