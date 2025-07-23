@@ -366,9 +366,13 @@ export default function ProductEdit() {
       console.log("Inserting assignments:", assignments);
 
       // Insert new assignments
-      const { error: insertError } = await supabase
+      console.log("🔄 Inserting assignments into database...");
+      const { data: insertData, error: insertError } = await supabase
         .from("product_category_assignments")
-        .insert(assignments);
+        .insert(assignments)
+        .select();
+
+      console.log("📊 Insert result:", { data: insertData, error: insertError });
 
       if (insertError) {
         console.error("❌ Failed to save multi-category assignments:");
@@ -400,6 +404,7 @@ export default function ProductEdit() {
       }
 
       console.log(`✅ Successfully saved ${assignments.length} category assignments`);
+      console.log("📊 Saved data:", insertData);
 
     } catch (error: any) {
       console.error("❌ Unexpected error in multi-category save:");
