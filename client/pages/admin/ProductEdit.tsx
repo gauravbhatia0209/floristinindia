@@ -328,30 +328,7 @@ export default function ProductEdit() {
 
         console.log("Debug: Assignments to insert:", JSON.stringify(assignments, null, 2));
 
-        // First check if table exists
-        const { data: tableCheck, error: tableError } = await supabase
-          .from("product_category_assignments")
-          .select("id")
-          .limit(1);
-
-        if (tableError) {
-          console.error("Table check failed:");
-          console.error("Error message:", tableError.message);
-          console.error("Error code:", tableError.code);
-          console.error("Error details:", tableError.details);
-          console.error("Error hint:", tableError.hint);
-          console.error("Full table error object:", JSON.stringify(tableError, null, 2));
-
-          if (tableError.code === "42P01") {
-            console.log("Multi-category table does not exist, using legacy single category mode");
-            return;
-          }
-          // Continue with fallback for other errors
-          console.log("Table check failed but continuing anyway, might be permissions issue");
-        } else {
-          console.log("Multi-category table exists, proceeding with insert");
-        }
-
+        // Try to insert directly - if table doesn't exist, we'll get a clear error
         const { error: insertError } = await supabase
           .from("product_category_assignments")
           .insert(assignments);
