@@ -313,7 +313,13 @@ export default function ProductEdit() {
           .insert(assignments);
 
         if (insertError) {
-          console.error("Failed to save category assignments:", insertError);
+          console.error("Failed to save category assignments:");
+          console.error("Error message:", insertError.message);
+          console.error("Error code:", insertError.code);
+          console.error("Error details:", insertError.details);
+          console.error("Error hint:", insertError.hint);
+          console.error("Full error object:", JSON.stringify(insertError, null, 2));
+
           // If multi-category table doesn't exist, fall back to legacy mode
           if (insertError.code === "42P01") { // Table doesn't exist
             console.log("Multi-category table not found, using legacy single category mode");
