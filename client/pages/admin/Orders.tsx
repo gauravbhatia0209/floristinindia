@@ -165,7 +165,9 @@ export default function Orders() {
       filtered = filtered.filter((order) => {
         if (!order.delivery_date) return false;
         // Compare dates in YYYY-MM-DD format
-        const orderDeliveryDate = new Date(order.delivery_date).toISOString().split('T')[0];
+        const orderDeliveryDate = new Date(order.delivery_date)
+          .toISOString()
+          .split("T")[0];
         return orderDeliveryDate === deliveryDateFilter;
       });
     }
