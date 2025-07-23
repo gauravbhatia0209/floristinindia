@@ -157,10 +157,43 @@ export default function Products() {
       const categoriesWithCounts = await getCategoriesWithProductCount();
       setCategories(categoriesWithCounts);
 
-      if (import.meta.env.DEV) {
-        console.log("Setting products data:", productsData.length, "products");
+      // Fetch variants for products that have variations enabled
+      const productsWithVariations = productsData.filter(p => p.has_variations);
+      if (productsWithVariations.length > 0) {
+        const productIds = productsWithVariations.map(p => p.id);
+        const { data: allVariants } = await supabase
+          .from("product_variants")
+          .select("*")
+          .in("product_id", productIds)
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true })
+          .order("display_order", { ascending: true });
+
+        // Group variants by product_id
+        const variantsByProduct = (allVariants || []).reduce((acc, variant) => {
+          if (!acc[variant.product_id]) {
+            acc[variant.product_id] = [];
+          }
+          acc[variant.product_id].push(variant);
+          return acc;
+        }, {} as Record<string, ProductVariant[]>);
+
+        // Add variants to products
+        const productsWithVariants = productsData.map(product => ({
+          ...product,
+          variants: variantsByProduct[product.id] || []
+        }));
+
+        if (import.meta.env.DEV) {
+          console.log("Setting products data:", productsWithVariants.length, "products");
+        }
+        setProducts(productsWithVariants);
+      } else {
+        if (import.meta.env.DEV) {
+          console.log("Setting products data:", productsData.length, "products");
+        }
+        setProducts(productsData.map(p => ({ ...p, variants: [] })));
       }
-      setProducts(productsData);
     } catch (error) {
       console.error("Failed to fetch products:", error);
       // Fallback to simple queries if utility functions fail
