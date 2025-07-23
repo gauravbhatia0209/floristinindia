@@ -179,3 +179,111 @@ export function getProductPrimaryCategory(
 ): ProductCategory | null {
   return product.primary_category || null;
 }
+
+/**
+ * Get effective price for a product (from variants if available, otherwise base price)
+ */
+export async function getProductEffectivePrice(product: Product): Promise<{
+  price: number;
+  salePrice: number | null;
+  hasVariants: boolean;
+  defaultVariant?: ProductVariant;
+}> {
+  // If product doesn't have variations, return base pricing
+  if (!product.has_variations) {
+    return {
+      price: product.price,
+      salePrice: product.sale_price,
+      hasVariants: false,
+    };
+  }
+
+  try {
+    // Fetch active variants for this product, ordered by sort_order and display_order
+    const { data: variants, error } = await supabase
+      .from("product_variants")
+      .select("*")
+      .eq("product_id", product.id)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .order("display_order", { ascending: true });
+
+    if (error || !variants || variants.length === 0) {
+      // Fallback to base pricing if no variants found
+      return {
+        price: product.price,
+        salePrice: product.sale_price,
+        hasVariants: false,
+      };
+    }
+
+    // Use the first active variant as default
+    const defaultVariant = variants[0];
+
+    return {
+      price: defaultVariant.price,
+      salePrice: defaultVariant.sale_price,
+      hasVariants: true,
+      defaultVariant,
+    };
+  } catch (error) {
+    console.error("Error fetching product variants:", error);
+    // Fallback to base pricing on error
+    return {
+      price: product.price,
+      salePrice: product.sale_price,
+      hasVariants: false,
+    };
+  }
+}
+
+/**
+ * Synchronous version for when variants are already available
+ */
+export function getProductEffectivePriceSync(
+  product: Product,
+  variants?: ProductVariant[]
+): {
+  price: number;
+  salePrice: number | null;
+  hasVariants: boolean;
+  defaultVariant?: ProductVariant;
+} {
+  // If product doesn't have variations, return base pricing
+  if (!product.has_variations) {
+    return {
+      price: product.price,
+      salePrice: product.sale_price,
+      hasVariants: false,
+    };
+  }
+
+  // If variants are provided, use them
+  if (variants && variants.length > 0) {
+    const activeVariants = variants
+      .filter(v => v.is_active)
+      .sort((a, b) => {
+        if (a.sort_order !== b.sort_order) {
+          return a.sort_order - b.sort_order;
+        }
+        return a.display_order - b.display_order;
+      });
+
+    if (activeVariants.length > 0) {
+      const defaultVariant = activeVariants[0];
+      return {
+        price: defaultVariant.price,
+        salePrice: defaultVariant.sale_price,
+        hasVariants: true,
+        defaultVariant,
+      };
+    }
+  }
+
+  // Fallback to base pricing
+  return {
+    price: product.price,
+    salePrice: product.sale_price,
+    hasVariants: false,
+  };
+}
