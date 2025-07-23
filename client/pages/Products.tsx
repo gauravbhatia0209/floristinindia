@@ -53,9 +53,9 @@ import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
 import { useFacebookPixel } from "@/components/FacebookPixel";
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithVariants[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductWithVariants[]>([]);
   const [currentCategory, setCurrentCategory] =
     useState<ProductCategory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
