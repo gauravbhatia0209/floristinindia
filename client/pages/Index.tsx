@@ -322,28 +322,23 @@ export default function Index() {
             );
 
             if (sortedProducts.length > 0) {
-              // Fetch variants for products that have variations enabled
-              const productsWithVariations = sortedProducts.filter(
-                (p) => p.has_variations,
-              );
+              // Always add variants data to all products
+              try {
+                // Get all product IDs
+                const allProductIds = sortedProducts.map((p) => p.id);
 
-              console.log("🔍 Products with variations:", productsWithVariations.length);
-              console.log("🔍 Products with has_variations=true:", productsWithVariations.map(p => ({ name: p.name, has_variations: p.has_variations })));
-
-              if (productsWithVariations.length > 0) {
-                const productIds = productsWithVariations.map((p) => p.id);
-                console.log("🔍 Fetching variants for product IDs:", productIds);
-
+                // Fetch variants for all products (whether they have variations or not)
                 const { data: allVariants, error: variantsError } = await supabase
                   .from("product_variants")
                   .select("*")
-                  .in("product_id", productIds)
+                  .in("product_id", allProductIds)
                   .eq("is_active", true)
                   .order("sort_order", { ascending: true })
                   .order("display_order", { ascending: true });
 
-                console.log("🔍 Fetched variants:", allVariants);
-                console.log("🔍 Variants error:", variantsError);
+                if (variantsError) {
+                  console.warn("Error fetching variants:", variantsError);
+                }
 
                 // Group variants by product_id
                 const variantsByProduct = (allVariants || []).reduce(
@@ -357,21 +352,11 @@ export default function Index() {
                   {} as Record<string, ProductVariant[]>,
                 );
 
-                console.log("🔍 Variants by product:", variantsByProduct);
-
-                // Add variants to products
+                // Add variants to all products
                 const productsWithVariants = sortedProducts.map((product) => ({
                   ...product,
                   variants: variantsByProduct[product.id] || [],
                 }));
-
-                console.log("🔍 Final products with variants:", productsWithVariants.map(p => ({
-                  name: p.name,
-                  has_variations: p.has_variations,
-                  variants_count: p.variants?.length || 0,
-                  base_price: p.price,
-                  base_sale_price: p.sale_price
-                })));
 
                 setFeaturedProducts(productsWithVariants);
               } else {
@@ -997,7 +982,7 @@ export default function Index() {
 
                       if (!hasValidImage) {
                         console.log(
-                          `���️ Product "${product.name}" has no valid images:`,
+                          `⚠️ Product "${product.name}" has no valid images:`,
                           product.images,
                         );
                       }
