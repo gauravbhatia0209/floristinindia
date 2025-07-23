@@ -128,8 +128,11 @@ export default function ProductEdit() {
           weight: data.weight?.toString() || "",
         });
 
-        // Set category assignments from the product data
-        if (data.category_id) {
+        // Load multi-category assignments
+        await loadCategoryAssignments(productId);
+
+        // Fallback to legacy single category if no multi-category assignments found
+        if (selectedCategoryIds.length === 0 && data.category_id) {
           setSelectedCategoryIds([data.category_id]);
           setPrimaryCategoryId(data.category_id);
         }
