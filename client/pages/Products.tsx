@@ -167,15 +167,23 @@ export default function Products() {
       const productsWithVariations = productsData.filter(
         (p) => p.has_variations,
       );
+
+      console.log("🔍 Products page - Products with variations:", productsWithVariations.length);
+
       if (productsWithVariations.length > 0) {
         const productIds = productsWithVariations.map((p) => p.id);
-        const { data: allVariants } = await supabase
+        console.log("🔍 Products page - Fetching variants for:", productIds);
+
+        const { data: allVariants, error: variantsError } = await supabase
           .from("product_variants")
           .select("*")
           .in("product_id", productIds)
           .eq("is_active", true)
           .order("sort_order", { ascending: true })
           .order("display_order", { ascending: true });
+
+        console.log("🔍 Products page - Fetched variants:", allVariants);
+        console.log("🔍 Products page - Variants error:", variantsError);
 
         // Group variants by product_id
         const variantsByProduct = (allVariants || []).reduce(
