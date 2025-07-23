@@ -315,6 +315,28 @@ export default function ProductEdit() {
         console.log("Primary category corrected to:", validPrimaryId);
       }
 
+      // Check if the multi-category table exists
+      console.log("🔍 Checking if multi-category table exists...");
+      const { data: tableExists, error: tableCheckError } = await supabase
+        .from("product_category_assignments")
+        .select("id")
+        .limit(1);
+
+      if (tableCheckError) {
+        console.error("Table check error:", tableCheckError);
+        console.error("Table check error JSON:", JSON.stringify(tableCheckError, null, 2));
+
+        if (tableCheckError.code === "42P01" ||
+            (tableCheckError.message && tableCheckError.message.toLowerCase().includes("does not exist"))) {
+          console.log("📝 Multi-category table doesn't exist. Please run the migration:");
+          console.log("   node apply-multi-category-migration.js");
+          console.log("   OR manually run database-multi-category-migration.sql in Supabase dashboard");
+          return;
+        }
+      } else {
+        console.log("✅ Multi-category table exists");
+      }
+
       // First try to delete existing assignments (ignore errors)
       await supabase
         .from("product_category_assignments")
