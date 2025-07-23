@@ -55,7 +55,6 @@ const navigation = [
     name: "Orders",
     href: "/admin/orders",
     icon: ShoppingCart,
-    badge: "3",
   },
   {
     name: "Customers",
