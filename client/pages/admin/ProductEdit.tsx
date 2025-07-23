@@ -129,10 +129,11 @@ export default function ProductEdit() {
         });
 
         // Load multi-category assignments
-        await loadCategoryAssignments(productId);
+        const multiCategoryLoaded = await loadCategoryAssignments(productId);
 
-        // Fallback to legacy single category if no multi-category assignments found
-        if (selectedCategoryIds.length === 0 && data.category_id) {
+        // Fallback to legacy single category only if multi-category loading failed
+        if (!multiCategoryLoaded && data.category_id) {
+          console.log("Using legacy single category fallback:", data.category_id);
           setSelectedCategoryIds([data.category_id]);
           setPrimaryCategoryId(data.category_id);
         }
@@ -373,7 +374,7 @@ export default function ProductEdit() {
       console.log("Inserting assignments:", assignments);
 
       // Insert new assignments
-      console.log("�� Inserting assignments into database...");
+      console.log("🔄 Inserting assignments into database...");
       const { data: insertData, error: insertError } = await supabase
         .from("product_category_assignments")
         .insert(assignments)
