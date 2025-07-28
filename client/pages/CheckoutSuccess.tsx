@@ -66,12 +66,16 @@ const CheckoutSuccess: React.FC = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (isCreatingOrder && !orderCreated) {
-        console.log("⏰ CheckoutSuccess: Timeout reached, showing success anyway");
+        console.log(
+          "⏰ CheckoutSuccess: Timeout reached, showing success anyway",
+        );
         const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
         if (pendingOrderNumber) {
           setCreatedOrderNumber(pendingOrderNumber);
           localStorage.removeItem("pendingOrderNumber");
-          navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
+          navigate(`/order-confirmation/${pendingOrderNumber}`, {
+            replace: true,
+          });
         } else {
           setOrderCreated(true);
         }
@@ -93,17 +97,26 @@ const CheckoutSuccess: React.FC = () => {
       const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
 
       if (!pendingOrderNumber) {
-        console.error("❌ CheckoutSuccess: No pending order number found in localStorage");
+        console.error(
+          "❌ CheckoutSuccess: No pending order number found in localStorage",
+        );
         // Try to extract order number from URL or show generic success
-        const urlOrderNumber = new URLSearchParams(window.location.search).get("order_number");
+        const urlOrderNumber = new URLSearchParams(window.location.search).get(
+          "order_number",
+        );
         if (urlOrderNumber) {
-          console.log("🔄 CheckoutSuccess: Using order number from URL:", urlOrderNumber);
+          console.log(
+            "🔄 CheckoutSuccess: Using order number from URL:",
+            urlOrderNumber,
+          );
           setCreatedOrderNumber(urlOrderNumber);
           setOrderCreated(true);
           navigate(`/order-confirmation/${urlOrderNumber}`, { replace: true });
           return;
         }
-        throw new Error("No pending order number found in localStorage and no order number in URL");
+        throw new Error(
+          "No pending order number found in localStorage and no order number in URL",
+        );
       }
 
       console.log(
@@ -180,15 +193,21 @@ const CheckoutSuccess: React.FC = () => {
       // The order exists in database with "pending" status
       const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
       if (pendingOrderNumber) {
-        console.log("⚠️ CheckoutSuccess: Order update failed but payment was successful, showing success with pending order");
+        console.log(
+          "⚠️ CheckoutSuccess: Order update failed but payment was successful, showing success with pending order",
+        );
         setCreatedOrderNumber(pendingOrderNumber);
         setOrderCreated(true);
         // Clean up localStorage
         localStorage.removeItem("pendingOrderNumber");
-        navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
+        navigate(`/order-confirmation/${pendingOrderNumber}`, {
+          replace: true,
+        });
       } else {
         // If no order number, just show generic success
-        console.log("⚠️ CheckoutSuccess: Order update failed and no order number found, showing generic success");
+        console.log(
+          "⚠️ CheckoutSuccess: Order update failed and no order number found, showing generic success",
+        );
         setOrderCreated(true);
       }
     }
