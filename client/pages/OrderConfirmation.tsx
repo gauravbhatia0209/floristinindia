@@ -365,7 +365,6 @@ const OrderConfirmation: React.FC = () => {
                         const imageUrl = item.product?.images?.[0];
                         console.log("🖼️ Image data for", item.product_name, ":", {
                           hasProduct: !!item.product,
-                          image_url: item.product?.image_url,
                           images: item.product?.images,
                           finalImageUrl: imageUrl
                         });
