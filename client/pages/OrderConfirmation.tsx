@@ -322,17 +322,31 @@ const OrderConfirmation: React.FC = () => {
                 {order.items.map((item, index) => (
                   <div key={index} className="p-6 flex gap-4">
                     <div className="w-20 h-20 flex-shrink-0">
-                      {item.product?.images?.[0] ? (
-                        <img
-                          src={item.product.images[0].url}
-                          alt={item.product_name}
-                          className="w-full h-full object-cover rounded-lg border"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                          <Package className="w-8 h-8 text-gray-400" />
-                        </div>
-                      )}
+                      {(() => {
+                        const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0]?.image_url || item.product?.image_url;
+                        console.log("🖼️ Image data for", item.product_name, ":", {
+                          hasProduct: !!item.product,
+                          images: item.product?.images,
+                          imageUrl
+                        });
+
+                        return imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={item.product_name}
+                            className="w-full h-full object-cover rounded-lg border"
+                            onError={(e) => {
+                              console.error("Image failed to load:", imageUrl);
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+                            <Package className="w-8 h-8 text-gray-400" />
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     <div className="flex-1 min-w-0">
