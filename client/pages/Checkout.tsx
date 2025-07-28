@@ -1284,10 +1284,9 @@ export default function Checkout() {
 
         setPaymentIntentId(paymentIntentId);
 
-        // Save form data to localStorage for order creation after payment
-        console.log("💾 Saving form data to localStorage for order creation");
-        localStorage.setItem("checkoutFormData", JSON.stringify(form));
-        localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
+        // Save order ID for status update after payment
+        console.log("💾 Saving order ID for status update after payment");
+        localStorage.setItem("pendingOrderNumber", createdOrderNumber);
 
         // Redirect to local payment page with order data
         const paymentUrl = `/razorpay-payment?order_id=${orderId}&payment_intent=${paymentIntentId}&amount=${paymentAmount}&customer_name=${encodeURIComponent(form.fullName)}&customer_email=${encodeURIComponent(form.email)}&customer_phone=${encodeURIComponent(`${form.phoneCountryCode}${form.phone}`)}`;
