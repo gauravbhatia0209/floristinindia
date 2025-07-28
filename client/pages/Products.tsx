@@ -818,7 +818,7 @@ export default function Products() {
                 })()}
               </div>
 
-              <CardContent className="p-4 flex-1">
+              <CardContent className={`p-4 ${viewMode === "list" ? "flex-1" : "flex-grow flex flex-col justify-between"}`}>
                 <Link to={`/product/${product.slug}`}>
                   <h3 className="font-semibold mb-2 line-clamp-2">
                     {product.name}
