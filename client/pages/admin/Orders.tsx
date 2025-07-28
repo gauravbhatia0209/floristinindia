@@ -62,7 +62,9 @@ export default function Orders() {
 
   async function fetchOrders() {
     try {
-      const { data } = await supabase
+      console.log("🔄 Admin: Fetching orders from database...");
+
+      const { data, error } = await supabase
         .from("orders")
         .select(
           `
@@ -72,8 +74,30 @@ export default function Orders() {
         )
         .order("created_at", { ascending: false });
 
+      console.log("📊 Admin: Raw orders fetch result:", {
+        data: data?.length || 0,
+        error,
+        sampleOrder: data?.[0]
+      });
+
+      if (error) {
+        console.error("❌ Admin: Orders fetch error:", error);
+        throw error;
+      }
+
       if (data) {
         const ordersWithCustomer = data as OrderWithCustomer[];
+        console.log(`✅ Admin: Successfully fetched ${ordersWithCustomer.length} orders`);
+
+        // Log recent orders for debugging
+        const recentOrders = ordersWithCustomer.slice(0, 3);
+        console.log("📋 Admin: Recent orders:", recentOrders.map(order => ({
+          order_number: order.order_number,
+          status: order.status,
+          created_at: order.created_at,
+          customer_id: order.customer_id,
+          has_customer: !!order.customer
+        })));
 
         // Log any orders with null customers for debugging
         const ordersWithNullCustomer = ordersWithCustomer.filter(
@@ -81,8 +105,12 @@ export default function Orders() {
         );
         if (ordersWithNullCustomer.length > 0) {
           console.warn(
-            `Found ${ordersWithNullCustomer.length} orders with null customer data:`,
-            ordersWithNullCustomer.map((order) => order.order_number),
+            `⚠️ Admin: Found ${ordersWithNullCustomer.length} orders with null customer data:`,
+            ordersWithNullCustomer.map((order) => ({
+              order_number: order.order_number,
+              customer_id: order.customer_id,
+              status: order.status
+            })),
           );
         }
 
@@ -94,10 +122,12 @@ export default function Orders() {
 
         setOrders(safeOrders);
         await fetchProductImagesForOrders(safeOrders);
+      } else {
+        console.warn("⚠️ Admin: No orders data returned from database");
+        setOrders([]);
       }
     } catch (error) {
-      console.error("Failed to fetch orders:", error);
-      // Set empty array on error to prevent crashes
+      console.error("❌ Admin: Failed to fetch orders:", error);
       setOrders([]);
     } finally {
       setIsLoading(false);
