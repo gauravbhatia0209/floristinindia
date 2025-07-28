@@ -933,7 +933,7 @@ export default function Checkout() {
   }
 
   async function handlePaymentSuccess(paymentIntent: any) {
-    console.log("Creating order with data:", {
+    console.log("🔄 handlePaymentSuccess(): Creating order with data:", {
       order_number: orderNumber,
       customer_id: customer.id,
       totals,
