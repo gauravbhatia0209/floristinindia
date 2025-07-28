@@ -1103,15 +1103,23 @@ export default function Checkout() {
 
     // Generate order number
     const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
-    console.log("📝 createOrderBeforePayment(): Generated order number:", newOrderNumber);
+    console.log(
+      "📝 createOrderBeforePayment(): Generated order number:",
+      newOrderNumber,
+    );
 
     // Create customer record
-    console.log("👤 createOrderBeforePayment(): Creating customer record for:", form.fullName);
+    console.log(
+      "👤 createOrderBeforePayment(): Creating customer record for:",
+      form.fullName,
+    );
     const nameParts = form.fullName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
-    console.log("💾 createOrderBeforePayment(): About to upsert customer to database");
+    console.log(
+      "💾 createOrderBeforePayment(): About to upsert customer to database",
+    );
     const { data: customer, error: customerError } = await supabase
       .from("customers")
       .upsert(
@@ -1144,7 +1152,10 @@ export default function Checkout() {
       .select()
       .single();
 
-    console.log("📊 createOrderBeforePayment(): Customer upsert result:", { customer, customerError });
+    console.log("📊 createOrderBeforePayment(): Customer upsert result:", {
+      customer,
+      customerError,
+    });
 
     if (customerError) {
       console.error(
