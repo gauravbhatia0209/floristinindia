@@ -1111,6 +1111,7 @@ export default function Checkout() {
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
+    console.log("💾 createOrderBeforePayment(): About to upsert customer to database");
     const { data: customer, error: customerError } = await supabase
       .from("customers")
       .upsert(
@@ -1142,6 +1143,8 @@ export default function Checkout() {
       )
       .select()
       .single();
+
+    console.log("📊 createOrderBeforePayment(): Customer upsert result:", { customer, customerError });
 
     if (customerError) {
       console.error(
