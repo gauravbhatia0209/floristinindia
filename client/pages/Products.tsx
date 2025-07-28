@@ -818,7 +818,9 @@ export default function Products() {
                 })()}
               </div>
 
-              <CardContent className={`p-4 ${viewMode === "list" ? "flex-1" : "flex-grow flex flex-col justify-between"}`}>
+              <CardContent
+                className={`p-4 ${viewMode === "list" ? "flex-1" : "flex-grow flex flex-col justify-between"}`}
+              >
                 {viewMode === "list" ? (
                   <>
                     <Link to={`/product/${product.slug}`}>
