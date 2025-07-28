@@ -1217,6 +1217,20 @@ export default function Checkout() {
         return;
       }
 
+      // Create order before payment with "Payment Pending" status
+      console.log("🔄 Creating order before payment...");
+      let createdOrderNumber;
+      try {
+        createdOrderNumber = await createOrderBeforePayment();
+        console.log("✅ Order created before payment:", createdOrderNumber);
+      } catch (orderError) {
+        console.error("❌ Failed to create order before payment:", orderError);
+        setErrors({ payment: "Failed to create order. Please try again." });
+        setIsSubmitting(false);
+        submissionRef.current = false;
+        return;
+      }
+
       // Try to create payment request, but proceed with direct payment if API fails
       let responseData;
       try {
@@ -1235,10 +1249,9 @@ export default function Checkout() {
 
         const paymentUrl = `/razorpay-payment?order_id=${fallbackOrderId}&payment_intent=${fallbackPaymentIntentId}&amount=${paymentAmount}&customer_name=${encodeURIComponent(form.fullName)}&customer_email=${encodeURIComponent(form.email)}&customer_phone=${encodeURIComponent(`${form.phoneCountryCode}${form.phone}`)}`;
 
-        // Save form data to localStorage for order creation after payment
-        console.log("💾 Saving form data to localStorage for order creation");
-        localStorage.setItem("checkoutFormData", JSON.stringify(form));
-        localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
+        // Save order ID for status update after payment
+        console.log("💾 Saving order ID for status update after payment");
+        localStorage.setItem("pendingOrderNumber", createdOrderNumber);
 
         console.log("Redirecting to direct payment page:", paymentUrl);
         navigate(paymentUrl);
