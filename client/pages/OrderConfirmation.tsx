@@ -136,7 +136,7 @@ const OrderConfirmation: React.FC = () => {
             console.log("🔍 Fetching product for item:", item);
             const { data: product, error: productError } = await supabase
               .from("products")
-              .select("id, name, slug, images, price, sale_price")
+              .select("id, name, slug, image_url, images, price, sale_price")
               .eq("id", item.product_id)
               .single();
 
