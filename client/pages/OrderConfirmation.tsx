@@ -323,11 +323,13 @@ const OrderConfirmation: React.FC = () => {
                   <div key={index} className="p-6 flex gap-4">
                     <div className="w-20 h-20 flex-shrink-0">
                       {(() => {
-                        const imageUrl = item.product?.images?.[0]?.url || item.product?.images?.[0]?.image_url || item.product?.image_url;
+                        // Use the same pattern as admin Orders - prioritize image_url field
+                        const imageUrl = item.product?.image_url || item.product?.images?.[0];
                         console.log("🖼️ Image data for", item.product_name, ":", {
                           hasProduct: !!item.product,
+                          image_url: item.product?.image_url,
                           images: item.product?.images,
-                          imageUrl
+                          finalImageUrl: imageUrl
                         });
 
                         return imageUrl ? (
@@ -337,16 +339,17 @@ const OrderConfirmation: React.FC = () => {
                             className="w-full h-full object-cover rounded-lg border"
                             onError={(e) => {
                               console.error("Image failed to load:", imageUrl);
-                              e.currentTarget.style.display = 'none';
-                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallback = target.parentElement?.querySelector('.image-fallback') as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
                             }}
                           />
-                        ) : (
-                          <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                            <Package className="w-8 h-8 text-gray-400" />
-                          </div>
-                        );
-                      })()}
+                        ) : null}
+                        <div className="image-fallback w-full h-full bg-gray-200 rounded-lg flex items-center justify-center" style={{display: imageUrl ? 'none' : 'flex'}}>
+                          <Package className="w-8 h-8 text-gray-400" />
+                        </div>
+                      </span>)()}
                     </div>
 
                     <div className="flex-1 min-w-0">
