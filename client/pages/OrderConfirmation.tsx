@@ -361,8 +361,8 @@ const OrderConfirmation: React.FC = () => {
                   <div key={index} className="p-6 flex gap-4">
                     <div className="w-20 h-20 flex-shrink-0">
                       {(() => {
-                        // Use the same pattern as admin Orders - prioritize image_url field
-                        const imageUrl = item.product?.image_url || item.product?.images?.[0];
+                        // Get image from the images array (which contains URLs as strings)
+                        const imageUrl = item.product?.images?.[0];
                         console.log("🖼️ Image data for", item.product_name, ":", {
                           hasProduct: !!item.product,
                           image_url: item.product?.image_url,
