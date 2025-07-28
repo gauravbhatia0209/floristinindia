@@ -819,56 +819,107 @@ export default function Products() {
               </div>
 
               <CardContent className={`p-4 ${viewMode === "list" ? "flex-1" : "flex-grow flex flex-col justify-between"}`}>
-                <Link to={`/product/${product.slug}`}>
-                  <h3 className="font-semibold mb-2 line-clamp-2">
-                    {product.name}
-                  </h3>
-                </Link>
+                {viewMode === "list" ? (
+                  <>
+                    <Link to={`/product/${product.slug}`}>
+                      <h3 className="font-semibold mb-2 line-clamp-2">
+                        {product.name}
+                      </h3>
+                    </Link>
 
-                {viewMode === "list" && product.short_description && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {product.short_description}
-                  </p>
+                    {product.short_description && (
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        {product.short_description}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const effectivePrice = getProductEffectivePriceSync(
+                            product,
+                            product.variants,
+                          );
+                          const displayPrice =
+                            effectivePrice.salePrice || effectivePrice.price;
+                          const hasDiscount =
+                            effectivePrice.salePrice &&
+                            effectivePrice.salePrice < effectivePrice.price;
+
+                          return (
+                            <>
+                              <span className="text-lg font-bold text-primary">
+                                ₹{displayPrice}
+                              </span>
+                              {hasDiscount && (
+                                <span className="text-sm text-muted-foreground line-through">
+                                  ₹{effectivePrice.price}
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={() => handleAddToCart(product)}
+                      size="sm"
+                      className="w-full"
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <Link to={`/product/${product.slug}`}>
+                        <h3 className="font-semibold mb-2 line-clamp-2">
+                          {product.name}
+                        </h3>
+                      </Link>
+
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          {(() => {
+                            const effectivePrice = getProductEffectivePriceSync(
+                              product,
+                              product.variants,
+                            );
+                            const displayPrice =
+                              effectivePrice.salePrice || effectivePrice.price;
+                            const hasDiscount =
+                              effectivePrice.salePrice &&
+                              effectivePrice.salePrice < effectivePrice.price;
+
+                            return (
+                              <>
+                                <span className="text-lg font-bold text-primary">
+                                  ₹{displayPrice}
+                                </span>
+                                {hasDiscount && (
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{effectivePrice.price}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={() => handleAddToCart(product)}
+                      size="sm"
+                      className="w-full"
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </>
                 )}
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const effectivePrice = getProductEffectivePriceSync(
-                        product,
-                        product.variants,
-                      );
-                      const displayPrice =
-                        effectivePrice.salePrice || effectivePrice.price;
-                      const hasDiscount =
-                        effectivePrice.salePrice &&
-                        effectivePrice.salePrice < effectivePrice.price;
-
-                      return (
-                        <>
-                          <span className="text-lg font-bold text-primary">
-                            ₹{displayPrice}
-                          </span>
-                          {hasDiscount && (
-                            <span className="text-sm text-muted-foreground line-through">
-                              ₹{effectivePrice.price}
-                            </span>
-                          )}
-                        </>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                {/* Add to Cart Button - Always Visible */}
-                <Button
-                  onClick={() => handleAddToCart(product)}
-                  size="sm"
-                  className="w-full"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add to Cart
-                </Button>
               </CardContent>
             </Card>
           ))}
