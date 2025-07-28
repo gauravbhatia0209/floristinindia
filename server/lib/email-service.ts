@@ -430,7 +430,7 @@ export const generateOrderStatusUpdateEmail = (
                 </div>
                 <div>
                   <span style="color: #6b7280;">Total Amount:</span>
-                  <span style="color: #1f2937; font-weight: 600; float: right;">₹${order.total_amount.toFixed(2)}</span>
+                  <span style="color: #1f2937; font-weight: 600; float: right;">₹${(order.total_amount || 0).toFixed(2)}</span>
                 </div>
               </div>
             </div>
