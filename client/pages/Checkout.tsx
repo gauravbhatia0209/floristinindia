@@ -1076,6 +1076,7 @@ export default function Checkout() {
     // Clear cart
     clearCart();
 
+    console.log("✅ handlePaymentSuccess(): Order process completed successfully, returning:", orderNumber);
     return orderNumber;
   }
 
