@@ -38,9 +38,9 @@ const CheckoutSuccess: React.FC = () => {
       return;
     }
 
-    // If we have payment success but no order created yet, create the order
+    // If we have payment success, update the existing order status
     if ((paymentIntent || razorpayPaymentId) && !orderCreated && !isCreatingOrder) {
-      createOrderFromPaymentSuccess();
+      updateOrderStatusAfterPayment();
     }
   }, [orderNumber, paymentIntent, razorpayPaymentId, orderCreated, isCreatingOrder]);
 
