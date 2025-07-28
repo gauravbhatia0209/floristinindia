@@ -318,3 +318,287 @@ export default function Account() {
     </div>
   );
 }
+
+// OrdersTab Component with Email/Phone Linking
+interface OrdersTabProps {
+  user: any;
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  status: string;
+  total_amount: number;
+  payment_status: string;
+  created_at: string;
+  items: any[];
+  customer?: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+}
+
+function OrdersTab({ user }: OrdersTabProps) {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchOrdersByEmailAndPhone();
+    }
+  }, [user]);
+
+  const fetchOrdersByEmailAndPhone = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log("🔍 Fetching orders for user:", {
+        email: user.email,
+        phone: user.phone
+      });
+
+      // Step 1: Find all customer records that match user's email or phone
+      let customerQuery = supabase
+        .from("customers")
+        .select("id, email, phone, name");
+
+      // Build conditions to match email or phone
+      const conditions = [];
+      if (user.email) {
+        conditions.push(`email.eq.${user.email}`);
+      }
+      if (user.phone) {
+        conditions.push(`phone.eq.${user.phone}`);
+      }
+
+      if (conditions.length === 0) {
+        console.warn("⚠️ No email or phone found for user");
+        setOrders([]);
+        return;
+      }
+
+      // Use 'or' condition to match any of the email/phone combinations
+      const { data: customers, error: customerError } = await customerQuery
+        .or(conditions.join(','));
+
+      if (customerError) {
+        console.error("❌ Error fetching customers:", customerError);
+        throw customerError;
+      }
+
+      console.log("📋 Found customer records:", customers);
+
+      if (!customers || customers.length === 0) {
+        console.log("ℹ️ No customer records found for this user");
+        setOrders([]);
+        return;
+      }
+
+      // Step 2: Get all customer IDs
+      const customerIds = customers.map(c => c.id);
+
+      // Step 3: Fetch orders for all these customer IDs
+      const { data: ordersData, error: ordersError } = await supabase
+        .from("orders")
+        .select(`
+          *,
+          customer:customers(name, email, phone)
+        `)
+        .in("customer_id", customerIds)
+        .order("created_at", { ascending: false });
+
+      if (ordersError) {
+        console.error("❌ Error fetching orders:", ordersError);
+        throw ordersError;
+      }
+
+      console.log("📦 Found orders:", ordersData);
+      setOrders(ordersData || []);
+
+    } catch (err) {
+      console.error("❌ Error in fetchOrdersByEmailAndPhone:", err);
+      setError("Failed to load orders. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "processing":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "shipped":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      case "delivered":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      case "cancelled":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case "paid":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "failed":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "refunded":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Order History
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <span className="ml-2 text-gray-600">Loading your orders...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Order History
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert className="border-red-200">
+            <AlertDescription className="text-red-700">
+              {error}
+            </AlertDescription>
+          </Alert>
+          <div className="mt-4">
+            <Button onClick={fetchOrdersByEmailAndPhone} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Order History
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <Package className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No orders yet
+            </h3>
+            <p className="text-gray-600 mb-4">
+              You haven't placed any orders yet. Start shopping to see your orders here.
+            </p>
+            <Button asChild>
+              <Link to="/products">Start Shopping</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Package className="h-5 w-5" />
+          Order History ({orders.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <ShoppingBag className="h-4 w-4 text-gray-500" />
+                    <span className="font-medium">#{order.order_number}</span>
+                  </div>
+                  <Badge className={getStatusColor(order.status)}>
+                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  </Badge>
+                  <Badge className={getPaymentStatusColor(order.payment_status)}>
+                    {order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-lg">
+                    ₹{order.total_amount.toFixed(2)}
+                  </span>
+                  <Button asChild size="sm" variant="outline">
+                    <Link to={`/order-confirmation/${order.order_number}`}>
+                      <Eye className="h-4 w-4 mr-1" />
+                      View
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 text-sm text-gray-600">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>
+                    {new Date(order.created_at).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Package className="h-4 w-4" />
+                  <span>
+                    {Array.isArray(order.items) ? order.items.length : 0} item(s)
+                  </span>
+                </div>
+                {order.customer?.email && (
+                  <div className="flex items-center gap-1">
+                    <span>📧 {order.customer.email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
