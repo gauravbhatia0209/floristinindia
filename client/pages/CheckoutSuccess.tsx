@@ -12,6 +12,8 @@ const CheckoutSuccess: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { items, totals, clearCart } = useCart();
+  const { trackPurchase } = useGoogleAnalytics();
+  const { trackPurchase: trackFBPurchase } = useFacebookPixel();
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string>("");
