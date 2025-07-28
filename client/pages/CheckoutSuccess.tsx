@@ -196,6 +196,37 @@ const CheckoutSuccess: React.FC = () => {
     }
   };
 
+  if (isCreatingOrder) {
+    return (
+      <div className="container mx-auto px-4 py-16 max-w-2xl">
+        <Card className="text-center shadow-lg">
+          <CardContent className="pt-12 pb-8">
+            <div className="text-orange-500 text-6xl mb-6">
+              <Loader2 className="w-16 h-16 mx-auto animate-spin" />
+            </div>
+
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Creating Your Order...
+            </h1>
+
+            <p className="text-gray-600 mb-8">
+              Payment successful! We're now creating your order. Please wait a moment.
+            </p>
+
+            {(paymentIntent || razorpayPaymentId) && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                <p className="text-sm text-gray-600">Payment Reference</p>
+                <p className="font-mono text-sm font-semibold break-all">
+                  {razorpayPaymentId || paymentIntent}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-16 max-w-2xl">
       <Card className="text-center shadow-lg">
@@ -211,13 +242,14 @@ const CheckoutSuccess: React.FC = () => {
           <p className="text-gray-600 mb-8">
             Thank you for your order. Your payment has been processed
             successfully.
+            {createdOrderNumber && ` Order ${createdOrderNumber} has been created.`}
           </p>
 
-          {paymentIntent && (
+          {(paymentIntent || razorpayPaymentId) && (
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <p className="text-sm text-gray-600">Payment Reference</p>
               <p className="font-mono text-sm font-semibold break-all">
-                {paymentIntent}
+                {razorpayPaymentId || paymentIntent}
               </p>
             </div>
           )}
