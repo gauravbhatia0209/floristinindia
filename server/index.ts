@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -8,6 +9,9 @@ import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Define uploads path at module level
 const uploadsPath = process.env.VERCEL
