@@ -82,11 +82,13 @@ export const emailAPI = {
         body: JSON.stringify({ to, subject, message }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+        throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
       }
 
-      return await response.json();
+      return data;
     } catch (error) {
       console.error("❌ Error sending test email:", error);
       throw error;
