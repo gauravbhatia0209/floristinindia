@@ -345,10 +345,11 @@ const OrderConfirmation: React.FC = () => {
                               if (fallback) fallback.style.display = 'flex';
                             }}
                           />
-                        ) : null}
-                        <div className="image-fallback w-full h-full bg-gray-200 rounded-lg flex items-center justify-center" style={{display: imageUrl ? 'none' : 'flex'}}>
-                          <Package className="w-8 h-8 text-gray-400" />
-                        </div>
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+                            <Package className="w-8 h-8 text-gray-400" />
+                          </div>
+                        );
                       })()}
                     </div>
 
