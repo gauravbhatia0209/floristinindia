@@ -27,26 +27,41 @@ const CheckoutSuccess: React.FC = () => {
     orderNumber,
     razorpayPaymentId,
     hasItems: items.length > 0,
-    totals
+    totals,
   });
 
   useEffect(() => {
     // If we already have an order number from URL, use it
     if (orderNumber) {
-      console.log("🔄 CheckoutSuccess: Order number already in URL, redirecting:", orderNumber);
+      console.log(
+        "🔄 CheckoutSuccess: Order number already in URL, redirecting:",
+        orderNumber,
+      );
       navigate(`/order-confirmation/${orderNumber}`, { replace: true });
       return;
     }
 
     // If we have payment success, update the existing order status
-    if ((paymentIntent || razorpayPaymentId) && !orderCreated && !isCreatingOrder) {
+    if (
+      (paymentIntent || razorpayPaymentId) &&
+      !orderCreated &&
+      !isCreatingOrder
+    ) {
       updateOrderStatusAfterPayment();
     }
-  }, [orderNumber, paymentIntent, razorpayPaymentId, orderCreated, isCreatingOrder]);
+  }, [
+    orderNumber,
+    paymentIntent,
+    razorpayPaymentId,
+    orderCreated,
+    isCreatingOrder,
+  ]);
 
   const updateOrderStatusAfterPayment = async () => {
     setIsCreatingOrder(true);
-    console.log("🔄 CheckoutSuccess: Updating order status after successful payment...");
+    console.log(
+      "🔄 CheckoutSuccess: Updating order status after successful payment...",
+    );
 
     try {
       // Get the pending order number from localStorage
@@ -56,7 +71,10 @@ const CheckoutSuccess: React.FC = () => {
         throw new Error("No pending order number found in localStorage");
       }
 
-      console.log("📋 CheckoutSuccess: Found pending order number:", pendingOrderNumber);
+      console.log(
+        "📋 CheckoutSuccess: Found pending order number:",
+        pendingOrderNumber,
+      );
 
       // Update the order status to "Order Confirmed" and payment details
       const updateData = {
@@ -64,7 +82,7 @@ const CheckoutSuccess: React.FC = () => {
         payment_status: "paid",
         payment_reference: razorpayPaymentId || paymentIntent,
         payment_method: "razorpay",
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       console.log("📤 CheckoutSuccess: Updating order with data:", updateData);
@@ -76,12 +94,17 @@ const CheckoutSuccess: React.FC = () => {
         .select()
         .single();
 
-      console.log("📨 CheckoutSuccess: Order update result:", { updatedOrder, updateError });
+      console.log("📨 CheckoutSuccess: Order update result:", {
+        updatedOrder,
+        updateError,
+      });
 
       if (updateError) throw updateError;
 
       if (!updatedOrder) {
-        throw new Error(`No order found with order number: ${pendingOrderNumber}`);
+        throw new Error(
+          `No order found with order number: ${pendingOrderNumber}`,
+        );
       }
 
       // Track purchase in analytics (only if we have cart data)
@@ -106,13 +129,14 @@ const CheckoutSuccess: React.FC = () => {
       // Clean up localStorage
       localStorage.removeItem("pendingOrderNumber");
 
-      console.log("✅ CheckoutSuccess: Payment confirmed, order status updated.");
+      console.log(
+        "✅ CheckoutSuccess: Payment confirmed, order status updated.",
+      );
       setCreatedOrderNumber(pendingOrderNumber);
       setOrderCreated(true);
 
       // Redirect to order confirmation
       navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
-
     } catch (error) {
       console.error("❌ CheckoutSuccess: Error updating order status:", error);
       setIsCreatingOrder(false);
@@ -133,7 +157,8 @@ const CheckoutSuccess: React.FC = () => {
             </h1>
 
             <p className="text-gray-600 mb-8">
-              Payment successful! We're now confirming your order. Please wait a moment.
+              Payment successful! We're now confirming your order. Please wait a
+              moment.
             </p>
 
             {(paymentIntent || razorpayPaymentId) && (
@@ -165,7 +190,8 @@ const CheckoutSuccess: React.FC = () => {
           <p className="text-gray-600 mb-8">
             Thank you for your order. Your payment has been processed
             successfully.
-            {createdOrderNumber && ` Order ${createdOrderNumber} has been confirmed.`}
+            {createdOrderNumber &&
+              ` Order ${createdOrderNumber} has been confirmed.`}
           </p>
 
           {(paymentIntent || razorpayPaymentId) && (

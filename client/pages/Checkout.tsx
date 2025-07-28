@@ -1099,7 +1099,9 @@ export default function Checkout() {
       throw new Error("No cart items found for order creation");
     }
 
-    console.log("🔄 createOrderBeforePayment(): Creating order with status 'Payment Pending'");
+    console.log(
+      "🔄 createOrderBeforePayment(): Creating order with status 'Payment Pending'",
+    );
 
     // Generate order number
     const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
@@ -1178,7 +1180,10 @@ export default function Checkout() {
       coupon_code: appliedCoupon?.code || null,
     };
 
-    console.log("📤 createOrderBeforePayment(): Inserting order data:", orderData);
+    console.log(
+      "📤 createOrderBeforePayment(): Inserting order data:",
+      orderData,
+    );
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -1186,7 +1191,10 @@ export default function Checkout() {
       .select()
       .single();
 
-    console.log("📨 createOrderBeforePayment(): Order creation result:", { order, orderError });
+    console.log("📨 createOrderBeforePayment(): Order creation result:", {
+      order,
+      orderError,
+    });
 
     if (orderError) throw orderError;
 
@@ -1198,7 +1206,10 @@ export default function Checkout() {
         .eq("id", appliedCoupon.id);
     }
 
-    console.log("✅ createOrderBeforePayment(): Order created successfully with number:", newOrderNumber);
+    console.log(
+      "✅ createOrderBeforePayment(): Order created successfully with number:",
+      newOrderNumber,
+    );
     return newOrderNumber;
   }
 
