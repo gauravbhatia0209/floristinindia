@@ -73,7 +73,17 @@ const CheckoutSuccess: React.FC = () => {
       const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
 
       if (!pendingOrderNumber) {
-        throw new Error("No pending order number found in localStorage");
+        console.error("❌ CheckoutSuccess: No pending order number found in localStorage");
+        // Try to extract order number from URL or show generic success
+        const urlOrderNumber = new URLSearchParams(window.location.search).get("order_number");
+        if (urlOrderNumber) {
+          console.log("🔄 CheckoutSuccess: Using order number from URL:", urlOrderNumber);
+          setCreatedOrderNumber(urlOrderNumber);
+          setOrderCreated(true);
+          navigate(`/order-confirmation/${urlOrderNumber}`, { replace: true });
+          return;
+        }
+        throw new Error("No pending order number found in localStorage and no order number in URL");
       }
 
       console.log(
