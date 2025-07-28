@@ -17,6 +17,7 @@ const CheckoutSuccess: React.FC = () => {
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string>("");
+  const [updateAttempted, setUpdateAttempted] = useState(false);
 
   const paymentIntent = searchParams.get("payment_intent");
   const orderNumber = searchParams.get("order_number");
