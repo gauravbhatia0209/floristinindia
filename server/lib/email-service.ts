@@ -33,12 +33,12 @@ export const generateOrderConfirmationEmail = (orderData: any) => {
           <div>
             <h4 style="margin: 0; font-size: 16px; color: #333;">${item.product_name}</h4>
             ${item.variant_name ? `<p style="margin: 4px 0; color: #666; font-size: 14px;">Variant: ${item.variant_name}</p>` : ""}
-            <p style="margin: 4px 0; color: #666; font-size: 14px;">Qty: ${item.quantity} | Price: ₹${item.price.toFixed(2)}</p>
+            <p style="margin: 4px 0; color: #666; font-size: 14px;">Qty: ${item.quantity} | Price: ₹${(item.price || 0).toFixed(2)}</p>
           </div>
         </div>
       </td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">
-        <strong style="font-size: 16px; color: #333;">₹${item.total_price.toFixed(2)}</strong>
+        <strong style="font-size: 16px; color: #333;">₹${(item.total_price || 0).toFixed(2)}</strong>
       </td>
     </tr>
   `,
