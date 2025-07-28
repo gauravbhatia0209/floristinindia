@@ -133,7 +133,18 @@ const OrderConfirmation: React.FC = () => {
       const itemsWithProducts = await Promise.all(
         (orderItems || []).map(async (item: OrderItem) => {
           try {
-            console.log("🔍 Fetching product for item:", item);
+            console.log("🔍 Fetching product for item:", {
+              product_id: item.product_id,
+              product_name: item.product_name,
+              item: item
+            });
+
+            // First check if product_id exists and is valid
+            if (!item.product_id) {
+              console.warn("⚠️ No product_id found for item:", item);
+              return item;
+            }
+
             const { data: product, error: productError } = await supabase
               .from("products")
               .select("id, name, slug, image_url, images, price, sale_price")
@@ -141,28 +152,45 @@ const OrderConfirmation: React.FC = () => {
               .single();
 
             if (productError) {
-              console.error("Error fetching product for ID", item.product_id, ":", {
-                error: productError,
-                message: productError.message,
-                details: productError.details,
-                hint: productError.hint,
-                code: productError.code
-              });
+              console.error("❌ Supabase error fetching product for ID", item.product_id, ":");
+              console.error("Error code:", productError.code);
+              console.error("Error message:", productError.message);
+              console.error("Error details:", productError.details);
+              console.error("Error hint:", productError.hint);
+              console.error("Full error object:", JSON.stringify(productError, null, 2));
+
+              // Return item without product data but don't fail
+              return {
+                ...item,
+                product: null,
+              };
             }
 
-            console.log("📦 Product data for", item.product_id, ":", product);
+            console.log("✅ Successfully fetched product data for", item.product_id, ":", product);
 
             return {
               ...item,
               product: product || null,
             };
           } catch (err) {
-            console.error("Error fetching product for ID", item.product_id, ":", {
-              error: err,
-              message: err instanceof Error ? err.message : String(err),
-              stack: err instanceof Error ? err.stack : undefined
-            });
-            return item;
+            console.error("❌ Exception fetching product for ID", item.product_id, ":");
+            console.error("Error type:", typeof err);
+            console.error("Error constructor:", err?.constructor?.name);
+
+            if (err instanceof Error) {
+              console.error("Error message:", err.message);
+              console.error("Error stack:", err.stack);
+            } else {
+              console.error("Non-Error object:", err);
+              console.error("String representation:", String(err));
+              console.error("JSON representation:", JSON.stringify(err, null, 2));
+            }
+
+            // Return item without product data but don't fail
+            return {
+              ...item,
+              product: null,
+            };
           }
         }),
       );
