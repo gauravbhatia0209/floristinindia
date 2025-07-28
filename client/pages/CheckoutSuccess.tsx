@@ -155,8 +155,8 @@ const CheckoutSuccess: React.FC = () => {
         );
       }
 
-      // Track purchase in analytics (only if we have cart data)
-      if (items && items.length > 0) {
+      // Track purchase in analytics (only if we have cart data and totals)
+      if (items && items.length > 0 && totals && totals.total) {
         const orderItems = items.map((item) => ({
           item_id: item.product.id,
           item_name: item.product.name,
@@ -170,7 +170,13 @@ const CheckoutSuccess: React.FC = () => {
         const fbContentIds = items.map((item) => item.product.id);
         trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
 
-        // Clear cart after successful order confirmation
+        console.log("📊 CheckoutSuccess: Analytics tracking completed");
+      } else {
+        console.log("⚠️ CheckoutSuccess: Skipping analytics tracking - no cart data or totals available");
+      }
+
+      // Clear cart after successful order confirmation (if items exist)
+      if (items && items.length > 0) {
         clearCart();
       }
 
