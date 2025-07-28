@@ -155,6 +155,22 @@ const CheckoutSuccess: React.FC = () => {
     } catch (error) {
       console.error("❌ CheckoutSuccess: Error updating order status:", error);
       setIsCreatingOrder(false);
+
+      // If update fails, still show success to user since payment was successful
+      // The order exists in database with "pending" status
+      const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
+      if (pendingOrderNumber) {
+        console.log("⚠️ CheckoutSuccess: Order update failed but payment was successful, showing success with pending order");
+        setCreatedOrderNumber(pendingOrderNumber);
+        setOrderCreated(true);
+        // Clean up localStorage
+        localStorage.removeItem("pendingOrderNumber");
+        navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
+      } else {
+        // If no order number, just show generic success
+        console.log("⚠️ CheckoutSuccess: Order update failed and no order number found, showing generic success");
+        setOrderCreated(true);
+      }
     }
   };
 
