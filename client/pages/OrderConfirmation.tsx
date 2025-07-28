@@ -596,7 +596,7 @@ const OrderConfirmation: React.FC = () => {
                 <span>{order.customer?.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-gray-400" />
+                <Mail className="w-4 h-4 text-blue-500" />
                 <span>{order.customer?.email}</span>
               </div>
               <div className="flex items-center gap-3">
