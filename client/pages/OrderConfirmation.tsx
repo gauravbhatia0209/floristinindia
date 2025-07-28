@@ -349,7 +349,7 @@ const OrderConfirmation: React.FC = () => {
                         <div className="image-fallback w-full h-full bg-gray-200 rounded-lg flex items-center justify-center" style={{display: imageUrl ? 'none' : 'flex'}}>
                           <Package className="w-8 h-8 text-gray-400" />
                         </div>
-                      </span>)()}
+                      })()}
                     </div>
 
                     <div className="flex-1 min-w-0">
