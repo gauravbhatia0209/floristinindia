@@ -367,7 +367,7 @@ const OrderConfirmation: React.FC = () => {
 
                         <div className="text-right">
                           <p className="font-bold text-lg">
-                            ₹{item.total_price.toFixed(2)}
+                            ₹{(item.total_price || 0).toFixed(2)}
                           </p>
                         </div>
                       </div>
