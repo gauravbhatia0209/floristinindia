@@ -92,10 +92,15 @@ export const emailAPI = {
         body: JSON.stringify({ to, subject, message }),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error(`Failed to parse response: ${response.status} ${response.statusText}`);
+      }
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
+        throw new Error(`HTTP ${response.status}: ${data.error || data.message || 'Unknown error'}`);
       }
 
       return data;
