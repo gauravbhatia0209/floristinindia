@@ -538,23 +538,25 @@ function ProductCarouselSection({ content }: { content: any }) {
               )}
             </div>
 
-            <CardContent className="p-4">
-              <Link to={`/product/${product.slug}`}>
-                <h3 className="font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
-                  {product.name}
-                </h3>
-              </Link>
+            <CardContent className="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <Link to={`/product/${product.slug}`}>
+                  <h3 className="font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
+                    {product.name}
+                  </h3>
+                </Link>
 
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-primary">
-                    ₹{product.sale_price || product.price}
-                  </span>
-                  {product.sale_price && (
-                    <span className="text-sm text-muted-foreground line-through">
-                      ₹{product.price}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-primary">
+                      ₹{product.sale_price || product.price}
                     </span>
-                  )}
+                    {product.sale_price && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ₹{product.price}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
