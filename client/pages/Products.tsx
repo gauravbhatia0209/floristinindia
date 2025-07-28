@@ -782,7 +782,7 @@ export default function Products() {
             <Card
               key={product.id}
               className={`border-0 shadow-lg overflow-hidden ${
-                viewMode === "list" ? "flex" : ""
+                viewMode === "list" ? "flex" : "h-full flex flex-col"
               }`}
             >
               <div
