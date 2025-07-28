@@ -5,7 +5,8 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/lib/supabase";
-import { trackPurchase, trackFBPurchase } from "@/lib/analytics";
+import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
+import { useFacebookPixel } from "@/components/FacebookPixel";
 
 const CheckoutSuccess: React.FC = () => {
   const navigate = useNavigate();
