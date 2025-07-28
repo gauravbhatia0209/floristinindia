@@ -206,7 +206,7 @@ export const generateAdminOrderNotification = (orderData: any) => {
     .join("");
 
   return {
-    subject: `🔔 New Order #${order.order_number} - ₹${order.total_amount.toFixed(2)}`,
+    subject: `🔔 New Order #${order.order_number} - ₹${(order.total_amount || 0).toFixed(2)}`,
     html: `
       <!DOCTYPE html>
       <html>
