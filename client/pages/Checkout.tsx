@@ -1091,6 +1091,8 @@ export default function Checkout() {
   }
 
   async function createOrderBeforePayment() {
+    console.log("🚀 createOrderBeforePayment(): Function started");
+
     if (!items || items.length === 0) {
       throw new Error("No cart items found for order creation");
     }
@@ -1101,8 +1103,10 @@ export default function Checkout() {
 
     // Generate order number
     const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
+    console.log("📝 createOrderBeforePayment(): Generated order number:", newOrderNumber);
 
     // Create customer record
+    console.log("👤 createOrderBeforePayment(): Creating customer record for:", form.fullName);
     const nameParts = form.fullName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
