@@ -1090,6 +1090,118 @@ export default function Checkout() {
     setSelectedPaymentMethod(gateway);
   }
 
+  async function createOrderBeforePayment() {
+    if (!customer) {
+      throw new Error("No customer found for order creation");
+    }
+
+    if (!items || items.length === 0) {
+      throw new Error("No cart items found for order creation");
+    }
+
+    console.log("🔄 createOrderBeforePayment(): Creating order with status 'Payment Pending'");
+
+    // Generate order number
+    const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
+
+    const orderData = {
+      order_number: newOrderNumber,
+      customer_id: customer.id,
+      status: "Payment Pending", // Initial status before payment
+      total_amount: totals.total,
+      shipping_amount: totals.shipping,
+      discount_amount: totals.discount,
+      tax_amount: totals.tax,
+      items: items.map((item) => {
+        const uploadedFileData = uploadedFiles.find(
+          (f) => f.product_id === item.product_id,
+        );
+
+        return {
+          product_id: item.product_id,
+          product_name: item.product.name,
+          variant_id: item.variant_id,
+          variant_name: item.variant?.name,
+          quantity: item.quantity,
+          unit_price:
+            item.variant?.sale_price ||
+            item.variant?.price ||
+            item.product.sale_price ||
+            item.product.price,
+          total_price:
+            (item.variant?.sale_price ||
+              item.variant?.price ||
+              item.product.sale_price ||
+              item.product.price) * item.quantity,
+          uploaded_file_url: uploadedFileData?.file_url || null,
+          uploaded_file_name: uploadedFileData?.file_name || null,
+          uploaded_file_size: uploadedFileData?.file_size || null,
+          uploaded_file_type: uploadedFileData?.file_type || null,
+          upload_status: uploadedFileData?.status || null,
+        };
+      }),
+      shipping_address: {
+        name: form.receiverName || form.fullName,
+        line1: form.addressLine1,
+        line2: form.addressLine2 || "",
+        city: form.city,
+        state: form.state,
+        pincode: form.pincode,
+        phone: form.receiverPhone
+          ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+          : `${form.phoneCountryCode}${form.phone}`,
+        alternate_phone: form.alternatePhone || "",
+      },
+      billing_address: {
+        name: form.fullName,
+        line1: form.addressLine1,
+        line2: form.addressLine2 || "",
+        city: form.city,
+        state: form.state,
+        pincode: form.pincode,
+        phone: `${form.phoneCountryCode}${form.phone}`,
+        alternate_phone: form.alternatePhone || "",
+      },
+      delivery_date: form.deliveryDate || null,
+      delivery_slot: form.deliverySlot || null,
+      special_instructions: form.specialInstructions || null,
+      customer_message: form.orderMessage || null,
+      receiver_name: form.receiverName || form.fullName,
+      receiver_phone: form.receiverPhone
+        ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+        : `${form.phoneCountryCode}${form.phone}`,
+      alternate_phone: form.alternatePhone || "",
+      delivery_instructions: form.specialInstructions || null,
+      uploaded_files: uploadedFiles,
+      payment_method: selectedPaymentMethod?.name || "pending",
+      payment_status: "pending", // Will be updated after successful payment
+      coupon_code: appliedCoupon?.code || null,
+    };
+
+    console.log("📤 createOrderBeforePayment(): Inserting order data:", orderData);
+
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert(orderData)
+      .select()
+      .single();
+
+    console.log("📨 createOrderBeforePayment(): Order creation result:", { order, orderError });
+
+    if (orderError) throw orderError;
+
+    // Update coupon usage if applied
+    if (appliedCoupon) {
+      await supabase
+        .from("coupons")
+        .update({ usage_count: appliedCoupon.usage_count + 1 })
+        .eq("id", appliedCoupon.id);
+    }
+
+    console.log("✅ createOrderBeforePayment(): Order created successfully with number:", newOrderNumber);
+    return newOrderNumber;
+  }
+
   async function handleProceedToPayment() {
     if (!selectedPaymentMethod) return;
 
