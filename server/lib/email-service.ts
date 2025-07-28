@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 // Email configuration
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
     port: parseInt(process.env.EMAIL_PORT || "587"),
     secure: false, // true for 465, false for other ports
@@ -50,7 +50,7 @@ export const generateOrderConfirmationEmail = (orderData: any) => {
       </head>
       <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          
+
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); padding: 32px; text-align: center;">
             <h1 style="margin: 0; color: white; font-size: 28px; font-weight: bold;">🌸 Florist in India</h1>
@@ -156,7 +156,7 @@ export const generateOrderConfirmationEmail = (orderData: any) => {
 
             <!-- CTA Button -->
             <div style="text-align: center; margin-top: 32px;">
-              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}" 
+              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}"
                  style="display: inline-block; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 View Order Details
               </a>
@@ -166,9 +166,9 @@ export const generateOrderConfirmationEmail = (orderData: any) => {
           <!-- Footer -->
           <div style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
             <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 14px;">
-              Need help? Contact us at 
+              Need help? Contact us at
               <a href="mailto:info@floristinindia.com" style="color: #ec4899;">info@floristinindia.com</a>
-              or call 
+              or call
               <a href="tel:+919988774333" style="color: #ec4899;">+91 99887 74333</a>
             </p>
             <p style="margin: 0; color: #9ca3af; font-size: 12px;">
@@ -209,7 +209,7 @@ export const generateAdminOrderNotification = (orderData: any) => {
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white;">
-          
+
           <!-- Header -->
           <div style="background-color: #dc2626; padding: 20px; text-align: center;">
             <h1 style="margin: 0; color: white; font-size: 24px;">🚨 NEW ORDER RECEIVED</h1>
@@ -218,7 +218,7 @@ export const generateAdminOrderNotification = (orderData: any) => {
           <!-- Content -->
           <div style="padding: 24px;">
             <h2 style="margin: 0 0 16px 0; color: #1f2937;">Order #${order.order_number}</h2>
-            
+
             <!-- Quick Stats -->
             <div style="background-color: #fee2e2; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
@@ -298,11 +298,11 @@ export const generateAdminOrderNotification = (orderData: any) => {
 
             <!-- Quick Links -->
             <div style="text-align: center; margin-top: 24px;">
-              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/admin/orders" 
+              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/admin/orders"
                  style="display: inline-block; background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-right: 12px;">
                 View in Admin Panel
               </a>
-              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}" 
+              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}"
                  style="display: inline-block; background-color: #6b7280; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 View Order Details
               </a>
@@ -374,7 +374,7 @@ export const generateOrderStatusUpdateEmail = (
       </head>
       <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          
+
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); padding: 32px; text-align: center;">
             <h1 style="margin: 0; color: white; font-size: 28px; font-weight: bold;">🌸 Florist in India</h1>
@@ -462,7 +462,7 @@ export const generateOrderStatusUpdateEmail = (
             <div style="background-color: #fee2e2; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
               <h4 style="margin: 0 0 8px 0; color: #991b1b;">🔄 What's Next?</h4>
               <p style="margin: 0; color: #991b1b;">
-                If you have any questions about this cancellation, please contact our support team. 
+                If you have any questions about this cancellation, please contact our support team.
                 We're here to help and would love to assist you with a new order.
               </p>
             </div>
@@ -472,7 +472,7 @@ export const generateOrderStatusUpdateEmail = (
 
             <!-- CTA Button -->
             <div style="text-align: center; margin-top: 32px;">
-              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}" 
+              <a href="${process.env.FRONTEND_URL || "https://floristinindia.com"}/order-confirmation/${order.order_number}"
                  style="display: inline-block; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 View Order Details
               </a>
@@ -482,7 +482,7 @@ export const generateOrderStatusUpdateEmail = (
           <!-- Footer -->
           <div style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
             <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 14px;">
-              Questions? Contact us at 
+              Questions? Contact us at
               <a href="mailto:info@floristinindia.com" style="color: #ec4899;">info@floristinindia.com</a>
             </p>
             <p style="margin: 0; color: #9ca3af; font-size: 12px;">
