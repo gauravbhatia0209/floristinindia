@@ -1174,6 +1174,11 @@ export default function Checkout() {
       customer.id,
     );
 
+    // Upload order files if any
+    console.log("📎 createOrderBeforePayment(): Processing uploaded files...");
+    const uploadedFiles = await uploadOrderFiles(newOrderNumber);
+    console.log("📎 createOrderBeforePayment(): Uploaded files result:", uploadedFiles);
+
     const orderData = {
       order_number: newOrderNumber,
       customer_id: customer.id,
