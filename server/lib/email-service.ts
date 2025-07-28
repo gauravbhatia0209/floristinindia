@@ -5,7 +5,7 @@ const createTransporter = () => {
   // Check if email credentials are configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     throw new Error(
-      "Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS environment variables."
+      "Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS environment variables.",
     );
   }
 
