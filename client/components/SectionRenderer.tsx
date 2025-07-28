@@ -519,7 +519,7 @@ function ProductCarouselSection({ content }: { content: any }) {
         {products.map((product) => (
           <Card
             key={product.id}
-            className="border-0 shadow-lg overflow-hidden group hover:shadow-xl transition-shadow"
+            className="border-0 shadow-lg overflow-hidden group hover:shadow-xl transition-shadow h-full flex flex-col"
           >
             <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-square">
               {product.images && product.images.length > 0 ? (
