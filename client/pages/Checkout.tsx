@@ -1140,7 +1140,10 @@ export default function Checkout() {
       .single();
 
     if (customerError) {
-      console.error("❌ createOrderBeforePayment(): Customer creation error:", customerError);
+      console.error(
+        "❌ createOrderBeforePayment(): Customer creation error:",
+        customerError,
+      );
       throw customerError;
     }
 
@@ -1148,7 +1151,10 @@ export default function Checkout() {
       throw new Error("Failed to create or retrieve customer");
     }
 
-    console.log("✅ createOrderBeforePayment(): Customer created/retrieved:", customer.id);
+    console.log(
+      "✅ createOrderBeforePayment(): Customer created/retrieved:",
+      customer.id,
+    );
 
     const orderData = {
       order_number: newOrderNumber,
