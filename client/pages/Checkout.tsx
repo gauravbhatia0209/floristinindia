@@ -928,7 +928,10 @@ export default function Checkout() {
     // Clear cart
     clearCart();
 
-    console.log("✅ createOrder(): Order process completed successfully, returning:", orderNumber);
+    console.log(
+      "✅ createOrder(): Order process completed successfully, returning:",
+      orderNumber,
+    );
     return orderNumber;
   }
 
@@ -1076,7 +1079,10 @@ export default function Checkout() {
     // Clear cart
     clearCart();
 
-    console.log("✅ handlePaymentSuccess(): Order process completed successfully, returning:", orderNumber);
+    console.log(
+      "✅ handlePaymentSuccess(): Order process completed successfully, returning:",
+      orderNumber,
+    );
     return orderNumber;
   }
 

@@ -77,7 +77,7 @@ export default function Orders() {
       console.log("📊 Admin: Raw orders fetch result:", {
         data: data?.length || 0,
         error,
-        sampleOrder: data?.[0]
+        sampleOrder: data?.[0],
       });
 
       if (error) {
@@ -87,17 +87,22 @@ export default function Orders() {
 
       if (data) {
         const ordersWithCustomer = data as OrderWithCustomer[];
-        console.log(`✅ Admin: Successfully fetched ${ordersWithCustomer.length} orders`);
+        console.log(
+          `✅ Admin: Successfully fetched ${ordersWithCustomer.length} orders`,
+        );
 
         // Log recent orders for debugging
         const recentOrders = ordersWithCustomer.slice(0, 3);
-        console.log("📋 Admin: Recent orders:", recentOrders.map(order => ({
-          order_number: order.order_number,
-          status: order.status,
-          created_at: order.created_at,
-          customer_id: order.customer_id,
-          has_customer: !!order.customer
-        })));
+        console.log(
+          "📋 Admin: Recent orders:",
+          recentOrders.map((order) => ({
+            order_number: order.order_number,
+            status: order.status,
+            created_at: order.created_at,
+            customer_id: order.customer_id,
+            has_customer: !!order.customer,
+          })),
+        );
 
         // Log any orders with null customers for debugging
         const ordersWithNullCustomer = ordersWithCustomer.filter(
@@ -109,7 +114,7 @@ export default function Orders() {
             ordersWithNullCustomer.map((order) => ({
               order_number: order.order_number,
               customer_id: order.customer_id,
-              status: order.status
+              status: order.status,
             })),
           );
         }
