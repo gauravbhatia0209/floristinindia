@@ -46,8 +46,11 @@ const CheckoutSuccess: React.FC = () => {
     if (
       (paymentIntent || razorpayPaymentId) &&
       !orderCreated &&
-      !isCreatingOrder
+      !isCreatingOrder &&
+      !updateAttempted
     ) {
+      console.log("🎯 CheckoutSuccess: Attempting order status update...");
+      setUpdateAttempted(true);
       updateOrderStatusAfterPayment();
     }
   }, [
@@ -56,6 +59,7 @@ const CheckoutSuccess: React.FC = () => {
     razorpayPaymentId,
     orderCreated,
     isCreatingOrder,
+    updateAttempted,
   ]);
 
   const updateOrderStatusAfterPayment = async () => {
