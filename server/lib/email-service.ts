@@ -2,6 +2,13 @@ import nodemailer from "nodemailer";
 
 // Email configuration
 const createTransporter = () => {
+  // Check if email credentials are configured
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error(
+      "Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS environment variables."
+    );
+  }
+
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
     port: parseInt(process.env.EMAIL_PORT || "587"),
