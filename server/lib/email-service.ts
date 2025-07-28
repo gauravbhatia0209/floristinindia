@@ -198,8 +198,8 @@ export const generateAdminOrderNotification = (orderData: any) => {
     <tr>
       <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.product_name}</td>
       <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.quantity}</td>
-      <td style="padding: 8px; border-bottom: 1px solid #eee;">₹${item.price.toFixed(2)}</td>
-      <td style="padding: 8px; border-bottom: 1px solid #eee;">₹${item.total_price.toFixed(2)}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">₹${(item.price || 0).toFixed(2)}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">₹${(item.total_price || 0).toFixed(2)}</td>
     </tr>
   `,
     )
