@@ -62,6 +62,26 @@ const CheckoutSuccess: React.FC = () => {
     updateAttempted,
   ]);
 
+  // Add timeout fallback to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isCreatingOrder && !orderCreated) {
+        console.log("⏰ CheckoutSuccess: Timeout reached, showing success anyway");
+        const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
+        if (pendingOrderNumber) {
+          setCreatedOrderNumber(pendingOrderNumber);
+          localStorage.removeItem("pendingOrderNumber");
+          navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
+        } else {
+          setOrderCreated(true);
+        }
+        setIsCreatingOrder(false);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [isCreatingOrder, orderCreated, navigate]);
+
   const updateOrderStatusAfterPayment = async () => {
     setIsCreatingOrder(true);
     console.log(
