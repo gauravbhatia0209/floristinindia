@@ -45,6 +45,10 @@ export function createServer() {
   console.log("🔧 Mounting payment routes at /api/payments");
   app.use("/api/payments", paymentsRoutes);
 
+  // Email routes
+  console.log("🔧 Mounting email routes at /api/email");
+  app.use("/api/email", emailRoutes);
+
   // Explicit route for serving uploaded files
   app.get("/uploads/*", (req, res) => {
     const filePath = req.path.replace("/uploads/", "");
