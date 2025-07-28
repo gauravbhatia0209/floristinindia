@@ -159,10 +159,13 @@ const OrderConfirmation: React.FC = () => {
 
       console.log("📦 Final items with products:", itemsWithProducts);
 
-      setOrder({
+      const finalOrder = {
         ...data,
         items: itemsWithProducts,
-      });
+      };
+
+      console.log("📋 Final order object:", finalOrder);
+      setOrder(finalOrder);
     } catch (err) {
       console.error("Error fetching order:", err);
       setError("Failed to load order details");
