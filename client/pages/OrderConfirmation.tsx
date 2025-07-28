@@ -116,15 +116,35 @@ const OrderConfirmation: React.FC = () => {
         return;
       }
 
+      // Parse items if they're stored as JSON string
+      let orderItems = data.items;
+      if (typeof data.items === 'string') {
+        try {
+          orderItems = JSON.parse(data.items);
+        } catch (parseError) {
+          console.error("Error parsing order items:", parseError);
+          orderItems = [];
+        }
+      }
+
+      console.log("📦 OrderConfirmation: Order items:", orderItems);
+
       // Fetch product details for each item
       const itemsWithProducts = await Promise.all(
-        data.items.map(async (item: OrderItem) => {
+        (orderItems || []).map(async (item: OrderItem) => {
           try {
-            const { data: product } = await supabase
+            console.log("🔍 Fetching product for item:", item);
+            const { data: product, error: productError } = await supabase
               .from("products")
               .select("id, name, slug, images, price, sale_price")
               .eq("id", item.product_id)
               .single();
+
+            if (productError) {
+              console.error("Error fetching product:", productError);
+            }
+
+            console.log("📦 Product data for", item.product_id, ":", product);
 
             return {
               ...item,
@@ -136,6 +156,8 @@ const OrderConfirmation: React.FC = () => {
           }
         }),
       );
+
+      console.log("📦 Final items with products:", itemsWithProducts);
 
       setOrder({
         ...data,
