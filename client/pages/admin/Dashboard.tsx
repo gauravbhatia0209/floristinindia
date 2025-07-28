@@ -659,3 +659,5 @@ function EmailTestingSection() {
         </div>
       </CardContent>
     </Card>
+  );
+}
