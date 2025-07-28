@@ -4,7 +4,6 @@ import { CheckCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { useCart } from "@/hooks/useCart";
-import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { trackPurchase, trackFBPurchase } from "@/lib/analytics";
 
@@ -12,7 +11,6 @@ const CheckoutSuccess: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { items, totals, clearCart } = useCart();
-  const { customer } = useAuth();
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string>("");
@@ -26,7 +24,6 @@ const CheckoutSuccess: React.FC = () => {
     orderNumber,
     razorpayPaymentId,
     hasItems: items.length > 0,
-    hasCustomer: !!customer,
     totals
   });
 
