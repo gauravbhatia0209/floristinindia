@@ -165,7 +165,7 @@ const CheckoutSuccess: React.FC = () => {
           <p className="text-gray-600 mb-8">
             Thank you for your order. Your payment has been processed
             successfully.
-            {createdOrderNumber && ` Order ${createdOrderNumber} has been created.`}
+            {createdOrderNumber && ` Order ${createdOrderNumber} has been confirmed.`}
           </p>
 
           {(paymentIntent || razorpayPaymentId) && (
