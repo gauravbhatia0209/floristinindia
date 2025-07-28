@@ -185,11 +185,16 @@ const CheckoutSuccess: React.FC = () => {
       // Send order confirmation emails
       try {
         console.log("📧 CheckoutSuccess: Sending order confirmation emails...");
-        const { emailAPI } = await import('@/lib/email-api');
+        const { emailAPI } = await import("@/lib/email-api");
         await emailAPI.sendOrderConfirmation(pendingOrderNumber);
-        console.log("✅ CheckoutSuccess: Order confirmation emails sent successfully");
+        console.log(
+          "✅ CheckoutSuccess: Order confirmation emails sent successfully",
+        );
       } catch (emailError) {
-        console.error("❌ CheckoutSuccess: Error sending order confirmation emails:", emailError);
+        console.error(
+          "❌ CheckoutSuccess: Error sending order confirmation emails:",
+          emailError,
+        );
         // Don't fail the order process if email fails
       }
 

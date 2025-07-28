@@ -216,7 +216,7 @@ export default function Orders() {
   ) {
     try {
       // Find the current order to get old status
-      const currentOrder = orders.find(order => order.id === orderId);
+      const currentOrder = orders.find((order) => order.id === orderId);
       const oldStatus = currentOrder?.status;
 
       // Update order status in database
@@ -239,16 +239,24 @@ export default function Orders() {
       // Send status update email notification if status actually changed
       if (oldStatus && oldStatus !== newStatus && currentOrder?.order_number) {
         try {
-          console.log(`📧 Sending status update email for order ${currentOrder.order_number}: ${oldStatus} → ${newStatus}`);
-          const { emailAPI } = await import('@/lib/email-api');
-          await emailAPI.sendOrderStatusUpdate(currentOrder.order_number, oldStatus, newStatus);
+          console.log(
+            `📧 Sending status update email for order ${currentOrder.order_number}: ${oldStatus} → ${newStatus}`,
+          );
+          const { emailAPI } = await import("@/lib/email-api");
+          await emailAPI.sendOrderStatusUpdate(
+            currentOrder.order_number,
+            oldStatus,
+            newStatus,
+          );
           console.log("✅ Order status update email sent successfully");
         } catch (emailError) {
-          console.error("❌ Error sending order status update email:", emailError);
+          console.error(
+            "❌ Error sending order status update email:",
+            emailError,
+          );
           // Don't fail the status update if email fails
         }
       }
-
     } catch (error) {
       console.error("Failed to update order status:", error);
     }

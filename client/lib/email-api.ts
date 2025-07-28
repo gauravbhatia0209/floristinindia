@@ -1,6 +1,6 @@
 // Email API utility functions for client-side calls
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
 export const emailAPI = {
   /**
@@ -8,13 +8,16 @@ export const emailAPI = {
    */
   sendOrderConfirmation: async (orderNumber: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/email/order-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/email/order-confirmation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ orderNumber }),
         },
-        body: JSON.stringify({ orderNumber }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${await response.text()}`);
@@ -22,7 +25,7 @@ export const emailAPI = {
 
       return await response.json();
     } catch (error) {
-      console.error('❌ Error sending order confirmation emails:', error);
+      console.error("❌ Error sending order confirmation emails:", error);
       throw error;
     }
   },
@@ -30,19 +33,26 @@ export const emailAPI = {
   /**
    * Send order status update email to customer
    */
-  sendOrderStatusUpdate: async (orderNumber: string, oldStatus: string, newStatus: string) => {
+  sendOrderStatusUpdate: async (
+    orderNumber: string,
+    oldStatus: string,
+    newStatus: string,
+  ) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/email/order-status-update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/email/order-status-update`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderNumber,
+            oldStatus,
+            newStatus,
+          }),
         },
-        body: JSON.stringify({ 
-          orderNumber, 
-          oldStatus, 
-          newStatus 
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${await response.text()}`);
@@ -50,7 +60,7 @@ export const emailAPI = {
 
       return await response.json();
     } catch (error) {
-      console.error('❌ Error sending order status update email:', error);
+      console.error("❌ Error sending order status update email:", error);
       throw error;
     }
   },
@@ -61,9 +71,9 @@ export const emailAPI = {
   sendTestEmail: async (to: string, subject: string, message: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/email/test`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ to, subject, message }),
       });
@@ -74,8 +84,8 @@ export const emailAPI = {
 
       return await response.json();
     } catch (error) {
-      console.error('❌ Error sending test email:', error);
+      console.error("❌ Error sending test email:", error);
       throw error;
     }
-  }
+  },
 };

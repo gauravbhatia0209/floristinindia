@@ -557,34 +557,52 @@ export default function Dashboard() {
 function EmailTestingSection() {
   const [isTestingEmail, setIsTestingEmail] = useState(false);
   const [testEmailData, setTestEmailData] = useState({
-    to: '',
-    subject: 'Test Email from Florist in India',
-    message: 'This is a test email to verify the email service is working correctly.'
+    to: "",
+    subject: "Test Email from Florist in India",
+    message:
+      "This is a test email to verify the email service is working correctly.",
   });
-  const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const [emailStatus, setEmailStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
 
   const handleSendTestEmail = async () => {
     if (!testEmailData.to.trim()) {
-      setEmailStatus({ type: 'error', message: 'Please enter a recipient email address' });
+      setEmailStatus({
+        type: "error",
+        message: "Please enter a recipient email address",
+      });
       return;
     }
 
     setIsTestingEmail(true);
-    setEmailStatus({ type: null, message: '' });
+    setEmailStatus({ type: null, message: "" });
 
     try {
-      const { emailAPI } = await import('@/lib/email-api');
-      await emailAPI.sendTestEmail(testEmailData.to, testEmailData.subject, testEmailData.message);
-      setEmailStatus({ type: 'success', message: 'Test email sent successfully!' });
+      const { emailAPI } = await import("@/lib/email-api");
+      await emailAPI.sendTestEmail(
+        testEmailData.to,
+        testEmailData.subject,
+        testEmailData.message,
+      );
+      setEmailStatus({
+        type: "success",
+        message: "Test email sent successfully!",
+      });
 
       // Clear form
       setTestEmailData({
-        to: '',
-        subject: 'Test Email from Florist in India',
-        message: 'This is a test email to verify the email service is working correctly.'
+        to: "",
+        subject: "Test Email from Florist in India",
+        message:
+          "This is a test email to verify the email service is working correctly.",
       });
     } catch (error) {
-      setEmailStatus({ type: 'error', message: `Failed to send test email: ${error}` });
+      setEmailStatus({
+        type: "error",
+        message: `Failed to send test email: ${error}`,
+      });
     } finally {
       setIsTestingEmail(false);
     }
@@ -602,11 +620,15 @@ function EmailTestingSection() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Recipient Email</label>
+              <label className="block text-sm font-medium mb-1">
+                Recipient Email
+              </label>
               <input
                 type="email"
                 value={testEmailData.to}
-                onChange={(e) => setTestEmailData({ ...testEmailData, to: e.target.value })}
+                onChange={(e) =>
+                  setTestEmailData({ ...testEmailData, to: e.target.value })
+                }
                 placeholder="Enter email address..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -616,7 +638,12 @@ function EmailTestingSection() {
               <input
                 type="text"
                 value={testEmailData.subject}
-                onChange={(e) => setTestEmailData({ ...testEmailData, subject: e.target.value })}
+                onChange={(e) =>
+                  setTestEmailData({
+                    ...testEmailData,
+                    subject: e.target.value,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -626,14 +653,18 @@ function EmailTestingSection() {
             <label className="block text-sm font-medium mb-1">Message</label>
             <textarea
               value={testEmailData.message}
-              onChange={(e) => setTestEmailData({ ...testEmailData, message: e.target.value })}
+              onChange={(e) =>
+                setTestEmailData({ ...testEmailData, message: e.target.value })
+              }
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {emailStatus.message && (
-            <div className={`p-3 rounded-md ${emailStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <div
+              className={`p-3 rounded-md ${emailStatus.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+            >
               {emailStatus.message}
             </div>
           )}
@@ -643,11 +674,13 @@ function EmailTestingSection() {
             disabled={isTestingEmail}
             className="w-full md:w-auto"
           >
-            {isTestingEmail ? 'Sending...' : 'Send Test Email'}
+            {isTestingEmail ? "Sending..." : "Send Test Email"}
           </Button>
 
           <div className="text-sm text-gray-600 mt-4">
-            <p><strong>📧 Email Service Features:</strong></p>
+            <p>
+              <strong>📧 Email Service Features:</strong>
+            </p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>✅ Order confirmation emails (customer + admin)</li>
               <li>✅ Order status update notifications</li>
