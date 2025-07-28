@@ -230,7 +230,7 @@ export const generateAdminOrderNotification = (orderData: any) => {
             <div style="background-color: #fee2e2; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
                 <div>
-                  <p style="margin: 0; color: #7f1d1d; font-size: 24px; font-weight: bold;">₹${order.total_amount.toFixed(2)}</p>
+                  <p style="margin: 0; color: #7f1d1d; font-size: 24px; font-weight: bold;">₹${(order.total_amount || 0).toFixed(2)}</p>
                   <p style="margin: 0; color: #7f1d1d; font-size: 12px;">TOTAL</p>
                 </div>
                 <div>
