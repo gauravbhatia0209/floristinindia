@@ -47,32 +47,76 @@ const Orders: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
+      setError(null);
 
-      // First get customer ID
-      const { data: customer } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("email", user?.email)
-        .single();
-
-      if (!customer) {
-        setError("Customer record not found");
+      if (!user?.email) {
+        setError("User email not found");
         return;
       }
 
-      // Fetch orders for this customer
-      const { data, error } = await supabase
+      console.log("🔍 Fetching orders for user:", {
+        email: user.email,
+        phone: user.phone
+      });
+
+      // Step 1: Find all customer records that match user's email or phone
+      let customerQuery = supabase
+        .from("customers")
+        .select("id, email, phone, name");
+
+      // Build conditions to match email or phone
+      const conditions = [];
+      if (user.email) {
+        conditions.push(`email.eq.${user.email}`);
+      }
+      if (user.phone) {
+        conditions.push(`phone.eq.${user.phone}`);
+      }
+
+      if (conditions.length === 0) {
+        console.warn("⚠️ No email or phone found for user");
+        setOrders([]);
+        return;
+      }
+
+      // Use 'or' condition to match any of the email/phone combinations
+      const { data: customers, error: customerError } = await customerQuery
+        .or(conditions.join(','));
+
+      if (customerError) {
+        console.error("❌ Error fetching customers:", customerError);
+        throw customerError;
+      }
+
+      console.log("📋 Found customer records:", customers);
+
+      if (!customers || customers.length === 0) {
+        console.log("ℹ️ No customer records found for this user");
+        setOrders([]);
+        return;
+      }
+
+      // Step 2: Get all customer IDs
+      const customerIds = customers.map(c => c.id);
+
+      // Step 3: Fetch orders for all these customer IDs
+      const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
         .select("*")
-        .eq("customer_id", customer.id)
+        .in("customer_id", customerIds)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (ordersError) {
+        console.error("❌ Error fetching orders:", ordersError);
+        throw ordersError;
+      }
 
-      setOrders(data || []);
+      console.log("📦 Found orders:", ordersData);
+      setOrders(ordersData || []);
+
     } catch (err) {
-      console.error("Error fetching orders:", err);
-      setError("Failed to load orders");
+      console.error("❌ Error in fetchOrders:", err);
+      setError("Failed to load orders. Please try again later.");
     } finally {
       setLoading(false);
     }
