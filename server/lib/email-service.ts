@@ -94,7 +94,7 @@ export const generateOrderConfirmationEmail = (orderData: any) => {
                 </div>
                 <div>
                   <p style="margin: 0; color: #6b7280; font-size: 14px;">Total Amount</p>
-                  <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">₹${order.total_amount.toFixed(2)}</p>
+                  <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">₹${(order.total_amount || 0).toFixed(2)}</p>
                 </div>
                 <div>
                   <p style="margin: 0; color: #6b7280; font-size: 14px;">Payment Status</p>
