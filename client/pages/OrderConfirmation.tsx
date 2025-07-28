@@ -157,7 +157,11 @@ const OrderConfirmation: React.FC = () => {
               product: product || null,
             };
           } catch (err) {
-            console.error("Error fetching product:", err);
+            console.error("Error fetching product for ID", item.product_id, ":", {
+              error: err,
+              message: err instanceof Error ? err.message : String(err),
+              stack: err instanceof Error ? err.stack : undefined
+            });
             return item;
           }
         }),
