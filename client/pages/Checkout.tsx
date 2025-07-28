@@ -1185,7 +1185,7 @@ export default function Checkout() {
     const orderData = {
       order_number: newOrderNumber,
       customer_id: customer.id,
-      status: "Payment Pending", // Initial status before payment
+      status: "pending", // Initial status before payment (will be updated to "confirmed" after payment)
       total_amount: totals.total,
       shipping_amount: totals.shipping,
       discount_amount: totals.discount,
