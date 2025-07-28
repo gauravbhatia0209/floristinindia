@@ -129,11 +129,11 @@ const CheckoutSuccess: React.FC = () => {
             </div>
 
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Creating Your Order...
+              Confirming Your Order...
             </h1>
 
             <p className="text-gray-600 mb-8">
-              Payment successful! We're now creating your order. Please wait a moment.
+              Payment successful! We're now confirming your order. Please wait a moment.
             </p>
 
             {(paymentIntent || razorpayPaymentId) && (
