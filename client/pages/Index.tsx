@@ -313,7 +313,7 @@ export default function Index() {
               sortedProducts.map((p) => p.name),
             );
             console.log(
-              "🖼��� Product Showcase: Product images:",
+              "🖼����� Product Showcase: Product images:",
               sortedProducts.map((p) => ({
                 name: p.name,
                 hasImages: p.images && p.images.length > 0,
@@ -1050,35 +1050,37 @@ export default function Index() {
                     })()}
                   </div>
                   <CardContent className="p-4 flex-grow flex flex-col justify-between">
-                    <h3 className="font-semibold mb-2 line-clamp-2">
-                      {product.name}
-                    </h3>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        {(() => {
-                          const effectivePrice = getProductEffectivePriceSync(
-                            product,
-                            product.variants,
-                          );
-                          const displayPrice =
-                            effectivePrice.salePrice || effectivePrice.price;
-                          const hasDiscount =
-                            effectivePrice.salePrice &&
-                            effectivePrice.salePrice < effectivePrice.price;
+                    <div>
+                      <h3 className="font-semibold mb-2 line-clamp-2">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          {(() => {
+                            const effectivePrice = getProductEffectivePriceSync(
+                              product,
+                              product.variants,
+                            );
+                            const displayPrice =
+                              effectivePrice.salePrice || effectivePrice.price;
+                            const hasDiscount =
+                              effectivePrice.salePrice &&
+                              effectivePrice.salePrice < effectivePrice.price;
 
-                          return (
-                            <>
-                              <span className="text-lg font-bold text-primary">
-                                ₹{displayPrice}
-                              </span>
-                              {hasDiscount && (
-                                <span className="text-sm text-muted-foreground line-through">
-                                  ₹{effectivePrice.price}
+                            return (
+                              <>
+                                <span className="text-lg font-bold text-primary">
+                                  ₹{displayPrice}
                                 </span>
-                              )}
-                            </>
-                          );
-                        })()}
+                                {hasDiscount && (
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{effectivePrice.price}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
                       </div>
                     </div>
                     <Button
