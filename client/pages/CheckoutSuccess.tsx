@@ -76,9 +76,9 @@ const CheckoutSuccess: React.FC = () => {
         pendingOrderNumber,
       );
 
-      // Update the order status to "Order Confirmed" and payment details
+      // Update the order status to "confirmed" and payment details
       const updateData = {
-        status: "Order Confirmed",
+        status: "confirmed",
         payment_status: "paid",
         payment_reference: razorpayPaymentId || paymentIntent,
         payment_method: "razorpay",
