@@ -521,7 +521,7 @@ function ProductCarouselSection({ content }: { content: any }) {
             key={product.id}
             className="border-0 shadow-lg overflow-hidden group hover:shadow-xl transition-shadow h-full flex flex-col"
           >
-            <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-square">
+            <div className="bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden aspect-[4/5]">
               {product.images && product.images.length > 0 ? (
                 <img
                   src={product.images[0]}
