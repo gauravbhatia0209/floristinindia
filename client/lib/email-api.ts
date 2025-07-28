@@ -56,11 +56,13 @@ export const emailAPI = {
         },
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+        throw new Error(`HTTP ${response.status}: ${data.error || 'Unknown error'}`);
       }
 
-      return await response.json();
+      return data;
     } catch (error) {
       console.error("❌ Error sending order status update email:", error);
       throw error;
