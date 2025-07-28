@@ -240,24 +240,9 @@ export default function Orders() {
       if (oldStatus && oldStatus !== newStatus && currentOrder?.order_number) {
         try {
           console.log(`📧 Sending status update email for order ${currentOrder.order_number}: ${oldStatus} → ${newStatus}`);
-
-          const emailResponse = await fetch('/api/email/order-status-update', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              orderNumber: currentOrder.order_number,
-              oldStatus: oldStatus,
-              newStatus: newStatus
-            }),
-          });
-
-          if (emailResponse.ok) {
-            console.log("✅ Order status update email sent successfully");
-          } else {
-            console.error("⚠️ Failed to send order status update email:", await emailResponse.text());
-          }
+          const { emailAPI } = await import('@/lib/email-api');
+          await emailAPI.sendOrderStatusUpdate(currentOrder.order_number, oldStatus, newStatus);
+          console.log("✅ Order status update email sent successfully");
         } catch (emailError) {
           console.error("❌ Error sending order status update email:", emailError);
           // Don't fail the status update if email fails
