@@ -1049,7 +1049,7 @@ export default function Index() {
                       );
                     })()}
                   </div>
-                  <CardContent className="p-4">
+                  <CardContent className="p-4 flex-grow flex flex-col justify-between">
                     <h3 className="font-semibold mb-2 line-clamp-2">
                       {product.name}
                     </h3>
