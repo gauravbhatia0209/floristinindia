@@ -689,6 +689,34 @@ function EmailTestingSection() {
               <li>✅ Admin notifications for new orders</li>
             </ul>
           </div>
+
+          {/* Manual Order Email Resend */}
+          <div className="border-t pt-4 mt-4">
+            <h4 className="font-medium mb-3">📧 Resend Order Confirmation</h4>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter order number (e.g., FII83255)"
+                value={orderResendNumber}
+                onChange={(e) => setOrderResendNumber(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <Button
+                onClick={handleResendOrderEmail}
+                disabled={isResendingEmail || !orderResendNumber.trim()}
+                variant="outline"
+              >
+                {isResendingEmail ? "Sending..." : "Resend Emails"}
+              </Button>
+            </div>
+            {orderResendStatus.message && (
+              <div
+                className={`mt-2 p-3 rounded-md ${orderResendStatus.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+              >
+                {orderResendStatus.message}
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
