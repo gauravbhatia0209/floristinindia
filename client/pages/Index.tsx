@@ -973,7 +973,7 @@ export default function Index() {
                 to={`/product/${product.slug}`}
                 className="group"
               >
-                <Card className="border-0 shadow-lg overflow-hidden">
+                <Card className="border-0 shadow-lg overflow-hidden h-full flex flex-col">
                   <div className="aspect-square bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden">
                     {(() => {
                       const hasValidImage =
