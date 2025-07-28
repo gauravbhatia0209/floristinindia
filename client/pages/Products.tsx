@@ -787,7 +787,7 @@ export default function Products() {
             >
               <div
                 className={`bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden ${
-                  viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-square"
+                  viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-[4/5]"
                 }`}
               >
                 {product.images.length > 0 ? (
