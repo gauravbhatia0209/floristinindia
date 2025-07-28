@@ -141,7 +141,13 @@ const OrderConfirmation: React.FC = () => {
               .single();
 
             if (productError) {
-              console.error("Error fetching product:", productError);
+              console.error("Error fetching product for ID", item.product_id, ":", {
+                error: productError,
+                message: productError.message,
+                details: productError.details,
+                hint: productError.hint,
+                code: productError.code
+              });
             }
 
             console.log("📦 Product data for", item.product_id, ":", product);
