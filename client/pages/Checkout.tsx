@@ -928,6 +928,7 @@ export default function Checkout() {
     // Clear cart
     clearCart();
 
+    console.log("✅ createOrder(): Order process completed successfully, returning:", orderNumber);
     return orderNumber;
   }
 
