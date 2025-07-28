@@ -614,6 +614,38 @@ function EmailTestingSection() {
     }
   };
 
+  const handleResendOrderEmail = async () => {
+    if (!orderResendNumber.trim()) {
+      setOrderResendStatus({
+        type: "error",
+        message: "Please enter an order number",
+      });
+      return;
+    }
+
+    setIsResendingEmail(true);
+    setOrderResendStatus({ type: null, message: "" });
+
+    try {
+      const { emailAPI } = await import("@/lib/email-api");
+      await emailAPI.sendOrderConfirmation(orderResendNumber.trim());
+      setOrderResendStatus({
+        type: "success",
+        message: `Order confirmation emails sent successfully for order ${orderResendNumber}!`,
+      });
+
+      // Clear form
+      setOrderResendNumber("");
+    } catch (error) {
+      setOrderResendStatus({
+        type: "error",
+        message: `Failed to send order confirmation emails: ${error}`,
+      });
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
