@@ -1330,6 +1330,7 @@ export default function Checkout() {
   async function handlePaymentSuccess(paymentIntent: any) {
     try {
       // Create order after successful payment
+      console.log("🔄 Checkout Success Flow: Creating order via createOrder()");
       const orderNumber = await createOrder();
 
       // Track purchase analytics
