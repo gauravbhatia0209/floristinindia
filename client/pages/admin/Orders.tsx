@@ -215,6 +215,11 @@ export default function Orders() {
     newStatus: Order["status"],
   ) {
     try {
+      // Find the current order to get old status
+      const currentOrder = orders.find(order => order.id === orderId);
+      const oldStatus = currentOrder?.status;
+
+      // Update order status in database
       await supabase
         .from("orders")
         .update({ status: newStatus })
@@ -230,6 +235,35 @@ export default function Orders() {
       if (selectedOrder && selectedOrder.id === orderId) {
         setSelectedOrder({ ...selectedOrder, status: newStatus });
       }
+
+      // Send status update email notification if status actually changed
+      if (oldStatus && oldStatus !== newStatus && currentOrder?.order_number) {
+        try {
+          console.log(`📧 Sending status update email for order ${currentOrder.order_number}: ${oldStatus} → ${newStatus}`);
+
+          const emailResponse = await fetch('/api/email/order-status-update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              orderNumber: currentOrder.order_number,
+              oldStatus: oldStatus,
+              newStatus: newStatus
+            }),
+          });
+
+          if (emailResponse.ok) {
+            console.log("✅ Order status update email sent successfully");
+          } else {
+            console.error("⚠️ Failed to send order status update email:", await emailResponse.text());
+          }
+        } catch (emailError) {
+          console.error("❌ Error sending order status update email:", emailError);
+          // Don't fail the status update if email fails
+        }
+      }
+
     } catch (error) {
       console.error("Failed to update order status:", error);
     }
