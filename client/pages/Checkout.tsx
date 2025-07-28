@@ -1266,10 +1266,9 @@ export default function Checkout() {
 
         const paymentUrl = `/razorpay-payment?order_id=${fallbackOrderId}&payment_intent=${fallbackPaymentIntentId}&amount=${paymentAmount}&customer_name=${encodeURIComponent(form.fullName)}&customer_email=${encodeURIComponent(form.email)}&customer_phone=${encodeURIComponent(`${form.phoneCountryCode}${form.phone}`)}`;
 
-        // Save form data to localStorage for order creation after payment
-        console.log("💾 Saving form data to localStorage for order creation");
-        localStorage.setItem("checkoutFormData", JSON.stringify(form));
-        localStorage.setItem("uploadedFiles", JSON.stringify(uploadedFiles));
+        // Save order ID for status update after payment
+        console.log("💾 Saving order ID for status update after payment");
+        localStorage.setItem("pendingOrderNumber", createdOrderNumber);
 
         console.log("No API response, using direct payment:", paymentUrl);
         navigate(paymentUrl);
