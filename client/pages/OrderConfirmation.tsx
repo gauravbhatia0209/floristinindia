@@ -363,7 +363,7 @@ const OrderConfirmation: React.FC = () => {
                               Qty: {item.quantity}
                             </span>
                             <span className="text-sm text-gray-600">
-                              Price: ₹{(item.price || 0).toFixed(2)}
+                              Price: ₹{(item.price || item.product?.sale_price || item.product?.price || 0).toFixed(2)}
                             </span>
                           </div>
 
