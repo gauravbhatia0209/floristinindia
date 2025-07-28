@@ -1091,10 +1091,6 @@ export default function Checkout() {
   }
 
   async function createOrderBeforePayment() {
-    if (!customer) {
-      throw new Error("No customer found for order creation");
-    }
-
     if (!items || items.length === 0) {
       throw new Error("No cart items found for order creation");
     }
@@ -1105,6 +1101,54 @@ export default function Checkout() {
 
     // Generate order number
     const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
+
+    // Create customer record
+    const nameParts = form.fullName.trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    const { data: customer, error: customerError } = await supabase
+      .from("customers")
+      .upsert(
+        {
+          name: form.fullName,
+          email: form.email,
+          first_name: firstName,
+          last_name: lastName,
+          phone: `${form.phoneCountryCode}${form.phone}`,
+          addresses: [
+            {
+              name: form.receiverName || form.fullName,
+              line1: form.addressLine1,
+              line2: form.addressLine2 || "",
+              city: form.city,
+              state: form.state,
+              pincode: form.pincode,
+              phone: form.receiverPhone
+                ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
+                : `${form.phoneCountryCode}${form.phone}`,
+              alternate_phone: form.alternatePhone || "",
+            },
+          ],
+        },
+        {
+          onConflict: "email",
+          ignoreDuplicates: false,
+        },
+      )
+      .select()
+      .single();
+
+    if (customerError) {
+      console.error("❌ createOrderBeforePayment(): Customer creation error:", customerError);
+      throw customerError;
+    }
+
+    if (!customer) {
+      throw new Error("Failed to create or retrieve customer");
+    }
+
+    console.log("✅ createOrderBeforePayment(): Customer created/retrieved:", customer.id);
 
     const orderData = {
       order_number: newOrderNumber,
