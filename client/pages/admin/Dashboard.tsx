@@ -566,6 +566,12 @@ function EmailTestingSection() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const [orderResendNumber, setOrderResendNumber] = useState("");
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
+  const [orderResendStatus, setOrderResendStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
 
   const handleSendTestEmail = async () => {
     if (!testEmailData.to.trim()) {
