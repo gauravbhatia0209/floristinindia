@@ -172,7 +172,9 @@ const CheckoutSuccess: React.FC = () => {
 
         console.log("📊 CheckoutSuccess: Analytics tracking completed");
       } else {
-        console.log("⚠️ CheckoutSuccess: Skipping analytics tracking - no cart data or totals available");
+        console.log(
+          "⚠️ CheckoutSuccess: Skipping analytics tracking - no cart data or totals available",
+        );
       }
 
       // Clear cart after successful order confirmation (if items exist)

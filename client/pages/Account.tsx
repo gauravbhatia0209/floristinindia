@@ -357,7 +357,7 @@ function OrdersTab({ user }: OrdersTabProps) {
 
       console.log("🔍 Fetching orders for user:", {
         email: user.email,
-        phone: user.phone
+        phone: user.phone,
       });
 
       // Step 1: Find all customer records that match user's email or phone
@@ -381,8 +381,9 @@ function OrdersTab({ user }: OrdersTabProps) {
       }
 
       // Use 'or' condition to match any of the email/phone combinations
-      const { data: customers, error: customerError } = await customerQuery
-        .or(conditions.join(','));
+      const { data: customers, error: customerError } = await customerQuery.or(
+        conditions.join(","),
+      );
 
       if (customerError) {
         console.error("❌ Error fetching customers:", customerError);
@@ -398,15 +399,17 @@ function OrdersTab({ user }: OrdersTabProps) {
       }
 
       // Step 2: Get all customer IDs
-      const customerIds = customers.map(c => c.id);
+      const customerIds = customers.map((c) => c.id);
 
       // Step 3: Fetch orders for all these customer IDs
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
-        .select(`
+        .select(
+          `
           *,
           customer:customers(name, email, phone)
-        `)
+        `,
+        )
         .in("customer_id", customerIds)
         .order("created_at", { ascending: false });
 
@@ -417,7 +420,6 @@ function OrdersTab({ user }: OrdersTabProps) {
 
       console.log("📦 Found orders:", ordersData);
       setOrders(ordersData || []);
-
     } catch (err) {
       console.error("❌ Error in fetchOrdersByEmailAndPhone:", err);
       setError("Failed to load orders. Please try again later.");
@@ -520,7 +522,8 @@ function OrdersTab({ user }: OrdersTabProps) {
               No orders yet
             </h3>
             <p className="text-gray-600 mb-4">
-              You haven't placed any orders yet. Start shopping to see your orders here.
+              You haven't placed any orders yet. Start shopping to see your
+              orders here.
             </p>
             <Button asChild>
               <Link to="/products">Start Shopping</Link>
@@ -553,10 +556,14 @@ function OrdersTab({ user }: OrdersTabProps) {
                     <span className="font-medium">#{order.order_number}</span>
                   </div>
                   <Badge className={getStatusColor(order.status)}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    {order.status.charAt(0).toUpperCase() +
+                      order.status.slice(1)}
                   </Badge>
-                  <Badge className={getPaymentStatusColor(order.payment_status)}>
-                    {order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
+                  <Badge
+                    className={getPaymentStatusColor(order.payment_status)}
+                  >
+                    {order.payment_status.charAt(0).toUpperCase() +
+                      order.payment_status.slice(1)}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-3">
@@ -586,7 +593,8 @@ function OrdersTab({ user }: OrdersTabProps) {
                 <div className="flex items-center gap-1">
                   <Package className="h-4 w-4" />
                   <span>
-                    {Array.isArray(order.items) ? order.items.length : 0} item(s)
+                    {Array.isArray(order.items) ? order.items.length : 0}{" "}
+                    item(s)
                   </span>
                 </div>
                 {order.customer?.email && (

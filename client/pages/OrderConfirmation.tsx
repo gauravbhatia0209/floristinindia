@@ -118,7 +118,7 @@ const OrderConfirmation: React.FC = () => {
 
       // Parse items if they're stored as JSON string
       let orderItems = data.items;
-      if (typeof data.items === 'string') {
+      if (typeof data.items === "string") {
         try {
           orderItems = JSON.parse(data.items);
         } catch (parseError) {
@@ -136,7 +136,7 @@ const OrderConfirmation: React.FC = () => {
             console.log("🔍 Fetching product for item:", {
               product_id: item.product_id,
               product_name: item.product_name,
-              item: item
+              item: item,
             });
 
             // First check if product_id exists and is valid
@@ -152,12 +152,19 @@ const OrderConfirmation: React.FC = () => {
               .single();
 
             if (productError) {
-              console.error("❌ Supabase error fetching product for ID", item.product_id, ":");
+              console.error(
+                "❌ Supabase error fetching product for ID",
+                item.product_id,
+                ":",
+              );
               console.error("Error code:", productError.code);
               console.error("Error message:", productError.message);
               console.error("Error details:", productError.details);
               console.error("Error hint:", productError.hint);
-              console.error("Full error object:", JSON.stringify(productError, null, 2));
+              console.error(
+                "Full error object:",
+                JSON.stringify(productError, null, 2),
+              );
 
               // Return item without product data but don't fail
               return {
@@ -166,14 +173,23 @@ const OrderConfirmation: React.FC = () => {
               };
             }
 
-            console.log("✅ Successfully fetched product data for", item.product_id, ":", product);
+            console.log(
+              "✅ Successfully fetched product data for",
+              item.product_id,
+              ":",
+              product,
+            );
 
             return {
               ...item,
               product: product || null,
             };
           } catch (err) {
-            console.error("❌ Exception fetching product for ID", item.product_id, ":");
+            console.error(
+              "❌ Exception fetching product for ID",
+              item.product_id,
+              ":",
+            );
             console.error("Error type:", typeof err);
             console.error("Error constructor:", err?.constructor?.name);
 
@@ -183,7 +199,10 @@ const OrderConfirmation: React.FC = () => {
             } else {
               console.error("Non-Error object:", err);
               console.error("String representation:", String(err));
-              console.error("JSON representation:", JSON.stringify(err, null, 2));
+              console.error(
+                "JSON representation:",
+                JSON.stringify(err, null, 2),
+              );
             }
 
             // Return item without product data but don't fail
@@ -363,11 +382,16 @@ const OrderConfirmation: React.FC = () => {
                       {(() => {
                         // Get image from the images array (which contains URLs as strings)
                         const imageUrl = item.product?.images?.[0];
-                        console.log("🖼️ Image data for", item.product_name, ":", {
-                          hasProduct: !!item.product,
-                          images: item.product?.images,
-                          finalImageUrl: imageUrl
-                        });
+                        console.log(
+                          "🖼️ Image data for",
+                          item.product_name,
+                          ":",
+                          {
+                            hasProduct: !!item.product,
+                            images: item.product?.images,
+                            finalImageUrl: imageUrl,
+                          },
+                        );
 
                         return imageUrl ? (
                           <img
@@ -377,9 +401,12 @@ const OrderConfirmation: React.FC = () => {
                             onError={(e) => {
                               console.error("Image failed to load:", imageUrl);
                               const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              const fallback = target.parentElement?.querySelector('.image-fallback') as HTMLElement;
-                              if (fallback) fallback.style.display = 'flex';
+                              target.style.display = "none";
+                              const fallback =
+                                target.parentElement?.querySelector(
+                                  ".image-fallback",
+                                ) as HTMLElement;
+                              if (fallback) fallback.style.display = "flex";
                             }}
                           />
                         ) : (
@@ -418,7 +445,13 @@ const OrderConfirmation: React.FC = () => {
                               Qty: {item.quantity}
                             </span>
                             <span className="text-sm text-gray-600">
-                              Price: ₹{(item.price || item.product?.sale_price || item.product?.price || 0).toFixed(2)}
+                              Price: ₹
+                              {(
+                                item.price ||
+                                item.product?.sale_price ||
+                                item.product?.price ||
+                                0
+                              ).toFixed(2)}
                             </span>
                           </div>
 
@@ -447,7 +480,14 @@ const OrderConfirmation: React.FC = () => {
 
                         <div className="text-right">
                           <p className="font-bold text-lg">
-                            ₹{(item.total_price || (item.price || item.product?.sale_price || item.product?.price || 0) * item.quantity).toFixed(2)}
+                            ₹
+                            {(
+                              item.total_price ||
+                              (item.price ||
+                                item.product?.sale_price ||
+                                item.product?.price ||
+                                0) * item.quantity
+                            ).toFixed(2)}
                           </p>
                         </div>
                       </div>

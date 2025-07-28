@@ -56,7 +56,7 @@ const Orders: React.FC = () => {
 
       console.log("🔍 Fetching orders for user:", {
         email: user.email,
-        phone: user.phone
+        phone: user.phone,
       });
 
       // Step 1: Find all customer records that match user's email or phone
@@ -80,8 +80,9 @@ const Orders: React.FC = () => {
       }
 
       // Use 'or' condition to match any of the email/phone combinations
-      const { data: customers, error: customerError } = await customerQuery
-        .or(conditions.join(','));
+      const { data: customers, error: customerError } = await customerQuery.or(
+        conditions.join(","),
+      );
 
       if (customerError) {
         console.error("❌ Error fetching customers:", customerError);
@@ -97,7 +98,7 @@ const Orders: React.FC = () => {
       }
 
       // Step 2: Get all customer IDs
-      const customerIds = customers.map(c => c.id);
+      const customerIds = customers.map((c) => c.id);
 
       // Step 3: Fetch orders for all these customer IDs
       const { data: ordersData, error: ordersError } = await supabase
@@ -113,7 +114,6 @@ const Orders: React.FC = () => {
 
       console.log("📦 Found orders:", ordersData);
       setOrders(ordersData || []);
-
     } catch (err) {
       console.error("❌ Error in fetchOrders:", err);
       setError("Failed to load orders. Please try again later.");
