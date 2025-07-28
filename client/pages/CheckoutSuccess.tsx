@@ -44,154 +44,77 @@ const CheckoutSuccess: React.FC = () => {
     }
   }, [orderNumber, paymentIntent, razorpayPaymentId, orderCreated, isCreatingOrder]);
 
-  const createOrderFromPaymentSuccess = async () => {
-    if (!customer) {
-      console.error("❌ CheckoutSuccess: No customer found for order creation");
-      return;
-    }
-
-    if (!items || items.length === 0) {
-      console.error("❌ CheckoutSuccess: No cart items found for order creation");
-      return;
-    }
-
+  const updateOrderStatusAfterPayment = async () => {
     setIsCreatingOrder(true);
-    console.log("🔄 CheckoutSuccess: Creating order from payment success...");
+    console.log("🔄 CheckoutSuccess: Updating order status after successful payment...");
 
     try {
-      // Get form data from localStorage (saved during checkout)
-      const savedFormData = localStorage.getItem("checkoutFormData");
-      const savedUploadedFiles = localStorage.getItem("uploadedFiles");
+      // Get the pending order number from localStorage
+      const pendingOrderNumber = localStorage.getItem("pendingOrderNumber");
 
-      if (!savedFormData) {
-        throw new Error("No form data found in localStorage");
+      if (!pendingOrderNumber) {
+        throw new Error("No pending order number found in localStorage");
       }
 
-      const form = JSON.parse(savedFormData);
-      const uploadedFiles = savedUploadedFiles ? JSON.parse(savedUploadedFiles) : [];
+      console.log("📋 CheckoutSuccess: Found pending order number:", pendingOrderNumber);
 
-      console.log("📋 CheckoutSuccess: Retrieved form data:", { form, uploadedFiles });
-
-      // Generate order number
-      const newOrderNumber = `FII${Date.now().toString().slice(-5)}`;
-
-      console.log("🔄 CheckoutSuccess: Creating order with number:", newOrderNumber);
-
-      const orderData = {
-        order_number: newOrderNumber,
-        customer_id: customer.id,
-        status: "pending",
-        total_amount: totals.total,
-        shipping_amount: totals.shipping,
-        discount_amount: totals.discount,
-        tax_amount: totals.tax,
-        items: items.map((item) => {
-          const uploadedFileData = uploadedFiles.find(
-            (f: any) => f.product_id === item.product_id,
-          );
-
-          return {
-            product_id: item.product_id,
-            product_name: item.product.name,
-            variant_id: item.variant_id,
-            variant_name: item.variant?.name,
-            quantity: item.quantity,
-            unit_price:
-              item.variant?.sale_price ||
-              item.variant?.price ||
-              item.product.sale_price ||
-              item.product.price,
-            total_price:
-              (item.variant?.sale_price ||
-                item.variant?.price ||
-                item.product.sale_price ||
-                item.product.price) * item.quantity,
-            uploaded_file_url: uploadedFileData?.file_url || null,
-            uploaded_file_name: uploadedFileData?.file_name || null,
-            uploaded_file_size: uploadedFileData?.file_size || null,
-            uploaded_file_type: uploadedFileData?.file_type || null,
-            upload_status: uploadedFileData?.status || null,
-          };
-        }),
-        shipping_address: {
-          name: form.receiverName || form.fullName,
-          line1: form.addressLine1,
-          line2: form.addressLine2 || "",
-          city: form.city,
-          state: form.state,
-          pincode: form.pincode,
-          phone: form.receiverPhone
-            ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
-            : `${form.phoneCountryCode}${form.phone}`,
-          alternate_phone: form.alternatePhone || "",
-        },
-        billing_address: {
-          name: form.fullName,
-          line1: form.addressLine1,
-          line2: form.addressLine2 || "",
-          city: form.city,
-          state: form.state,
-          pincode: form.pincode,
-          phone: `${form.phoneCountryCode}${form.phone}`,
-          alternate_phone: form.alternatePhone || "",
-        },
-        delivery_date: form.deliveryDate || null,
-        delivery_slot: form.deliverySlot || null,
-        special_instructions: form.specialInstructions || null,
-        customer_message: form.orderMessage || null,
-        receiver_name: form.receiverName || form.fullName,
-        receiver_phone: form.receiverPhone
-          ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
-          : `${form.phoneCountryCode}${form.phone}`,
-        alternate_phone: form.alternatePhone || "",
-        delivery_instructions: form.specialInstructions || null,
-        uploaded_files: uploadedFiles,
-        payment_method: "razorpay",
+      // Update the order status to "Order Confirmed" and payment details
+      const updateData = {
+        status: "Order Confirmed",
         payment_status: "paid",
         payment_reference: razorpayPaymentId || paymentIntent,
-        coupon_code: null, // TODO: Get from localStorage if stored
+        payment_method: "razorpay",
+        updated_at: new Date().toISOString()
       };
 
-      console.log("📤 CheckoutSuccess: Inserting order data:", orderData);
+      console.log("📤 CheckoutSuccess: Updating order with data:", updateData);
 
-      const { data: order, error: orderError } = await supabase
+      const { data: updatedOrder, error: updateError } = await supabase
         .from("orders")
-        .insert(orderData)
+        .update(updateData)
+        .eq("order_number", pendingOrderNumber)
         .select()
         .single();
 
-      console.log("📨 CheckoutSuccess: Order creation result:", { order, orderError });
+      console.log("📨 CheckoutSuccess: Order update result:", { updatedOrder, updateError });
 
-      if (orderError) throw orderError;
+      if (updateError) throw updateError;
 
-      // Track purchase in analytics
-      const orderItems = items.map((item) => ({
-        item_id: item.product.id,
-        item_name: item.product.name,
-        category: item.product.category_name,
-        quantity: item.quantity,
-        price: item.product.price,
-      }));
-      trackPurchase(newOrderNumber, totals.total, orderItems);
+      if (!updatedOrder) {
+        throw new Error(`No order found with order number: ${pendingOrderNumber}`);
+      }
 
-      // Track purchase in Facebook Pixel
-      const fbContentIds = items.map((item) => item.product.id);
-      trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
+      // Track purchase in analytics (only if we have cart data)
+      if (items && items.length > 0) {
+        const orderItems = items.map((item) => ({
+          item_id: item.product.id,
+          item_name: item.product.name,
+          category: item.product.category_name,
+          quantity: item.quantity,
+          price: item.product.price,
+        }));
+        trackPurchase(pendingOrderNumber, totals.total, orderItems);
 
-      // Clear cart and saved data
-      clearCart();
-      localStorage.removeItem("checkoutFormData");
-      localStorage.removeItem("uploadedFiles");
+        // Track purchase in Facebook Pixel
+        const fbContentIds = items.map((item) => item.product.id);
+        trackFBPurchase(totals.total, "INR", fbContentIds, items.length);
 
-      console.log("✅ CheckoutSuccess: Order created successfully:", newOrderNumber);
-      setCreatedOrderNumber(newOrderNumber);
+        // Clear cart after successful order confirmation
+        clearCart();
+      }
+
+      // Clean up localStorage
+      localStorage.removeItem("pendingOrderNumber");
+
+      console.log("✅ CheckoutSuccess: Payment confirmed, order status updated.");
+      setCreatedOrderNumber(pendingOrderNumber);
       setOrderCreated(true);
 
       // Redirect to order confirmation
-      navigate(`/order-confirmation/${newOrderNumber}`, { replace: true });
+      navigate(`/order-confirmation/${pendingOrderNumber}`, { replace: true });
 
     } catch (error) {
-      console.error("❌ CheckoutSuccess: Error creating order:", error);
+      console.error("❌ CheckoutSuccess: Error updating order status:", error);
       setIsCreatingOrder(false);
     }
   };
