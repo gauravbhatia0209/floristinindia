@@ -599,12 +599,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const isAuthenticated = !!user;
   const isAdmin = user?.user_type === "admin";
+  const isSuperAdmin = user?.user_type === "admin" && user?.role === "super_admin";
+  const isSubAdmin = user?.user_type === "admin" && user?.role === "admin";
+  const hasAdminAccess = isAdmin; // Both super_admin and admin roles have admin access
 
   const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated,
     isAdmin,
+    isSuperAdmin,
+    isSubAdmin,
+    hasAdminAccess,
     login,
     loginWithGoogle,
     logout,
