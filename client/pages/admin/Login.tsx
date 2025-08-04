@@ -30,6 +30,7 @@ export default function AdminLogin() {
 
   const {
     login,
+    logout,
     resetPassword,
     isAuthenticated,
     isLoading: authLoading,
