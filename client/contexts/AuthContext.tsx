@@ -113,9 +113,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch (error) {
+      console.error("AuthProvider initialization error:", error);
+      setError("Authentication system initialization failed");
+      setIsLoading(false);
+    }
   }, []);
 
   const checkSession = async () => {
