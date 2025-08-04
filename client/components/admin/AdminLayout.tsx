@@ -194,7 +194,9 @@ export default function AdminLayout() {
         {/* Main content */}
         <main className="py-6">
           <div className="px-4 sm:px-6 lg:px-8">
-            <Outlet />
+            <AdminSecurityWrapper>
+              <Outlet />
+            </AdminSecurityWrapper>
           </div>
         </main>
       </div>
