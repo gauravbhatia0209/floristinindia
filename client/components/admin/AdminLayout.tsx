@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import AdminSecurityWrapper from "@/components/AdminSecurityWrapper";
 import {
   LayoutDashboard,
   Package,
