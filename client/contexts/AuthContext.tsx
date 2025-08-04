@@ -65,11 +65,20 @@ export const useAuth = () => {
       isSubAdmin: false,
       hasAdminAccess: false,
       login: async () => ({ success: false, error: "Auth not available" }),
-      loginWithGoogle: async () => ({ success: false, error: "Auth not available" }),
+      loginWithGoogle: async () => ({
+        success: false,
+        error: "Auth not available",
+      }),
       logout: async () => {},
       signup: async () => ({ success: false, error: "Auth not available" }),
-      resetPassword: async () => ({ success: false, error: "Auth not available" }),
-      updateProfile: async () => ({ success: false, error: "Auth not available" }),
+      resetPassword: async () => ({
+        success: false,
+        error: "Auth not available",
+      }),
+      updateProfile: async () => ({
+        success: false,
+        error: "Auth not available",
+      }),
       checkSession: async () => {},
     } as AuthContextType;
   }
@@ -91,44 +100,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        // Handle OAuth sign in
-        const user = session.user;
+        if (event === "SIGNED_IN" && session) {
+          // Handle OAuth sign in
+          const user = session.user;
 
-        // Check if user exists in customers table
-        const { data: existingCustomer } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("email", user.email)
-          .single();
-
-        if (existingCustomer) {
-          // Update last login
-          await supabase
+          // Check if user exists in customers table
+          const { data: existingCustomer } = await supabase
             .from("customers")
-            .update({ last_login: new Date().toISOString() })
-            .eq("id", existingCustomer.id);
+            .select("*")
+            .eq("email", user.email)
+            .single();
 
-          const userObj: User = {
-            id: existingCustomer.id,
-            email: existingCustomer.email,
-            name: existingCustomer.name,
-            user_type: "customer",
-            email_verified: true,
-            phone: existingCustomer.phone,
-            last_login: new Date().toISOString(),
-          };
+          if (existingCustomer) {
+            // Update last login
+            await supabase
+              .from("customers")
+              .update({ last_login: new Date().toISOString() })
+              .eq("id", existingCustomer.id);
 
-          setUser(userObj);
+            const userObj: User = {
+              id: existingCustomer.id,
+              email: existingCustomer.email,
+              name: existingCustomer.name,
+              user_type: "customer",
+              email_verified: true,
+              phone: existingCustomer.phone,
+              last_login: new Date().toISOString(),
+            };
+
+            setUser(userObj);
+          }
+        } else if (event === "SIGNED_OUT") {
+          // Only clear user if it was an OAuth user (no local session)
+          const sessionToken = localStorage.getItem("session_token");
+          if (!sessionToken) {
+            setUser(null);
+          }
         }
-      } else if (event === "SIGNED_OUT") {
-        // Only clear user if it was an OAuth user (no local session)
-        const sessionToken = localStorage.getItem("session_token");
-        if (!sessionToken) {
-          setUser(null);
-        }
-      }
-    });
+      });
 
       return () => {
         subscription.unsubscribe();
@@ -636,7 +645,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center p-8">
           <div className="text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Authentication Error</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Authentication Error
+          </h1>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
