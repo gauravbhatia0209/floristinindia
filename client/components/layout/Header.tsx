@@ -90,23 +90,7 @@ export function Header() {
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { items } = useCart();
-
-  // Safe auth hook usage with error handling
-  let user = null;
-  let isAuthenticated = false;
-  let isAdmin = false;
-  let logout = () => {};
-
-  try {
-    const authContext = useAuth();
-    user = authContext.user;
-    isAuthenticated = authContext.isAuthenticated;
-    isAdmin = authContext.isAdmin;
-    logout = authContext.logout;
-  } catch (error) {
-    console.warn("AuthProvider not available in Header component:", error);
-  }
-
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
