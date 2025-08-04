@@ -54,7 +54,24 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    // Provide safe defaults instead of throwing error
+    console.warn("useAuth called outside AuthProvider, using fallback values");
+    return {
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+      isAdmin: false,
+      isSuperAdmin: false,
+      isSubAdmin: false,
+      hasAdminAccess: false,
+      login: async () => ({ success: false, error: "Auth not available" }),
+      loginWithGoogle: async () => ({ success: false, error: "Auth not available" }),
+      logout: async () => {},
+      signup: async () => ({ success: false, error: "Auth not available" }),
+      resetPassword: async () => ({ success: false, error: "Auth not available" }),
+      updateProfile: async () => ({ success: false, error: "Auth not available" }),
+      checkSession: async () => {},
+    } as AuthContextType;
   }
   return context;
 };
