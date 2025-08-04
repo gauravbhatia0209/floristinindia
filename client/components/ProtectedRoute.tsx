@@ -104,7 +104,7 @@ export function CustomerRoute({ children }: { children: React.ReactNode }) {
 
 // Component for routes that should redirect if already authenticated
 export function GuestRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const { isAuthenticated, hasAdminAccess, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -119,7 +119,7 @@ export function GuestRoute({ children }: { children: React.ReactNode }) {
 
   // Redirect authenticated users
   if (isAuthenticated) {
-    return <Navigate to={isAdmin ? "/admin" : "/"} replace />;
+    return <Navigate to={hasAdminAccess ? "/admin" : "/"} replace />;
   }
 
   return <>{children}</>;
