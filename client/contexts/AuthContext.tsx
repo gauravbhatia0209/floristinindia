@@ -6,7 +6,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role?: string;
+  role?: "admin" | "super_admin";
   user_type: "admin" | "customer";
   email_verified: boolean;
   phone?: string;
