@@ -73,8 +73,15 @@ export default function ProtectedRoute({
   return <>{children}</>;
 }
 
-// Higher-order component for admin routes
+// Higher-order component for admin routes - only super_admin and admin roles
 export function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, hasAdminAccess, user } = useAuth();
+
+  // Additional security check at the route level
+  if (isAuthenticated && !hasAdminAccess) {
+    console.warn(`Access denied: User ${user?.email} attempted to access admin panel without proper permissions`);
+  }
+
   return (
     <ProtectedRoute
       requireAuth={true}
