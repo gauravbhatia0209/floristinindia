@@ -175,12 +175,14 @@ export default function AdminLayout() {
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               {/* User Role Badge */}
               <div className="hidden sm:flex items-center gap-x-2">
-                <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  user?.role === 'super_admin'
-                    ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                    : 'bg-blue-100 text-blue-800 border border-blue-200'
-                }`}>
-                  {user?.role === 'super_admin' ? '👑 Super Admin' : '⚡ Admin'}
+                <div
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    user?.role === "super_admin"
+                      ? "bg-purple-100 text-purple-800 border border-purple-200"
+                      : "bg-blue-100 text-blue-800 border border-blue-200"
+                  }`}
+                >
+                  {user?.role === "super_admin" ? "👑 Super Admin" : "⚡ Admin"}
                 </div>
                 <span className="text-sm text-gray-500">{user?.name}</span>
               </div>

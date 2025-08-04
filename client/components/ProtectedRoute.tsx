@@ -42,12 +42,15 @@ export default function ProtectedRoute({
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center p-8">
           <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Access Denied
+          </h1>
           <p className="text-gray-600 mb-6">
             You don't have permission to access the admin panel.
           </p>
           <p className="text-sm text-gray-500 mb-6">
-            Please contact your system administrator if you believe this is an error.
+            Please contact your system administrator if you believe this is an
+            error.
           </p>
           <div className="space-x-4">
             <button
@@ -79,7 +82,9 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
 
   // Additional security check at the route level
   if (isAuthenticated && !hasAdminAccess) {
-    console.warn(`Access denied: User ${user?.email} attempted to access admin panel without proper permissions`);
+    console.warn(
+      `Access denied: User ${user?.email} attempted to access admin panel without proper permissions`,
+    );
   }
 
   return (

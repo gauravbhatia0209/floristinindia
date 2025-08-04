@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, UserCog, Crown, CheckCircle, AlertTriangle } from "lucide-react";
+import {
+  Shield,
+  UserCog,
+  Crown,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import bcrypt from "bcryptjs";
 
@@ -21,7 +27,10 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
     role: "super_admin" as "admin" | "super_admin",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +49,10 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
     }
 
     if (formData.password.length < 8) {
-      setMessage({ type: "error", text: "Password must be at least 8 characters long" });
+      setMessage({
+        type: "error",
+        text: "Password must be at least 8 characters long",
+      });
       return;
     }
 
@@ -60,7 +72,10 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
         .single();
 
       if (existingAdmin) {
-        setMessage({ type: "error", text: "An admin with this email already exists" });
+        setMessage({
+          type: "error",
+          text: "An admin with this email already exists",
+        });
         return;
       }
 
@@ -83,13 +98,16 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
 
       if (createError || !newAdmin) {
         console.error("Admin creation failed:", createError);
-        setMessage({ type: "error", text: "Failed to create admin user. Please try again." });
+        setMessage({
+          type: "error",
+          text: "Failed to create admin user. Please try again.",
+        });
         return;
       }
 
-      setMessage({ 
-        type: "success", 
-        text: `${formData.role === 'super_admin' ? 'Super Admin' : 'Admin'} created successfully! You can now login with these credentials.` 
+      setMessage({
+        type: "success",
+        text: `${formData.role === "super_admin" ? "Super Admin" : "Admin"} created successfully! You can now login with these credentials.`,
       });
 
       // Reset form
@@ -104,14 +122,17 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
       onAdminCreated?.();
     } catch (error) {
       console.error("Admin creation error:", error);
-      setMessage({ type: "error", text: "An unexpected error occurred. Please try again." });
+      setMessage({
+        type: "error",
+        text: "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (message) setMessage(null);
   };
 
@@ -123,14 +144,22 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
           <AlertDescription>
             <strong>Admin Setup Instructions:</strong>
             <ul className="mt-2 space-y-1 text-sm">
-              <li>• <strong>Super Admin:</strong> Full access to all features including user management</li>
-              <li>• <strong>Admin:</strong> Access to most features except critical system settings</li>
+              <li>
+                • <strong>Super Admin:</strong> Full access to all features
+                including user management
+              </li>
+              <li>
+                • <strong>Admin:</strong> Access to most features except
+                critical system settings
+              </li>
               <li>• Create at least one Super Admin for initial setup</li>
-              <li>• You can create additional admins later from the admin panel</li>
+              <li>
+                • You can create additional admins later from the admin panel
+              </li>
             </ul>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="mt-2"
               onClick={() => setShowInstructions(false)}
             >
@@ -190,7 +219,9 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
                 id="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
-                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("confirmPassword", e.target.value)
+                }
                 placeholder="Confirm password"
                 disabled={isLoading}
               />
@@ -201,7 +232,9 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
               <div className="flex gap-3 mt-2">
                 <Button
                   type="button"
-                  variant={formData.role === "super_admin" ? "default" : "outline"}
+                  variant={
+                    formData.role === "super_admin" ? "default" : "outline"
+                  }
                   onClick={() => handleInputChange("role", "super_admin")}
                   disabled={isLoading}
                   className="flex items-center gap-2"
@@ -234,7 +267,9 @@ export default function AdminSetup({ onAdminCreated }: AdminSetupProps) {
             )}
 
             <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Creating Admin..." : `Create ${formData.role === 'super_admin' ? 'Super Admin' : 'Admin'}`}
+              {isLoading
+                ? "Creating Admin..."
+                : `Create ${formData.role === "super_admin" ? "Super Admin" : "Admin"}`}
             </Button>
           </form>
         </CardContent>

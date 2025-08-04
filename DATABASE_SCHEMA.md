@@ -8,7 +8,7 @@ The application uses **Supabase** (PostgreSQL) as the primary database with Row 
 
 ```typescript
 // Supabase Client Configuration
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
@@ -55,6 +55,7 @@ CREATE INDEX idx_products_search ON products USING gin(to_tsvector('english', na
 ```
 
 **Key Features:**
+
 - Full-text search capability
 - SEO-friendly slugs
 - Product variations support
@@ -89,6 +90,7 @@ CREATE INDEX idx_categories_sort ON categories(sort_order);
 ```
 
 **Key Features:**
+
 - Hierarchical structure (parent-child)
 - SEO optimization
 - Active/inactive status
@@ -120,6 +122,7 @@ CREATE INDEX idx_variations_active ON product_variations(is_active);
 ```
 
 **Key Features:**
+
 - Dynamic attributes (JSON)
 - Independent pricing per variation
 - Separate stock tracking
@@ -164,6 +167,7 @@ CREATE INDEX idx_orders_number ON orders(order_number);
 ```
 
 **Order Items Structure (JSONB):**
+
 ```json
 [
   {
@@ -172,14 +176,15 @@ CREATE INDEX idx_orders_number ON orders(order_number);
     "variant_id": "uuid",
     "variant_name": "Large",
     "quantity": 2,
-    "price": 1500.00,
-    "total_price": 3000.00,
+    "price": 1500.0,
+    "total_price": 3000.0,
     "sku": "RRB-L-001"
   }
 ]
 ```
 
 **Address Structure (JSONB):**
+
 ```json
 {
   "name": "John Doe",
@@ -258,6 +263,7 @@ CREATE INDEX idx_admins_role ON admins(role);
 ```
 
 **Admin Roles:**
+
 - `super_admin`: Full system access, user management
 - `admin`: Standard admin access, no user management
 
@@ -403,6 +409,7 @@ CREATE INDEX idx_site_settings_group ON site_settings(group_name);
 ```
 
 **Common Settings:**
+
 ```sql
 INSERT INTO site_settings (key, value, type, description, group_name, is_public) VALUES
 ('site_name', 'Florist in India', 'string', 'Website name', 'general', true),
@@ -491,12 +498,12 @@ END;
 $$ language 'plpgsql';
 
 -- Apply to all tables with updated_at
-CREATE TRIGGER update_products_updated_at 
-  BEFORE UPDATE ON products 
+CREATE TRIGGER update_products_updated_at
+  BEFORE UPDATE ON products
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_orders_updated_at 
-  BEFORE UPDATE ON orders 
+CREATE TRIGGER update_orders_updated_at
+  BEFORE UPDATE ON orders
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
 
@@ -514,10 +521,10 @@ BEGIN
   INTO next_number
   FROM orders
   WHERE order_number LIKE 'FII%';
-  
+
   -- Format as FII + 5 digit number
   order_number := 'FII' || LPAD(next_number::TEXT, 5, '0');
-  
+
   RETURN order_number;
 END;
 $$ LANGUAGE plpgsql;
@@ -531,23 +538,23 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
     -- Update customer order count and total spent
-    UPDATE customers 
-    SET 
+    UPDATE customers
+    SET
       total_orders = total_orders + 1,
       total_spent = total_spent + NEW.total_amount
     WHERE id = NEW.customer_id;
-    
+
   ELSIF TG_OP = 'UPDATE' THEN
     -- If order status changed to cancelled/refunded, adjust stats
     IF OLD.status != NEW.status AND NEW.status IN ('cancelled', 'refunded') THEN
-      UPDATE customers 
-      SET 
+      UPDATE customers
+      SET
         total_orders = total_orders - 1,
         total_spent = total_spent - NEW.total_amount
       WHERE id = NEW.customer_id;
     END IF;
   END IF;
-  
+
   RETURN COALESCE(NEW, OLD);
 END;
 $$ LANGUAGE plpgsql;
@@ -576,6 +583,7 @@ CREATE DATABASE florist_db;
 ### 2. Run Schema Migration
 
 Execute the SQL files in order:
+
 1. `auth-tables.sql` - Authentication tables
 2. `database-setup.sql` - Core product/order tables
 3. `database-migration.sql` - Additional features
@@ -623,7 +631,7 @@ Key indexes for optimal performance:
 
 ```sql
 -- Product search optimization
-CREATE INDEX idx_products_fulltext ON products 
+CREATE INDEX idx_products_fulltext ON products
 USING gin(to_tsvector('english', name || ' ' || COALESCE(description, '')));
 
 -- Category hierarchy queries
@@ -641,7 +649,7 @@ CREATE INDEX idx_sessions_cleanup ON user_sessions(expires_at) WHERE is_active =
 
 ```sql
 -- Efficient product fetching with category
-SELECT p.*, c.name as category_name 
+SELECT p.*, c.name as category_name
 FROM products p
 LEFT JOIN categories c ON p.category_id = c.id
 WHERE p.is_active = true
@@ -659,11 +667,11 @@ WHERE o.order_number = $1;
 
 ```sql
 -- Clean up expired sessions
-DELETE FROM user_sessions 
+DELETE FROM user_sessions
 WHERE expires_at < NOW() - INTERVAL '7 days';
 
 -- Update product search vectors
-UPDATE products 
+UPDATE products
 SET search_vector = to_tsvector('english', name || ' ' || COALESCE(description, ''))
 WHERE updated_at > NOW() - INTERVAL '1 day';
 

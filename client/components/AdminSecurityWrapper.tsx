@@ -11,9 +11,9 @@ interface AdminSecurityWrapperProps {
  * Additional security layer for admin pages
  * Verifies admin access and can restrict certain features to super admins only
  */
-export default function AdminSecurityWrapper({ 
-  children, 
-  requireSuperAdmin = false 
+export default function AdminSecurityWrapper({
+  children,
+  requireSuperAdmin = false,
 }: AdminSecurityWrapperProps) {
   const { user, hasAdminAccess, isSuperAdmin, isLoading, logout } = useAuth();
   const navigate = useNavigate();
@@ -32,14 +32,26 @@ export default function AdminSecurityWrapper({
 
     // Check super admin requirement
     if (requireSuperAdmin && !isSuperAdmin) {
-      console.warn(`🚫 Security: User ${user.email} attempted to access super admin feature without privileges`);
+      console.warn(
+        `🚫 Security: User ${user.email} attempted to access super admin feature without privileges`,
+      );
       navigate("/admin", { replace: true });
       return;
     }
 
     // Log successful admin access
-    console.log(`✅ Security: Admin access verified for ${user.email} (role: ${user.role})`);
-  }, [user, hasAdminAccess, isSuperAdmin, isLoading, requireSuperAdmin, logout, navigate]);
+    console.log(
+      `✅ Security: Admin access verified for ${user.email} (role: ${user.role})`,
+    );
+  }, [
+    user,
+    hasAdminAccess,
+    isSuperAdmin,
+    isLoading,
+    requireSuperAdmin,
+    logout,
+    navigate,
+  ]);
 
   // Show loading state
   if (isLoading) {
@@ -59,7 +71,9 @@ export default function AdminSecurityWrapper({
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center p-8">
           <div className="text-6xl mb-4">👑</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Super Admin Required</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Super Admin Required
+          </h1>
           <p className="text-gray-600 mb-6">
             This feature requires super administrator privileges.
           </p>

@@ -70,7 +70,10 @@ export default function AdminLogin() {
         }
 
         // Verify user has proper admin role (admin or super_admin)
-        if (!result.user.role || !["admin", "super_admin"].includes(result.user.role)) {
+        if (
+          !result.user.role ||
+          !["admin", "super_admin"].includes(result.user.role)
+        ) {
           setError("Access denied. Insufficient privileges.");
           await logout(); // Clear any session
           return;

@@ -1,6 +1,7 @@
 # API Reference Documentation
 
 ## Base URLs
+
 - **Development**: `http://localhost:3000/api`
 - **Production**: `https://your-backend-url.fly.dev/api`
 
@@ -43,11 +44,13 @@ All API responses follow this format:
 ## Email Endpoints
 
 ### Send Order Confirmation
+
 **POST** `/api/email/order-confirmation`
 
 Send confirmation emails to customer and admin when order is created.
 
 **Request Body:**
+
 ```json
 {
   "orderNumber": "FII83255"
@@ -55,6 +58,7 @@ Send confirmation emails to customer and admin when order is created.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -63,6 +67,7 @@ Send confirmation emails to customer and admin when order is created.
 ```
 
 **Error Responses:**
+
 - `400`: Order number required
 - `404`: Order not found
 - `500`: Email service error
@@ -70,11 +75,13 @@ Send confirmation emails to customer and admin when order is created.
 ---
 
 ### Send Order Status Update
+
 **POST** `/api/email/order-status-update`
 
 Send email notification when order status changes.
 
 **Request Body:**
+
 ```json
 {
   "orderNumber": "FII83255",
@@ -84,6 +91,7 @@ Send email notification when order status changes.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -92,6 +100,7 @@ Send email notification when order status changes.
 ```
 
 **Email Statuses:**
+
 - `pending`: Order placed, awaiting confirmation
 - `confirmed`: Order confirmed by admin
 - `processing`: Order being prepared
@@ -103,11 +112,13 @@ Send email notification when order status changes.
 ---
 
 ### Send Test Email
+
 **POST** `/api/email/test`
 
 Send test email for development/testing purposes.
 
 **Request Body:**
+
 ```json
 {
   "to": "recipient@example.com",
@@ -117,6 +128,7 @@ Send test email for development/testing purposes.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -129,11 +141,13 @@ Send test email for development/testing purposes.
 ## Payment Endpoints
 
 ### Check Payment Methods
+
 **GET** `/api/payments/methods`
 
 Get available payment methods and their configuration.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -153,11 +167,13 @@ Get available payment methods and their configuration.
 ---
 
 ### Create Payment
+
 **POST** `/api/payments/create`
 
 Create payment intent for order.
 
 **Request Body:**
+
 ```json
 {
   "amount": 2500,
@@ -172,6 +188,7 @@ Create payment intent for order.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -187,11 +204,13 @@ Create payment intent for order.
 ---
 
 ### Check Payment Status
+
 **GET** `/api/payments/status/:payment_intent_id`
 
 Check status of payment intent.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -209,17 +228,20 @@ Check status of payment intent.
 ## Upload Endpoints
 
 ### Upload Single Image
+
 **POST** `/api/upload/image`
 
 Upload a single image file.
 
 **Request:** FormData with file
+
 ```javascript
 const formData = new FormData();
-formData.append('image', file);
+formData.append("image", file);
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -236,19 +258,22 @@ formData.append('image', file);
 ---
 
 ### Upload Multiple Images
+
 **POST** `/api/upload/images`
 
 Upload multiple image files.
 
 **Request:** FormData with multiple files
+
 ```javascript
 const formData = new FormData();
-files.forEach(file => {
-  formData.append('images', file);
+files.forEach((file) => {
+  formData.append("images", file);
 });
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -258,7 +283,7 @@ files.forEach(file => {
       "filename": "unique-filename1.jpg"
     },
     {
-      "url": "https://storage-url/path/to/image2.jpg", 
+      "url": "https://storage-url/path/to/image2.jpg",
       "filename": "unique-filename2.jpg"
     }
   ]
@@ -266,6 +291,7 @@ files.forEach(file => {
 ```
 
 **File Restrictions:**
+
 - **Max Size**: 5MB per file
 - **Allowed Types**: jpg, jpeg, png, webp
 - **Max Files**: 10 files per request
@@ -275,11 +301,13 @@ files.forEach(file => {
 ## Health Check
 
 ### Server Health
+
 **GET** `/api/health`
 
 Check server health and status.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -294,11 +322,13 @@ Check server health and status.
 ---
 
 ### Ping
+
 **GET** `/api/ping`
 
 Simple ping endpoint for monitoring.
 
 **Response:**
+
 ```json
 {
   "message": "Hello from Express server v2!",
@@ -311,11 +341,13 @@ Simple ping endpoint for monitoring.
 ## Admin Update Notifications
 
 ### Cache Invalidation
+
 **POST** `/api/admin/cache-invalidate`
 
 Invalidate AI cache when admin makes changes.
 
 **Request Body:**
+
 ```json
 {
   "type": "products",
@@ -325,6 +357,7 @@ Invalidate AI cache when admin makes changes.
 ```
 
 **Types:**
+
 - `products`: Product data changes
 - `categories`: Category updates
 - `homepage`: Homepage content changes
@@ -335,11 +368,13 @@ Invalidate AI cache when admin makes changes.
 ## AI Data Endpoints
 
 ### Get Products Data
+
 **GET** `/api/ai/products`
 
 Get formatted product data for AI processing.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -354,11 +389,13 @@ Get formatted product data for AI processing.
 ---
 
 ### Get Site Structure
+
 **GET** `/api/ai/site-structure`
 
 Get site navigation and structure data.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -375,11 +412,13 @@ Get site navigation and structure data.
 ## Sitemap Generation
 
 ### Generate Sitemap
+
 **GET** `/sitemap.xml`
 
 Generate XML sitemap for SEO.
 
 **Response:** XML format
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -398,17 +437,18 @@ Generate XML sitemap for SEO.
 
 ### Common Error Codes
 
-| Code | Description | Common Causes |
-|------|-------------|---------------|
-| 400 | Bad Request | Missing required fields, invalid data format |
-| 401 | Unauthorized | Invalid or expired session token |
-| 403 | Forbidden | Insufficient permissions for operation |
-| 404 | Not Found | Resource doesn't exist |
-| 409 | Conflict | Duplicate data, constraint violations |
-| 429 | Too Many Requests | Rate limiting triggered |
-| 500 | Internal Server Error | Database connection, service unavailable |
+| Code | Description           | Common Causes                                |
+| ---- | --------------------- | -------------------------------------------- |
+| 400  | Bad Request           | Missing required fields, invalid data format |
+| 401  | Unauthorized          | Invalid or expired session token             |
+| 403  | Forbidden             | Insufficient permissions for operation       |
+| 404  | Not Found             | Resource doesn't exist                       |
+| 409  | Conflict              | Duplicate data, constraint violations        |
+| 429  | Too Many Requests     | Rate limiting triggered                      |
+| 500  | Internal Server Error | Database connection, service unavailable     |
 
 ### Error Response Example
+
 ```json
 {
   "success": false,
@@ -428,11 +468,12 @@ Generate XML sitemap for SEO.
 API endpoints are rate limited to prevent abuse:
 
 - **General endpoints**: 100 requests per minute
-- **Upload endpoints**: 20 requests per minute  
+- **Upload endpoints**: 20 requests per minute
 - **Email endpoints**: 10 requests per minute
 - **Payment endpoints**: 50 requests per minute
 
 Rate limit headers are included in responses:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -444,11 +485,13 @@ X-RateLimit-Reset: 1642248600
 ## Webhook Endpoints
 
 ### Payment Webhook
+
 **POST** `/api/payments/webhook`
 
 Receive payment status updates from payment providers.
 
 **Razorpay Webhook:**
+
 ```json
 {
   "event": "payment.captured",

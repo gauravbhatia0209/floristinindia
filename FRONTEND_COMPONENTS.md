@@ -19,11 +19,13 @@ Component Hierarchy:
 ## Layout Components
 
 ### Header.tsx
+
 **Location**: `/client/components/layout/Header.tsx`
 
 Main navigation component with responsive design.
 
 **Features:**
+
 - Mobile-responsive hamburger menu
 - Category dropdown navigation
 - Search functionality
@@ -32,6 +34,7 @@ Main navigation component with responsive design.
 - Dynamic menu from database
 
 **Props:**
+
 ```typescript
 interface HeaderProps {
   // No props - uses context for state
@@ -39,13 +42,15 @@ interface HeaderProps {
 ```
 
 **Usage:**
-```tsx
-import Header from '@/components/layout/Header';
 
-<Header />
+```tsx
+import Header from "@/components/layout/Header";
+
+<Header />;
 ```
 
 **Key Functionality:**
+
 - Category fetching from Supabase
 - Mobile menu toggle
 - Search modal integration
@@ -55,11 +60,13 @@ import Header from '@/components/layout/Header';
 ---
 
 ### Footer.tsx
+
 **Location**: `/client/components/layout/Footer.tsx`
 
 Configurable footer component.
 
 **Features:**
+
 - Newsletter subscription
 - Social media links
 - Company information
@@ -72,11 +79,13 @@ Footer content is managed through the admin panel and stored in the database.
 ---
 
 ### Layout.tsx
+
 **Location**: `/client/components/layout/Layout.tsx`
 
 Main layout wrapper component.
 
 **Structure:**
+
 ```tsx
 <Layout>
   <Header />
@@ -92,11 +101,13 @@ Main layout wrapper component.
 ## Product Components
 
 ### ProductCard (Homepage)
+
 **Location**: `/client/pages/Index.tsx` (integrated)
 
 Product display card for homepage featured products.
 
 **Features:**
+
 - 4:5 aspect ratio images
 - Uniform card height
 - Price display with sale pricing
@@ -104,16 +115,23 @@ Product display card for homepage featured products.
 - Product link navigation
 
 **Structure:**
+
 ```tsx
 <Card className="h-full flex flex-col">
-  <div className="aspect-[4/5]"> {/* Product Image */}
+  <div className="aspect-[4/5]">
+    {" "}
+    {/* Product Image */}
     <img src={product.images[0]} alt={product.name} />
     {hasDiscount && <Badge>SALE</Badge>}
   </div>
   <CardContent className="flex-grow flex flex-col justify-between">
-    <div> {/* Product Info */}
+    <div>
+      {" "}
+      {/* Product Info */}
       <h3>{product.name}</h3>
-      <div> {/* Price Display */}
+      <div>
+        {" "}
+        {/* Price Display */}
         <span>₹{displayPrice}</span>
         {hasDiscount && <span className="line-through">₹{originalPrice}</span>}
       </div>
@@ -126,15 +144,18 @@ Product display card for homepage featured products.
 ---
 
 ### ProductCard (Products Page)
+
 **Location**: `/client/pages/Products.tsx`
 
 Enhanced product card with list and grid view support.
 
 **View Modes:**
+
 - **Grid View**: Card layout similar to homepage
 - **List View**: Horizontal layout with description
 
 **Features:**
+
 - Responsive layout switching
 - Product variant display
 - Stock status indication
@@ -143,11 +164,13 @@ Enhanced product card with list and grid view support.
 ---
 
 ### ProductDetail Component
+
 **Location**: `/client/pages/ProductDetail.tsx`
 
 Comprehensive product detail page.
 
 **Features:**
+
 - Image gallery with zoom
 - Variant selection (size, color, etc.)
 - Quantity selector
@@ -156,6 +179,7 @@ Comprehensive product detail page.
 - Product reviews section
 
 **Key Sections:**
+
 ```tsx
 <ProductDetail>
   <ProductImageGallery images={product.images} />
@@ -180,11 +204,13 @@ Comprehensive product detail page.
 ## Shopping Cart Components
 
 ### Cart Component
+
 **Location**: `/client/pages/Cart.tsx`
 
 Shopping cart page with item management.
 
 **Features:**
+
 - Item quantity controls
 - Remove items functionality
 - Price calculations
@@ -193,6 +219,7 @@ Shopping cart page with item management.
 - Checkout navigation
 
 **Cart Item Structure:**
+
 ```tsx
 <CartItem>
   <ProductImage />
@@ -214,11 +241,13 @@ Shopping cart page with item management.
 ---
 
 ### CartContext
+
 **Location**: `/client/contexts/CartContext.tsx`
 
 Global cart state management.
 
 **State Structure:**
+
 ```typescript
 interface CartState {
   items: CartItem[];
@@ -234,6 +263,7 @@ interface CartState {
 ```
 
 **Available Actions:**
+
 ```typescript
 const {
   items,
@@ -243,7 +273,7 @@ const {
   updateQuantity,
   clearCart,
   applyCoupon,
-  calculateShipping
+  calculateShipping,
 } = useCart();
 ```
 
@@ -252,17 +282,20 @@ const {
 ## Checkout Components
 
 ### Checkout Component
+
 **Location**: `/client/pages/Checkout.tsx`
 
 Multi-step checkout process.
 
 **Steps:**
+
 1. Customer Information
 2. Delivery Details
 3. Payment Method
 4. Order Review
 
 **Features:**
+
 - Form validation with React Hook Form
 - Address management
 - Delivery date/time selection
@@ -270,11 +303,13 @@ Multi-step checkout process.
 - Order summary
 
 ### ShippingMethodSelector
+
 **Location**: `/client/components/checkout/ShippingMethodSelector.tsx`
 
 Shipping options selection component.
 
 **Features:**
+
 - Multiple shipping methods
 - Delivery date picker
 - Time slot selection
@@ -286,11 +321,13 @@ Shipping options selection component.
 ## Admin Components
 
 ### AdminLayout.tsx
+
 **Location**: `/client/components/admin/AdminLayout.tsx`
 
 Admin panel layout with navigation.
 
 **Features:**
+
 - Responsive sidebar navigation
 - Mobile menu support
 - User role display
@@ -298,13 +335,14 @@ Admin panel layout with navigation.
 - Security wrapper integration
 
 **Navigation Structure:**
+
 ```typescript
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Products', href: '/admin/products', icon: Package },
-  { name: 'Categories', href: '/admin/categories', icon: Tags },
-  { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
-  { name: 'Customers', href: '/admin/customers', icon: Users },
+  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Products", href: "/admin/products", icon: Package },
+  { name: "Categories", href: "/admin/categories", icon: Tags },
+  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { name: "Customers", href: "/admin/customers", icon: Users },
   // ... more navigation items
 ];
 ```
@@ -312,11 +350,13 @@ const navigation = [
 ---
 
 ### ProductVariations.tsx
+
 **Location**: `/client/components/admin/ProductVariations.tsx`
 
 Product variant management interface.
 
 **Features:**
+
 - Dynamic variant creation
 - Attribute management (size, color, etc.)
 - Price/inventory per variant
@@ -324,6 +364,7 @@ Product variant management interface.
 - Bulk variant operations
 
 **Variant Structure:**
+
 ```typescript
 interface ProductVariant {
   id: string;
@@ -341,11 +382,13 @@ interface ProductVariant {
 ---
 
 ### SectionBuilder.tsx
+
 **Location**: `/client/components/admin/SectionBuilder.tsx`
 
 Homepage section management interface.
 
 **Section Types:**
+
 - Hero Carousel
 - Featured Products
 - Category Grid
@@ -353,6 +396,7 @@ Homepage section management interface.
 - Image Banners
 
 **Features:**
+
 - Drag and drop reordering
 - Live preview
 - Section configuration
@@ -365,30 +409,41 @@ Homepage section management interface.
 ### Form Components
 
 **Button**
-```tsx
-import { Button } from '@/components/ui/button';
 
-<Button variant="default|destructive|outline|secondary|ghost|link" 
-        size="default|sm|lg|icon">
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button
+  variant="default|destructive|outline|secondary|ghost|link"
+  size="default|sm|lg|icon"
+>
   Button Text
-</Button>
+</Button>;
 ```
 
 **Input**
-```tsx
-import { Input } from '@/components/ui/input';
 
-<Input 
+```tsx
+import { Input } from "@/components/ui/input";
+
+<Input
   type="text|email|password|number"
   placeholder="Enter text"
   value={value}
   onChange={handleChange}
-/>
+/>;
 ```
 
 **Select**
+
 ```tsx
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 <Select onValueChange={handleSelect}>
   <SelectTrigger>
@@ -398,7 +453,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
     <SelectItem value="option1">Option 1</SelectItem>
     <SelectItem value="option2">Option 2</SelectItem>
   </SelectContent>
-</Select>
+</Select>;
 ```
 
 ---
@@ -406,39 +461,36 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 ### Display Components
 
 **Card**
+
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 <Card>
   <CardHeader>
     <CardTitle>Card Title</CardTitle>
   </CardHeader>
-  <CardContent>
-    Card content here
-  </CardContent>
-</Card>
+  <CardContent>Card content here</CardContent>
+</Card>;
 ```
 
 **Badge**
-```tsx
-import { Badge } from '@/components/ui/badge';
 
-<Badge variant="default|secondary|destructive|outline">
-  Badge Text
-</Badge>
+```tsx
+import { Badge } from "@/components/ui/badge";
+
+<Badge variant="default|secondary|destructive|outline">Badge Text</Badge>;
 ```
 
 **Alert**
+
 ```tsx
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 <Alert>
   <AlertCircle className="h-4 w-4" />
   <AlertTitle>Alert Title</AlertTitle>
-  <AlertDescription>
-    Alert description text
-  </AlertDescription>
-</Alert>
+  <AlertDescription>Alert description text</AlertDescription>
+</Alert>;
 ```
 
 ---
@@ -446,8 +498,15 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 ### Navigation Components
 
 **Breadcrumb**
+
 ```tsx
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 <Breadcrumb>
   <BreadcrumbList>
@@ -459,12 +518,13 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
       <BreadcrumbLink href="/products">Products</BreadcrumbLink>
     </BreadcrumbItem>
   </BreadcrumbList>
-</Breadcrumb>
+</Breadcrumb>;
 ```
 
 **Tabs**
+
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 <Tabs defaultValue="tab1">
   <TabsList>
@@ -473,7 +533,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
   </TabsList>
   <TabsContent value="tab1">Content 1</TabsContent>
   <TabsContent value="tab2">Content 2</TabsContent>
-</Tabs>
+</Tabs>;
 ```
 
 ---
@@ -481,8 +541,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 ### Modal Components
 
 **Dialog**
+
 ```tsx
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 <Dialog>
   <DialogTrigger asChild>
@@ -494,12 +561,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
     </DialogHeader>
     Dialog content here
   </DialogContent>
-</Dialog>
+</Dialog>;
 ```
 
 **Sheet (Mobile Menu)**
+
 ```tsx
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 <Sheet>
   <SheetTrigger asChild>
@@ -513,7 +587,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
     </SheetHeader>
     Navigation content
   </SheetContent>
-</Sheet>
+</Sheet>;
 ```
 
 ---
@@ -521,11 +595,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 ## Custom Utility Components
 
 ### ProtectedRoute.tsx
+
 **Location**: `/client/components/ProtectedRoute.tsx`
 
 Route-level authentication and authorization.
 
 **Usage:**
+
 ```tsx
 import ProtectedRoute, { AdminRoute } from '@/components/ProtectedRoute';
 
@@ -541,6 +617,7 @@ import ProtectedRoute, { AdminRoute } from '@/components/ProtectedRoute';
 ```
 
 **Props:**
+
 ```typescript
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -553,11 +630,13 @@ interface ProtectedRouteProps {
 ---
 
 ### AdminSecurityWrapper.tsx
+
 **Location**: `/client/components/AdminSecurityWrapper.tsx`
 
 Additional security layer for admin components.
 
 **Usage:**
+
 ```tsx
 import AdminSecurityWrapper from '@/components/AdminSecurityWrapper';
 
@@ -575,17 +654,19 @@ import AdminSecurityWrapper from '@/components/AdminSecurityWrapper';
 ---
 
 ### ErrorBoundary.tsx
+
 **Location**: `/client/components/ErrorBoundary.tsx`
 
 React error boundary for graceful error handling.
 
 **Usage:**
+
 ```tsx
-import ErrorBoundary from '@/components/ErrorBoundary';
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 <ErrorBoundary fallback={<ErrorFallback />}>
   <App />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
 
 ---
@@ -593,11 +674,13 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 ## Image Upload Components
 
 ### ImageUpload.tsx
+
 **Location**: `/client/components/ui/image-upload.tsx`
 
 File upload component with preview and validation.
 
 **Features:**
+
 - Drag and drop upload
 - Image preview
 - Multiple file support
@@ -605,15 +688,16 @@ File upload component with preview and validation.
 - File validation
 
 **Usage:**
+
 ```tsx
-import ImageUpload from '@/components/ui/image-upload';
+import ImageUpload from "@/components/ui/image-upload";
 
 <ImageUpload
   onUpload={handleUpload}
   maxFiles={5}
   accept="image/*"
   maxSize={5 * 1024 * 1024} // 5MB
-/>
+/>;
 ```
 
 ---
@@ -621,10 +705,11 @@ import ImageUpload from '@/components/ui/image-upload';
 ## Component Development Guidelines
 
 ### Component Structure
+
 ```tsx
 // Import statements
-import React from 'react';
-import { ComponentProps } from 'react';
+import React from "react";
+import { ComponentProps } from "react";
 
 // Type definitions
 interface ComponentProps {
@@ -638,12 +723,8 @@ export default function Component({ prop1, prop2 }: ComponentProps) {
   // Effects
   // Event handlers
   // Render methods
-  
-  return (
-    <div>
-      {/* JSX content */}
-    </div>
-  );
+
+  return <div>{/* JSX content */}</div>;
 }
 ```
 

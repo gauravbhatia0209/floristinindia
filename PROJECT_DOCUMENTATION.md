@@ -1,6 +1,7 @@
 # Florist in India - Project Documentation
 
 ## Table of Contents
+
 1. [Project Overview](#project-overview)
 2. [Technology Stack](#technology-stack)
 3. [Project Structure](#project-structure)
@@ -35,6 +36,7 @@
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS + shadcn/ui components
@@ -46,6 +48,7 @@
 - **Password Hashing**: bcryptjs
 
 ### Backend
+
 - **Runtime**: Node.js + TypeScript
 - **Framework**: Express.js
 - **Database**: Supabase (PostgreSQL)
@@ -55,6 +58,7 @@
 - **Payment**: Razorpay integration
 
 ### Development & Deployment
+
 - **Development**: Vite dev server + tsx watch
 - **Backend Deployment**: Fly.io
 - **Frontend Deployment**: Vercel/Netlify
@@ -107,6 +111,7 @@ florist-in-india/
 ### Key Directories
 
 #### `/client/components/`
+
 - **`admin/`**: Admin panel specific components
 - **`checkout/`**: Shopping cart and checkout components
 - **`layout/`**: Header, Footer, Layout wrappers
@@ -114,10 +119,12 @@ florist-in-india/
 - **`ui/`**: Base UI components from shadcn/ui
 
 #### `/client/contexts/`
+
 - **`AuthContext.tsx`**: Authentication and user management
 - **`CartContext.tsx`**: Shopping cart state management
 
 #### `/client/pages/`
+
 - **Public Pages**: Home, Products, Cart, Checkout, etc.
 - **`admin/`**: Admin dashboard and management pages
 
@@ -158,37 +165,44 @@ server/
 ### Authentication Endpoints
 
 #### POST `/api/auth/login`
+
 - **Purpose**: User/Admin login
 - **Body**: `{ email, password, userType }`
 - **Response**: `{ success, user?, error? }`
 
 #### POST `/api/auth/logout`
+
 - **Purpose**: Session termination
 - **Response**: `{ success }`
 
 ### Product Endpoints
 
 #### GET `/api/products`
+
 - **Purpose**: Fetch products with pagination
 - **Query**: `{ category?, page?, limit?, search? }`
 - **Response**: Products array with metadata
 
 #### GET `/api/products/:id`
+
 - **Purpose**: Get single product details
 - **Response**: Product object with variants
 
 ### Order Endpoints
 
 #### POST `/api/orders`
+
 - **Purpose**: Create new order
 - **Body**: Order details with items
 - **Response**: Created order with order number
 
 #### GET `/api/orders/:orderNumber`
+
 - **Purpose**: Get order details
 - **Response**: Complete order information
 
 #### PUT `/api/orders/:id/status`
+
 - **Purpose**: Update order status (Admin only)
 - **Body**: `{ status }`
 - **Response**: Updated order
@@ -196,11 +210,13 @@ server/
 ### Email Endpoints
 
 #### POST `/api/email/order-confirmation`
+
 - **Purpose**: Send order confirmation emails
 - **Body**: `{ orderNumber }`
 - **Response**: `{ success }`
 
 #### POST `/api/email/order-status-update`
+
 - **Purpose**: Send status update email
 - **Body**: `{ orderNumber, oldStatus, newStatus }`
 - **Response**: `{ success }`
@@ -208,11 +224,13 @@ server/
 ### Payment Endpoints
 
 #### POST `/api/payments/create`
+
 - **Purpose**: Create payment intent
 - **Body**: Payment details
 - **Response**: Payment intent with client secret
 
 #### POST `/api/payments/verify`
+
 - **Purpose**: Verify payment completion
 - **Body**: Payment verification data
 - **Response**: Verification result
@@ -220,11 +238,13 @@ server/
 ### Upload Endpoints
 
 #### POST `/api/upload/image`
+
 - **Purpose**: Upload single image
 - **Body**: FormData with image file
 - **Response**: `{ url, filename }`
 
 #### POST `/api/upload/images`
+
 - **Purpose**: Upload multiple images
 - **Body**: FormData with multiple files
 - **Response**: Array of uploaded file details
@@ -236,6 +256,7 @@ server/
 ### Core Tables
 
 #### `products`
+
 ```sql
 CREATE TABLE products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -259,6 +280,7 @@ CREATE TABLE products (
 ```
 
 #### `categories`
+
 ```sql
 CREATE TABLE categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -274,6 +296,7 @@ CREATE TABLE categories (
 ```
 
 #### `orders`
+
 ```sql
 CREATE TABLE orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -295,6 +318,7 @@ CREATE TABLE orders (
 ```
 
 #### `customers`
+
 ```sql
 CREATE TABLE customers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -314,6 +338,7 @@ CREATE TABLE customers (
 ```
 
 #### `admins`
+
 ```sql
 CREATE TABLE admins (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -331,6 +356,7 @@ CREATE TABLE admins (
 ### Authentication Tables
 
 #### `user_sessions`
+
 ```sql
 CREATE TABLE user_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -352,11 +378,12 @@ CREATE TABLE user_sessions (
 ### User Types & Roles
 
 1. **Customers**
+
    - Can browse products, place orders, manage profile
    - Session-based authentication
    - Email verification support
 
-2. **Admins** 
+2. **Admins**
    - `admin`: Access to most admin features
    - `super_admin`: Full access including user management
 
@@ -384,18 +411,21 @@ CREATE TABLE user_sessions (
 #### Layout Components (`/components/layout/`)
 
 **Header.tsx**
+
 - Responsive navigation with mobile menu
 - Category dropdowns with subcategories
 - Search, cart, wishlist, and user icons
 - Dynamic menu loading from database
 
 **Footer.tsx**
+
 - Configurable footer sections
 - Newsletter signup
 - Social media links
 - Company information
 
 **Layout.tsx**
+
 - Main layout wrapper
 - Header and footer integration
 - Main content area with proper spacing
@@ -403,17 +433,20 @@ CREATE TABLE user_sessions (
 #### Admin Components (`/components/admin/`)
 
 **AdminLayout.tsx**
+
 - Admin dashboard layout
 - Sidebar navigation
 - User role display
 - Security wrapper integration
 
 **ProductVariations.tsx**
+
 - Product variant management
 - Dynamic pricing and inventory
 - Image upload for variants
 
 **SectionBuilder.tsx**
+
 - Homepage section management
 - Drag-and-drop interface
 - Dynamic content rendering
@@ -431,18 +464,21 @@ Built on shadcn/ui library with Tailwind CSS:
 #### Custom Components
 
 **HeroCarousel.tsx**
+
 - Image carousel for homepage
 - Responsive design
 - Auto-play functionality
 - SEO-friendly structure
 
 **ProductCard.tsx**
+
 - Uniform product display
 - Price formatting
 - Add to cart functionality
 - Wishlist integration
 
 **ProtectedRoute.tsx**
+
 - Route-level authentication
 - Role-based access control
 - Loading states and error handling
@@ -454,59 +490,64 @@ Built on shadcn/ui library with Tailwind CSS:
 ### Custom Hooks (`/client/hooks/`)
 
 #### `useCart.ts`
+
 ```typescript
 export const useCart = () => {
   // Cart state management
   // Add/remove items
   // Calculate totals
   // Local storage persistence
-}
+};
 ```
 
 #### `use-mobile.tsx`
+
 ```typescript
 export const useMobile = () => {
   // Responsive design helper
   // Detect mobile breakpoints
   // Update on window resize
-}
+};
 ```
 
 #### `use-toast.ts`
+
 ```typescript
 export const useToast = () => {
   // Toast notification system
   // Success/error/warning messages
   // Auto-dismiss functionality
-}
+};
 ```
 
 ### Context Hooks
 
 #### `useAuth()` from AuthContext
+
 ```typescript
 const {
-  user,                    // Current user object
-  isAuthenticated,         // Boolean auth status
-  isAdmin,                 // Admin role check
-  isSuperAdmin,           // Super admin check
-  hasAdminAccess,         // Admin access verification
-  login,                  // Login function
-  logout,                 // Logout function
-  checkSession,           // Session validation
+  user, // Current user object
+  isAuthenticated, // Boolean auth status
+  isAdmin, // Admin role check
+  isSuperAdmin, // Super admin check
+  hasAdminAccess, // Admin access verification
+  login, // Login function
+  logout, // Logout function
+  checkSession, // Session validation
 } = useAuth();
 ```
 
 #### `useCart()` from CartContext
+
 ```typescript
 const {
-  items,                  // Cart items array
-  totals,                 // Calculated totals
-  addItem,               // Add item to cart
-  removeItem,            // Remove item from cart
-  updateQuantity,        // Update item quantity
-  clearCart,             // Clear all items
-  isLoading,             // Loading state
+  items, // Cart items array
+  totals, // Calculated totals
+  addItem, // Add item to cart
+  removeItem, // Remove item from cart
+  updateQuantity, // Update item quantity
+  clearCart, // Clear all items
+  isLoading, // Loading state
 } = useCart();
 ```
 
@@ -517,6 +558,7 @@ const {
 ### Public Pages
 
 #### **Home Page** (`/pages/Index.tsx`)
+
 - Hero carousel with promotional banners
 - Featured product sections
 - Category grid display
@@ -526,6 +568,7 @@ const {
 #### **Product Pages**
 
 **Products Listing** (`/pages/Products.tsx`)
+
 - Category-based filtering
 - Search functionality
 - Grid and list view modes
@@ -533,6 +576,7 @@ const {
 - Sort options (price, popularity, newest)
 
 **Product Detail** (`/pages/ProductDetail.tsx`)
+
 - Product image gallery
 - Variant selection (size, color, etc.)
 - Add to cart with quantity selection
@@ -542,6 +586,7 @@ const {
 #### **Shopping Flow**
 
 **Cart** (`/pages/Cart.tsx`)
+
 - Item list with quantity controls
 - Coupon code application
 - Shipping calculation
@@ -549,6 +594,7 @@ const {
 - Continue shopping link
 
 **Checkout** (`/pages/Checkout.tsx`)
+
 - Multi-step checkout process
 - Customer information form
 - Delivery address and date selection
@@ -556,6 +602,7 @@ const {
 - Order summary and confirmation
 
 **Checkout Success** (`/pages/CheckoutSuccess.tsx`)
+
 - Order confirmation display
 - Payment status verification
 - Email notification trigger
@@ -564,6 +611,7 @@ const {
 #### **User Account**
 
 **Account Dashboard** (`/pages/Account.tsx`)
+
 - User profile management
 - Order history with status
 - Address book
@@ -571,6 +619,7 @@ const {
 - Linked orders (email/phone based)
 
 **Order Tracking** (`/pages/TrackOrder.tsx`)
+
 - Real-time order status
 - Delivery tracking
 - Contact support options
@@ -578,6 +627,7 @@ const {
 ### Admin Pages (`/pages/admin/`)
 
 #### **Dashboard** (`/admin/Dashboard.tsx`)
+
 - Key metrics and analytics
 - Recent orders overview
 - Quick action buttons
@@ -587,12 +637,14 @@ const {
 #### **Product Management**
 
 **Products** (`/admin/Products.tsx`)
+
 - Product listing with search/filter
 - Bulk operations (activate/deactivate)
 - Quick edit functionality
 - Stock management
 
 **Product Edit** (`/admin/ProductEdit.tsx`)
+
 - Complete product form
 - Image upload and management
 - SEO settings
@@ -602,6 +654,7 @@ const {
 #### **Order Management**
 
 **Orders** (`/admin/Orders.tsx`)
+
 - Order listing with filters
 - Status update functionality
 - Order details modal
@@ -611,18 +664,21 @@ const {
 #### **Content Management**
 
 **Categories** (`/admin/Categories.tsx`)
+
 - Category tree management
 - Image upload for categories
 - SEO settings per category
 - Parent-child relationships
 
 **Homepage Builder** (`/admin/HomepageBuilder.tsx`)
+
 - Drag-and-drop section builder
 - Hero carousel management
 - Featured product sections
 - Category grid configuration
 
 **Pages** (`/admin/Pages.tsx`)
+
 - Static page management
 - Rich text editor
 - SEO meta settings
@@ -631,12 +687,14 @@ const {
 #### **System Management**
 
 **Users** (`/admin/Users.tsx`)
+
 - Admin user management
 - Role assignment
 - Account status control
 - Permission management
 
 **Settings** (`/admin/Settings.tsx`)
+
 - Site-wide configuration
 - Payment gateway settings
 - Email service configuration
@@ -649,6 +707,7 @@ const {
 ### Development Setup
 
 1. **Install Dependencies**
+
 ```bash
 # Root dependencies
 npm install
@@ -661,6 +720,7 @@ cd server && npm install
 ```
 
 2. **Environment Configuration**
+
 ```bash
 # Copy environment files
 cp .env.example .env
@@ -669,11 +729,13 @@ cp client/.env.example client/.env.local
 ```
 
 3. **Database Setup**
+
 - Create Supabase project
 - Run SQL migrations from `/client/sql/`
 - Configure RLS policies
 
 4. **Start Development Servers**
+
 ```bash
 # Start both client and server
 npm run dev
@@ -686,6 +748,7 @@ npm run dev:server  # Backend on port 3000
 ### Production Deployment
 
 #### Frontend (Vercel/Netlify)
+
 ```bash
 # Build command
 npm run build:client
@@ -700,6 +763,7 @@ VITE_API_URL=https://your-backend-url
 ```
 
 #### Backend (Fly.io)
+
 ```bash
 # Deploy to Fly.io
 fly deploy
@@ -726,24 +790,28 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-key
 ### Best Practices
 
 #### Component Design
+
 - Single responsibility principle
 - Props interface definition
 - Error boundary implementation
 - Loading states for async operations
 
 #### State Management
+
 - Context for global state
 - Local state for component-specific data
 - Custom hooks for reusable logic
 - Immutable state updates
 
 #### Performance
+
 - Code splitting with lazy loading
 - Image optimization and lazy loading
 - Debounced search inputs
 - Memoization for expensive calculations
 
 #### Security
+
 - Input validation and sanitization
 - XSS prevention
 - CSRF protection
@@ -772,21 +840,25 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-key
 ### Common Issues
 
 #### Authentication
+
 - Check session token expiration
 - Verify user role permissions
 - Clear browser localStorage
 
 #### Database Connection
+
 - Verify Supabase credentials
 - Check RLS policy permissions
 - Review connection limits
 
 #### Email Service
+
 - Confirm SMTP credentials
 - Check email template rendering
 - Verify environment variables
 
 #### Payment Processing
+
 - Validate Razorpay configuration
 - Check webhook endpoints
 - Review payment flow logs
