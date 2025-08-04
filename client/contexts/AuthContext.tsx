@@ -67,12 +67,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    checkSession();
+    try {
+      checkSession();
 
-    // Listen for Supabase auth changes (for OAuth)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Listen for Supabase auth changes (for OAuth)
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
         // Handle OAuth sign in
         const user = session.user;
