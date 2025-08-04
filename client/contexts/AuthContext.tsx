@@ -18,6 +18,9 @@ export interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
+  isSubAdmin: boolean;
+  hasAdminAccess: boolean;
   login: (
     email: string,
     password: string,
