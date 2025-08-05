@@ -685,7 +685,7 @@ function PageForm({
               onValueChange={(value) =>
                 setFormData({
                   ...formData,
-                  robots: value === "default" ? "" : value
+                  robots: value === "default" ? "" : value,
                 })
               }
             >
