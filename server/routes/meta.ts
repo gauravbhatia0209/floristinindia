@@ -2,6 +2,13 @@ import { Request, Response } from "express";
 import { supabase } from "../lib/supabase.js";
 import fs from "fs";
 import path from "path";
+import {
+  generateLocalBusinessSchema,
+  generateBreadcrumbSchema,
+  generateProductSchema,
+  generateWebsiteSchema,
+  SiteSettings
+} from "../lib/schema-generator.js";
 
 interface MetaData {
   title: string;
@@ -10,6 +17,7 @@ interface MetaData {
   ogDescription?: string;
   ogImage?: string;
   canonical?: string;
+  structuredData?: any[];
 }
 
 // Cache for meta data to reduce database calls
@@ -33,6 +41,21 @@ async function getSiteSettings() {
         "meta_title",
         "meta_description",
         "og_image_url",
+        "businessName",
+        "phone",
+        "contact_email",
+        "streetAddress",
+        "locality",
+        "region",
+        "postalCode",
+        "countryCode",
+        "openingHours",
+        "serviceArea",
+        "facebook_url",
+        "instagram_url",
+        "twitter_url",
+        "youtube_url",
+        "logo_url",
       ]);
 
     if (error) {
@@ -100,11 +123,28 @@ async function getCategoryMeta(slug: string): Promise<MetaData | null> {
   }
 }
 
-async function getProductMeta(slug: string): Promise<MetaData | null> {
+async function getProductMeta(slug: string): Promise<any> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("name, short_description, meta_title, meta_description, og_image")
+      .select(`
+        name,
+        slug,
+        description,
+        short_description,
+        meta_title,
+        meta_description,
+        og_image,
+        price,
+        sale_price,
+        sku,
+        stock_quantity,
+        images,
+        tags,
+        weight,
+        category_id,
+        product_categories!inner(name)
+      `)
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -114,9 +154,8 @@ async function getProductMeta(slug: string): Promise<MetaData | null> {
     }
 
     return {
-      title: data.meta_title || data.name,
-      description: data.meta_description || data.short_description || "",
-      ogImage: data.og_image || "",
+      ...data,
+      category_name: data.product_categories?.name
     };
   } catch (error) {
     console.error("Error fetching product meta:", error);
@@ -160,10 +199,16 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
 
   // Homepage
   if (pathname === "/" || pathname === "") {
+    const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
+
     metaData = {
       title: defaultTitle,
       description: defaultDescription,
       ogImage: defaultOgImage,
+      structuredData: [
+        generateLocalBusinessSchema(siteSettings, baseUrl),
+        generateWebsiteSchema(siteSettings, baseUrl)
+      ]
     };
   }
   // Page routes
@@ -171,19 +216,30 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     const slug = pathname.replace("/pages/", "");
     const pageMeta = await getPageMeta(slug);
 
+    const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
+
     if (pageMeta) {
+      const pageTitle = pageMeta.title || pageMeta.meta_title;
+      const finalTitle = pageTitle ? `${pageTitle} | ${siteName}` : defaultTitle;
+
       metaData = {
-        title: pageMeta.title
-          ? `${pageMeta.title} | ${siteName}`
-          : defaultTitle,
+        title: finalTitle,
         description: pageMeta.description || defaultDescription,
         ogImage: pageMeta.ogImage || defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, pageTitle, baseUrl)
+        ]
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, "Page", baseUrl)
+        ]
       };
     }
   }
@@ -192,19 +248,30 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     const slug = pathname.replace("/category/", "");
     const categoryMeta = await getCategoryMeta(slug);
 
+    const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
+
     if (categoryMeta) {
+      const categoryTitle = categoryMeta.title || categoryMeta.meta_title;
+      const finalTitle = categoryTitle ? `${categoryTitle} | ${siteName}` : defaultTitle;
+
       metaData = {
-        title: categoryMeta.title
-          ? `${categoryMeta.title} | ${siteName}`
-          : defaultTitle,
+        title: finalTitle,
         description: categoryMeta.description || defaultDescription,
         ogImage: categoryMeta.ogImage || defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, categoryTitle, baseUrl)
+        ]
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, "Category", baseUrl)
+        ]
       };
     }
   }
@@ -213,19 +280,31 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     const slug = pathname.replace("/product/", "");
     const productMeta = await getProductMeta(slug);
 
+    const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
+
     if (productMeta) {
+      const productTitle = productMeta.meta_title || productMeta.name;
+      const finalTitle = productTitle ? `${productTitle} | ${siteName}` : defaultTitle;
+
       metaData = {
-        title: productMeta.title
-          ? `${productMeta.title} | ${siteName}`
-          : defaultTitle,
-        description: productMeta.description || defaultDescription,
-        ogImage: productMeta.ogImage || defaultOgImage,
+        title: finalTitle,
+        description: productMeta.meta_description || productMeta.short_description || defaultDescription,
+        ogImage: productMeta.og_image || defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, productTitle, baseUrl),
+          generateProductSchema(productMeta, baseUrl, siteSettings)
+        ]
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, "Product", baseUrl)
+        ]
       };
     }
   }
@@ -261,17 +340,27 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       };
 
     const pageInfo = pageMapping[pathname];
+    const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
+
     if (pageInfo) {
       metaData = {
         title: `${pageInfo.title} | ${siteName}`,
         description: pageInfo.description,
         ogImage: defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, pageInfo.title, baseUrl)
+        ]
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        structuredData: [
+          generateLocalBusinessSchema(siteSettings, baseUrl),
+          generateBreadcrumbSchema(pathname, "Page", baseUrl)
+        ]
       };
     }
   }
