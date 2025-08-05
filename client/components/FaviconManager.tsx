@@ -36,7 +36,7 @@ export default function FaviconManager() {
 
     // Remove existing favicon links
     const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
-    existingFavicons.forEach(link => link.remove());
+    existingFavicons.forEach((link) => link.remove());
 
     // Create new favicon links for different sizes and types
     const faviconSizes = [
@@ -57,7 +57,7 @@ export default function FaviconManager() {
     ];
 
     // Add new favicon links
-    faviconSizes.forEach(favicon => {
+    faviconSizes.forEach((favicon) => {
       const link = document.createElement("link");
       link.rel = favicon.rel;
       link.type = favicon.type || "";
@@ -88,7 +88,7 @@ export default function FaviconManager() {
             setFaviconUrl(newUrl);
             updateFavicon(newUrl);
           }
-        }
+        },
       )
       .subscribe();
 

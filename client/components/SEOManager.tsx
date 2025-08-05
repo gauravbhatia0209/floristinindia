@@ -52,7 +52,7 @@ export default function SEOManager() {
           "og_image_url",
           "google_analytics_id",
           "facebook_pixel_id",
-          "facebook_app_id"
+          "facebook_app_id",
         ]);
 
       if (data) {
@@ -78,15 +78,21 @@ export default function SEOManager() {
 
     if (isHomePage) {
       // Homepage: Use admin meta title, or site name + tagline, or fallback
-      pageTitle = siteSettings.default_meta_title ||
-                  siteSettings.meta_title ||
-                  (siteSettings.site_tagline ?
-                    `${siteSettings.site_name || "Florist in India"} - ${siteSettings.site_tagline}` :
-                    `${siteSettings.site_name || "Florist in India"} - Fresh Flowers Delivered Daily`);
+      pageTitle =
+        siteSettings.default_meta_title ||
+        siteSettings.meta_title ||
+        (siteSettings.site_tagline
+          ? `${siteSettings.site_name || "Florist in India"} - ${siteSettings.site_tagline}`
+          : `${siteSettings.site_name || "Florist in India"} - Fresh Flowers Delivered Daily`);
     } else {
       // Other pages: Keep existing title if set, or use template
       const currentTitle = document.title;
-      if (!currentTitle || currentTitle.includes("Florist in India - Fresh Flowers Delivered Daily")) {
+      if (
+        !currentTitle ||
+        currentTitle.includes(
+          "Florist in India - Fresh Flowers Delivered Daily",
+        )
+      ) {
         pageTitle = `${siteSettings.site_name || "Florist in India"}`;
       } else {
         // Apply meta title template if available
@@ -94,7 +100,10 @@ export default function SEOManager() {
           const template = siteSettings.meta_title_template;
           pageTitle = template
             .replace("%title%", getPageTitle())
-            .replace("%sitename%", siteSettings.site_name || "Florist in India");
+            .replace(
+              "%sitename%",
+              siteSettings.site_name || "Florist in India",
+            );
         }
       }
     }
@@ -105,17 +114,22 @@ export default function SEOManager() {
 
     // Update meta description for homepage
     if (isHomePage) {
-      const metaDescription = siteSettings.default_meta_description ||
-                             siteSettings.meta_description ||
-                             siteSettings.site_description ||
-                             "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
+      const metaDescription =
+        siteSettings.default_meta_description ||
+        siteSettings.meta_description ||
+        siteSettings.site_description ||
+        "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
 
       updateMetaTag("description", metaDescription);
     }
 
     // Update Open Graph tags
     updateMetaTag("og:title", document.title, "property");
-    updateMetaTag("og:site_name", siteSettings.site_name || "Florist in India", "property");
+    updateMetaTag(
+      "og:site_name",
+      siteSettings.site_name || "Florist in India",
+      "property",
+    );
     updateMetaTag("og:url", window.location.href, "property");
 
     if (siteSettings.og_image_url) {
@@ -126,9 +140,17 @@ export default function SEOManager() {
     updateMetaTag("twitter:card", "summary_large_image", "name");
     updateMetaTag("twitter:title", document.title, "name");
 
-    if (isHomePage && (siteSettings.default_meta_description || siteSettings.site_description)) {
-      updateMetaTag("twitter:description",
-        siteSettings.default_meta_description || siteSettings.site_description || "", "name");
+    if (
+      isHomePage &&
+      (siteSettings.default_meta_description || siteSettings.site_description)
+    ) {
+      updateMetaTag(
+        "twitter:description",
+        siteSettings.default_meta_description ||
+          siteSettings.site_description ||
+          "",
+        "name",
+      );
     }
 
     // Facebook App ID
@@ -153,15 +175,21 @@ export default function SEOManager() {
     return path
       .split("/")
       .filter(Boolean)
-      .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
       .join(" ");
   };
 
-  const updateMetaTag = (name: string, content: string, attributeName = "name") => {
+  const updateMetaTag = (
+    name: string,
+    content: string,
+    attributeName = "name",
+  ) => {
     if (!content) return;
 
     // Remove existing meta tag
-    const existingTag = document.querySelector(`meta[${attributeName}="${name}"]`);
+    const existingTag = document.querySelector(
+      `meta[${attributeName}="${name}"]`,
+    );
     if (existingTag) {
       existingTag.remove();
     }
@@ -183,12 +211,13 @@ export default function SEOManager() {
           event: "UPDATE",
           schema: "public",
           table: "site_settings",
-          filter: "key=in.(site_name,site_tagline,site_description,default_meta_title,default_meta_description,meta_title,meta_description,meta_title_template,og_image_url)",
+          filter:
+            "key=in.(site_name,site_tagline,site_description,default_meta_title,default_meta_description,meta_title,meta_description,meta_title_template,og_image_url)",
         },
         (payload) => {
           console.log("SEO setting updated:", payload);
           fetchSiteSettings(); // Refetch all settings when any SEO setting changes
-        }
+        },
       )
       .subscribe();
 
