@@ -237,6 +237,17 @@ export default function ProductEdit() {
       await saveCategoryAssignments(productId);
       console.log("✅ Category assignments save completed");
 
+      // Clear meta cache for product
+      try {
+        await clearProductCache(formData.slug);
+        // Also clear category cache if this is a featured product
+        if (formData.is_featured) {
+          await clearAllCache();
+        }
+      } catch (cacheError) {
+        console.warn("Failed to clear meta cache:", cacheError);
+      }
+
       alert(
         isNew
           ? "Product created successfully!"
