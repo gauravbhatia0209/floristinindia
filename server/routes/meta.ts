@@ -105,6 +105,14 @@ async function getPageMeta(slug: string): Promise<MetaData | null> {
 async function getCategoryMeta(slug: string): Promise<MetaData | null> {
   try {
     console.log(`[DEBUG] Looking for category with slug: ${slug}`);
+
+    // First, let's see what categories exist
+    const { data: allCategories } = await supabase
+      .from("product_categories")
+      .select("slug, name, is_active")
+      .limit(5);
+    console.log(`[DEBUG] Available categories:`, allCategories);
+
     const { data, error } = await supabase
       .from("product_categories")
       .select("name, meta_title, meta_description, og_image, robots")
