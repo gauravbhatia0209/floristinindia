@@ -62,6 +62,7 @@ export default function ProductEdit() {
     delivery_zones: "",
     meta_title: "",
     meta_description: "",
+    og_image: "",
     weight: "",
   });
 
