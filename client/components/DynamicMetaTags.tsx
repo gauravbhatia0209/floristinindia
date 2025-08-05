@@ -24,6 +24,12 @@ export default function DynamicMetaTags({
     useSiteSettings();
 
   useEffect(() => {
+    // Only update meta tags when specific props are provided
+    // Let SEOManager handle global meta tag management when no props are passed
+    if (!title && !description && !image) {
+      return;
+    }
+
     // Generate meta tags with fallbacks
     const metaTags = generateMetaTags(title, description, image);
     const currentUrl = `${window.location.origin}${location.pathname}`;
