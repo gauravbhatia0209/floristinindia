@@ -401,6 +401,7 @@ function PageForm({
     meta_title: page?.meta_title || "",
     meta_description: page?.meta_description || "",
     og_image: (page as any)?.og_image || "",
+    robots: (page as any)?.robots || "",
     is_active: page?.is_active ?? true,
     show_in_footer: page?.show_in_footer ?? false,
     footer_column: page?.footer_column?.toString() || "1",
@@ -501,6 +502,7 @@ function PageForm({
       meta_title: formData.meta_title || null,
       meta_description: formData.meta_description || null,
       og_image: formData.og_image || null,
+      robots: formData.robots || null,
       is_active: formData.is_active,
       show_in_footer: formData.show_in_footer,
       footer_column: formData.show_in_footer
