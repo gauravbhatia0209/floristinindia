@@ -24,6 +24,8 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { ProductVariations } from "@/components/admin/ProductVariations";
 import { MultiCategorySelect } from "@/components/ui/multi-category-select";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { SingleImageUpload } from "@/components/ui/single-image-upload";
 
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +39,7 @@ export default function ProductEdit() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { clearProductCache, clearAllCache } = useClearMetaCacheOnSave();
+  const { settings } = useSiteSettings();
 
   const [formData, setFormData] = useState({
     name: "",
