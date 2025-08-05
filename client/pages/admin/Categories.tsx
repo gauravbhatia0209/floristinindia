@@ -951,11 +951,44 @@ export default function AdminCategories() {
       cancelEditing();
     } catch (error: any) {
       console.error("Failed to save category:", error);
-      const errorMessage =
-        error?.message ||
-        error?.error?.message ||
-        error?.toString() ||
-        "Unknown error occurred";
+      console.error("Error details:", JSON.stringify(error, null, 2));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error_description) {
+        errorMessage = error.error_description;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
+      } else if (error?.code) {
+        if (error.code === '42703') {
+          errorMessage = "Database schema error: og_image column may not exist. Please run the migration script.";
+        } else if (error.code === '23505') {
+          errorMessage = "A category with this name or slug already exists.";
+        } else {
+          errorMessage = `Database error (${error.code}): ${error.hint || error.details || "Please check your input"}`;
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object') {
+        // Try to extract any meaningful message from the error object
+        const possibleMessages = [
+          error.error?.message,
+          error.data?.message,
+          error.statusText,
+          error.name
+        ].filter(Boolean);
+
+        if (possibleMessages.length > 0) {
+          errorMessage = possibleMessages[0];
+        } else {
+          errorMessage = `Unexpected error: ${JSON.stringify(error)}`;
+        }
+      }
+
       alert(`Failed to save category: ${errorMessage}`);
     } finally {
       setIsSaving(false);
