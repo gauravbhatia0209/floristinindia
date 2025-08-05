@@ -246,6 +246,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, "Page", baseUrl)
@@ -372,6 +373,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, "Page", baseUrl)
