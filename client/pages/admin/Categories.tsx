@@ -974,22 +974,23 @@ export default function AdminCategories() {
       } else if (error?.hint) {
         errorMessage = error.hint;
       } else if (error?.code) {
-        if (error.code === '42703') {
-          errorMessage = "Database schema error: og_image column may not exist. Please run the migration script.";
-        } else if (error.code === '23505') {
+        if (error.code === "42703") {
+          errorMessage =
+            "Database schema error: og_image column may not exist. Please run the migration script.";
+        } else if (error.code === "23505") {
           errorMessage = "A category with this name or slug already exists.";
         } else {
           errorMessage = `Database error (${error.code}): ${error.hint || error.details || "Please check your input"}`;
         }
-      } else if (typeof error === 'string') {
+      } else if (typeof error === "string") {
         errorMessage = error;
-      } else if (error && typeof error === 'object') {
+      } else if (error && typeof error === "object") {
         // Try to extract any meaningful message from the error object
         const possibleMessages = [
           error.error?.message,
           error.data?.message,
           error.statusText,
-          error.name
+          error.name,
         ].filter(Boolean);
 
         if (possibleMessages.length > 0) {
