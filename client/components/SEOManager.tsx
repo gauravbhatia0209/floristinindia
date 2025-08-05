@@ -126,7 +126,9 @@ export default function SEOManager() {
     }
 
     if (pageTitle) {
+      console.log("[SEO DEBUG] Setting document.title to:", pageTitle);
       document.title = pageTitle;
+      console.log("[SEO DEBUG] Document title now is:", document.title);
     }
 
     // Update meta description for homepage
