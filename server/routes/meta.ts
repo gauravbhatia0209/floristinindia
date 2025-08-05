@@ -186,6 +186,14 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   let metaData: MetaData;
 
   // Default fallbacks
+  console.log('[DEBUG] Site Settings for meta title:', {
+    defaultMetaTitle: siteSettings.defaultMetaTitle,
+    default_meta_title: siteSettings.default_meta_title,
+    meta_title: siteSettings.meta_title,
+    siteName: siteName,
+    siteTagline: siteTagline
+  });
+
   const defaultTitle =
     siteSettings.defaultMetaTitle ||
     siteSettings.default_meta_title ||
