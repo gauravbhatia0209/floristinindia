@@ -2,11 +2,11 @@
 -- This migration is idempotent and safe to run multiple times
 
 -- Add robots column to pages if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'pages' 
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'pages'
         AND column_name = 'robots'
     ) THEN
         ALTER TABLE pages ADD COLUMN robots VARCHAR(100);
@@ -14,11 +14,11 @@ BEGIN
 END $$;
 
 -- Add robots column to product_categories if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'product_categories' 
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'product_categories'
         AND column_name = 'robots'
     ) THEN
         ALTER TABLE product_categories ADD COLUMN robots VARCHAR(100);
@@ -26,11 +26,11 @@ BEGIN
 END $$;
 
 -- Add robots column to products if it doesn't exist
-DO $$ 
+DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'products' 
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'products'
         AND column_name = 'robots'
     ) THEN
         ALTER TABLE products ADD COLUMN robots VARCHAR(100);
@@ -38,8 +38,8 @@ BEGIN
 END $$;
 
 -- Add defaultRobots setting to site_settings if it doesn't exist
-INSERT INTO site_settings (key, value, category, description)
-VALUES ('defaultRobots', 'index, follow', 'meta', 'Default robots directive for all pages')
+INSERT INTO site_settings (key, value, description)
+VALUES ('defaultRobots', 'index, follow', 'Default robots directive for all pages')
 ON CONFLICT (key) DO NOTHING;
 
 -- Add helpful comments
