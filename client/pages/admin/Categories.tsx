@@ -1158,6 +1158,7 @@ export default function AdminCategories() {
                           isSaving={isSaving}
                           handleNameChange={handleNameChange}
                           parentCategories={parentCategories}
+                          settings={settings}
                         />
                       ))}
                   </div>
