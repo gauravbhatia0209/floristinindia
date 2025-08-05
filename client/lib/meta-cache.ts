@@ -2,13 +2,13 @@
 
 export async function clearMetaCache(pathname?: string) {
   try {
-    const response = await fetch('/api/meta/clear-cache', {
-      method: 'POST',
+    const response = await fetch("/api/meta/clear-cache", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        pathname
+        pathname,
       }),
     });
 
@@ -17,25 +17,27 @@ export async function clearMetaCache(pathname?: string) {
     }
 
     const result = await response.json();
-    console.log('Meta cache cleared:', result.message);
+    console.log("Meta cache cleared:", result.message);
     return result;
   } catch (error) {
-    console.error('Error clearing meta cache:', error);
+    console.error("Error clearing meta cache:", error);
     throw error;
   }
 }
 
 export async function getMetaData(pathname: string) {
   try {
-    const response = await fetch(`/api/meta?pathname=${encodeURIComponent(pathname)}`);
-    
+    const response = await fetch(
+      `/api/meta?pathname=${encodeURIComponent(pathname)}`,
+    );
+
     if (!response.ok) {
       throw new Error(`Failed to get meta data: ${response.statusText}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error getting meta data:', error);
+    console.error("Error getting meta data:", error);
     throw error;
   }
 }
@@ -49,6 +51,6 @@ export function useClearMetaCacheOnSave() {
     clearCategoryCache: (slug: string) => clearMetaCache(`/category/${slug}`),
     clearProductCache: (slug: string) => clearMetaCache(`/product/${slug}`),
     clearPageCache: (slug: string) => clearMetaCache(`/pages/${slug}`),
-    clearHomepageCache: () => clearMetaCache('/'),
+    clearHomepageCache: () => clearMetaCache("/"),
   };
 }

@@ -9,7 +9,11 @@ import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
-import { injectMetaTags, getMetaDataHandler, clearCacheHandler } from "./routes/meta.js";
+import {
+  injectMetaTags,
+  getMetaDataHandler,
+  clearCacheHandler,
+} from "./routes/meta.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -130,7 +134,9 @@ export function createServer() {
         const fallbackHtmlPath = path.join(staticPath, "index.html");
 
         // Use custom template if available, otherwise fallback to built index.html
-        const templatePath = fs.existsSync(htmlPath) ? htmlPath : fallbackHtmlPath;
+        const templatePath = fs.existsSync(htmlPath)
+          ? htmlPath
+          : fallbackHtmlPath;
 
         fs.readFile(templatePath, "utf8", (err, html) => {
           if (err) {
@@ -144,15 +150,29 @@ export function createServer() {
             const metaData = res.locals.metaData;
             processedHtml = html
               .replace(/{{TITLE}}/g, metaData.title || "Florist in India")
-              .replace(/{{DESCRIPTION}}/g, metaData.description || "Premium flower delivery service")
-              .replace(/{{OG_TITLE}}/g, metaData.ogTitle || metaData.title || "Florist in India")
-              .replace(/{{OG_DESCRIPTION}}/g, metaData.ogDescription || metaData.description || "Premium flower delivery service")
+              .replace(
+                /{{DESCRIPTION}}/g,
+                metaData.description || "Premium flower delivery service",
+              )
+              .replace(
+                /{{OG_TITLE}}/g,
+                metaData.ogTitle || metaData.title || "Florist in India",
+              )
+              .replace(
+                /{{OG_DESCRIPTION}}/g,
+                metaData.ogDescription ||
+                  metaData.description ||
+                  "Premium flower delivery service",
+              )
               .replace(/{{CANONICAL}}/g, metaData.canonical || req.url)
               .replace(/{{OG_IMAGE}}/g, metaData.ogImage || "");
 
             // Handle conditional OG image tags
             if (!metaData.ogImage) {
-              processedHtml = processedHtml.replace(/{{#if OG_IMAGE}}[\s\S]*?{{\/if}}/g, "");
+              processedHtml = processedHtml.replace(
+                /{{#if OG_IMAGE}}[\s\S]*?{{\/if}}/g,
+                "",
+              );
             } else {
               processedHtml = processedHtml
                 .replace(/{{#if OG_IMAGE}}/g, "")

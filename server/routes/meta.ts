@@ -121,7 +121,7 @@ async function getProductMeta(slug: string): Promise<MetaData | null> {
 export async function generateMetaData(pathname: string): Promise<MetaData> {
   const cacheKey = pathname;
   const cached = metaCache.get(cacheKey);
-  
+
   // Return cached data if valid
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     return cached.data;
@@ -134,14 +134,18 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   let metaData: MetaData;
 
   // Default fallbacks
-  const defaultTitle = siteSettings.default_meta_title || 
-                      siteSettings.meta_title ||
-                      (siteTagline ? `${siteName} - ${siteTagline}` : `${siteName} - Fresh Flowers Delivered Daily`);
-  
-  const defaultDescription = siteSettings.default_meta_description ||
-                            siteSettings.meta_description ||
-                            siteSettings.site_description ||
-                            "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
+  const defaultTitle =
+    siteSettings.default_meta_title ||
+    siteSettings.meta_title ||
+    (siteTagline
+      ? `${siteName} - ${siteTagline}`
+      : `${siteName} - Fresh Flowers Delivered Daily`);
+
+  const defaultDescription =
+    siteSettings.default_meta_description ||
+    siteSettings.meta_description ||
+    siteSettings.site_description ||
+    "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
 
   // Homepage
   if (pathname === "/" || pathname === "") {
@@ -155,10 +159,12 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   else if (pathname.startsWith("/pages/")) {
     const slug = pathname.replace("/pages/", "");
     const pageMeta = await getPageMeta(slug);
-    
+
     if (pageMeta) {
       metaData = {
-        title: pageMeta.title ? `${pageMeta.title} | ${siteName}` : defaultTitle,
+        title: pageMeta.title
+          ? `${pageMeta.title} | ${siteName}`
+          : defaultTitle,
         description: pageMeta.description || defaultDescription,
         ogImage: siteSettings.og_image_url,
       };
@@ -174,10 +180,12 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   else if (pathname.startsWith("/category/")) {
     const slug = pathname.replace("/category/", "");
     const categoryMeta = await getCategoryMeta(slug);
-    
+
     if (categoryMeta) {
       metaData = {
-        title: categoryMeta.title ? `${categoryMeta.title} | ${siteName}` : defaultTitle,
+        title: categoryMeta.title
+          ? `${categoryMeta.title} | ${siteName}`
+          : defaultTitle,
         description: categoryMeta.description || defaultDescription,
         ogImage: siteSettings.og_image_url,
       };
@@ -193,10 +201,12 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   else if (pathname.startsWith("/product/")) {
     const slug = pathname.replace("/product/", "");
     const productMeta = await getProductMeta(slug);
-    
+
     if (productMeta) {
       metaData = {
-        title: productMeta.title ? `${productMeta.title} | ${siteName}` : defaultTitle,
+        title: productMeta.title
+          ? `${productMeta.title} | ${siteName}`
+          : defaultTitle,
         description: productMeta.description || defaultDescription,
         ogImage: siteSettings.og_image_url,
       };
@@ -210,28 +220,34 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   }
   // Static pages
   else {
-    const pageMapping: Record<string, { title: string; description: string }> = {
-      "/about": {
-        title: "About Us",
-        description: "Learn about our commitment to delivering fresh, beautiful flowers across India with same-day delivery service.",
-      },
-      "/contact": {
-        title: "Contact Us",
-        description: "Get in touch with our flower delivery experts. We're here to help with your floral needs across India.",
-      },
-      "/cart": {
-        title: "Shopping Cart",
-        description: "Review your selected flowers and complete your order for fresh flower delivery.",
-      },
-      "/checkout": {
-        title: "Checkout",
-        description: "Complete your flower delivery order with secure payment and same-day delivery options.",
-      },
-      "/account": {
-        title: "My Account",
-        description: "Manage your flower delivery orders, addresses, and account preferences.",
-      },
-    };
+    const pageMapping: Record<string, { title: string; description: string }> =
+      {
+        "/about": {
+          title: "About Us",
+          description:
+            "Learn about our commitment to delivering fresh, beautiful flowers across India with same-day delivery service.",
+        },
+        "/contact": {
+          title: "Contact Us",
+          description:
+            "Get in touch with our flower delivery experts. We're here to help with your floral needs across India.",
+        },
+        "/cart": {
+          title: "Shopping Cart",
+          description:
+            "Review your selected flowers and complete your order for fresh flower delivery.",
+        },
+        "/checkout": {
+          title: "Checkout",
+          description:
+            "Complete your flower delivery order with secure payment and same-day delivery options.",
+        },
+        "/account": {
+          title: "My Account",
+          description:
+            "Manage your flower delivery orders, addresses, and account preferences.",
+        },
+      };
 
     const pageInfo = pageMapping[pathname];
     if (pageInfo) {
@@ -252,7 +268,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   // Set Open Graph data
   metaData.ogTitle = metaData.title;
   metaData.ogDescription = metaData.description;
-  metaData.canonical = `${process.env.VITE_SITE_URL || 'https://floristinindia.com'}${pathname}`;
+  metaData.canonical = `${process.env.VITE_SITE_URL || "https://floristinindia.com"}${pathname}`;
 
   // Cache the result
   metaCache.set(cacheKey, { data: metaData, timestamp: Date.now() });
@@ -269,22 +285,30 @@ export function clearMetaCache(pathname?: string) {
 }
 
 // Middleware function to inject meta tags into HTML
-export async function injectMetaTags(req: Request, res: Response, next: Function) {
+export async function injectMetaTags(
+  req: Request,
+  res: Response,
+  next: Function,
+) {
   try {
     // Only process HTML requests
-    if (!req.path || req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+    if (
+      !req.path ||
+      req.path.startsWith("/api/") ||
+      req.path.startsWith("/uploads/")
+    ) {
       return next();
     }
 
     // Get the pathname from the request
-    const pathname = req.path === '/' ? '/' : req.path;
-    
+    const pathname = req.path === "/" ? "/" : req.path;
+
     // Generate meta data for this path
     const metaData = await generateMetaData(pathname);
 
     // Store meta data in res.locals for use in template
     res.locals.metaData = metaData;
-    
+
     next();
   } catch (error) {
     console.error("Error in meta injection middleware:", error);
@@ -296,16 +320,18 @@ export async function injectMetaTags(req: Request, res: Response, next: Function
 export async function getMetaDataHandler(req: Request, res: Response) {
   try {
     const { pathname } = req.query;
-    
-    if (!pathname || typeof pathname !== 'string') {
-      return res.status(400).json({ error: 'pathname query parameter is required' });
+
+    if (!pathname || typeof pathname !== "string") {
+      return res
+        .status(400)
+        .json({ error: "pathname query parameter is required" });
     }
 
     const metaData = await generateMetaData(pathname);
     res.json(metaData);
   } catch (error) {
     console.error("Error in getMetaDataHandler:", error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -314,9 +340,12 @@ export function clearCacheHandler(req: Request, res: Response) {
   try {
     const { pathname } = req.query;
     clearMetaCache(pathname as string);
-    res.json({ success: true, message: pathname ? `Cache cleared for ${pathname}` : 'All cache cleared' });
+    res.json({
+      success: true,
+      message: pathname ? `Cache cleared for ${pathname}` : "All cache cleared",
+    });
   } catch (error) {
     console.error("Error in clearCacheHandler:", error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
