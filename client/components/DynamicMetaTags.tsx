@@ -43,10 +43,18 @@ export default function DynamicMetaTags({
     // Update document title only if explicitly provided via props
     // Let SEOManager handle global title management when no title prop is passed
     if (title && metaTags.title) {
-      console.log("[DYNAMIC META DEBUG] Setting document.title to:", metaTags.title);
+      console.log(
+        "[DYNAMIC META DEBUG] Setting document.title to:",
+        metaTags.title,
+      );
       document.title = metaTags.title;
     } else {
-      console.log("[DYNAMIC META DEBUG] NOT setting document.title - title prop:", title, "metaTags.title:", metaTags.title);
+      console.log(
+        "[DYNAMIC META DEBUG] NOT setting document.title - title prop:",
+        title,
+        "metaTags.title:",
+        metaTags.title,
+      );
     }
 
     // Helper function to update or create meta tag
