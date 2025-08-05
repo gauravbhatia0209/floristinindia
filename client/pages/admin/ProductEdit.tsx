@@ -210,6 +210,7 @@ export default function ProductEdit() {
           : [],
         meta_title: formData.meta_title || null,
         meta_description: formData.meta_description || null,
+        og_image: formData.og_image || null,
         weight: formData.weight ? parseFloat(formData.weight) : null,
       };
 
