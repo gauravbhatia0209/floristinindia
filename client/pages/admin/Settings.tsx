@@ -296,6 +296,7 @@ export default function Settings() {
       defaultMetaDescription:
         "Default meta description for pages without custom descriptions",
       defaultOgImage: "Default Open Graph image for social media sharing",
+      defaultRobots: "Default robots directive for search engine crawling",
 
       // Business Information
       businessName: "Official business name for schema markup",
