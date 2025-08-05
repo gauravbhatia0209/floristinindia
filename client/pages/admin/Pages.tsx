@@ -394,11 +394,13 @@ function PageForm({
   onSectionCancel: () => void;
   onSectionsUpdate: (sections: Section[]) => void;
 }) {
+  const { settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     title: page?.title || "",
     slug: page?.slug || "",
     meta_title: page?.meta_title || "",
     meta_description: page?.meta_description || "",
+    og_image: (page as any)?.og_image || "",
     is_active: page?.is_active ?? true,
     show_in_footer: page?.show_in_footer ?? false,
     footer_column: page?.footer_column?.toString() || "1",
@@ -498,6 +500,7 @@ function PageForm({
       slug: formData.slug,
       meta_title: formData.meta_title || null,
       meta_description: formData.meta_description || null,
+      og_image: formData.og_image || null,
       is_active: formData.is_active,
       show_in_footer: formData.show_in_footer,
       footer_column: formData.show_in_footer
@@ -640,8 +643,13 @@ function PageForm({
               onChange={(e) =>
                 setFormData({ ...formData, meta_title: e.target.value })
               }
-              placeholder="About Us - Florist in India"
+              placeholder={settings.defaultMetaTitle || "About Us - Florist in India"}
             />
+            {!formData.meta_title && settings.defaultMetaTitle && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Will use default: {settings.defaultMetaTitle}
+              </p>
+            )}
           </div>
 
           <div>
@@ -652,9 +660,30 @@ function PageForm({
               onChange={(e) =>
                 setFormData({ ...formData, meta_description: e.target.value })
               }
-              placeholder="Learn about our story and commitment to delivering fresh flowers..."
+              placeholder={settings.defaultMetaDescription || "Learn about our story and commitment to delivering fresh flowers..."}
               rows={3}
             />
+            {!formData.meta_description && settings.defaultMetaDescription && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="og_image">Open Graph Image</Label>
+            <SingleImageUpload
+              imageUrl={formData.og_image}
+              onImageChange={(imageUrl) =>
+                setFormData({ ...formData, og_image: imageUrl })
+              }
+              label="Page OG Image"
+            />
+            {!formData.og_image && settings.defaultOgImage && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Will use default OG image from Site Settings
+              </p>
+            )}
           </div>
         </TabsContent>
       </Tabs>
