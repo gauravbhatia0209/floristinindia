@@ -952,6 +952,7 @@ export default function AdminCategories() {
         image_url: formData.image_url.trim() || null,
         meta_title: formData.meta_title.trim() || null,
         meta_description: formData.meta_description.trim() || null,
+        robots: formData.robots?.trim() || null,
       };
 
       // Only add og_image if it has a value to avoid database errors if column doesn't exist
