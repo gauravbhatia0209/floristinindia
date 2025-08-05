@@ -33,19 +33,46 @@ import PaymentGatewayConfig from "@/components/admin/PaymentGatewayConfig";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 
 interface SettingsData {
-  // Site Info
+  // Site Identity
   site_name: string;
   site_tagline: string;
   site_description: string;
   logo_url: string;
   favicon_url: string;
 
-  // Contact Info
-  contact_phone: string;
+  // Meta Tags & SEO
+  defaultMetaTitle: string;
+  defaultMetaDescription: string;
+  defaultOgImage: string;
+  meta_title_template: string;
+  google_analytics_id: string;
+  facebook_pixel_id: string;
+  facebook_app_id: string;
+  twitter_card_type: string;
+  twitter_site: string;
+  canonical_url: string;
+  robots_txt_content: string;
+  custom_head_tags: string;
+  sitemap_enabled: boolean;
+  breadcrumbs_enabled: boolean;
+
+  // Business Information
+  businessName: string;
+  phone: string;
   contact_phone_2: string;
   whatsapp_number: string;
   contact_email: string;
-  contact_address: string;
+
+  // Business Address
+  streetAddress: string;
+  locality: string;
+  region: string;
+  postalCode: string;
+  countryCode: string;
+
+  // Business Operations
+  openingHours: string;
+  serviceArea: string;
   business_hours: string;
   google_maps_embed: string;
 
@@ -68,54 +95,81 @@ interface SettingsData {
   enable_special_instructions: boolean;
   enable_guest_checkout: boolean;
 
-  // SEO
+  // Legacy fields (for backward compatibility)
   default_meta_title: string;
   default_meta_description: string;
-  google_analytics_id: string;
-  facebook_pixel_id: string;
-  facebook_app_id: string;
-
-  // Advanced SEO
-  meta_title_template: string;
   og_image_url: string;
-  twitter_card_type: string;
-  twitter_site: string;
-  canonical_url: string;
-  robots_txt_content: string;
+  contact_phone: string;
+  contact_address: string;
   schema_org_organization: string;
-  custom_head_tags: string;
-  sitemap_enabled: boolean;
-  breadcrumbs_enabled: boolean;
 }
 
 export default function Settings() {
   const { clearAllCache, clearHomepageCache } = useClearMetaCacheOnSave();
   const [settings, setSettings] = useState<SettingsData>({
+    // Site Identity
     site_name: "",
     site_tagline: "",
     site_description: "",
     logo_url: "",
     favicon_url: "",
-    contact_phone: "",
+
+    // Meta Tags & SEO
+    defaultMetaTitle: "",
+    defaultMetaDescription: "",
+    defaultOgImage: "",
+    meta_title_template: "",
+    google_analytics_id: "",
+    facebook_pixel_id: "",
+    facebook_app_id: "",
+    twitter_card_type: "summary_large_image",
+    twitter_site: "",
+    canonical_url: "",
+    robots_txt_content: "",
+    custom_head_tags: "",
+    sitemap_enabled: true,
+    breadcrumbs_enabled: true,
+
+    // Business Information
+    businessName: "",
+    phone: "",
     contact_phone_2: "",
     whatsapp_number: "",
     contact_email: "",
-    contact_address: "",
+
+    // Business Address
+    streetAddress: "",
+    locality: "",
+    region: "",
+    postalCode: "",
+    countryCode: "IN",
+
+    // Business Operations
+    openingHours: "",
+    serviceArea: "",
     business_hours: "",
     google_maps_embed: "",
+
+    // Social Media
     facebook_url: "",
     instagram_url: "",
     twitter_url: "",
     youtube_url: "",
+
+    // Business Settings
     currency_symbol: "₹",
     gst_rate: "18",
     free_shipping_minimum: "500",
     same_day_cutoff_time: "14:00",
+
+    // Features
     enable_reviews: true,
     enable_wishlist: true,
     enable_file_upload: true,
     enable_special_instructions: true,
     enable_guest_checkout: true,
+
+    // Legacy fields (for backward compatibility)
     default_meta_title: "",
     default_meta_description: "",
     google_analytics_id: "",
