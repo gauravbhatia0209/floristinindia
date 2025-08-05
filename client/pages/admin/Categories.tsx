@@ -406,11 +406,11 @@ function CategoryRow({
               <div>
                 <Label htmlFor="robots">Robots Directive</Label>
                 <Select
-                  value={formData.robots || ""}
+                  value={formData.robots || "default"}
                   onValueChange={(value) =>
                     setFormData((prev: any) => ({
                       ...prev,
-                      robots: value,
+                      robots: value === "default" ? "" : value,
                     }))
                   }
                 >
@@ -420,7 +420,7 @@ function CategoryRow({
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Use default</SelectItem>
+                    <SelectItem value="default">Use default</SelectItem>
                     <SelectItem value="index, follow">index, follow</SelectItem>
                     <SelectItem value="noindex, follow">
                       noindex, follow
