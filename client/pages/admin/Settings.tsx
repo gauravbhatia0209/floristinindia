@@ -282,24 +282,50 @@ export default function Settings() {
 
   function getSettingDescription(key: string): string {
     const descriptions: Record<string, string> = {
+      // Site Identity
       site_name: "The name of your website",
       site_tagline: "Short tagline for your site",
       site_description: "Brief description of your business",
       logo_url: "Site logo image",
       favicon_url: "Site favicon image",
+
+      // Meta Tags & SEO
+      defaultMetaTitle: "Default meta title for pages without custom titles",
+      defaultMetaDescription: "Default meta description for pages without custom descriptions",
+      defaultOgImage: "Default Open Graph image for social media sharing",
+
+      // Business Information
+      businessName: "Official business name for schema markup",
+      phone: "Primary business phone number",
       contact_phone: "Primary contact phone number",
       contact_phone_2: "Secondary contact phone number",
       contact_email: "Main contact email address",
-      contact_address: "Business address",
-      business_hours: "Operating hours",
+
+      // Business Address
+      streetAddress: "Street address for schema markup and contact info",
+      locality: "City or locality for business address",
+      region: "State or region for business address",
+      postalCode: "Postal/ZIP code for business address",
+      countryCode: "Country code (e.g., IN, US, UK)",
+
+      // Business Operations
+      openingHours: "Business hours in Schema.org format (e.g., Mo-Fr 09:00-17:00)",
+      serviceArea: "Geographic areas where services are available",
+      business_hours: "Human-readable business hours",
       google_maps_embed: "Google Maps embed iframe code",
+
+      // Legacy fields
+      contact_address: "Business address",
       currency_symbol: "Currency symbol for prices",
       gst_rate: "GST rate percentage",
       free_shipping_minimum: "Minimum order amount for free shipping",
       same_day_cutoff_time: "Order cutoff time for same-day delivery",
-      google_analytics_id:
-        "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
+      google_analytics_id: "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
       facebook_app_id: "Facebook App ID for enhanced Facebook Shop integration",
+      default_meta_title: "Legacy default meta title field",
+      default_meta_description: "Legacy default meta description field",
+      og_image_url: "Legacy Open Graph image field",
+      schema_org_organization: "Legacy schema.org organization data",
     };
     return descriptions[key] || "";
   }
