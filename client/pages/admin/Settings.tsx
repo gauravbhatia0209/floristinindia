@@ -53,6 +53,7 @@ interface SettingsData {
   twitter_site: string;
   canonical_url: string;
   robots_txt_content: string;
+  additional_sitemap_urls: string;
   custom_head_tags: string;
   sitemap_enabled: boolean;
   breadcrumbs_enabled: boolean;
