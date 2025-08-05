@@ -44,6 +44,7 @@ interface SettingsData {
   defaultMetaTitle: string;
   defaultMetaDescription: string;
   defaultOgImage: string;
+  defaultRobots: string;
   meta_title_template: string;
   google_analytics_id: string;
   facebook_pixel_id: string;
