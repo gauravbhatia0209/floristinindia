@@ -46,6 +46,8 @@ export default function SEOManager() {
           "site_description",
           "default_meta_title",
           "default_meta_description",
+          "meta_title",
+          "meta_description",
           "meta_title_template",
           "og_image_url",
           "google_analytics_id",
