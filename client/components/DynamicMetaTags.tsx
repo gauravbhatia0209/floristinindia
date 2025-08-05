@@ -28,8 +28,9 @@ export default function DynamicMetaTags({
     const metaTags = generateMetaTags(title, description, image);
     const currentUrl = `${window.location.origin}${location.pathname}`;
 
-    // Update document title
-    if (metaTags.title) {
+    // Update document title only if explicitly provided via props
+    // Let SEOManager handle global title management when no title prop is passed
+    if (title && metaTags.title) {
       document.title = metaTags.title;
     }
 
