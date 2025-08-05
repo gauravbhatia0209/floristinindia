@@ -9,6 +9,7 @@ import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
+import { injectMetaTags, getMetaDataHandler, clearCacheHandler } from "./routes/meta.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -25,6 +26,9 @@ export function createServer() {
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // Meta tag injection middleware (before static file serving)
+  app.use(injectMetaTags);
 
   // Ensure uploads directory exists
   if (!fs.existsSync(uploadsPath)) {
@@ -74,6 +78,10 @@ export function createServer() {
   // Admin update notification routes for AI cache management
   app.use("/api/admin", adminUpdatesRoutes);
 
+  // Meta data routes
+  app.get("/api/meta", getMetaDataHandler);
+  app.post("/api/meta/clear-cache", clearCacheHandler);
+
   // Health check route
   app.get("/api/health", (_req, res) => {
     res.json({
@@ -116,9 +124,44 @@ export function createServer() {
     if (!process.env.VERCEL) {
       app.use(express.static(staticPath));
 
-      // Catch-all handler: send back React's index.html file for non-API routes
-      app.get("*", (_req, res) => {
-        res.sendFile(path.join(staticPath, "index.html"));
+      // Catch-all handler: send back React's index.html file with injected meta tags
+      app.get("*", (req, res) => {
+        const htmlPath = path.join(__dirname, "views", "index.html");
+        const fallbackHtmlPath = path.join(staticPath, "index.html");
+
+        // Use custom template if available, otherwise fallback to built index.html
+        const templatePath = fs.existsSync(htmlPath) ? htmlPath : fallbackHtmlPath;
+
+        fs.readFile(templatePath, "utf8", (err, html) => {
+          if (err) {
+            console.error("Error reading HTML template:", err);
+            return res.status(500).send("Internal Server Error");
+          }
+
+          // Inject meta data if available
+          let processedHtml = html;
+          if (res.locals.metaData) {
+            const metaData = res.locals.metaData;
+            processedHtml = html
+              .replace(/{{TITLE}}/g, metaData.title || "Florist in India")
+              .replace(/{{DESCRIPTION}}/g, metaData.description || "Premium flower delivery service")
+              .replace(/{{OG_TITLE}}/g, metaData.ogTitle || metaData.title || "Florist in India")
+              .replace(/{{OG_DESCRIPTION}}/g, metaData.ogDescription || metaData.description || "Premium flower delivery service")
+              .replace(/{{CANONICAL}}/g, metaData.canonical || req.url)
+              .replace(/{{OG_IMAGE}}/g, metaData.ogImage || "");
+
+            // Handle conditional OG image tags
+            if (!metaData.ogImage) {
+              processedHtml = processedHtml.replace(/{{#if OG_IMAGE}}[\s\S]*?{{\/if}}/g, "");
+            } else {
+              processedHtml = processedHtml
+                .replace(/{{#if OG_IMAGE}}/g, "")
+                .replace(/{{\/if}}/g, "");
+            }
+          }
+
+          res.send(processedHtml);
+        });
       });
     }
   } else {

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Server-rendered meta tags -->
+    <title>{{TITLE}}</title>
+    <meta name="description" content="{{DESCRIPTION}}" />
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="{{OG_TITLE}}" />
+    <meta property="og:description" content="{{OG_DESCRIPTION}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{CANONICAL}}" />
+    {{#if OG_IMAGE}}
+    <meta property="og:image" content="{{OG_IMAGE}}" />
+    {{/if}}
+    <meta property="og:site_name" content="Florist in India" />
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{OG_TITLE}}" />
+    <meta name="twitter:description" content="{{OG_DESCRIPTION}}" />
+    {{#if OG_IMAGE}}
+    <meta name="twitter:image" content="{{OG_IMAGE}}" />
+    {{/if}}
+    
+    <!-- Additional SEO meta tags -->
+    <link rel="canonical" href="{{CANONICAL}}" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Florist in India" />
+    
+    <!-- Structured Data (JSON-LD) placeholder -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Florist in India",
+      "description": "{{DESCRIPTION}}",
+      "url": "{{CANONICAL}}",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://www.facebook.com/floristinindia",
+        "https://www.instagram.com/floristinindia"
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/main.tsx"></script>
+  </body>
+</html>
