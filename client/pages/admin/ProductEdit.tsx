@@ -36,6 +36,7 @@ export default function ProductEdit() {
   const [primaryCategoryId, setPrimaryCategoryId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const { clearProductCache, clearAllCache } = useClearMetaCacheOnSave();
 
   const [formData, setFormData] = useState({
     name: "",
