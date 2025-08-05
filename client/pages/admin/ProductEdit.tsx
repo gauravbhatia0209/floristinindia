@@ -824,8 +824,13 @@ export default function ProductEdit() {
                   onChange={(e) =>
                     setFormData({ ...formData, meta_title: e.target.value })
                   }
-                  placeholder="Beautiful Rose Bouquet - Fresh Flowers"
+                  placeholder={settings.defaultMetaTitle || "Beautiful Rose Bouquet - Fresh Flowers"}
                 />
+                {!formData.meta_title && settings.defaultMetaTitle && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default: {settings.defaultMetaTitle}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -839,9 +844,30 @@ export default function ProductEdit() {
                       meta_description: e.target.value,
                     })
                   }
-                  placeholder="Order beautiful rose bouquets for delivery..."
+                  placeholder={settings.defaultMetaDescription || "Order beautiful rose bouquets for delivery..."}
                   rows={3}
                 />
+                {!formData.meta_description && settings.defaultMetaDescription && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="og_image">Open Graph Image</Label>
+                <SingleImageUpload
+                  imageUrl={formData.og_image}
+                  onImageChange={(imageUrl) =>
+                    setFormData({ ...formData, og_image: imageUrl })
+                  }
+                  label="Product OG Image"
+                />
+                {!formData.og_image && settings.defaultOgImage && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default OG image from Site Settings
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
