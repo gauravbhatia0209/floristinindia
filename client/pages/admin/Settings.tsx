@@ -291,7 +291,8 @@ export default function Settings() {
 
       // Meta Tags & SEO
       defaultMetaTitle: "Default meta title for pages without custom titles",
-      defaultMetaDescription: "Default meta description for pages without custom descriptions",
+      defaultMetaDescription:
+        "Default meta description for pages without custom descriptions",
       defaultOgImage: "Default Open Graph image for social media sharing",
 
       // Business Information
@@ -309,7 +310,8 @@ export default function Settings() {
       countryCode: "Country code (e.g., IN, US, UK)",
 
       // Business Operations
-      openingHours: "Business hours in Schema.org format (e.g., Mo-Fr 09:00-17:00)",
+      openingHours:
+        "Business hours in Schema.org format (e.g., Mo-Fr 09:00-17:00)",
       serviceArea: "Geographic areas where services are available",
       business_hours: "Human-readable business hours",
       google_maps_embed: "Google Maps embed iframe code",
@@ -320,7 +322,8 @@ export default function Settings() {
       gst_rate: "GST rate percentage",
       free_shipping_minimum: "Minimum order amount for free shipping",
       same_day_cutoff_time: "Order cutoff time for same-day delivery",
-      google_analytics_id: "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
+      google_analytics_id:
+        "Google Analytics tracking ID (GA4 format: G-XXXXXXXXXX)",
       facebook_app_id: "Facebook App ID for enhanced Facebook Shop integration",
       default_meta_title: "Legacy default meta title field",
       default_meta_description: "Legacy default meta description field",
@@ -692,12 +695,15 @@ export default function Settings() {
                   placeholder="Florist in India - Fresh Flowers Delivered Daily"
                 />
                 <p className="text-sm text-muted-foreground mt-1">
-                  This will be used as the default title for pages without custom meta titles
+                  This will be used as the default title for pages without
+                  custom meta titles
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="defaultMetaDescription">Default Meta Description</Label>
+                <Label htmlFor="defaultMetaDescription">
+                  Default Meta Description
+                </Label>
                 <Textarea
                   id="defaultMetaDescription"
                   value={settings.defaultMetaDescription}
@@ -708,7 +714,8 @@ export default function Settings() {
                   rows={3}
                 />
                 <p className="text-sm text-muted-foreground mt-1">
-                  This will be used as the default description for pages without custom meta descriptions
+                  This will be used as the default description for pages without
+                  custom meta descriptions
                 </p>
               </div>
 
@@ -735,7 +742,10 @@ export default function Settings() {
                               const reader = new FileReader();
                               reader.onload = (event) => {
                                 if (event.target?.result) {
-                                  handleInputChange("defaultOgImage", event.target.result as string);
+                                  handleInputChange(
+                                    "defaultOgImage",
+                                    event.target.result as string,
+                                  );
                                 }
                               };
                               reader.readAsDataURL(file);
@@ -752,7 +762,9 @@ export default function Settings() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleInputChange("defaultOgImage", "")}
+                          onClick={() =>
+                            handleInputChange("defaultOgImage", "")
+                          }
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -771,7 +783,10 @@ export default function Settings() {
                               const reader = new FileReader();
                               reader.onload = (event) => {
                                 if (event.target?.result) {
-                                  handleInputChange("defaultOgImage", event.target.result as string);
+                                  handleInputChange(
+                                    "defaultOgImage",
+                                    event.target.result as string,
+                                  );
                                 }
                               };
                               reader.readAsDataURL(file);
@@ -798,7 +813,8 @@ export default function Settings() {
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  This image will be used for social media sharing when no specific image is set
+                  This image will be used for social media sharing when no
+                  specific image is set
                 </p>
               </div>
             </CardContent>
@@ -905,7 +921,9 @@ export default function Settings() {
               <div className="space-y-4">
                 <h4 className="font-medium">Business Operations</h4>
                 <div>
-                  <Label htmlFor="openingHours">Opening Hours (Schema.org format)</Label>
+                  <Label htmlFor="openingHours">
+                    Opening Hours (Schema.org format)
+                  </Label>
                   <Input
                     id="openingHours"
                     value={settings.openingHours}
@@ -915,7 +933,8 @@ export default function Settings() {
                     placeholder="Mo-Su 08:00-20:00"
                   />
                   <p className="text-sm text-muted-foreground mt-1">
-                    Format: Mo-Fr 09:00-17:00, Sa 10:00-16:00 (for structured data)
+                    Format: Mo-Fr 09:00-17:00, Sa 10:00-16:00 (for structured
+                    data)
                   </p>
                 </div>
                 <div>
