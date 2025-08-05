@@ -202,6 +202,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       ? `${siteName} - ${siteTagline}`
       : `${siteName} - Fresh Flowers Delivered Daily`);
 
+  console.log('[DEBUG] Final defaultTitle:', defaultTitle);
+
   const defaultDescription =
     siteSettings.defaultMetaDescription ||
     siteSettings.default_meta_description ||
