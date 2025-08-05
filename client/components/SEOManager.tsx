@@ -129,6 +129,16 @@ export default function SEOManager() {
       console.log("[SEO DEBUG] Setting document.title to:", pageTitle);
       document.title = pageTitle;
       console.log("[SEO DEBUG] Document title now is:", document.title);
+
+      // Monitor for title changes after we set it
+      setTimeout(() => {
+        if (document.title !== pageTitle) {
+          console.log("[SEO DEBUG] ⚠️ TITLE WAS OVERRIDDEN!");
+          console.log("[SEO DEBUG] Expected:", pageTitle);
+          console.log("[SEO DEBUG] Actual:", document.title);
+          console.log("[SEO DEBUG] Stack trace:", new Error().stack);
+        }
+      }, 100);
     }
 
     // Update meta description for homepage
