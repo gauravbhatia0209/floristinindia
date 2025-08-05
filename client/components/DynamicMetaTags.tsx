@@ -24,11 +24,17 @@ export default function DynamicMetaTags({
     useSiteSettings();
 
   useEffect(() => {
+    console.log("[DYNAMIC META DEBUG] DynamicMetaTags useEffect triggered");
+    console.log("[DYNAMIC META DEBUG] Props:", { title, description, image });
+
     // Only update meta tags when specific props are provided
     // Let SEOManager handle global meta tag management when no props are passed
     if (!title && !description && !image) {
+      console.log("[DYNAMIC META DEBUG] No props provided, returning early");
       return;
     }
+
+    console.log("[DYNAMIC META DEBUG] Proceeding with meta tag generation");
 
     // Generate meta tags with fallbacks
     const metaTags = generateMetaTags(title, description, image);
