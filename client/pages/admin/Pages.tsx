@@ -643,7 +643,9 @@ function PageForm({
               onChange={(e) =>
                 setFormData({ ...formData, meta_title: e.target.value })
               }
-              placeholder={settings.defaultMetaTitle || "About Us - Florist in India"}
+              placeholder={
+                settings.defaultMetaTitle || "About Us - Florist in India"
+              }
             />
             {!formData.meta_title && settings.defaultMetaTitle && (
               <p className="text-xs text-muted-foreground mt-1">
@@ -660,12 +662,16 @@ function PageForm({
               onChange={(e) =>
                 setFormData({ ...formData, meta_description: e.target.value })
               }
-              placeholder={settings.defaultMetaDescription || "Learn about our story and commitment to delivering fresh flowers..."}
+              placeholder={
+                settings.defaultMetaDescription ||
+                "Learn about our story and commitment to delivering fresh flowers..."
+              }
               rows={3}
             />
             {!formData.meta_description && settings.defaultMetaDescription && (
               <p className="text-xs text-muted-foreground mt-1">
-                Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
+                Will use default:{" "}
+                {settings.defaultMetaDescription.substring(0, 100)}...
               </p>
             )}
           </div>

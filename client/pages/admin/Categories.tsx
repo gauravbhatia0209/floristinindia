@@ -363,7 +363,10 @@ function CategoryRow({
                       meta_title: e.target.value,
                     }))
                   }
-                  placeholder={settings.defaultMetaTitle || "Birthday Flowers - Fresh Delivery | Florist in India"}
+                  placeholder={
+                    settings.defaultMetaTitle ||
+                    "Birthday Flowers - Fresh Delivery | Florist in India"
+                  }
                 />
                 {!formData.meta_title && settings.defaultMetaTitle && (
                   <p className="text-xs text-muted-foreground mt-1">
@@ -383,14 +386,19 @@ function CategoryRow({
                       meta_description: e.target.value,
                     }))
                   }
-                  placeholder={settings.defaultMetaDescription || "Order beautiful birthday flowers with same-day delivery across India..."}
+                  placeholder={
+                    settings.defaultMetaDescription ||
+                    "Order beautiful birthday flowers with same-day delivery across India..."
+                  }
                   rows={2}
                 />
-                {!formData.meta_description && settings.defaultMetaDescription && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
-                  </p>
-                )}
+                {!formData.meta_description &&
+                  settings.defaultMetaDescription && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Will use default:{" "}
+                      {settings.defaultMetaDescription.substring(0, 100)}...
+                    </p>
+                  )}
               </div>
 
               <div>
@@ -1321,7 +1329,10 @@ export default function AdminCategories() {
                       meta_title: e.target.value,
                     }))
                   }
-                  placeholder={settings.defaultMetaTitle || "Birthday Flowers - Fresh Delivery | Florist in India"}
+                  placeholder={
+                    settings.defaultMetaTitle ||
+                    "Birthday Flowers - Fresh Delivery | Florist in India"
+                  }
                 />
                 {!formData.meta_title && settings.defaultMetaTitle && (
                   <p className="text-xs text-muted-foreground mt-1">
@@ -1341,14 +1352,19 @@ export default function AdminCategories() {
                       meta_description: e.target.value,
                     }))
                   }
-                  placeholder={settings.defaultMetaDescription || "Order beautiful birthday flowers with same-day delivery across India..."}
+                  placeholder={
+                    settings.defaultMetaDescription ||
+                    "Order beautiful birthday flowers with same-day delivery across India..."
+                  }
                   rows={2}
                 />
-                {!formData.meta_description && settings.defaultMetaDescription && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
-                  </p>
-                )}
+                {!formData.meta_description &&
+                  settings.defaultMetaDescription && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Will use default:{" "}
+                      {settings.defaultMetaDescription.substring(0, 100)}...
+                    </p>
+                  )}
               </div>
 
               <div>

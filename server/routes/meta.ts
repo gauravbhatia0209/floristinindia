@@ -156,9 +156,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
 
   const defaultOgImage =
-    siteSettings.defaultOgImage ||
-    siteSettings.og_image_url ||
-    "";
+    siteSettings.defaultOgImage || siteSettings.og_image_url || "";
 
   // Homepage
   if (pathname === "/" || pathname === "") {
