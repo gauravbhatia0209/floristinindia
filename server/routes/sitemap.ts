@@ -122,15 +122,7 @@ router.get("/sitemap.xml", async (req, res) => {
     <priority>1.0</priority>
   </url>
 
-  <!-- Products page -->
-  <url>
-    <loc>${baseUrl}/products</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Static pages -->
+  <!-- Static application pages -->
   <url>
     <loc>${baseUrl}/about</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
@@ -145,29 +137,31 @@ router.get("/sitemap.xml", async (req, res) => {
     <priority>0.6</priority>
   </url>
 
-  <!-- AI data endpoints -->
   <url>
-    <loc>${baseUrl}/api/ai/products</loc>
+    <loc>${baseUrl}/cart</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>${baseUrl}/api/ai/categories</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>${baseUrl}/api/ai/business</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.5</priority>
   </url>
 
 `;
+
+    // Add dynamic pages from database
+    if (pages) {
+      pages.forEach((page) => {
+        const lastmod = page.updated_at
+          ? new Date(page.updated_at).toISOString()
+          : new Date().toISOString();
+        sitemap += `  <!-- Dynamic Page: ${page.slug} -->
+  <url>
+    <loc>${baseUrl}/pages/${page.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+      });
+    }
 
     // Add category pages
     if (categories) {
