@@ -23,6 +23,7 @@ import {
 import { ImageUpload } from "@/components/ui/image-upload";
 import { ProductVariations } from "@/components/admin/ProductVariations";
 import { MultiCategorySelect } from "@/components/ui/multi-category-select";
+import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
