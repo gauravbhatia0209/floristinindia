@@ -65,6 +65,7 @@ interface CategoryRowProps {
   isSaving: boolean;
   handleNameChange: (name: string) => void;
   parentCategories: ProductCategory[];
+  settings: any;
 }
 
 function CategoryRow({
@@ -82,6 +83,7 @@ function CategoryRow({
   isSaving,
   handleNameChange,
   parentCategories,
+  settings,
 }: CategoryRowProps) {
   const isEditing = editingCategory?.id === category.id;
 
@@ -455,6 +457,7 @@ interface MainCategoryAccordionProps {
   isSaving: boolean;
   handleNameChange: (name: string) => void;
   parentCategories: ProductCategory[];
+  settings: any;
 }
 
 function MainCategoryAccordion({
@@ -472,6 +475,7 @@ function MainCategoryAccordion({
   isSaving,
   handleNameChange,
   parentCategories,
+  settings,
 }: MainCategoryAccordionProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -493,6 +497,7 @@ function MainCategoryAccordion({
           isSaving={isSaving}
           handleNameChange={handleNameChange}
           parentCategories={parentCategories}
+          settings={settings}
         />
       </div>
 
@@ -548,6 +553,7 @@ function MainCategoryAccordion({
                   isSaving={isSaving}
                   handleNameChange={handleNameChange}
                   parentCategories={parentCategories}
+                  settings={settings}
                 />
               ))}
             </div>
@@ -1108,6 +1114,7 @@ export default function AdminCategories() {
                   isSaving={isSaving}
                   handleNameChange={handleNameChange}
                   parentCategories={parentCategories}
+                  settings={settings}
                 />
               ))}
 
