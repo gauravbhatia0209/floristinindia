@@ -63,6 +63,7 @@ export default function ProductEdit() {
     meta_title: "",
     meta_description: "",
     og_image: "",
+    robots: "",
     weight: "",
   });
 
@@ -211,6 +212,7 @@ export default function ProductEdit() {
         meta_title: formData.meta_title || null,
         meta_description: formData.meta_description || null,
         og_image: formData.og_image || null,
+        robots: formData.robots || null,
         weight: formData.weight ? parseFloat(formData.weight) : null,
       };
 
@@ -860,6 +862,34 @@ export default function ProductEdit() {
                       {settings.defaultMetaDescription.substring(0, 100)}...
                     </p>
                   )}
+              </div>
+
+              <div>
+                <Label htmlFor="robots">Robots Directive</Label>
+                <Select
+                  value={formData.robots}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, robots: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={settings.defaultRobots || "index, follow"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Use default</SelectItem>
+                    <SelectItem value="index, follow">index, follow</SelectItem>
+                    <SelectItem value="noindex, follow">noindex, follow</SelectItem>
+                    <SelectItem value="index, nofollow">index, nofollow</SelectItem>
+                    <SelectItem value="noindex, nofollow">noindex, nofollow</SelectItem>
+                    <SelectItem value="noindex, nofollow, noarchive">noindex, nofollow, noarchive</SelectItem>
+                    <SelectItem value="nosnippet">nosnippet</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!formData.robots && settings.defaultRobots && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default: {settings.defaultRobots}
+                  </p>
+                )}
               </div>
 
               <div>
