@@ -88,6 +88,13 @@ export function useSiteSettings() {
           settingsObject[setting.key] = setting.value;
         });
 
+        // Debug logging to see what values we're getting
+        console.log('[CLIENT DEBUG] Raw settings from database:', {
+          defaultMetaTitle: settingsObject.defaultMetaTitle,
+          default_meta_title: settingsObject.default_meta_title,
+          site_name: settingsObject.site_name
+        });
+
         // Map database keys to our interface, handling both new and legacy field names
         const mappedSettings: SiteSettingsData = {
           site_name: settingsObject.site_name || defaultSettings.site_name,
