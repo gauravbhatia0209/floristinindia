@@ -166,12 +166,19 @@ export default function AIMetaTags({
 
     switch (page) {
       case "home":
-        metaTitle =
-          metaTitle ||
-          `${siteName} - Premium Fresh Flower Delivery Across India`;
-        metaDescription =
-          metaDescription ||
-          `Order fresh flowers online for same-day delivery across India. Premium flower arrangements for all occasions with 100% freshness guarantee. Available in 100+ cities.`;
+        // Use admin settings first, then fallback to defaults
+        const adminMetaTitle = siteSettings.default_meta_title;
+        const adminMetaDescription = siteSettings.default_meta_description;
+        const siteTagline = siteSettings.site_tagline;
+
+        metaTitle = metaTitle ||
+                   adminMetaTitle ||
+                   (siteTagline ? `${siteName} - ${siteTagline}` : `${siteName} - Premium Fresh Flower Delivery Across India`);
+
+        metaDescription = metaDescription ||
+                         adminMetaDescription ||
+                         siteSettings.site_description ||
+                         `Order fresh flowers online for same-day delivery across India. Premium flower arrangements for all occasions with 100% freshness guarantee. Available in 100+ cities.`;
         metaKeywords = [
           ...baseKeywords,
           "same-day delivery",
