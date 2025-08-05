@@ -45,6 +45,7 @@ import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface CategoryRowProps {
   category: ProductCategory;
@@ -529,6 +530,7 @@ export default function AdminCategories() {
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { clearCategoryCache, clearAllCache } = useClearMetaCacheOnSave();
+  const { settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -540,6 +542,7 @@ export default function AdminCategories() {
     image_url: "",
     meta_title: "",
     meta_description: "",
+    og_image: "",
   });
 
   useEffect(() => {
@@ -721,6 +724,7 @@ export default function AdminCategories() {
         image_url: category.image_url || "",
         meta_title: category.meta_title || "",
         meta_description: category.meta_description || "",
+        og_image: (category as any).og_image || "",
       });
     } else {
       setEditingCategory(null);
@@ -758,6 +762,7 @@ export default function AdminCategories() {
       image_url: "",
       meta_title: "",
       meta_description: "",
+      og_image: "",
     });
   }
 
@@ -857,6 +862,7 @@ export default function AdminCategories() {
         image_url: formData.image_url.trim() || null,
         meta_title: formData.meta_title.trim() || null,
         meta_description: formData.meta_description.trim() || null,
+        og_image: formData.og_image.trim() || null,
       };
 
       let oldSlug: string | null = null;
