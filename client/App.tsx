@@ -19,6 +19,7 @@ import FacebookPixel from "@/components/FacebookPixel";
 import StructuredData from "@/components/StructuredData";
 import AIMetaTags from "@/components/AIMetaTags";
 import FaviconManager from "@/components/FaviconManager";
+import SEOManager from "@/components/SEOManager";
 import { supabase } from "@/lib/supabase";
 
 // ScrollToTop component to handle scroll restoration
