@@ -106,6 +106,7 @@ export default function SEOManager() {
     // Update meta description for homepage
     if (isHomePage) {
       const metaDescription = siteSettings.default_meta_description ||
+                             siteSettings.meta_description ||
                              siteSettings.site_description ||
                              "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
 
