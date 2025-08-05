@@ -46,6 +46,8 @@ export default function SEOManager() {
           "site_name",
           "site_tagline",
           "site_description",
+          "defaultMetaTitle",
+          "defaultMetaDescription",
           "default_meta_title",
           "default_meta_description",
           "meta_title",
