@@ -116,6 +116,7 @@ export default function SEOManager() {
     // Update meta description for homepage
     if (isHomePage) {
       const metaDescription =
+        siteSettings.defaultMetaDescription ||
         siteSettings.default_meta_description ||
         siteSettings.meta_description ||
         siteSettings.site_description ||
