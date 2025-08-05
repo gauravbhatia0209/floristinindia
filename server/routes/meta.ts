@@ -143,7 +143,7 @@ async function getProductMeta(slug: string): Promise<any> {
         tags,
         weight,
         category_id,
-        product_categories!inner(name)
+        product_categories(name)
       `)
       .eq("slug", slug)
       .eq("is_active", true)
@@ -155,7 +155,7 @@ async function getProductMeta(slug: string): Promise<any> {
 
     return {
       ...data,
-      category_name: data.product_categories?.name
+      category_name: (data as any).product_categories?.name
     };
   } catch (error) {
     console.error("Error fetching product meta:", error);
@@ -219,7 +219,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
 
     if (pageMeta) {
-      const pageTitle = pageMeta.title || pageMeta.meta_title;
+      const pageTitle = pageMeta.title;
       const finalTitle = pageTitle ? `${pageTitle} | ${siteName}` : defaultTitle;
 
       metaData = {
@@ -251,7 +251,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
     const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
 
     if (categoryMeta) {
-      const categoryTitle = categoryMeta.title || categoryMeta.meta_title;
+      const categoryTitle = categoryMeta.title;
       const finalTitle = categoryTitle ? `${categoryTitle} | ${siteName}` : defaultTitle;
 
       metaData = {

@@ -44,7 +44,7 @@ export function generateLocalBusinessSchema(
       addressCountry: siteSettings.countryCode || "IN"
     } : undefined,
     openingHours: siteSettings.openingHours || undefined,
-    areaServed: siteSettings.serviceArea 
+    areaServed: siteSettings.serviceArea
       ? siteSettings.serviceArea.split(',').map(area => ({
           "@type": "City",
           name: area.trim()
@@ -85,7 +85,7 @@ export function generateBreadcrumbSchema(
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`;
     let name = segment;
-    
+
     // Convert segments to readable names
     if (segment === 'category') {
       name = 'Categories';
@@ -127,13 +127,13 @@ export function generateProductSchema(
   baseUrl: string,
   siteSettings: Partial<SiteSettings>
 ) {
-  const schema = {
+  const schema: any = {
     "@context": "https://schema.org",
     "@type": "Product",
     "@id": `${baseUrl}/product/${product.slug}#product`,
     name: product.name,
     description: product.description || product.short_description || "",
-    image: product.images && product.images.length > 0 
+    image: product.images && product.images.length > 0
       ? product.images.map((img: string) => `${baseUrl}${img}`)
       : undefined,
     sku: product.sku || undefined,
@@ -145,8 +145,8 @@ export function generateProductSchema(
       "@type": "Offer",
       price: product.sale_price || product.price,
       priceCurrency: "INR",
-      availability: product.stock_quantity > 0 
-        ? "https://schema.org/InStock" 
+      availability: product.stock_quantity > 0
+        ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
@@ -162,7 +162,7 @@ export function generateProductSchema(
       value: product.weight,
       unitCode: "GRM"
     } : undefined,
-    additionalProperty: product.tags && product.tags.length > 0 ? 
+    additionalProperty: product.tags && product.tags.length > 0 ?
       product.tags.map((tag: string) => ({
         "@type": "PropertyValue",
         name: "tag",
