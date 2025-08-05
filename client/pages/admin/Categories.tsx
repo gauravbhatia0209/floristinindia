@@ -1463,11 +1463,11 @@ export default function AdminCategories() {
               <div>
                 <Label htmlFor="robots">Robots Directive</Label>
                 <Select
-                  value={formData.robots || ""}
+                  value={formData.robots || "default"}
                   onValueChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
-                      robots: value,
+                      robots: value === "default" ? "" : value,
                     }))
                   }
                 >
@@ -1477,7 +1477,7 @@ export default function AdminCategories() {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Use default</SelectItem>
+                    <SelectItem value="default">Use default</SelectItem>
                     <SelectItem value="index, follow">index, follow</SelectItem>
                     <SelectItem value="noindex, follow">
                       noindex, follow

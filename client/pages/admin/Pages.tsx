@@ -692,7 +692,7 @@ function PageForm({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Use default</SelectItem>
+                <SelectItem value="default">Use default</SelectItem>
                 <SelectItem value="index, follow">index, follow</SelectItem>
                 <SelectItem value="noindex, follow">noindex, follow</SelectItem>
                 <SelectItem value="index, nofollow">index, nofollow</SelectItem>

@@ -879,7 +879,7 @@ export default function ProductEdit() {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Use default</SelectItem>
+                    <SelectItem value="default">Use default</SelectItem>
                     <SelectItem value="index, follow">index, follow</SelectItem>
                     <SelectItem value="noindex, follow">
                       noindex, follow
