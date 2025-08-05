@@ -1321,8 +1321,13 @@ export default function AdminCategories() {
                       meta_title: e.target.value,
                     }))
                   }
-                  placeholder="Birthday Flowers - Fresh Delivery | Florist in India"
+                  placeholder={settings.defaultMetaTitle || "Birthday Flowers - Fresh Delivery | Florist in India"}
                 />
+                {!formData.meta_title && settings.defaultMetaTitle && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default: {settings.defaultMetaTitle}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -1336,9 +1341,33 @@ export default function AdminCategories() {
                       meta_description: e.target.value,
                     }))
                   }
-                  placeholder="Order beautiful birthday flowers with same-day delivery across India..."
+                  placeholder={settings.defaultMetaDescription || "Order beautiful birthday flowers with same-day delivery across India..."}
                   rows={2}
                 />
+                {!formData.meta_description && settings.defaultMetaDescription && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default: {settings.defaultMetaDescription.substring(0, 100)}...
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="og_image">Open Graph Image</Label>
+                <SingleImageUpload
+                  imageUrl={formData.og_image}
+                  onImageChange={(imageUrl) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      og_image: imageUrl,
+                    }))
+                  }
+                  label="Category OG Image"
+                />
+                {!formData.og_image && settings.defaultOgImage && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Will use default OG image from Site Settings
+                  </p>
+                )}
               </div>
             </div>
 
