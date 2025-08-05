@@ -186,12 +186,12 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   let metaData: MetaData;
 
   // Default fallbacks
-  console.log('[DEBUG] Site Settings for meta title:', {
+  console.log("[DEBUG] Site Settings for meta title:", {
     defaultMetaTitle: siteSettings.defaultMetaTitle,
     default_meta_title: siteSettings.default_meta_title,
     meta_title: siteSettings.meta_title,
     siteName: siteName,
-    siteTagline: siteTagline
+    siteTagline: siteTagline,
   });
 
   const defaultTitle =
@@ -202,7 +202,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       ? `${siteName} - ${siteTagline}`
       : `${siteName} - Fresh Flowers Delivered Daily`);
 
-  console.log('[DEBUG] Final defaultTitle:', defaultTitle);
+  console.log("[DEBUG] Final defaultTitle:", defaultTitle);
 
   const defaultDescription =
     siteSettings.defaultMetaDescription ||
