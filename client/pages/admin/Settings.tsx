@@ -119,6 +119,7 @@ export default function Settings() {
     defaultMetaTitle: "",
     defaultMetaDescription: "",
     defaultOgImage: "",
+    defaultRobots: "index, follow",
     meta_title_template: "",
     google_analytics_id: "",
     facebook_pixel_id: "",
