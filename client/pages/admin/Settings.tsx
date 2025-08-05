@@ -1647,7 +1647,9 @@ Sitemap: https://yourdomain.com/sitemap.xml`}
               </div>
 
               <div>
-                <Label htmlFor="additional_sitemap_urls">Additional Sitemap URLs</Label>
+                <Label htmlFor="additional_sitemap_urls">
+                  Additional Sitemap URLs
+                </Label>
                 <Textarea
                   id="additional_sitemap_urls"
                   value={settings.additional_sitemap_urls}
@@ -1661,7 +1663,8 @@ https://blog.example.com/sitemap.xml`}
                   rows={4}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Enter additional URLs to include in sitemap.xml (one per line). Can be relative paths or full URLs.
+                  Enter additional URLs to include in sitemap.xml (one per
+                  line). Can be relative paths or full URLs.
                 </p>
               </div>
             </CardContent>

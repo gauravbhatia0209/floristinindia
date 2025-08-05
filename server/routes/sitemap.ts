@@ -14,10 +14,14 @@ router.get("/robots.txt", async (req, res) => {
       .select("key, value")
       .in("key", ["robots_txt_content", "defaultRobots"]);
 
-    const settingsMap = settings?.reduce((acc, setting) => {
-      acc[setting.key] = setting.value;
-      return acc;
-    }, {} as Record<string, string>) || {};
+    const settingsMap =
+      settings?.reduce(
+        (acc, setting) => {
+          acc[setting.key] = setting.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ) || {};
 
     let robotsContent = settingsMap.robots_txt_content;
 
@@ -25,7 +29,7 @@ router.get("/robots.txt", async (req, res) => {
     if (!robotsContent || robotsContent.trim() === "") {
       const defaultRobots = settingsMap.defaultRobots || "index, follow";
       robotsContent = `User-agent: *
-${defaultRobots.includes('noindex') ? 'Disallow: /' : 'Allow: /'}
+${defaultRobots.includes("noindex") ? "Disallow: /" : "Allow: /"}
 
 # Sitemap
 Sitemap: ${baseUrl}/sitemap.xml
@@ -89,10 +93,14 @@ router.get("/sitemap.xml", async (req, res) => {
       .in("key", ["additional_sitemap_urls", "sitemap_enabled"])
       .order("updated_at", { ascending: false });
 
-    const settingsMap = settings?.reduce((acc, setting) => {
-      acc[setting.key] = setting.value;
-      return acc;
-    }, {} as Record<string, string>) || {};
+    const settingsMap =
+      settings?.reduce(
+        (acc, setting) => {
+          acc[setting.key] = setting.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ) || {};
 
     // Check if sitemap is enabled
     if (settingsMap.sitemap_enabled === "false") {
@@ -200,12 +208,14 @@ router.get("/sitemap.xml", async (req, res) => {
     // Add additional admin-configured URLs
     const additionalUrls = settingsMap.additional_sitemap_urls;
     if (additionalUrls && additionalUrls.trim()) {
-      const urls = additionalUrls.split('\n').filter(url => url.trim());
+      const urls = additionalUrls.split("\n").filter((url) => url.trim());
       urls.forEach((url) => {
         const cleanUrl = url.trim();
         if (cleanUrl) {
           // Handle both relative and absolute URLs
-          const fullUrl = cleanUrl.startsWith('http') ? cleanUrl : `${baseUrl}${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+          const fullUrl = cleanUrl.startsWith("http")
+            ? cleanUrl
+            : `${baseUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
           sitemap += `  <!-- Admin Added URL -->
   <url>
     <loc>${fullUrl}</loc>
@@ -292,11 +302,15 @@ router.get("/sitemap.txt", async (req, res) => {
 
     // Add additional admin-configured URLs
     if (settings?.value) {
-      const additionalUrls = settings.value.split('\n').filter(url => url.trim());
+      const additionalUrls = settings.value
+        .split("\n")
+        .filter((url) => url.trim());
       additionalUrls.forEach((url) => {
         const cleanUrl = url.trim();
         if (cleanUrl) {
-          const fullUrl = cleanUrl.startsWith('http') ? cleanUrl : `${baseUrl}${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+          const fullUrl = cleanUrl.startsWith("http")
+            ? cleanUrl
+            : `${baseUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
           urls.push(fullUrl);
         }
       });
