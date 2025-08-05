@@ -27,6 +27,9 @@ async function getSiteSettings() {
         "site_description",
         "default_meta_title",
         "default_meta_description",
+        "defaultMetaTitle",
+        "defaultMetaDescription",
+        "defaultOgImage",
         "meta_title",
         "meta_description",
         "og_image_url",
@@ -53,7 +56,7 @@ async function getPageMeta(slug: string): Promise<MetaData | null> {
   try {
     const { data, error } = await supabase
       .from("pages")
-      .select("title, meta_title, meta_description")
+      .select("title, meta_title, meta_description, og_image")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -65,6 +68,7 @@ async function getPageMeta(slug: string): Promise<MetaData | null> {
     return {
       title: data.meta_title || data.title,
       description: data.meta_description || "",
+      ogImage: data.og_image || "",
     };
   } catch (error) {
     console.error("Error fetching page meta:", error);
@@ -76,7 +80,7 @@ async function getCategoryMeta(slug: string): Promise<MetaData | null> {
   try {
     const { data, error } = await supabase
       .from("product_categories")
-      .select("name, meta_title, meta_description")
+      .select("name, meta_title, meta_description, og_image")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -88,6 +92,7 @@ async function getCategoryMeta(slug: string): Promise<MetaData | null> {
     return {
       title: data.meta_title || data.name,
       description: data.meta_description || "",
+      ogImage: data.og_image || "",
     };
   } catch (error) {
     console.error("Error fetching category meta:", error);
@@ -99,7 +104,7 @@ async function getProductMeta(slug: string): Promise<MetaData | null> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("name, short_description, meta_title, meta_description")
+      .select("name, short_description, meta_title, meta_description, og_image")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -111,6 +116,7 @@ async function getProductMeta(slug: string): Promise<MetaData | null> {
     return {
       title: data.meta_title || data.name,
       description: data.meta_description || data.short_description || "",
+      ogImage: data.og_image || "",
     };
   } catch (error) {
     console.error("Error fetching product meta:", error);
@@ -135,6 +141,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
 
   // Default fallbacks
   const defaultTitle =
+    siteSettings.defaultMetaTitle ||
     siteSettings.default_meta_title ||
     siteSettings.meta_title ||
     (siteTagline
@@ -142,17 +149,23 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       : `${siteName} - Fresh Flowers Delivered Daily`);
 
   const defaultDescription =
+    siteSettings.defaultMetaDescription ||
     siteSettings.default_meta_description ||
     siteSettings.meta_description ||
     siteSettings.site_description ||
     "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
+
+  const defaultOgImage =
+    siteSettings.defaultOgImage ||
+    siteSettings.og_image_url ||
+    "";
 
   // Homepage
   if (pathname === "/" || pathname === "") {
     metaData = {
       title: defaultTitle,
       description: defaultDescription,
-      ogImage: siteSettings.og_image_url,
+      ogImage: defaultOgImage,
     };
   }
   // Page routes
@@ -166,13 +179,13 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
           ? `${pageMeta.title} | ${siteName}`
           : defaultTitle,
         description: pageMeta.description || defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: pageMeta.ogImage || defaultOgImage,
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: defaultOgImage,
       };
     }
   }
@@ -187,13 +200,13 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
           ? `${categoryMeta.title} | ${siteName}`
           : defaultTitle,
         description: categoryMeta.description || defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: categoryMeta.ogImage || defaultOgImage,
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: defaultOgImage,
       };
     }
   }
@@ -208,13 +221,13 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
           ? `${productMeta.title} | ${siteName}`
           : defaultTitle,
         description: productMeta.description || defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: productMeta.ogImage || defaultOgImage,
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: defaultOgImage,
       };
     }
   }
@@ -254,13 +267,13 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       metaData = {
         title: `${pageInfo.title} | ${siteName}`,
         description: pageInfo.description,
-        ogImage: siteSettings.og_image_url,
+        ogImage: defaultOgImage,
       };
     } else {
       metaData = {
         title: defaultTitle,
         description: defaultDescription,
-        ogImage: siteSettings.og_image_url,
+        ogImage: defaultOgImage,
       };
     }
   }
