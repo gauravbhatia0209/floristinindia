@@ -183,7 +183,7 @@ export default function SEOManager() {
           event: "UPDATE",
           schema: "public",
           table: "site_settings",
-          filter: "key=in.(site_name,site_tagline,site_description,default_meta_title,default_meta_description,meta_title_template,og_image_url)",
+          filter: "key=in.(site_name,site_tagline,site_description,default_meta_title,default_meta_description,meta_title,meta_description,meta_title_template,og_image_url)",
         },
         (payload) => {
           console.log("SEO setting updated:", payload);
