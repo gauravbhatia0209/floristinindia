@@ -819,6 +819,31 @@ export default function Settings() {
                   specific image is set
                 </p>
               </div>
+
+              <div>
+                <Label htmlFor="defaultRobots">Default Robots Directive</Label>
+                <Select
+                  value={settings.defaultRobots}
+                  onValueChange={(value) =>
+                    handleInputChange("defaultRobots", value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="index, follow" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="index, follow">index, follow</SelectItem>
+                    <SelectItem value="noindex, follow">noindex, follow</SelectItem>
+                    <SelectItem value="index, nofollow">index, nofollow</SelectItem>
+                    <SelectItem value="noindex, nofollow">noindex, nofollow</SelectItem>
+                    <SelectItem value="noindex, nofollow, noarchive">noindex, nofollow, noarchive</SelectItem>
+                    <SelectItem value="nosnippet">nosnippet</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground mt-1">
+                  This robots directive will be used for all pages unless overridden individually
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
