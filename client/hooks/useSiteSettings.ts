@@ -89,10 +89,10 @@ export function useSiteSettings() {
         });
 
         // Debug logging to see what values we're getting
-        console.log('[CLIENT DEBUG] Raw settings from database:', {
+        console.log("[CLIENT DEBUG] Raw settings from database:", {
           defaultMetaTitle: settingsObject.defaultMetaTitle,
           default_meta_title: settingsObject.default_meta_title,
-          site_name: settingsObject.site_name
+          site_name: settingsObject.site_name,
         });
 
         // Map database keys to our interface, handling both new and legacy field names
@@ -162,7 +162,10 @@ export function useSiteSettings() {
             settingsObject.youtube_url || defaultSettings.youtube_url,
         };
 
-        console.log('[CLIENT DEBUG] Final mapped defaultMetaTitle:', mappedSettings.defaultMetaTitle);
+        console.log(
+          "[CLIENT DEBUG] Final mapped defaultMetaTitle:",
+          mappedSettings.defaultMetaTitle,
+        );
         setSettings(mappedSettings);
       }
     } catch (err) {
@@ -223,10 +226,10 @@ export function useSiteSettings() {
     pageImage?: string,
   ) {
     const finalTitle = pageTitle || settings.defaultMetaTitle;
-    console.log('[CLIENT DEBUG] generateMetaTags called with:', {
+    console.log("[CLIENT DEBUG] generateMetaTags called with:", {
       pageTitle,
-      'settings.defaultMetaTitle': settings.defaultMetaTitle,
-      finalTitle
+      "settings.defaultMetaTitle": settings.defaultMetaTitle,
+      finalTitle,
     });
 
     return {
