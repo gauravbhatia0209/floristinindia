@@ -892,6 +892,12 @@ export default function AdminCategories() {
       return;
     }
 
+    // Additional validation
+    if (!formData.sort_order || isNaN(parseInt(formData.sort_order))) {
+      alert("Sort order must be a valid number");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const categoryData: any = {
