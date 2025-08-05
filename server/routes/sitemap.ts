@@ -186,13 +186,35 @@ router.get("/sitemap.xml", async (req, res) => {
         const lastmod = product.updated_at
           ? new Date(product.updated_at).toISOString()
           : new Date().toISOString();
-        sitemap += `  <url>
-    <loc>${baseUrl}/products/${product.slug}</loc>
+        sitemap += `  <!-- Product: ${product.slug} -->
+  <url>
+    <loc>${baseUrl}/product/${product.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 `;
+      });
+    }
+
+    // Add additional admin-configured URLs
+    const additionalUrls = settingsMap.additional_sitemap_urls;
+    if (additionalUrls && additionalUrls.trim()) {
+      const urls = additionalUrls.split('\n').filter(url => url.trim());
+      urls.forEach((url) => {
+        const cleanUrl = url.trim();
+        if (cleanUrl) {
+          // Handle both relative and absolute URLs
+          const fullUrl = cleanUrl.startsWith('http') ? cleanUrl : `${baseUrl}${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+          sitemap += `  <!-- Admin Added URL -->
+  <url>
+    <loc>${fullUrl}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+`;
+        }
       });
     }
 
