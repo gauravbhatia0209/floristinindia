@@ -167,8 +167,8 @@ export default function AIMetaTags({
     switch (page) {
       case "home":
         // Use admin settings first, then fallback to defaults
-        const adminMetaTitle = siteSettings.default_meta_title;
-        const adminMetaDescription = siteSettings.default_meta_description;
+        const adminMetaTitle = siteSettings.default_meta_title || siteSettings.meta_title;
+        const adminMetaDescription = siteSettings.default_meta_description || siteSettings.meta_description;
         const siteTagline = siteSettings.site_tagline;
 
         metaTitle = metaTitle ||
