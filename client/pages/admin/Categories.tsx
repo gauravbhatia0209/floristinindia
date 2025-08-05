@@ -809,6 +809,7 @@ export default function AdminCategories() {
         meta_title: category.meta_title || "",
         meta_description: category.meta_description || "",
         og_image: (category as any).og_image || "",
+        robots: (category as any).robots || "",
       });
     } else {
       setEditingCategory(null);
