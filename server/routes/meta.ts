@@ -202,6 +202,9 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   const defaultOgImage =
     siteSettings.defaultOgImage || siteSettings.og_image_url || "";
 
+  const defaultRobots =
+    siteSettings.defaultRobots || "index, follow";
+
   // Homepage
   if (pathname === "/" || pathname === "") {
     const baseUrl = process.env.VITE_SITE_URL || "https://floristinindia.com";
@@ -210,6 +213,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       title: defaultTitle,
       description: defaultDescription,
       ogImage: defaultOgImage,
+      robots: defaultRobots,
       structuredData: [
         generateLocalBusinessSchema(siteSettings, baseUrl),
         generateWebsiteSchema(siteSettings, baseUrl)
@@ -231,6 +235,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: finalTitle,
         description: pageMeta.description || defaultDescription,
         ogImage: pageMeta.ogImage || defaultOgImage,
+        robots: pageMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, pageTitle, baseUrl)
@@ -263,6 +268,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: finalTitle,
         description: categoryMeta.description || defaultDescription,
         ogImage: categoryMeta.ogImage || defaultOgImage,
+        robots: categoryMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, categoryTitle, baseUrl)
@@ -273,6 +279,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, "Category", baseUrl)
@@ -295,6 +302,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: finalTitle,
         description: productMeta.meta_description || productMeta.short_description || defaultDescription,
         ogImage: productMeta.og_image || defaultOgImage,
+        robots: productMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, productTitle, baseUrl),
@@ -306,6 +314,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: defaultTitle,
         description: defaultDescription,
         ogImage: defaultOgImage,
+        robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, "Product", baseUrl)
@@ -352,6 +361,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         title: `${pageInfo.title} | ${siteName}`,
         description: pageInfo.description,
         ogImage: defaultOgImage,
+        robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, pageInfo.title, baseUrl)
