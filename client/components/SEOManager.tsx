@@ -70,7 +70,10 @@ export default function SEOManager() {
         });
         setSiteSettings(settings);
         console.log("✅ SEO settings loaded:", settings);
-        console.log("[SEO DEBUG] defaultMetaTitle value:", settings.defaultMetaTitle);
+        console.log(
+          "[SEO DEBUG] defaultMetaTitle value:",
+          settings.defaultMetaTitle,
+        );
       }
     } catch (error) {
       console.error("Error fetching SEO settings:", error);
