@@ -89,6 +89,7 @@ interface SettingsData {
 }
 
 export default function Settings() {
+  const { clearAllCache, clearHomepageCache } = useClearMetaCacheOnSave();
   const [settings, setSettings] = useState<SettingsData>({
     site_name: "",
     site_tagline: "",
