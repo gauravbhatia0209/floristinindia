@@ -3,6 +3,57 @@ import { supabase } from "../lib/supabase.js";
 
 const router = Router();
 
+// Generate robots.txt
+router.get("/robots.txt", async (req, res) => {
+  try {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    // Fetch robots.txt content from site settings
+    const { data: settings } = await supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["robots_txt_content", "defaultRobots"]);
+
+    const settingsMap = settings?.reduce((acc, setting) => {
+      acc[setting.key] = setting.value;
+      return acc;
+    }, {} as Record<string, string>) || {};
+
+    let robotsContent = settingsMap.robots_txt_content;
+
+    // If no custom robots.txt content, generate default
+    if (!robotsContent || robotsContent.trim() === "") {
+      const defaultRobots = settingsMap.defaultRobots || "index, follow";
+      robotsContent = `User-agent: *
+${defaultRobots.includes('noindex') ? 'Disallow: /' : 'Allow: /'}
+
+# Sitemap
+Sitemap: ${baseUrl}/sitemap.xml
+
+# Common crawl delays
+Crawl-delay: 1
+
+# Block sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /uploads/temp/
+Disallow: /*?*
+
+# Allow specific API endpoints for AI
+Allow: /api/ai/
+Allow: /api/sitemap
+Allow: /api/meta`;
+    }
+
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Cache-Control", "public, max-age=86400"); // 24 hours
+    res.send(robotsContent);
+  } catch (error) {
+    console.error("Error generating robots.txt:", error);
+    res.status(500).send("Error generating robots.txt");
+  }
+});
+
 // Generate XML sitemap
 router.get("/sitemap.xml", async (req, res) => {
   try {
