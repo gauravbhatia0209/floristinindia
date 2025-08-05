@@ -34,6 +34,8 @@ import { Page } from "@shared/database.types";
 import { SectionBuilder, Section } from "@/components/admin/SectionBuilder";
 import { SectionEditor } from "@/components/admin/SectionEditor";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { SingleImageUpload } from "@/components/ui/single-image-upload";
 
 interface PageContent {
   type: "heading" | "paragraph" | "image" | "button" | "list" | "separator";
