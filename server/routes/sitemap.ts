@@ -239,7 +239,7 @@ router.get("/sitemap.txt", async (req, res) => {
     res.setHeader("X-Admin-Configurable", "true");
     res.setHeader("X-Generated-At", new Date().toISOString());
 
-    // Fetch active products and categories
+    // Fetch active products, categories, and pages
     const { data: products } = await supabase
       .from("products")
       .select("slug")
@@ -250,27 +250,55 @@ router.get("/sitemap.txt", async (req, res) => {
       .select("slug")
       .eq("is_active", true);
 
+    const { data: pages } = await supabase
+      .from("pages")
+      .select("slug")
+      .eq("is_active", true);
+
+    // Fetch additional sitemap URLs from settings
+    const { data: settings } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "additional_sitemap_urls")
+      .single();
+
     let urls = [
       baseUrl,
-      `${baseUrl}/products`,
       `${baseUrl}/about`,
       `${baseUrl}/contact`,
-      `${baseUrl}/api/ai/products`,
-      `${baseUrl}/api/ai/categories`,
-      `${baseUrl}/api/ai/business`,
+      `${baseUrl}/cart`,
     ];
+
+    // Add page URLs
+    if (pages) {
+      pages.forEach((page) => {
+        urls.push(`${baseUrl}/pages/${page.slug}`);
+      });
+    }
 
     // Add category URLs
     if (categories) {
       categories.forEach((category) => {
-        urls.push(`${baseUrl}/products/${category.slug}`);
+        urls.push(`${baseUrl}/category/${category.slug}`);
       });
     }
 
     // Add product URLs
     if (products) {
       products.forEach((product) => {
-        urls.push(`${baseUrl}/products/${product.slug}`);
+        urls.push(`${baseUrl}/product/${product.slug}`);
+      });
+    }
+
+    // Add additional admin-configured URLs
+    if (settings?.value) {
+      const additionalUrls = settings.value.split('\n').filter(url => url.trim());
+      additionalUrls.forEach((url) => {
+        const cleanUrl = url.trim();
+        if (cleanUrl) {
+          const fullUrl = cleanUrl.startsWith('http') ? cleanUrl : `${baseUrl}${cleanUrl.startsWith('/') ? '' : '/'}${cleanUrl}`;
+          urls.push(fullUrl);
+        }
       });
     }
 
