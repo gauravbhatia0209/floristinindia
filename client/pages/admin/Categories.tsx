@@ -829,6 +829,7 @@ export default function AdminCategories() {
         image_url: "",
         meta_title: "",
         meta_description: "",
+        robots: "",
       });
     }
   }
