@@ -681,9 +681,12 @@ function PageForm({
           <div>
             <Label htmlFor="robots">Robots Directive</Label>
             <Select
-              value={formData.robots}
+              value={formData.robots || "default"}
               onValueChange={(value) =>
-                setFormData({ ...formData, robots: value })
+                setFormData({
+                  ...formData,
+                  robots: value === "default" ? "" : value
+                })
               }
             >
               <SelectTrigger>
