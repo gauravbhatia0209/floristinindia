@@ -169,8 +169,9 @@ router.get("/sitemap.xml", async (req, res) => {
         const lastmod = category.updated_at
           ? new Date(category.updated_at).toISOString()
           : new Date().toISOString();
-        sitemap += `  <url>
-    <loc>${baseUrl}/products/${category.slug}</loc>
+        sitemap += `  <!-- Category: ${category.slug} -->
+  <url>
+    <loc>${baseUrl}/category/${category.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
