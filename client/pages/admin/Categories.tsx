@@ -44,6 +44,7 @@ import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
+import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 
 interface CategoryRowProps {
   category: ProductCategory;
@@ -527,6 +528,7 @@ export default function AdminCategories() {
     useState<ProductCategory | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { clearCategoryCache, clearAllCache } = useClearMetaCacheOnSave();
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -857,7 +859,12 @@ export default function AdminCategories() {
         meta_description: formData.meta_description.trim() || null,
       };
 
+      let oldSlug: string | null = null;
+
       if (editingCategory) {
+        // Store old slug for cache clearing
+        oldSlug = editingCategory.slug;
+
         // Update existing category
         const { error } = await supabase
           .from("product_categories")
@@ -876,6 +883,19 @@ export default function AdminCategories() {
         if (error) throw error;
 
         alert("Category created successfully!");
+      }
+
+      // Clear meta cache for updated/created category
+      try {
+        if (oldSlug && oldSlug !== categoryData.slug) {
+          // If slug changed, clear both old and new cache
+          await clearCategoryCache(oldSlug);
+        }
+        await clearCategoryCache(categoryData.slug);
+        // Also clear homepage cache since category changes might affect navigation
+        await clearAllCache();
+      } catch (cacheError) {
+        console.warn("Failed to clear meta cache:", cacheError);
       }
 
       fetchCategories();
