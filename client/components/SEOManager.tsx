@@ -95,6 +95,12 @@ export default function SEOManager() {
         (siteSettings.site_tagline
           ? `${siteSettings.site_name || "Florist in India"} - ${siteSettings.site_tagline}`
           : `${siteSettings.site_name || "Florist in India"} - Fresh Flowers Delivered Daily`);
+
+      console.log("[SEO DEBUG] Homepage title decision:");
+      console.log("  defaultMetaTitle:", siteSettings.defaultMetaTitle);
+      console.log("  default_meta_title:", siteSettings.default_meta_title);
+      console.log("  meta_title:", siteSettings.meta_title);
+      console.log("  Final pageTitle:", pageTitle);
     } else {
       // Other pages: Keep existing title if set, or use template
       const currentTitle = document.title;
