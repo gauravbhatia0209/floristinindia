@@ -131,6 +131,7 @@ export default function ProductEdit() {
           delivery_zones: data.delivery_zones?.join(", ") || "",
           meta_title: data.meta_title || "",
           meta_description: data.meta_description || "",
+          og_image: (data as any).og_image || "",
           weight: data.weight?.toString() || "",
         });
 
