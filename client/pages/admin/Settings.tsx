@@ -30,6 +30,7 @@ import {
   deleteImageFromSupabase,
 } from "@/lib/supabase-storage";
 import PaymentGatewayConfig from "@/components/admin/PaymentGatewayConfig";
+import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 
 interface SettingsData {
   // Site Info
