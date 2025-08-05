@@ -6,6 +6,8 @@ interface SiteSettings {
   site_name?: string;
   site_tagline?: string;
   site_description?: string;
+  defaultMetaTitle?: string;
+  defaultMetaDescription?: string;
   default_meta_title?: string;
   default_meta_description?: string;
   meta_title?: string;
