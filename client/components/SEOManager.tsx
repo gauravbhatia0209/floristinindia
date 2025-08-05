@@ -60,6 +60,8 @@ export default function SEOManager() {
         ]);
 
       if (data) {
+        console.log("[SEO DEBUG] Raw data from database:", data);
+
         const settings: SiteSettings = {};
         data.forEach((setting) => {
           if (setting.value && setting.value.trim()) {
@@ -68,6 +70,7 @@ export default function SEOManager() {
         });
         setSiteSettings(settings);
         console.log("✅ SEO settings loaded:", settings);
+        console.log("[SEO DEBUG] defaultMetaTitle value:", settings.defaultMetaTitle);
       }
     } catch (error) {
       console.error("Error fetching SEO settings:", error);
