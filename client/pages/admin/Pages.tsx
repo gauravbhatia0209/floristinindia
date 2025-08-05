@@ -33,6 +33,7 @@ import { supabase } from "@/lib/supabase";
 import { Page } from "@shared/database.types";
 import { SectionBuilder, Section } from "@/components/admin/SectionBuilder";
 import { SectionEditor } from "@/components/admin/SectionEditor";
+import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 
 interface PageContent {
   type: "heading" | "paragraph" | "image" | "button" | "list" | "separator";
@@ -45,6 +46,7 @@ export default function Pages() {
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [isAddingPage, setIsAddingPage] = useState(false);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
+  const { clearPageCache, clearAllCache } = useClearMetaCacheOnSave();
 
   useEffect(() => {
     fetchPages();
@@ -69,7 +71,10 @@ export default function Pages() {
 
   async function savePage(pageData: Partial<Page>) {
     try {
+      let oldSlug: string | null = null;
+
       if (editingPage) {
+        oldSlug = editingPage.slug;
         await supabase.from("pages").update(pageData).eq("id", editingPage.id);
         fetchPages();
         setEditingPage(null);
@@ -95,6 +100,21 @@ export default function Pages() {
           setIsAddingPage(false);
           // Don't close the dialog, keep it open for immediate editing
         }
+      }
+
+      // Clear meta cache for updated/created page
+      try {
+        if (oldSlug && oldSlug !== pageData.slug) {
+          // If slug changed, clear both old and new cache
+          await clearPageCache(oldSlug);
+        }
+        if (pageData.slug) {
+          await clearPageCache(pageData.slug);
+        }
+        // Clear all cache to refresh navigation if needed
+        await clearAllCache();
+      } catch (cacheError) {
+        console.warn("Failed to clear meta cache:", cacheError);
       }
     } catch (error) {
       console.error("Failed to save page:", error);
