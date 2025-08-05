@@ -1336,43 +1336,6 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="default_meta_title">Default Meta Title</Label>
-                <Input
-                  id="default_meta_title"
-                  value={settings.default_meta_title}
-                  onChange={(e) =>
-                    handleInputChange("default_meta_title", e.target.value)
-                  }
-                  placeholder="Fresh Flowers Delivered Daily | Florist in India"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  This will be used as the default title for pages without a
-                  specific title
-                </p>
-              </div>
-
-              <div>
-                <Label htmlFor="default_meta_description">
-                  Default Meta Description
-                </Label>
-                <Textarea
-                  id="default_meta_description"
-                  value={settings.default_meta_description}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "default_meta_description",
-                      e.target.value,
-                    )
-                  }
-                  placeholder="Premium flower delivery service across India. Same-day delivery available in 100+ cities."
-                  rows={3}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Recommended length: 150-160 characters
-                </p>
-              </div>
-
-              <div>
                 <Label htmlFor="meta_title_template">Meta Title Template</Label>
                 <Input
                   id="meta_title_template"
