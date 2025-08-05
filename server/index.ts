@@ -174,6 +174,7 @@ export function createServer() {
                   "Premium flower delivery service",
               )
               .replace(/{{CANONICAL}}/g, metaData.canonical || req.url)
+              .replace(/{{ROBOTS}}/g, metaData.robots || "index, follow")
               .replace(/{{OG_IMAGE}}/g, metaData.ogImage || "")
               .replace(/{{STRUCTURED_DATA}}/g, structuredDataHtml);
 
