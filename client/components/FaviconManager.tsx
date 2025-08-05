@@ -41,19 +41,19 @@ export default function FaviconManager() {
     // Create new favicon links for different sizes and types
     const faviconSizes = [
       { rel: "icon", type: "image/x-icon", href: cacheBustUrl },
-      { rel: "icon", type: "image/png", sizes: "16x16", href: url },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: url },
-      { rel: "icon", type: "image/png", sizes: "48x48", href: url },
-      { rel: "icon", type: "image/png", sizes: "64x64", href: url },
-      { rel: "apple-touch-icon", sizes: "180x180", href: url },
-      { rel: "apple-touch-icon", sizes: "152x152", href: url },
-      { rel: "apple-touch-icon", sizes: "144x144", href: url },
-      { rel: "apple-touch-icon", sizes: "120x120", href: url },
-      { rel: "apple-touch-icon", sizes: "114x114", href: url },
-      { rel: "apple-touch-icon", sizes: "76x76", href: url },
-      { rel: "apple-touch-icon", sizes: "72x72", href: url },
-      { rel: "apple-touch-icon", sizes: "60x60", href: url },
-      { rel: "apple-touch-icon", sizes: "57x57", href: url },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: cacheBustUrl },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: cacheBustUrl },
+      { rel: "icon", type: "image/png", sizes: "48x48", href: cacheBustUrl },
+      { rel: "icon", type: "image/png", sizes: "64x64", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "180x180", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "152x152", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "144x144", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "120x120", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "114x114", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "76x76", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "72x72", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "60x60", href: cacheBustUrl },
+      { rel: "apple-touch-icon", sizes: "57x57", href: cacheBustUrl },
     ];
 
     // Add new favicon links
