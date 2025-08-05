@@ -8,6 +8,8 @@ interface SiteSettings {
   site_description?: string;
   default_meta_title?: string;
   default_meta_description?: string;
+  meta_title?: string;
+  meta_description?: string;
   meta_title_template?: string;
   og_image_url?: string;
   google_analytics_id?: string;
@@ -40,7 +42,7 @@ export default function SEOManager() {
         .select("key, value")
         .in("key", [
           "site_name",
-          "site_tagline", 
+          "site_tagline",
           "site_description",
           "default_meta_title",
           "default_meta_description",
@@ -68,14 +70,14 @@ export default function SEOManager() {
 
   const updateGlobalMetaTags = () => {
     const isHomePage = location.pathname === "/";
-    
+
     // Update document title based on current page
     let pageTitle = "";
-    
+
     if (isHomePage) {
       // Homepage: Use admin meta title, or site name + tagline, or fallback
-      pageTitle = siteSettings.default_meta_title || 
-                  (siteSettings.site_tagline ? 
+      pageTitle = siteSettings.default_meta_title ||
+                  (siteSettings.site_tagline ?
                     `${siteSettings.site_name || "Florist in India"} - ${siteSettings.site_tagline}` :
                     `${siteSettings.site_name || "Florist in India"} - Fresh Flowers Delivered Daily`);
     } else {
@@ -100,10 +102,10 @@ export default function SEOManager() {
 
     // Update meta description for homepage
     if (isHomePage) {
-      const metaDescription = siteSettings.default_meta_description || 
+      const metaDescription = siteSettings.default_meta_description ||
                              siteSettings.site_description ||
                              "Premium flower delivery service across India. Same-day delivery available in 100+ cities. Fresh flowers for all occasions with 100% freshness guarantee.";
-      
+
       updateMetaTag("description", metaDescription);
     }
 
@@ -111,7 +113,7 @@ export default function SEOManager() {
     updateMetaTag("og:title", document.title, "property");
     updateMetaTag("og:site_name", siteSettings.site_name || "Florist in India", "property");
     updateMetaTag("og:url", window.location.href, "property");
-    
+
     if (siteSettings.og_image_url) {
       updateMetaTag("og:image", siteSettings.og_image_url, "property");
     }
@@ -119,9 +121,9 @@ export default function SEOManager() {
     // Update Twitter Card tags
     updateMetaTag("twitter:card", "summary_large_image", "name");
     updateMetaTag("twitter:title", document.title, "name");
-    
+
     if (isHomePage && (siteSettings.default_meta_description || siteSettings.site_description)) {
-      updateMetaTag("twitter:description", 
+      updateMetaTag("twitter:description",
         siteSettings.default_meta_description || siteSettings.site_description || "", "name");
     }
 
@@ -142,7 +144,7 @@ export default function SEOManager() {
     if (path === "/contact") return "Contact";
     if (path.startsWith("/product/")) return "Product";
     if (path.startsWith("/category/")) return "Category";
-    
+
     // Convert path to title case
     return path
       .split("/")
