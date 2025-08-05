@@ -17,6 +17,7 @@ interface MetaData {
   ogDescription?: string;
   ogImage?: string;
   canonical?: string;
+  robots?: string;
   structuredData?: any[];
 }
 
@@ -38,6 +39,7 @@ async function getSiteSettings() {
         "defaultMetaTitle",
         "defaultMetaDescription",
         "defaultOgImage",
+        "defaultRobots",
         "meta_title",
         "meta_description",
         "og_image_url",
@@ -79,7 +81,7 @@ async function getPageMeta(slug: string): Promise<MetaData | null> {
   try {
     const { data, error } = await supabase
       .from("pages")
-      .select("title, meta_title, meta_description, og_image")
+      .select("title, meta_title, meta_description, og_image, robots")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -92,6 +94,7 @@ async function getPageMeta(slug: string): Promise<MetaData | null> {
       title: data.meta_title || data.title,
       description: data.meta_description || "",
       ogImage: data.og_image || "",
+      robots: data.robots || "",
     };
   } catch (error) {
     console.error("Error fetching page meta:", error);
@@ -103,7 +106,7 @@ async function getCategoryMeta(slug: string): Promise<MetaData | null> {
   try {
     const { data, error } = await supabase
       .from("product_categories")
-      .select("name, meta_title, meta_description, og_image")
+      .select("name, meta_title, meta_description, og_image, robots")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -116,6 +119,7 @@ async function getCategoryMeta(slug: string): Promise<MetaData | null> {
       title: data.meta_title || data.name,
       description: data.meta_description || "",
       ogImage: data.og_image || "",
+      robots: data.robots || "",
     };
   } catch (error) {
     console.error("Error fetching category meta:", error);
@@ -135,6 +139,7 @@ async function getProductMeta(slug: string): Promise<any> {
         meta_title,
         meta_description,
         og_image,
+        robots,
         price,
         sale_price,
         sku,
