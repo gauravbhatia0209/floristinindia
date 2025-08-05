@@ -894,7 +894,7 @@ export default function AdminCategories() {
 
     setIsSaving(true);
     try {
-      const categoryData = {
+      const categoryData: any = {
         name: formData.name.trim(),
         slug: formData.slug.trim(),
         description: formData.description.trim() || null,
@@ -905,8 +905,12 @@ export default function AdminCategories() {
         image_url: formData.image_url.trim() || null,
         meta_title: formData.meta_title.trim() || null,
         meta_description: formData.meta_description.trim() || null,
-        og_image: formData.og_image.trim() || null,
       };
+
+      // Only add og_image if it has a value to avoid database errors if column doesn't exist
+      if (formData.og_image && formData.og_image.trim()) {
+        categoryData.og_image = formData.og_image.trim();
+      }
 
       let oldSlug: string | null = null;
 
