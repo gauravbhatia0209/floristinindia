@@ -210,6 +210,13 @@ export default function Settings() {
         );
       }
 
+      // Clear meta cache since site settings affect meta tags
+      try {
+        await clearAllCache();
+      } catch (cacheError) {
+        console.warn("Failed to clear meta cache:", cacheError);
+      }
+
       alert("Settings saved successfully!");
     } catch (error) {
       console.error("Failed to save settings:", error);
