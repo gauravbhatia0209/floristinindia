@@ -156,6 +156,7 @@ function App() {
           <StructuredData type="organization" />
           <AIMetaTags page="home" />
           <FaviconManager />
+          <SEOManager />
           <Routes>
             {/* Auth routes */}
             <Route
