@@ -133,6 +133,7 @@ export default function ProductEdit() {
           meta_title: data.meta_title || "",
           meta_description: data.meta_description || "",
           og_image: (data as any).og_image || "",
+          robots: (data as any).robots || "",
           weight: data.weight?.toString() || "",
         });
 
