@@ -646,6 +646,271 @@ export default function Settings() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="meta" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="w-5 h-5" />
+                Default Meta Tags
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="defaultMetaTitle">Default Meta Title</Label>
+                <Input
+                  id="defaultMetaTitle"
+                  value={settings.defaultMetaTitle}
+                  onChange={(e) =>
+                    handleInputChange("defaultMetaTitle", e.target.value)
+                  }
+                  placeholder="Florist in India - Fresh Flowers Delivered Daily"
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  This will be used as the default title for pages without custom meta titles
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="defaultMetaDescription">Default Meta Description</Label>
+                <Textarea
+                  id="defaultMetaDescription"
+                  value={settings.defaultMetaDescription}
+                  onChange={(e) =>
+                    handleInputChange("defaultMetaDescription", e.target.value)
+                  }
+                  placeholder="Premium flower delivery service across India. Same-day delivery available in 100+ cities."
+                  rows={3}
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  This will be used as the default description for pages without custom meta descriptions
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Label>Default Open Graph Image</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  {settings.defaultOgImage ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center">
+                        <img
+                          src={settings.defaultOgImage}
+                          alt="Default OG Image preview"
+                          className="max-w-full h-32 object-contain rounded"
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-center">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Handle OG image upload
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                if (event.target?.result) {
+                                  handleInputChange("defaultOgImage", event.target.result as string);
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="hidden"
+                          id="default-og-image-upload"
+                        />
+                        <Label htmlFor="default-og-image-upload">
+                          <Button variant="outline" size="sm" asChild>
+                            <span>Change</span>
+                          </Button>
+                        </Label>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleInputChange("defaultOgImage", "")}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center space-y-3">
+                      <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground" />
+                      <div>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                if (event.target?.result) {
+                                  handleInputChange("defaultOgImage", event.target.result as string);
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="hidden"
+                          id="default-og-image-upload"
+                        />
+                        <Label htmlFor="default-og-image-upload">
+                          <Button variant="outline" asChild>
+                            <span>
+                              <Upload className="h-4 w-4 mr-2" />
+                              Upload Default OG Image
+                            </span>
+                          </Button>
+                        </Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        PNG, JPG, or WebP up to 5MB
+                        <br />
+                        Recommended: 1200×630px for optimal social media display
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  This image will be used for social media sharing when no specific image is set
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="business" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="w-5 h-5" />
+                Business Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="businessName">Business Name</Label>
+                  <Input
+                    id="businessName"
+                    value={settings.businessName}
+                    onChange={(e) =>
+                      handleInputChange("businessName", e.target.value)
+                    }
+                    placeholder="Florist in India Pvt. Ltd."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Primary Phone</Label>
+                  <Input
+                    id="phone"
+                    value={settings.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="+91-9876543210"
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Business Address</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <Label htmlFor="streetAddress">Street Address</Label>
+                    <Input
+                      id="streetAddress"
+                      value={settings.streetAddress}
+                      onChange={(e) =>
+                        handleInputChange("streetAddress", e.target.value)
+                      }
+                      placeholder="123 Flower Street, Garden District"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="locality">City/Locality</Label>
+                    <Input
+                      id="locality"
+                      value={settings.locality}
+                      onChange={(e) =>
+                        handleInputChange("locality", e.target.value)
+                      }
+                      placeholder="Mumbai"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="region">State/Region</Label>
+                    <Input
+                      id="region"
+                      value={settings.region}
+                      onChange={(e) =>
+                        handleInputChange("region", e.target.value)
+                      }
+                      placeholder="Maharashtra"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Input
+                      id="postalCode"
+                      value={settings.postalCode}
+                      onChange={(e) =>
+                        handleInputChange("postalCode", e.target.value)
+                      }
+                      placeholder="400001"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="countryCode">Country Code</Label>
+                    <Input
+                      id="countryCode"
+                      value={settings.countryCode}
+                      onChange={(e) =>
+                        handleInputChange("countryCode", e.target.value)
+                      }
+                      placeholder="IN"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Business Operations</h4>
+                <div>
+                  <Label htmlFor="openingHours">Opening Hours (Schema.org format)</Label>
+                  <Input
+                    id="openingHours"
+                    value={settings.openingHours}
+                    onChange={(e) =>
+                      handleInputChange("openingHours", e.target.value)
+                    }
+                    placeholder="Mo-Su 08:00-20:00"
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Format: Mo-Fr 09:00-17:00, Sa 10:00-16:00 (for structured data)
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="serviceArea">Service Area</Label>
+                  <Input
+                    id="serviceArea"
+                    value={settings.serviceArea}
+                    onChange={(e) =>
+                      handleInputChange("serviceArea", e.target.value)
+                    }
+                    placeholder="Mumbai, Delhi, Bangalore, Chennai, Kolkata"
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Cities or regions where you provide delivery services
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="contact" className="space-y-6">
           <Card>
             <CardHeader>
