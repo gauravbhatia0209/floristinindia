@@ -31,13 +31,16 @@ export default function FaviconManager() {
   };
 
   const updateFavicon = (url: string) => {
+    // Add cache-busting parameter to ensure favicon updates immediately
+    const cacheBustUrl = `${url}?v=${Date.now()}`;
+
     // Remove existing favicon links
     const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
     existingFavicons.forEach(link => link.remove());
 
     // Create new favicon links for different sizes and types
     const faviconSizes = [
-      { rel: "icon", type: "image/x-icon", href: url },
+      { rel: "icon", type: "image/x-icon", href: cacheBustUrl },
       { rel: "icon", type: "image/png", sizes: "16x16", href: url },
       { rel: "icon", type: "image/png", sizes: "32x32", href: url },
       { rel: "icon", type: "image/png", sizes: "48x48", href: url },
