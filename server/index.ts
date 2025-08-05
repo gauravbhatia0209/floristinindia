@@ -148,6 +148,15 @@ export function createServer() {
           let processedHtml = html;
           if (res.locals.metaData) {
             const metaData = res.locals.metaData;
+
+            // Generate structured data scripts
+            let structuredDataHtml = "";
+            if (metaData.structuredData && metaData.structuredData.length > 0) {
+              structuredDataHtml = metaData.structuredData
+                .map((schema: any) => `<script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>`)
+                .join("\n    ");
+            }
+
             processedHtml = html
               .replace(/{{TITLE}}/g, metaData.title || "Florist in India")
               .replace(
@@ -165,7 +174,8 @@ export function createServer() {
                   "Premium flower delivery service",
               )
               .replace(/{{CANONICAL}}/g, metaData.canonical || req.url)
-              .replace(/{{OG_IMAGE}}/g, metaData.ogImage || "");
+              .replace(/{{OG_IMAGE}}/g, metaData.ogImage || "")
+              .replace(/{{STRUCTURED_DATA}}/g, structuredDataHtml);
 
             // Handle conditional OG image tags
             if (!metaData.ogImage) {
