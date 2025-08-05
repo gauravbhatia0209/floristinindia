@@ -7,7 +7,7 @@ import {
   generateBreadcrumbSchema,
   generateProductSchema,
   generateWebsiteSchema,
-  SiteSettings
+  SiteSettings,
 } from "../lib/schema-generator.js";
 
 interface MetaData {
@@ -131,7 +131,8 @@ async function getProductMeta(slug: string): Promise<any> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         name,
         slug,
         description,
@@ -149,7 +150,8 @@ async function getProductMeta(slug: string): Promise<any> {
         weight,
         category_id,
         product_categories(name)
-      `)
+      `,
+      )
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
@@ -160,7 +162,7 @@ async function getProductMeta(slug: string): Promise<any> {
 
     return {
       ...data,
-      category_name: (data as any).product_categories?.name
+      category_name: (data as any).product_categories?.name,
     };
   } catch (error) {
     console.error("Error fetching product meta:", error);
@@ -202,8 +204,7 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
   const defaultOgImage =
     siteSettings.defaultOgImage || siteSettings.og_image_url || "";
 
-  const defaultRobots =
-    siteSettings.defaultRobots || "index, follow";
+  const defaultRobots = siteSettings.defaultRobots || "index, follow";
 
   // Homepage
   if (pathname === "/" || pathname === "") {
@@ -216,8 +217,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
       robots: defaultRobots,
       structuredData: [
         generateLocalBusinessSchema(siteSettings, baseUrl),
-        generateWebsiteSchema(siteSettings, baseUrl)
-      ]
+        generateWebsiteSchema(siteSettings, baseUrl),
+      ],
     };
   }
   // Page routes
@@ -229,7 +230,9 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
 
     if (pageMeta) {
       const pageTitle = pageMeta.title;
-      const finalTitle = pageTitle ? `${pageTitle} | ${siteName}` : defaultTitle;
+      const finalTitle = pageTitle
+        ? `${pageTitle} | ${siteName}`
+        : defaultTitle;
 
       metaData = {
         title: finalTitle,
@@ -238,8 +241,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: pageMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, pageTitle, baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, pageTitle, baseUrl),
+        ],
       };
     } else {
       metaData = {
@@ -249,8 +252,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, "Page", baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, "Page", baseUrl),
+        ],
       };
     }
   }
@@ -263,7 +266,9 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
 
     if (categoryMeta) {
       const categoryTitle = categoryMeta.title;
-      const finalTitle = categoryTitle ? `${categoryTitle} | ${siteName}` : defaultTitle;
+      const finalTitle = categoryTitle
+        ? `${categoryTitle} | ${siteName}`
+        : defaultTitle;
 
       metaData = {
         title: finalTitle,
@@ -272,8 +277,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: categoryMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, categoryTitle, baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, categoryTitle, baseUrl),
+        ],
       };
     } else {
       metaData = {
@@ -283,8 +288,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, "Category", baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, "Category", baseUrl),
+        ],
       };
     }
   }
@@ -297,18 +302,23 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
 
     if (productMeta) {
       const productTitle = productMeta.meta_title || productMeta.name;
-      const finalTitle = productTitle ? `${productTitle} | ${siteName}` : defaultTitle;
+      const finalTitle = productTitle
+        ? `${productTitle} | ${siteName}`
+        : defaultTitle;
 
       metaData = {
         title: finalTitle,
-        description: productMeta.meta_description || productMeta.short_description || defaultDescription,
+        description:
+          productMeta.meta_description ||
+          productMeta.short_description ||
+          defaultDescription,
         ogImage: productMeta.og_image || defaultOgImage,
         robots: productMeta.robots || defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
           generateBreadcrumbSchema(pathname, productTitle, baseUrl),
-          generateProductSchema(productMeta, baseUrl, siteSettings)
-        ]
+          generateProductSchema(productMeta, baseUrl, siteSettings),
+        ],
       };
     } else {
       metaData = {
@@ -318,8 +328,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, "Product", baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, "Product", baseUrl),
+        ],
       };
     }
   }
@@ -365,8 +375,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, pageInfo.title, baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, pageInfo.title, baseUrl),
+        ],
       };
     } else {
       metaData = {
@@ -376,8 +386,8 @@ export async function generateMetaData(pathname: string): Promise<MetaData> {
         robots: defaultRobots,
         structuredData: [
           generateLocalBusinessSchema(siteSettings, baseUrl),
-          generateBreadcrumbSchema(pathname, "Page", baseUrl)
-        ]
+          generateBreadcrumbSchema(pathname, "Page", baseUrl),
+        ],
       };
     }
   }

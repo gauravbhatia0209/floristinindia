@@ -153,7 +153,10 @@ export function createServer() {
             let structuredDataHtml = "";
             if (metaData.structuredData && metaData.structuredData.length > 0) {
               structuredDataHtml = metaData.structuredData
-                .map((schema: any) => `<script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>`)
+                .map(
+                  (schema: any) =>
+                    `<script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>`,
+                )
                 .join("\n    ");
             }
 

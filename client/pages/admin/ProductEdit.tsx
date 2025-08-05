@@ -874,15 +874,25 @@ export default function ProductEdit() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={settings.defaultRobots || "index, follow"} />
+                    <SelectValue
+                      placeholder={settings.defaultRobots || "index, follow"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">Use default</SelectItem>
                     <SelectItem value="index, follow">index, follow</SelectItem>
-                    <SelectItem value="noindex, follow">noindex, follow</SelectItem>
-                    <SelectItem value="index, nofollow">index, nofollow</SelectItem>
-                    <SelectItem value="noindex, nofollow">noindex, nofollow</SelectItem>
-                    <SelectItem value="noindex, nofollow, noarchive">noindex, nofollow, noarchive</SelectItem>
+                    <SelectItem value="noindex, follow">
+                      noindex, follow
+                    </SelectItem>
+                    <SelectItem value="index, nofollow">
+                      index, nofollow
+                    </SelectItem>
+                    <SelectItem value="noindex, nofollow">
+                      noindex, nofollow
+                    </SelectItem>
+                    <SelectItem value="noindex, nofollow, noarchive">
+                      noindex, nofollow, noarchive
+                    </SelectItem>
                     <SelectItem value="nosnippet">nosnippet</SelectItem>
                   </SelectContent>
                 </Select>
