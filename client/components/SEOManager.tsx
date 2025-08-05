@@ -79,6 +79,7 @@ export default function SEOManager() {
     if (isHomePage) {
       // Homepage: Use admin meta title, or site name + tagline, or fallback
       pageTitle =
+        siteSettings.defaultMetaTitle ||
         siteSettings.default_meta_title ||
         siteSettings.meta_title ||
         (siteSettings.site_tagline
