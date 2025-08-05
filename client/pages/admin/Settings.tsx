@@ -185,6 +185,7 @@ export default function Settings() {
     twitter_site: "",
     canonical_url: "",
     robots_txt_content: "",
+    additional_sitemap_urls: "",
     schema_org_organization: "",
     custom_head_tags: "",
     sitemap_enabled: true,
