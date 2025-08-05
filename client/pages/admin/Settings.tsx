@@ -1644,6 +1644,25 @@ Sitemap: https://yourdomain.com/sitemap.xml`}
                   Custom robots.txt content. Leave empty for default settings.
                 </p>
               </div>
+
+              <div>
+                <Label htmlFor="additional_sitemap_urls">Additional Sitemap URLs</Label>
+                <Textarea
+                  id="additional_sitemap_urls"
+                  value={settings.additional_sitemap_urls}
+                  onChange={(e) =>
+                    handleInputChange("additional_sitemap_urls", e.target.value)
+                  }
+                  placeholder={`/special-offers
+/gallery
+/testimonials
+https://blog.example.com/sitemap.xml`}
+                  rows={4}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Enter additional URLs to include in sitemap.xml (one per line). Can be relative paths or full URLs.
+                </p>
+              </div>
             </CardContent>
           </Card>
 
