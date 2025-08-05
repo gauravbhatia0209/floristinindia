@@ -76,12 +76,28 @@ router.get("/sitemap.xml", async (req, res) => {
       .select("slug, updated_at")
       .eq("is_active", true);
 
-    // Fetch site settings to include in sitemap metadata
+    // Fetch active pages
+    const { data: pages } = await supabase
+      .from("pages")
+      .select("slug, updated_at")
+      .eq("is_active", true);
+
+    // Fetch site settings and additional sitemap URLs
     const { data: settings } = await supabase
       .from("site_settings")
-      .select("updated_at")
-      .order("updated_at", { ascending: false })
-      .limit(1);
+      .select("key, value, updated_at")
+      .in("key", ["additional_sitemap_urls", "sitemap_enabled"])
+      .order("updated_at", { ascending: false });
+
+    const settingsMap = settings?.reduce((acc, setting) => {
+      acc[setting.key] = setting.value;
+      return acc;
+    }, {} as Record<string, string>) || {};
+
+    // Check if sitemap is enabled
+    if (settingsMap.sitemap_enabled === "false") {
+      return res.status(404).send("Sitemap disabled");
+    }
 
     // Generate sitemap XML with AI-readable metadata
     const lastSettingsUpdate =
