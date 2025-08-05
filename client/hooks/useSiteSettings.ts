@@ -214,15 +214,8 @@ export function useSiteSettings() {
     pageDescription?: string,
     pageImage?: string,
   ) {
-    const finalTitle = pageTitle || settings.defaultMetaTitle;
-    console.log("[CLIENT DEBUG] generateMetaTags called with:", {
-      pageTitle,
-      "settings.defaultMetaTitle": settings.defaultMetaTitle,
-      finalTitle,
-    });
-
     return {
-      title: finalTitle,
+      title: pageTitle || settings.defaultMetaTitle,
       description: pageDescription || settings.defaultMetaDescription,
       ogTitle: pageTitle || settings.defaultMetaTitle,
       ogDescription: pageDescription || settings.defaultMetaDescription,
