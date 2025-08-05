@@ -162,6 +162,7 @@ export function useSiteSettings() {
             settingsObject.youtube_url || defaultSettings.youtube_url,
         };
 
+        console.log('[CLIENT DEBUG] Final mapped defaultMetaTitle:', mappedSettings.defaultMetaTitle);
         setSettings(mappedSettings);
       }
     } catch (err) {
