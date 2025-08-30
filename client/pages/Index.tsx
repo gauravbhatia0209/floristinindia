@@ -31,6 +31,8 @@ interface ProductWithVariants extends Product {
 export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
+  // Map of section.id -> products for that specific section
+  const [sectionProducts, setSectionProducts] = useState<Record<string, ProductWithVariants[]>>({});
   const [featuredProducts, setFeaturedProducts] = useState<
     ProductWithVariants[]
   >([]);
@@ -113,6 +115,121 @@ export default function Index() {
     }
   }
 
+  // Load products for a specific product_carousel section
+  async function loadProductsForSection(section: HomepageSection): Promise<ProductWithVariants[]> {
+    try {
+      const content: any = section.content || {};
+      const showCount = content?.show_count || 8;
+
+      // Prefer explicitly selected products
+      const selectedIds: string[] = Array.isArray(content?.selected_products)
+        ? content.selected_products
+        : [];
+
+      let productsData: Product[] = [] as any;
+
+      if (selectedIds.length > 0) {
+        const { data, error } = await supabase
+          .from("products")
+          .select(
+            `
+            id,
+            name,
+            slug,
+            price,
+            sale_price,
+            images,
+            is_active
+          `,
+          )
+          .in("id", selectedIds)
+          .eq("is_active", true);
+
+        if (error) {
+          console.warn("Product section", section.title, "error fetching selected products:", error);
+        }
+
+        const found = (data || []).filter(Boolean);
+        // Keep the order as selected by admin
+        productsData = selectedIds
+          .map((id) => found.find((p) => p.id === id))
+          .filter(Boolean) as Product[];
+
+        if (productsData.length === 0) {
+          // Fallback if selected IDs returned nothing
+          console.warn(
+            "No products returned for selected IDs, falling back to filter/featured for section:",
+            section.title,
+          );
+        }
+      }
+
+      if (!productsData.length) {
+        // Use filter-based loading
+        const filter = content?.product_filter || "featured";
+        let query = supabase
+          .from("products")
+          .select(
+            `
+            id,
+            name,
+            slug,
+            price,
+            sale_price,
+            images,
+            is_active,
+            created_at,
+            sort_order,
+            is_featured
+          `,
+          )
+          .eq("is_active", true)
+          .limit(showCount);
+
+        if (filter === "sale") {
+          query = query.not("sale_price", "is", null).order("sale_price", { ascending: true });
+        } else if (filter === "latest") {
+          query = query.order("created_at", { ascending: false });
+        } else {
+          // featured or default
+          query = query.eq("is_featured", true).order("sort_order", { ascending: true });
+        }
+
+        const { data, error } = await query;
+        if (error) {
+          console.warn("Product section", section.title, "error fetching by filter:", error);
+        }
+        productsData = (data || []) as any;
+      }
+
+      const ids = productsData.map((p: any) => p.id);
+      if (!ids.length) return [];
+
+      // Attach variants for all products
+      const { data: allVariants, error: variantsError } = await supabase
+        .from("product_variants")
+        .select("*")
+        .in("product_id", ids)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+
+      if (variantsError) {
+        console.warn("Variants fetch error for section", section.title, variantsError);
+      }
+
+      const variantsByProduct = (allVariants || []).reduce((acc: Record<string, ProductVariant[]>, v: any) => {
+        if (!acc[v.product_id]) acc[v.product_id] = [];
+        acc[v.product_id].push(v);
+        return acc;
+      }, {} as Record<string, ProductVariant[]>);
+
+      return productsData.map((p: any) => ({ ...p, variants: variantsByProduct[p.id] || [] }));
+    } catch (e) {
+      console.error("Failed loading products for section", section.title, e);
+      return [];
+    }
+  }
+
   async function fetchHomepageData() {
     try {
       console.log("🔍 Starting to fetch homepage sections...");
@@ -144,13 +261,8 @@ export default function Index() {
         console.log("Homepage: Loaded sections from database:", sectionsData);
         setSections(sectionsData);
 
-        // Extract selected category and product IDs from sections
-        const categorySection = sectionsData.find(
-          (s) => s.type === "category_grid",
-        );
-        const productSection = sectionsData.find(
-          (s) => s.type === "product_carousel",
-        );
+        // Extract selected category IDs from sections (first grid if present)
+        const categorySection = sectionsData.find((s) => s.type === "category_grid");
 
         console.log("🏠 Homepage: All sections loaded:", sectionsData);
         console.log(
@@ -158,27 +270,29 @@ export default function Index() {
           sectionsData.map((s) => s.type),
         );
         console.log("🏠 Homepage: Category section found:", categorySection);
-        console.log("🏠 Homepage: Product section found:", productSection);
 
-        // Debug the product section content structure
-        if (productSection) {
-          console.log(
-            "🔍 Product section full content:",
-            JSON.stringify(productSection.content, null, 2),
-          );
-          console.log(
-            "🔍 Product section selected_products:",
-            productSection.content?.selected_products,
-          );
+        // Prepare products per product_carousel section
+        const productSections = sectionsData.filter((s) => s.type === "product_carousel");
+        if (productSections.length === 0) {
+          console.warn("⚠️ No product_carousel sections found");
+          setSectionProducts({});
         } else {
-          console.warn(
-            "⚠️ No product_carousel section found in sections:",
-            sectionsData.map((s) => ({ type: s.type, title: s.title })),
+          console.log(
+            "🧩 Product sections detected:",
+            productSections.map((s) => ({ id: s.id, title: s.title })),
           );
+          const results = await Promise.all(
+            productSections.map(async (s) => {
+              const products = await loadProductsForSection(s);
+              return [s.id, products] as const;
+            }),
+          );
+          const mapping: Record<string, ProductWithVariants[]> = {};
+          for (const [id, products] of results) mapping[id] = products;
+          setSectionProducts(mapping);
         }
 
-        // Fetch admin-selected categories
-        if (categorySection?.content?.selected_categories?.length > 0) {
+        // Fetch admin-selected categories for the grid
           const { data: categoriesData } = await supabase
             .from("product_categories")
             .select("*")
@@ -202,193 +316,7 @@ export default function Index() {
             .order("sort_order")
             .limit(8);
           if (categoriesData) setCategories(categoriesData);
-        }
-
-        // Fetch admin-selected products
-        if (productSection?.content?.selected_products?.length > 0) {
-          const selectedProductIds = productSection.content.selected_products;
-          console.log(
-            "🎯 Product Showcase: Found product section with content:",
-            productSection,
-          );
-          console.log(
-            "🎯 Product Showcase: Admin-selected product IDs:",
-            selectedProductIds,
-          );
-          console.log(
-            "🎯 Product Showcase: ID types:",
-            selectedProductIds.map((id: any) => typeof id),
-          );
-          console.log(
-            "🎯 Product Showcase: Fetching products with query - product.id IN",
-            selectedProductIds,
-          );
-
-          // First, let's check what products exist in the database
-          const { data: allProducts, error: allProductsError } = await supabase
-            .from("products")
-            .select("id, name, is_active")
-            .eq("is_active", true);
-
-          console.log("🔍 All active products in database:", allProducts);
-          console.log("🔍 All products error:", allProductsError);
-
-          const { data: productsData, error: productsError } = await supabase
-            .from("products")
-            .select(
-              `
-              id,
-              name,
-              slug,
-              price,
-              sale_price,
-              images,
-              is_active
-            `,
-            )
-            .in("id", selectedProductIds)
-            .eq("is_active", true);
-
-          console.log(
-            "������ Product Showcase: Raw query results:",
-            productsData,
-          );
-          console.log(
-            "🎯 Product Showcase: Query error (if any):",
-            productsError,
-          );
-          console.log("🕐 Query executed at:", new Date().toISOString());
-
-          if (productsError) {
-            console.error("🚨 Product Showcase: Database error:");
-            console.error(
-              "Products error details:",
-              JSON.stringify(productsError, null, 2),
-            );
-            console.error("Products error message:", productsError?.message);
-            console.error("Products error code:", productsError?.code);
-            console.error("Products error hint:", productsError?.hint);
-            await loadFallbackProducts();
-            return;
-          }
-
-          console.log(
-            "📊 Product Showcase: Query returned",
-            productsData?.length || 0,
-            "products",
-          );
-
-          if (productsData && productsData.length > 0) {
-            // Sort products by the order they were selected in admin
-            const sortedProducts = selectedProductIds
-              .map((id: string) => {
-                const product = productsData.find((prod) => prod.id === id);
-                if (!product) {
-                  console.warn(
-                    "⚠️ Product Showcase: Product not found for ID:",
-                    id,
-                  );
-                }
-                return product;
-              })
-              .filter((product) => {
-                if (!product) {
-                  return false;
-                }
-                if (!product.images || product.images.length === 0) {
-                  console.warn(
-                    "⚠️ Product Showcase: Product has no images:",
-                    product.name,
-                  );
-                }
-                return true;
-              });
-
-            console.log(
-              "✅ Product Showcase: Final sorted products to render:",
-              sortedProducts,
-            );
-            console.log(
-              "📝 Product Showcase: Product titles to render:",
-              sortedProducts.map((p) => p.name),
-            );
-            console.log(
-              "🖼����� Product Showcase: Product images:",
-              sortedProducts.map((p) => ({
-                name: p.name,
-                hasImages: p.images && p.images.length > 0,
-                firstImage: p.images?.[0] || "No image",
-              })),
-            );
-
-            if (sortedProducts.length > 0) {
-              // Always add variants data to all products
-              try {
-                // Get all product IDs
-                const allProductIds = sortedProducts.map((p) => p.id);
-
-                // Fetch variants for all products (whether they have variations or not)
-                const { data: allVariants, error: variantsError } =
-                  await supabase
-                    .from("product_variants")
-                    .select("*")
-                    .in("product_id", allProductIds)
-                    .eq("is_active", true)
-                    .order("sort_order", { ascending: true });
-
-                if (variantsError) {
-                  console.warn("Error fetching variants:", variantsError);
-                }
-
-                // Group variants by product_id
-                const variantsByProduct = (allVariants || []).reduce(
-                  (acc, variant) => {
-                    if (!acc[variant.product_id]) {
-                      acc[variant.product_id] = [];
-                    }
-                    acc[variant.product_id].push(variant);
-                    return acc;
-                  },
-                  {} as Record<string, ProductVariant[]>,
-                );
-
-                // Add variants to all products
-                const productsWithVariants = sortedProducts.map((product) => ({
-                  ...product,
-                  variants: variantsByProduct[product.id] || [],
-                }));
-
-                setFeaturedProducts(productsWithVariants);
-              } catch (variantError) {
-                console.warn("Error processing variants:", variantError);
-                // Fallback: add empty variants array
-                setFeaturedProducts(
-                  sortedProducts.map((p) => ({ ...p, variants: [] })),
-                );
-              }
-            } else {
-              console.warn(
-                "⚠️ Product Showcase: All selected products filtered out, using fallback",
-              );
-              await loadFallbackProducts();
-            }
-          } else {
-            console.warn(
-              "⚠️ Product Showcase: No products returned from database query for selected IDs:",
-              selectedProductIds,
-            );
-            console.warn(
-              "🔍 Available product IDs in database:",
-              allProducts?.map((p) => p.id) || [],
-            );
-            await loadFallbackProducts();
-          }
-        } else {
-          console.log(
-            "🔄 Product Showcase: No admin-selected products, using fallback featured products",
-          );
-          await loadFallbackProducts();
-        }
+        // Products are now loaded per product_carousel section and stored in sectionProducts map
       }
     } catch (error) {
       console.error("🚨 Failed to fetch homepage data:");
@@ -870,14 +798,16 @@ export default function Index() {
       section.subtitle ||
       "Handpicked fresh flowers loved by thousands of customers";
 
+    const productsForSection = sectionProducts[section.id] || [];
     console.log(
-      "🎨 Product Carousel: Starting render with featuredProducts:",
-      featuredProducts,
+      "🎨 Product Carousel: Starting render with products for section",
+      section.title,
+      productsForSection,
     );
     console.log("🎨 Product Carousel: Display count set to:", showCount);
 
     // Filter out any invalid products and limit display count
-    const validProducts = featuredProducts
+    const validProducts = productsForSection
       .filter((product) => {
         const isValid =
           product &&
