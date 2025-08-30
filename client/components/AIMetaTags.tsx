@@ -226,7 +226,10 @@ export default function AIMetaTags({
       case "product":
         if (product) {
           metaTitle = `${product.name} - Buy Online | ${siteName}`;
-          metaDescription = `${product.description || `Beautiful ${product.name} available for online delivery.`} Starting from ₹${product.sale_price || product.price}. Same-day delivery available.`;
+          const plainDesc = product.description
+            ? String(product.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+            : null;
+          metaDescription = `${plainDesc || `Beautiful ${product.name} available for online delivery.`} Starting from ₹${product.sale_price || product.price}. Same-day delivery available.`;
           metaKeywords = [
             ...baseKeywords,
             product.name.toLowerCase(),
