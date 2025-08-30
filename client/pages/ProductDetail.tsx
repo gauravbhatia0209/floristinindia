@@ -641,8 +641,13 @@ export default function ProductDetail() {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4">Description</h3>
-              <div className="prose max-w-none">
-                <p className="text-muted-foreground">{product.description}</p>
+              <div className="prose max-w-none text-muted-foreground">
+                {(() => {
+                  const desc = product.description as unknown as string;
+                  const looksLikeHtml = /<[^>]+>/.test(desc);
+                  const html = looksLikeHtml ? desc : desc.replace(/\n/g, "<br/>");
+                  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+                })()}
               </div>
             </CardContent>
           </Card>
