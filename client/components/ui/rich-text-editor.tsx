@@ -1,7 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bold, Italic, Underline, List, ListOrdered, Link as LinkIcon, Undo2, Redo2, Eraser } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
+  Link as LinkIcon,
+  Undo2,
+  Redo2,
+  Eraser,
+} from "lucide-react";
 
 interface RichTextEditorProps {
   value: string;
@@ -16,7 +26,12 @@ function exec(cmd: string, value?: string) {
   } catch {}
 }
 
-export function RichTextEditor({ value, onChange, placeholder = "", className = "" }: RichTextEditorProps) {
+export function RichTextEditor({
+  value,
+  onChange,
+  placeholder = "",
+  className = "",
+}: RichTextEditorProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState<string>(value || "");
 
@@ -52,15 +67,108 @@ export function RichTextEditor({ value, onChange, placeholder = "", className = 
     <Card className={className}>
       <CardContent className="p-2">
         <div className="flex flex-wrap gap-1 mb-2">
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("bold"); handleInput(); }} aria-label="Bold"><Bold className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("italic"); handleInput(); }} aria-label="Italic"><Italic className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("underline"); handleInput(); }} aria-label="Underline"><Underline className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("insertUnorderedList"); handleInput(); }} aria-label="Bulleted list"><List className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("insertOrderedList"); handleInput(); }} aria-label="Numbered list"><ListOrdered className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={addLink} aria-label="Link"><LinkIcon className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("undo"); handleInput(); }} aria-label="Undo"><Undo2 className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={() => { exec("redo"); handleInput(); }} aria-label="Redo"><Redo2 className="w-4 h-4" /></Button>
-          <Button type="button" size="icon" variant="outline" onClick={clearFormatting} aria-label="Clear formatting"><Eraser className="w-4 h-4" /></Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("bold");
+              handleInput();
+            }}
+            aria-label="Bold"
+          >
+            <Bold className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("italic");
+              handleInput();
+            }}
+            aria-label="Italic"
+          >
+            <Italic className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("underline");
+              handleInput();
+            }}
+            aria-label="Underline"
+          >
+            <Underline className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("insertUnorderedList");
+              handleInput();
+            }}
+            aria-label="Bulleted list"
+          >
+            <List className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("insertOrderedList");
+              handleInput();
+            }}
+            aria-label="Numbered list"
+          >
+            <ListOrdered className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={addLink}
+            aria-label="Link"
+          >
+            <LinkIcon className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("undo");
+              handleInput();
+            }}
+            aria-label="Undo"
+          >
+            <Undo2 className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              exec("redo");
+              handleInput();
+            }}
+            aria-label="Redo"
+          >
+            <Redo2 className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={clearFormatting}
+            aria-label="Clear formatting"
+          >
+            <Eraser className="w-4 h-4" />
+          </Button>
         </div>
         <div
           ref={ref}

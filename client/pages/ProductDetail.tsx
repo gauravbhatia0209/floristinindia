@@ -645,7 +645,9 @@ export default function ProductDetail() {
                 {(() => {
                   const desc = product.description as unknown as string;
                   const looksLikeHtml = /<[^>]+>/.test(desc);
-                  const html = looksLikeHtml ? desc : desc.replace(/\n/g, "<br/>");
+                  const html = looksLikeHtml
+                    ? desc
+                    : desc.replace(/\n/g, "<br/>");
                   return <div dangerouslySetInnerHTML={{ __html: html }} />;
                 })()}
               </div>

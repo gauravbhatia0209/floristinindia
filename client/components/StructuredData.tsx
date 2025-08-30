@@ -46,9 +46,12 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
 
   // Refresh data when admin might have updated settings
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchSiteSettings(); // Refresh every 5 minutes for AI systems
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        fetchSiteSettings(); // Refresh every 5 minutes for AI systems
+      },
+      5 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -155,7 +158,12 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "@context": "https://schema.org",
       "@type": "Product",
       name: product.name,
-      description: product.description ? String(product.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() : undefined,
+      description: product.description
+        ? String(product.description)
+            .replace(/<[^>]*>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim()
+        : undefined,
       image: product.images || [],
       sku: product.id,
       mpn: product.id,
@@ -245,10 +253,17 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       foundingDate: "2023",
       numberOfEmployees: "10-50",
       industry: "Floriculture",
-      keywords: "flowers, flower delivery, bouquets, floral arrangements, gifts, occasions",
+      keywords:
+        "flowers, flower delivery, bouquets, floral arrangements, gifts, occasions",
       // Dynamic business info from admin settings
       priceRange: siteSettings.currency_symbol || "₹",
-      paymentAccepted: ["Cash", "Credit Card", "Debit Card", "UPI", "Net Banking"],
+      paymentAccepted: [
+        "Cash",
+        "Credit Card",
+        "Debit Card",
+        "UPI",
+        "Net Banking",
+      ],
       currenciesAccepted: "INR",
       // AI metadata
       "@type:ai": "admin-configurable",

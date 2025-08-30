@@ -70,7 +70,12 @@ export default function FacebookShopMeta({ product }: FacebookShopMetaProps) {
       { property: "og:title", content: product.name },
       {
         property: "og:description",
-        content: product.description ? String(product.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() : `Buy ${product.name} online`,
+        content: product.description
+          ? String(product.description)
+              .replace(/<[^>]*>/g, " ")
+              .replace(/\s+/g, " ")
+              .trim()
+          : `Buy ${product.name} online`,
       },
       {
         property: "og:url",
