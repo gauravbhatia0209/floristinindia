@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        impressive: ["Great Vibes", "cursive"],
+        impressive: ["Brush Script MT", "Brush Script Std", "Lucida Handwriting", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
