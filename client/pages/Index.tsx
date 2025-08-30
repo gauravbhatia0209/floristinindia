@@ -882,7 +882,7 @@ export default function Index() {
         <section className="py-10 bg-muted/30">
           <div className="container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="font-impressive text-3xl md:text-4xl font-bold mb-4">
                 {displayTitle}
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -920,9 +920,9 @@ export default function Index() {
       <section className="py-10 bg-muted/30">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {displayTitle}
-            </h2>
+            <h2 className="font-impressive text-3xl md:text-4xl font-bold mb-4">
+                {displayTitle}
+              </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {displaySubtitle}
             </p>
