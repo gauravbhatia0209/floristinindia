@@ -575,14 +575,12 @@ export default function ProductEdit() {
 
               <div>
                 <Label htmlFor="description">Full Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
+                <RichTextEditor
+                  value={formData.description || ""}
+                  onChange={(html) =>
+                    setFormData({ ...formData, description: html })
                   }
                   placeholder="Detailed product description..."
-                  rows={4}
                 />
               </div>
             </CardContent>
