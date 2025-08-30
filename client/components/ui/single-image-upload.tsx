@@ -33,13 +33,17 @@ export function SingleImageUpload({
   className = "",
   subdir = "",
 }: SingleImageUploadProps) {
+  const safeImageUrl = typeof imageUrl === "string" ? imageUrl : "";
+  const safeAcceptedTypes = Array.isArray(acceptedTypes) && acceptedTypes.length > 0
+    ? acceptedTypes
+    : [".jpg", ".jpeg", ".png", ".webp"];
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isSupabaseUrl = imageUrl.includes("supabase.co");
-  const isLocalUrl = imageUrl.startsWith("/uploads/");
+  const isSupabaseUrl = typeof safeImageUrl === "string" && safeImageUrl.includes("supabase.co");
+  const isLocalUrl = typeof safeImageUrl === "string" && safeImageUrl.startsWith("/uploads/");
 
   const validateFile = (file: File): string | null => {
     // Check file size
@@ -49,8 +53,8 @@ export function SingleImageUpload({
     }
 
     // Check file type
-    const extension = "." + file.name.split(".").pop()?.toLowerCase();
-    if (!acceptedTypes.includes(extension)) {
+    const extension = "." + (file.name.split(".").pop()?.toLowerCase() || "");
+    if (!safeAcceptedTypes.includes(extension)) {
       return `File type ${extension} not allowed. Use: ${acceptedTypes.join(", ")}`;
     }
 
@@ -99,7 +103,7 @@ export function SingleImageUpload({
 
   const removeImage = async () => {
     // Try to delete from Supabase storage
-    if (imageUrl.includes("supabase.co")) {
+    if (safeImageUrl.includes("supabase.co")) {
       try {
         const { deleteImageFromSupabase } = await import(
           "@/lib/supabase-storage"
@@ -110,9 +114,9 @@ export function SingleImageUpload({
       }
     }
     // Also try to delete from local storage (for backwards compatibility)
-    else if (imageUrl.startsWith("/uploads/")) {
+    else if (safeImageUrl.startsWith("/uploads/")) {
       try {
-        const filename = imageUrl.split("/").pop();
+        const filename = safeImageUrl.split("/").pop();
         const url = subdir
           ? `/api/upload/image/${filename}?subdir=${encodeURIComponent(subdir)}`
           : `/api/upload/image/${filename}`;
@@ -175,7 +179,7 @@ export function SingleImageUpload({
             <input
               ref={fileInputRef}
               type="file"
-              accept={acceptedTypes.join(",")}
+              accept={safeAcceptedTypes.join(",")}
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
                   handleFileSelect(e.target.files[0]);
@@ -210,7 +214,7 @@ export function SingleImageUpload({
             <CardContent className="p-2">
               <div className="aspect-video relative rounded-md overflow-hidden bg-muted">
                 <img
-                  src={imageUrl}
+                  src={safeImageUrl}
                   alt="Uploaded image"
                   className="w-full h-full object-cover"
                   onError={async () => {
@@ -223,7 +227,7 @@ export function SingleImageUpload({
                       const { validateImageUrl } = await import(
                         "@/lib/supabase-storage"
                       );
-                      const isValid = await validateImageUrl(imageUrl);
+                      const isValid = await validateImageUrl(safeImageUrl);
                       if (!isValid) {
                         setError(
                           "Image is no longer accessible. Please upload a new image.",
@@ -262,7 +266,7 @@ export function SingleImageUpload({
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept={acceptedTypes.join(",")}
+                  accept={safeAcceptedTypes.join(",")}
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
                       handleFileSelect(e.target.files[0]);
@@ -279,7 +283,7 @@ export function SingleImageUpload({
 
       {/* Help Text */}
       <p className="text-sm text-muted-foreground mt-2">
-        Max {maxSizeMB}MB. Accepted formats: {acceptedTypes.join(", ")}
+        Max {maxSizeMB}MB. Accepted formats: {safeAcceptedTypes.join(", ")}
       </p>
     </div>
   );
