@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        impressive: ["Playfair Display", "serif"],
+        impressive: ["Great Vibes", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
