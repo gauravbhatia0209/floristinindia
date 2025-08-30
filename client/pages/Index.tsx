@@ -921,8 +921,8 @@ export default function Index() {
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="font-impressive text-3xl md:text-4xl mb-0.5">
-                {displayTitle}
-              </h2>
+              {displayTitle}
+            </h2>
             <p className="text-xl text-muted-foreground italic max-w-2xl mx-auto">
               {displaySubtitle}
             </p>
