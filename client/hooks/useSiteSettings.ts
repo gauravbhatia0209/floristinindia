@@ -79,10 +79,19 @@ export function useSiteSettings() {
         .select("key, value");
 
       if (error) {
-        throw error;
+        console.error("[SiteSettings] Supabase error:", {
+          message: error.message,
+          code: (error as any).code,
+          details: (error as any).details,
+          hint: (error as any).hint,
+        });
+        // Use defaults on error
+        setSettings(defaultSettings);
+        setError(error.message || "Failed to fetch settings");
+        return;
       }
 
-      if (data) {
+      if (Array.isArray(data)) {
         const settingsObject: Record<string, string> = {};
         data.forEach((setting) => {
           settingsObject[setting.key] = setting.value;
@@ -156,10 +165,22 @@ export function useSiteSettings() {
         };
 
         setSettings(mappedSettings);
+      } else {
+        // No data returned, use defaults
+        console.warn("[SiteSettings] No site_settings returned; using defaults");
+        setSettings(defaultSettings);
       }
     } catch (err) {
-      console.error("Failed to fetch site settings:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch settings");
+      const e = err as any;
+      console.error("[SiteSettings] Failed to fetch site settings:", {
+        message: e?.message,
+        code: e?.code,
+        details: e?.details,
+        hint: e?.hint,
+        raw: e,
+      });
+      setSettings(defaultSettings);
+      setError(e?.message || "Failed to fetch settings");
     } finally {
       setIsLoading(false);
     }
