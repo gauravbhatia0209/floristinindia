@@ -885,7 +885,7 @@ export default function Index() {
               <h2 className="font-impressive text-3xl md:text-4xl mb-4">
                 {displayTitle}
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground italic max-w-2xl mx-auto">
                 {displaySubtitle}
               </p>
             </div>
@@ -923,7 +923,7 @@ export default function Index() {
             <h2 className="font-impressive text-3xl md:text-4xl mb-4">
                 {displayTitle}
               </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground italic max-w-2xl mx-auto">
               {displaySubtitle}
             </p>
           </div>
