@@ -19,9 +19,9 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import {
   ProductCategory,
   Product,
-  ProductVariant,
   HomepageSection,
 } from "@/types/database.types";
+import { ProductVariant } from "@shared/database.types";
 import { getProductEffectivePriceSync } from "@/lib/productUtils";
 
 interface ProductWithVariants extends Product {
