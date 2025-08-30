@@ -64,7 +64,14 @@ export default function ContactUs({ pageContent }: { pageContent: any }) {
         setSiteSettings(settings);
       }
     } catch (error) {
-      console.error("Failed to fetch site settings:", error);
+      const e = error as any;
+      console.error("[ContactUs] Failed to fetch site settings:", {
+        message: e?.message,
+        code: e?.code,
+        details: e?.details,
+        hint: e?.hint,
+        raw: e,
+      });
     } finally {
       setIsLoading(false);
     }
