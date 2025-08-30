@@ -192,7 +192,14 @@ export function Header() {
         setSiteSettings(settingsMap);
       }
     } catch (error) {
-      console.error("Failed to fetch site settings:", error);
+      const e = error as any;
+      console.error("[Header] Failed to fetch site settings:", {
+        message: e?.message,
+        code: e?.code,
+        details: e?.details,
+        hint: e?.hint,
+        raw: e,
+      });
     }
   }
 
