@@ -32,7 +32,9 @@ export default function Index() {
   const [sections, setSections] = useState<HomepageSection[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   // Map of section.id -> products for that specific section
-  const [sectionProducts, setSectionProducts] = useState<Record<string, ProductWithVariants[]>>({});
+  const [sectionProducts, setSectionProducts] = useState<
+    Record<string, ProductWithVariants[]>
+  >({});
   const [featuredProducts, setFeaturedProducts] = useState<
     ProductWithVariants[]
   >([]);
@@ -116,7 +118,9 @@ export default function Index() {
   }
 
   // Load products for a specific product_carousel section
-  async function loadProductsForSection(section: HomepageSection): Promise<ProductWithVariants[]> {
+  async function loadProductsForSection(
+    section: HomepageSection,
+  ): Promise<ProductWithVariants[]> {
     try {
       const content: any = section.content || {};
       const showCount = content?.show_count || 8;
@@ -146,7 +150,12 @@ export default function Index() {
           .eq("is_active", true);
 
         if (error) {
-          console.warn("Product section", section.title, "error fetching selected products:", error);
+          console.warn(
+            "Product section",
+            section.title,
+            "error fetching selected products:",
+            error,
+          );
         }
 
         const found = (data || []).filter(Boolean);
@@ -187,17 +196,26 @@ export default function Index() {
           .limit(showCount);
 
         if (filter === "sale") {
-          query = query.not("sale_price", "is", null).order("sale_price", { ascending: true });
+          query = query
+            .not("sale_price", "is", null)
+            .order("sale_price", { ascending: true });
         } else if (filter === "latest") {
           query = query.order("created_at", { ascending: false });
         } else {
           // featured or default
-          query = query.eq("is_featured", true).order("sort_order", { ascending: true });
+          query = query
+            .eq("is_featured", true)
+            .order("sort_order", { ascending: true });
         }
 
         const { data, error } = await query;
         if (error) {
-          console.warn("Product section", section.title, "error fetching by filter:", error);
+          console.warn(
+            "Product section",
+            section.title,
+            "error fetching by filter:",
+            error,
+          );
         }
         productsData = (data || []) as any;
       }
@@ -214,16 +232,26 @@ export default function Index() {
         .order("sort_order", { ascending: true });
 
       if (variantsError) {
-        console.warn("Variants fetch error for section", section.title, variantsError);
+        console.warn(
+          "Variants fetch error for section",
+          section.title,
+          variantsError,
+        );
       }
 
-      const variantsByProduct = (allVariants || []).reduce((acc: Record<string, ProductVariant[]>, v: any) => {
-        if (!acc[v.product_id]) acc[v.product_id] = [];
-        acc[v.product_id].push(v);
-        return acc;
-      }, {} as Record<string, ProductVariant[]>);
+      const variantsByProduct = (allVariants || []).reduce(
+        (acc: Record<string, ProductVariant[]>, v: any) => {
+          if (!acc[v.product_id]) acc[v.product_id] = [];
+          acc[v.product_id].push(v);
+          return acc;
+        },
+        {} as Record<string, ProductVariant[]>,
+      );
 
-      return productsData.map((p: any) => ({ ...p, variants: variantsByProduct[p.id] || [] }));
+      return productsData.map((p: any) => ({
+        ...p,
+        variants: variantsByProduct[p.id] || [],
+      }));
     } catch (e) {
       console.error("Failed loading products for section", section.title, e);
       return [];
@@ -262,7 +290,9 @@ export default function Index() {
         setSections(sectionsData);
 
         // Extract selected category IDs from sections (first grid if present)
-        const categorySection = sectionsData.find((s) => s.type === "category_grid");
+        const categorySection = sectionsData.find(
+          (s) => s.type === "category_grid",
+        );
 
         console.log("🏠 Homepage: All sections loaded:", sectionsData);
         console.log(
@@ -272,7 +302,9 @@ export default function Index() {
         console.log("🏠 Homepage: Category section found:", categorySection);
 
         // Prepare products per product_carousel section
-        const productSections = sectionsData.filter((s) => s.type === "product_carousel");
+        const productSections = sectionsData.filter(
+          (s) => s.type === "product_carousel",
+        );
         if (productSections.length === 0) {
           console.warn("⚠️ No product_carousel sections found");
           setSectionProducts({});
@@ -293,29 +325,29 @@ export default function Index() {
         }
 
         // Fetch admin-selected categories for the grid
-          const { data: categoriesData } = await supabase
-            .from("product_categories")
-            .select("*")
-            .in("id", categorySection.content.selected_categories)
-            .eq("is_active", true);
+        const { data: categoriesData } = await supabase
+          .from("product_categories")
+          .select("*")
+          .in("id", categorySection.content.selected_categories)
+          .eq("is_active", true);
 
-          if (categoriesData) {
-            // Sort categories by the order they were selected
-            const sortedCategories = categorySection.content.selected_categories
-              .map((id: string) => categoriesData.find((cat) => cat.id === id))
-              .filter(Boolean);
-            setCategories(sortedCategories);
-          }
-        } else {
-          // Fallback to featured categories if none selected
-          const { data: categoriesData } = await supabase
-            .from("product_categories")
-            .select("*")
-            .eq("is_active", true)
-            .eq("show_in_menu", true)
-            .order("sort_order")
-            .limit(8);
-          if (categoriesData) setCategories(categoriesData);
+        if (categoriesData) {
+          // Sort categories by the order they were selected
+          const sortedCategories = categorySection.content.selected_categories
+            .map((id: string) => categoriesData.find((cat) => cat.id === id))
+            .filter(Boolean);
+          setCategories(sortedCategories);
+        }
+      } else {
+        // Fallback to featured categories if none selected
+        const { data: categoriesData } = await supabase
+          .from("product_categories")
+          .select("*")
+          .eq("is_active", true)
+          .eq("show_in_menu", true)
+          .order("sort_order")
+          .limit(8);
+        if (categoriesData) setCategories(categoriesData);
         // Products are now loaded per product_carousel section and stored in sectionProducts map
       }
     } catch (error) {
