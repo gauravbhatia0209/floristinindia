@@ -34,16 +34,19 @@ export function SingleImageUpload({
   subdir = "",
 }: SingleImageUploadProps) {
   const safeImageUrl = typeof imageUrl === "string" ? imageUrl : "";
-  const safeAcceptedTypes = Array.isArray(acceptedTypes) && acceptedTypes.length > 0
-    ? acceptedTypes
-    : [".jpg", ".jpeg", ".png", ".webp"];
+  const safeAcceptedTypes =
+    Array.isArray(acceptedTypes) && acceptedTypes.length > 0
+      ? acceptedTypes
+      : [".jpg", ".jpeg", ".png", ".webp"];
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isSupabaseUrl = typeof safeImageUrl === "string" && safeImageUrl.includes("supabase.co");
-  const isLocalUrl = typeof safeImageUrl === "string" && safeImageUrl.startsWith("/uploads/");
+  const isSupabaseUrl =
+    typeof safeImageUrl === "string" && safeImageUrl.includes("supabase.co");
+  const isLocalUrl =
+    typeof safeImageUrl === "string" && safeImageUrl.startsWith("/uploads/");
 
   const validateFile = (file: File): string | null => {
     // Check file size

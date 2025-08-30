@@ -167,7 +167,9 @@ export function useSiteSettings() {
         setSettings(mappedSettings);
       } else {
         // No data returned, use defaults
-        console.warn("[SiteSettings] No site_settings returned; using defaults");
+        console.warn(
+          "[SiteSettings] No site_settings returned; using defaults",
+        );
         setSettings(defaultSettings);
       }
     } catch (err) {
