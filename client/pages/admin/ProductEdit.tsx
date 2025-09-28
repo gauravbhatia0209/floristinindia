@@ -180,7 +180,12 @@ export default function ProductEdit() {
     if (selectedCategoryIds.length === 0) missing.push("at least one category");
     if (!formData.has_variations && !formData.price) missing.push("price");
     if (missing.length > 0) {
-      const extra = !formData.has_variations && !formData.price ? "" : (formData.has_variations && !formData.price ? " (enter a temporary base price to create the product; variant pricing is added after saving)" : "");
+      const extra =
+        !formData.has_variations && !formData.price
+          ? ""
+          : formData.has_variations && !formData.price
+            ? " (enter a temporary base price to create the product; variant pricing is added after saving)"
+            : "";
       alert(`Please fill in: ${missing.join(", ")} ${extra}`.trim());
       return;
     }
@@ -193,7 +198,9 @@ export default function ProductEdit() {
         description: formData.description || null,
         short_description: formData.short_description || null,
         price: formData.has_variations
-          ? (formData.price ? parseFloat(formData.price) : 0)
+          ? formData.price
+            ? parseFloat(formData.price)
+            : 0
           : parseFloat(formData.price),
         sale_price: formData.sale_price
           ? parseFloat(formData.sale_price)
