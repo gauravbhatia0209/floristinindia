@@ -175,10 +175,13 @@ export default function ProductEdit() {
   }, [formData.name, product]);
 
   async function handleSave() {
-    if (!formData.name || !formData.price || selectedCategoryIds.length === 0) {
-      alert(
-        "Please fill in all required fields including at least one category",
-      );
+    const missing: string[] = [];
+    if (!formData.name) missing.push("name");
+    if (selectedCategoryIds.length === 0) missing.push("at least one category");
+    if (!formData.has_variations && !formData.price) missing.push("price");
+    if (missing.length > 0) {
+      const extra = !formData.has_variations && !formData.price ? "" : (formData.has_variations && !formData.price ? " (enter a temporary base price to create the product; variant pricing is added after saving)" : "");
+      alert(`Please fill in: ${missing.join(", ")} ${extra}`.trim());
       return;
     }
 
@@ -189,7 +192,9 @@ export default function ProductEdit() {
         slug: formData.slug,
         description: formData.description || null,
         short_description: formData.short_description || null,
-        price: parseFloat(formData.price),
+        price: formData.has_variations
+          ? (formData.price ? parseFloat(formData.price) : 0)
+          : parseFloat(formData.price),
         sale_price: formData.sale_price
           ? parseFloat(formData.sale_price)
           : null,
