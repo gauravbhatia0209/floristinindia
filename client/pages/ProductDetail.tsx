@@ -223,6 +223,22 @@ export default function ProductDetail() {
         }
       : undefined;
 
+    const rawUnitPrice =
+      (effectiveSalePrice && effectiveSalePrice > 0
+        ? effectiveSalePrice
+        : effectivePrice && effectivePrice > 0
+          ? effectivePrice
+          : selectedVariant?.sale_price ?? selectedVariant?.price ?? null) ??
+      product.sale_price ??
+      product.price;
+    const resolvedUnitPrice =
+      typeof rawUnitPrice === "number"
+        ? rawUnitPrice
+        : Number(rawUnitPrice ?? 0);
+    const unitPrice = Number.isFinite(resolvedUnitPrice)
+      ? resolvedUnitPrice
+      : 0;
+
     addItem({
       product_id: product.id,
       product,
@@ -230,6 +246,8 @@ export default function ProductDetail() {
       variant: combinedVariant,
       quantity,
       uploaded_file: uploadedFile || undefined,
+      unit_price: unitPrice,
+      total_price: unitPrice * quantity,
     });
 
     // Show enhanced success notification
