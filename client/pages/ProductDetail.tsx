@@ -228,7 +228,7 @@ export default function ProductDetail() {
         ? effectiveSalePrice
         : effectivePrice && effectivePrice > 0
           ? effectivePrice
-          : selectedVariant?.sale_price ?? selectedVariant?.price ?? null) ??
+          : (selectedVariant?.sale_price ?? selectedVariant?.price ?? null)) ??
       product.sale_price ??
       product.price;
     const resolvedUnitPrice =

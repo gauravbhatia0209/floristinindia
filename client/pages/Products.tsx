@@ -406,7 +406,8 @@ export default function Products() {
     if (product.has_variations && !defaultVariant) {
       toast({
         title: "Select options",
-        description: "Please open the product to choose a variation before adding to cart.",
+        description:
+          "Please open the product to choose a variation before adding to cart.",
         variant: "destructive",
       });
       navigate(`/product/${product.slug}`);
@@ -414,7 +415,9 @@ export default function Products() {
     }
 
     const rawUnitPrice =
-      (defaultVariant?.sale_price ?? defaultVariant?.price ?? null) ??
+      defaultVariant?.sale_price ??
+      defaultVariant?.price ??
+      null ??
       effectivePrice.salePrice ??
       effectivePrice.price ??
       product.sale_price ??

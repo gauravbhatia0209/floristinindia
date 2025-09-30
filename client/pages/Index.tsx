@@ -109,7 +109,9 @@ export default function Index() {
       }
 
       const rawUnitPrice =
-        (defaultVariant?.sale_price ?? defaultVariant?.price ?? null) ??
+        defaultVariant?.sale_price ??
+        defaultVariant?.price ??
+        null ??
         effectivePrice.salePrice ??
         effectivePrice.price ??
         product.sale_price ??
