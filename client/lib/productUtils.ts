@@ -283,3 +283,90 @@ export function getProductEffectivePriceSync(
     hasVariants: false,
   };
 }
+
+function parsePrice(value: unknown): number | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.length === 0) return null;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+function resolveVariantPrice(variant?: any): number | null {
+  if (!variant) return null;
+
+  const saleOverride = parsePrice(variant.sale_price_override);
+  if (saleOverride !== null) return saleOverride;
+
+  const priceOverride = parsePrice(variant.price_override);
+  if (priceOverride !== null) return priceOverride;
+
+  const salePrice = parsePrice(variant.sale_price);
+  if (salePrice !== null) return salePrice;
+
+  const basePrice = parsePrice(variant.price);
+  if (basePrice !== null) return basePrice;
+
+  return null;
+}
+
+function resolveProductPrice(product?: Product | null): {
+  sale: number | null;
+  base: number | null;
+} {
+  if (!product) {
+    return { sale: null, base: null };
+  }
+
+  return {
+    sale: parsePrice(product.sale_price),
+    base: parsePrice(product.price),
+  };
+}
+
+export function getCartItemUnitPrice(item: CartItem): number {
+  const variantPrice = resolveVariantPrice(item.variant);
+  if (variantPrice !== null) {
+    return variantPrice;
+  }
+
+  // Some add-to-cart flows store explicit unit_price/total_price
+  const unitPrice = parsePrice(item.unit_price);
+  if (unitPrice !== null) {
+    return unitPrice;
+  }
+
+  const productPrices = resolveProductPrice(item.product);
+  if (productPrices.sale !== null) {
+    return productPrices.sale;
+  }
+
+  if (productPrices.base !== null) {
+    return productPrices.base;
+  }
+
+  const fallback = parsePrice(item.total_price);
+  if (fallback !== null && item.quantity) {
+    const derivedUnit = fallback / item.quantity;
+    return Number.isFinite(derivedUnit) ? derivedUnit : 0;
+  }
+
+  return 0;
+}
+
+export function getCartItemTotalPrice(item: CartItem): number {
+  const unit = getCartItemUnitPrice(item);
+  const quantity = item.quantity ?? 1;
+  return unit * quantity;
+}
