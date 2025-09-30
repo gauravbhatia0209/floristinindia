@@ -90,11 +90,49 @@ export default function Index() {
     e.stopPropagation();
 
     try {
+      const effectivePrice = getProductEffectivePriceSync(
+        product,
+        product.variants,
+      );
+      const defaultVariant = product.variants?.length
+        ? effectivePrice.defaultVariant || product.variants[0]
+        : undefined;
+
+      if (product.has_variations && !defaultVariant) {
+        toast({
+          title: "Select options",
+          description:
+            "Please open the product to choose a variation before adding to cart.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const rawUnitPrice =
+        (defaultVariant?.sale_price ?? defaultVariant?.price ?? null) ??
+        effectivePrice.salePrice ??
+        effectivePrice.price ??
+        product.sale_price ??
+        product.price;
+      const unitPrice = typeof rawUnitPrice === "number"
+        ? rawUnitPrice
+        : Number(rawUnitPrice ?? 0);
+      const quantity = 1;
+
       addItem({
         product_id: product.id,
-        product: product, // Include full product data
-        variant_id: null, // No variant selected from product showcase
-        quantity: 1,
+        product,
+        variant_id: defaultVariant?.id,
+        variant: defaultVariant
+          ? {
+              ...defaultVariant,
+              sale_price_override: effectivePrice.salePrice ?? undefined,
+              price_override: effectivePrice.price,
+            }
+          : undefined,
+        quantity,
+        unit_price: unitPrice,
+        total_price: unitPrice * quantity,
       });
 
       console.log("✅ Successfully added to cart:", product.name);
@@ -743,7 +781,7 @@ export default function Index() {
               </div>
             )}
             <div className="text-center py-12 bg-muted/30 rounded-xl">
-              <div className="text-6xl mb-4">🌸</div>
+              <div className="text-6xl mb-4">����</div>
               <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
                 Categories Coming Soon
               </h3>
