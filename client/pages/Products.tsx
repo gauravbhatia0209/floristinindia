@@ -785,10 +785,12 @@ export default function Products() {
                 viewMode === "list" ? "flex" : "h-full flex flex-col"
               }`}
             >
-              <div
-                className={`bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden ${
+              <Link
+                to={`/product/${product.slug}`}
+                className={`bg-gradient-to-br from-cream to-peach/30 flex items-center justify-center relative overflow-hidden transition-transform ${
                   viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-[4/5]"
                 }`}
+                aria-label={`View details for ${product.name}`}
               >
                 {product.images.length > 0 ? (
                   <img
@@ -816,7 +818,7 @@ export default function Products() {
                     )
                   );
                 })()}
-              </div>
+              </Link>
 
               <CardContent
                 className={`p-4 ${viewMode === "list" ? "flex-1" : "flex-grow flex flex-col justify-between"}`}
