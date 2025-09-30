@@ -90,7 +90,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const total = items.reduce((sum, item) => {
     const unit = getCartItemUnitPrice(item);
-    const lineTotal = getCartItemTotalPrice({ ...item, quantity: item.quantity });
+    const lineTotal = getCartItemTotalPrice(item);
 
     if (unit === 0 && (!item.product || !item.variant)) {
       console.warn("Cart item missing pricing information:", item);
