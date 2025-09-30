@@ -456,14 +456,30 @@ function ProductCarouselSection({ content }: { content: any }) {
   }
 
   const handleAddToCart = (product: Product) => {
+    if ((product as any)?.has_variations) {
+      window.location.href = `/product/${product.slug}`;
+      return;
+    }
+
+    const rawUnitPrice = product.sale_price ?? product.price;
+    const resolvedUnitPrice =
+      typeof rawUnitPrice === "number"
+        ? rawUnitPrice
+        : Number(rawUnitPrice ?? 0);
+    const unitPrice = Number.isFinite(resolvedUnitPrice)
+      ? resolvedUnitPrice
+      : 0;
+    const quantity = 1;
+
     addItem({
       id: `${product.id}-${Date.now()}`,
       product_id: product.id,
       product_name: product.name,
-      unit_price: product.sale_price || product.price,
-      total_price: product.sale_price || product.price,
+      product,
+      unit_price: unitPrice,
+      total_price: unitPrice * quantity,
       image_url: product.images?.[0] || "",
-      quantity: 1,
+      quantity,
     });
   };
 
