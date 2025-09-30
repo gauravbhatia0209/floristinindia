@@ -6,6 +6,10 @@ import {
   ReactNode,
 } from "react";
 import { CartItem } from "@/types/database.types";
+import {
+  getCartItemTotalPrice,
+  getCartItemUnitPrice,
+} from "@/lib/productUtils";
 
 interface CartContextType {
   items: CartItem[];
@@ -84,13 +88,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const total = items.reduce((sum, item) => {
-    // Safety check: only calculate if product data exists
-    if (!item.product) {
-      console.warn("Cart item missing product data:", item);
-      return sum;
+    const unit = getCartItemUnitPrice(item);
+    const lineTotal = getCartItemTotalPrice({ ...item, quantity: item.quantity });
+
+    if (unit === 0 && (!item.product || !item.variant)) {
+      console.warn("Cart item missing pricing information:", item);
     }
-    const price = item.product.sale_price || item.product.price || 0;
-    return sum + price * item.quantity;
+
+    return sum + lineTotal;
   }, 0);
 
   const value: CartContextType = {
@@ -100,6 +105,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     updateQuantity,
     clearCart,
     total,
+    getItemPrice: getCartItemUnitPrice,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
