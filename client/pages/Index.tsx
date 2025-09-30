@@ -114,9 +114,13 @@ export default function Index() {
         effectivePrice.price ??
         product.sale_price ??
         product.price;
-      const unitPrice = typeof rawUnitPrice === "number"
-        ? rawUnitPrice
-        : Number(rawUnitPrice ?? 0);
+      const resolvedUnitPrice =
+        typeof rawUnitPrice === "number"
+          ? rawUnitPrice
+          : Number(rawUnitPrice ?? 0);
+      const unitPrice = Number.isFinite(resolvedUnitPrice)
+        ? resolvedUnitPrice
+        : 0;
       const quantity = 1;
 
       addItem({
@@ -781,7 +785,7 @@ export default function Index() {
               </div>
             )}
             <div className="text-center py-12 bg-muted/30 rounded-xl">
-              <div className="text-6xl mb-4">����</div>
+              <div className="text-6xl mb-4">🌸</div>
               <h3 className="text-xl font-semibold mb-2 text-muted-foreground">
                 Categories Coming Soon
               </h3>
