@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Filter,
   Grid,
@@ -73,6 +73,7 @@ export default function Products() {
 
   const { slug: categorySlug } = useParams<{ slug: string }>();
 
+  const navigate = useNavigate();
   const { addItem } = useCart();
   const { toast } = useToast();
   const { trackAddToCart } = useGoogleAnalytics();
@@ -394,19 +395,55 @@ export default function Products() {
   }
 
   function handleAddToCart(product: ProductWithVariants) {
-    addItem({
-      product_id: product.id,
-      product,
-    });
-
     const effectivePrice = getProductEffectivePriceSync(
       product,
       product.variants,
     );
-    const price = effectivePrice.salePrice || effectivePrice.price;
+    const defaultVariant = product.variants?.length
+      ? effectivePrice.defaultVariant || product.variants[0]
+      : undefined;
 
-    trackAddToCart(product.id, product.name, price);
-    trackFBAddToCart(product.name, product.id, price, "INR");
+    if (product.has_variations && !defaultVariant) {
+      toast({
+        title: "Select options",
+        description: "Please open the product to choose a variation before adding to cart.",
+        variant: "destructive",
+      });
+      navigate(`/product/${product.slug}`);
+      return;
+    }
+
+    const rawUnitPrice =
+      (defaultVariant?.sale_price ?? defaultVariant?.price ?? null) ??
+      effectivePrice.salePrice ??
+      effectivePrice.price ??
+      product.sale_price ??
+      product.price;
+    const unitPrice = typeof rawUnitPrice === "number"
+      ? rawUnitPrice
+      : Number(rawUnitPrice ?? 0);
+    const quantity = 1;
+
+    addItem({
+      product_id: product.id,
+      product,
+      variant_id: defaultVariant?.id,
+      variant: defaultVariant
+        ? {
+            ...defaultVariant,
+            sale_price_override: effectivePrice.salePrice ?? undefined,
+            price_override: effectivePrice.price,
+          }
+        : undefined,
+      quantity,
+      unit_price: unitPrice,
+      total_price: unitPrice * quantity,
+    });
+
+    const priceForTracking = unitPrice;
+
+    trackAddToCart(product.id, product.name, priceForTracking);
+    trackFBAddToCart(product.name, product.id, priceForTracking, "INR");
 
     toast({
       title: "Added to cart!",
