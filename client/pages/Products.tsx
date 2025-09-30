@@ -419,9 +419,13 @@ export default function Products() {
       effectivePrice.price ??
       product.sale_price ??
       product.price;
-    const unitPrice = typeof rawUnitPrice === "number"
-      ? rawUnitPrice
-      : Number(rawUnitPrice ?? 0);
+    const resolvedUnitPrice =
+      typeof rawUnitPrice === "number"
+        ? rawUnitPrice
+        : Number(rawUnitPrice ?? 0);
+    const unitPrice = Number.isFinite(resolvedUnitPrice)
+      ? resolvedUnitPrice
+      : 0;
     const quantity = 1;
 
     addItem({
