@@ -77,9 +77,12 @@ export default function AdminProducts() {
       const categoriesData =
         results[1].status === "fulfilled" ? results[1].value.data || [] : [];
 
-      // Fetch category assignments for all products
-      let productsWithAssignments: ProductWithCategoryAssignments[] =
-        productsData;
+      const productIds = productsData.map((product) => product.id);
+
+      const assignmentsByProduct: Record<
+        string,
+        { category_id: string; is_primary: boolean }[]
+      > = {};
 
       try {
         const { data: allAssignments, error: assignmentsError } = await supabase
@@ -94,29 +97,15 @@ export default function AdminProducts() {
         }
 
         if (allAssignments) {
-          // Group assignments by product_id
-          const assignmentsByProduct = allAssignments.reduce(
-            (acc, assignment) => {
-              if (!acc[assignment.product_id]) {
-                acc[assignment.product_id] = [];
-              }
-              acc[assignment.product_id].push({
-                category_id: assignment.category_id,
-                is_primary: assignment.is_primary,
-              });
-              return acc;
-            },
-            {} as Record<
-              string,
-              { category_id: string; is_primary: boolean }[]
-            >,
-          );
-
-          // Add assignments to products
-          productsWithAssignments = productsData.map((product) => ({
-            ...product,
-            categoryAssignments: assignmentsByProduct[product.id] || [],
-          }));
+          allAssignments.forEach((assignment) => {
+            if (!assignmentsByProduct[assignment.product_id]) {
+              assignmentsByProduct[assignment.product_id] = [];
+            }
+            assignmentsByProduct[assignment.product_id].push({
+              category_id: assignment.category_id,
+              is_primary: assignment.is_primary,
+            });
+          });
 
           console.log("Added category assignments to products");
         }
@@ -125,6 +114,43 @@ export default function AdminProducts() {
           "Multi-category assignments not available, using legacy categories",
         );
       }
+
+      const variantsByProduct: Record<string, ProductVariant[]> = {};
+      if (productIds.length > 0) {
+        try {
+          const { data: variantsData, error: variantsError } = await supabase
+            .from("product_variants")
+            .select("*")
+            .in("product_id", productIds);
+
+          if (variantsError && variantsError.code !== "42P01") {
+            console.warn("Error fetching product variants:", variantsError);
+          }
+
+          if (variantsData) {
+            variantsData.forEach((variant) => {
+              if (!variantsByProduct[variant.product_id]) {
+                variantsByProduct[variant.product_id] = [];
+              }
+              variantsByProduct[variant.product_id].push(variant);
+            });
+
+            console.log("Added variant data to products");
+          }
+        } catch (error) {
+          console.warn(
+            "Product variants not available, using base pricing",
+            error,
+          );
+        }
+      }
+
+      const productsWithAssignments: ProductWithCategoryAssignments[] =
+        productsData.map((product) => ({
+          ...product,
+          categoryAssignments: assignmentsByProduct[product.id] || [],
+          variants: variantsByProduct[product.id] || [],
+        }));
 
       console.log("Fetched:", {
         products: productsWithAssignments.length,
