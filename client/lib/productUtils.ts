@@ -250,37 +250,60 @@ export function getProductEffectivePriceSync(
   hasVariants: boolean;
   defaultVariant?: ProductVariant;
 } {
-  // Check if variants are provided and active
-  if (variants && variants.length > 0) {
-    const activeVariants = variants
-      .filter((v) => v.is_active)
-      .sort((a, b) => a.sort_order - b.sort_order);
+  const productPrices = resolveProductPrice(product);
+  const variantList = Array.isArray(variants) ? variants : [];
 
-    if (activeVariants.length > 0) {
-      const defaultVariant = activeVariants[0];
-      return {
-        price: defaultVariant.price,
-        salePrice: defaultVariant.sale_price,
-        hasVariants: true,
-        defaultVariant,
-      };
-    }
-  }
+  const activeVariants = variantList.filter(
+    (variant) => variant.is_active !== false,
+  );
 
-  // If product has variations flag set but no active variants, return base pricing
-  if (product.has_variations) {
+  if (activeVariants.length > 0) {
+    const toOrderValue = (value: unknown) => {
+      const parsed = parsePrice(value);
+      return parsed !== null ? parsed : Number.MAX_SAFE_INTEGER;
+    };
+
+    const sortedVariants = [...activeVariants].sort((a, b) => {
+      const sortDiff = toOrderValue(a.sort_order) - toOrderValue(b.sort_order);
+      if (sortDiff !== 0) return sortDiff;
+
+      const displayDiff =
+        toOrderValue(a.display_order) - toOrderValue(b.display_order);
+      if (displayDiff !== 0) return displayDiff;
+
+      return (a.name || "").localeCompare(b.name || "");
+    });
+
+    const defaultVariant = sortedVariants[0];
+    const variantBasePrice = resolveVariantBasePriceValue(defaultVariant);
+    const variantSalePrice = resolveVariantSalePriceValue(defaultVariant);
+
+    const priceCandidate =
+      variantBasePrice ??
+      variantSalePrice ??
+      productPrices.base ??
+      productPrices.sale ??
+      0;
+
+    const saleCandidate =
+      variantSalePrice !== null ? variantSalePrice : productPrices.sale;
+
     return {
-      price: product.price,
-      salePrice: product.sale_price,
+      price: priceCandidate,
+      salePrice: saleCandidate ?? null,
       hasVariants: true,
+      defaultVariant,
     };
   }
 
-  // Default fallback to base pricing
+  const basePrice =
+    productPrices.base ??
+    (productPrices.sale !== null ? productPrices.sale : 0);
+
   return {
-    price: product.price,
-    salePrice: product.sale_price,
-    hasVariants: false,
+    price: basePrice,
+    salePrice: productPrices.sale ?? null,
+    hasVariants: Boolean(product.has_variations),
   };
 }
 
@@ -333,6 +356,34 @@ function resolveProductPrice(product?: Product | null): {
     sale: parsePrice(product.sale_price),
     base: parsePrice(product.price),
   };
+}
+
+function resolveVariantSalePriceValue(
+  variant?: ProductVariant | null,
+): number | null {
+  if (!variant) return null;
+
+  const saleOverride = parsePrice(variant.sale_price_override);
+  if (saleOverride !== null) return saleOverride;
+
+  const salePrice = parsePrice(variant.sale_price);
+  if (salePrice !== null) return salePrice;
+
+  return null;
+}
+
+function resolveVariantBasePriceValue(
+  variant?: ProductVariant | null,
+): number | null {
+  if (!variant) return null;
+
+  const priceOverride = parsePrice(variant.price_override);
+  if (priceOverride !== null) return priceOverride;
+
+  const basePrice = parsePrice(variant.price);
+  if (basePrice !== null) return basePrice;
+
+  return null;
 }
 
 export function getCartItemUnitPrice(item: CartItem): number {
