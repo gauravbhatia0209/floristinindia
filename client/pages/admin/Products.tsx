@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import {
   Plus,
   Search,
-  Filter,
   MoreHorizontal,
   Edit,
   Trash2,
@@ -36,7 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
-import { Product, ProductCategory } from "@shared/database.types";
+import { getProductEffectivePriceSync } from "@/lib/productUtils";
+import { Product, ProductCategory, ProductVariant } from "@shared/database.types";
 
 interface ProductWithCategoryAssignments extends Product {
   categoryAssignments?: { category_id: string; is_primary: boolean }[];
