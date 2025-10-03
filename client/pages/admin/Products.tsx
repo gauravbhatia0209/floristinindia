@@ -40,6 +40,7 @@ import { Product, ProductCategory, ProductVariant } from "@shared/database.types
 
 interface ProductWithCategoryAssignments extends Product {
   categoryAssignments?: { category_id: string; is_primary: boolean }[];
+  variants?: ProductVariant[];
 }
 
 export default function AdminProducts() {
