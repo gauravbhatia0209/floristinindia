@@ -228,6 +228,19 @@ export default function AdminProducts() {
     return { label: "In Stock", variant: "default" as const };
   }
 
+  function formatCurrencyValue(value: number | null | undefined) {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const fractionDigits = Number.isInteger(value) ? 0 : 2;
+
+    return value.toLocaleString("en-IN", {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    });
+  }
+
   async function handleDeleteProduct(productId: string) {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
