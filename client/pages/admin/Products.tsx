@@ -473,16 +473,42 @@ export default function AdminProducts() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div>
-                          <span className="font-medium">
-                            ₹{product.sale_price || product.price}
-                          </span>
-                          {product.sale_price && (
-                            <span className="text-sm text-muted-foreground line-through ml-2">
-                              ₹{product.price}
-                            </span>
-                          )}
-                        </div>
+                        {(() => {
+                          const pricing = getProductEffectivePriceSync(
+                            product,
+                            product.variants,
+                          );
+                          const primaryValue =
+                            pricing.salePrice ??
+                            pricing.price ??
+                            product.sale_price ??
+                            product.price;
+                          const compareValue =
+                            pricing.salePrice !== null &&
+                            pricing.salePrice !== undefined &&
+                            pricing.price !== null &&
+                            pricing.price !== undefined &&
+                            pricing.salePrice < pricing.price
+                              ? pricing.price
+                              : null;
+                          const formattedPrimary =
+                            formatCurrencyValue(primaryValue);
+                          const formattedCompare =
+                            formatCurrencyValue(compareValue);
+
+                          return (
+                            <div>
+                              <span className="font-medium">
+                                {formattedPrimary ? `₹${formattedPrimary}` : "—"}
+                              </span>
+                              {formattedCompare && (
+                                <span className="text-sm text-muted-foreground line-through ml-2">
+                                  ₹{formattedCompare}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
