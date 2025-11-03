@@ -2048,6 +2048,7 @@ export default function Checkout() {
                   <ShippingMethodCard
                     pincode={form.pincode}
                     orderValue={total}
+                    cartItems={items}
                     selectedMethodId={selectedShippingMethod?.config_id || null}
                     onMethodSelect={handleShippingMethodSelect}
                   />
