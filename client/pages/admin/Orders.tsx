@@ -511,9 +511,8 @@ export default function Orders() {
               <div class="address-block">
                 <div class="section-title">FROM (SENDER)</div>
                 <div class="address-content">
-                  <div class="address-name">${businessName}</div>
-                  <div class="address-detail">${businessAddress}</div>
-                  <div class="phone-detail"><strong>Phone:</strong> ${businessPhone}</div>
+                  <div class="address-name">${order.customer?.first_name && order.customer?.last_name ? order.customer.first_name + " " + order.customer.last_name : "Customer"}</div>
+                  ${order.customer?.phone ? `<div class="phone-detail"><strong>Phone:</strong> ${order.customer.phone}</div>` : ""}
                 </div>
               </div>
 
