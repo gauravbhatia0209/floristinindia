@@ -558,6 +558,39 @@ function UserForm({
           </div>
 
           <div>
+            <Label htmlFor="password">
+              Password {user && "(Leave blank to keep current)"}
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                placeholder={user ? "Enter new password" : "Enter password"}
+                required={!user}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Password will be displayed as plain text in the users list
+            </p>
+          </div>
+
+          <div>
             <Label htmlFor="role">Role</Label>
             <Select value={formData.role} onValueChange={handleRoleChange}>
               <SelectTrigger>
