@@ -226,7 +226,9 @@ export async function isProductAvailableAtPincode(
       return false;
     }
 
-    return productZone?.is_available === true && productZone?.available_quantity > 0;
+    return (
+      productZone?.is_available === true && productZone?.available_quantity > 0
+    );
   } catch (error) {
     console.error("Error checking product availability at pincode:", error);
     return false;
@@ -282,7 +284,8 @@ export async function getProductAvailabilityAtPincode(
     }
 
     return {
-      isAvailable: productZone.is_available === true && productZone.available_quantity > 0,
+      isAvailable:
+        productZone.is_available === true && productZone.available_quantity > 0,
       quantity: productZone.available_quantity || 0,
       zoneId,
     };

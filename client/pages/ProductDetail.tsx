@@ -144,7 +144,10 @@ export default function ProductDetail() {
         const zone = zones[0];
 
         // Check if product is available in this zone
-        const isProductAvailable = await isProductAvailableAtPincode(product.id, pincode);
+        const isProductAvailable = await isProductAvailableAtPincode(
+          product.id,
+          pincode,
+        );
 
         if (!isProductAvailable) {
           setDeliveryInfo({
@@ -166,7 +169,8 @@ export default function ProductDetail() {
       } else {
         setDeliveryInfo({
           available: false,
-          message: "We are currently not providing service in the pincode entered",
+          message:
+            "We are currently not providing service in the pincode entered",
         });
       }
     } catch (error) {

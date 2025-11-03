@@ -583,7 +583,10 @@ export default function ProductEdit() {
 
   async function saveProductDeliveryZones(productId: string) {
     try {
-      console.log("🔄 Saving product delivery zones...", { productId, productDeliveryZones });
+      console.log("🔄 Saving product delivery zones...", {
+        productId,
+        productDeliveryZones,
+      });
 
       // First check if table exists by trying to query it
       const { error: checkError } = await supabase
@@ -612,7 +615,9 @@ export default function ProductEdit() {
       console.log("📦 Delivery zone entries to save:", deliveryZoneEntries);
 
       if (deliveryZoneEntries.length === 0) {
-        console.log("✅ No delivery zones selected for this product - clearing any existing entries");
+        console.log(
+          "✅ No delivery zones selected for this product - clearing any existing entries",
+        );
 
         // Delete existing entries if no new ones selected
         const { error: deleteError } = await supabase
@@ -643,7 +648,10 @@ export default function ProductEdit() {
           deleteError?.error_description ||
           deleteError?.details ||
           JSON.stringify(deleteError);
-        console.error("Failed to delete existing product delivery zones:", errorMsg);
+        console.error(
+          "Failed to delete existing product delivery zones:",
+          errorMsg,
+        );
         throw new Error(`Delete failed: ${errorMsg}`);
       }
 
@@ -971,12 +979,14 @@ export default function ProductEdit() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-sm text-muted-foreground mb-4">
-                Select the delivery zones where this product is available and specify the quantity available in each zone.
+                Select the delivery zones where this product is available and
+                specify the quantity available in each zone.
               </div>
 
               {shippingZones.length === 0 ? (
                 <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                  No active delivery zones found. Please create delivery zones in Shipping Management first.
+                  No active delivery zones found. Please create delivery zones
+                  in Shipping Management first.
                 </div>
               ) : (
                 <div className="space-y-3">
