@@ -157,7 +157,8 @@ export default function Customers() {
   };
 
   return (
-    <div className="space-y-6">
+    <PermissionGuard requiredModule="customers">
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -613,5 +614,6 @@ export default function Customers() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGuard>
   );
 }
