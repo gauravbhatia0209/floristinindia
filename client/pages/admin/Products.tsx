@@ -510,7 +510,7 @@ export default function AdminProducts() {
                           return (
                             <div>
                               <span className="font-medium">
-                                {formattedPrimary ? `₹${formattedPrimary}` : "—"}
+                                {formattedPrimary ? `₹${formattedPrimary}` : "��"}
                               </span>
                               {formattedCompare && (
                                 <span className="text-sm text-muted-foreground line-through ml-2">
@@ -550,29 +550,35 @@ export default function AdminProducts() {
                                 View
                               </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link to={`/admin/products/${product.id}/edit`}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                toggleProductStatus(
-                                  product.id,
-                                  product.is_active,
-                                )
-                              }
-                            >
-                              {product.is_active ? "Deactivate" : "Activate"}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-red-600"
-                              onClick={() => handleDeleteProduct(product.id)}
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
+                            {hasEditPermission && (
+                              <DropdownMenuItem asChild>
+                                <Link to={`/admin/products/${product.id}/edit`}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Link>
+                              </DropdownMenuItem>
+                            )}
+                            {hasEditPermission && (
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  toggleProductStatus(
+                                    product.id,
+                                    product.is_active,
+                                  )
+                                }
+                              >
+                                {product.is_active ? "Deactivate" : "Activate"}
+                              </DropdownMenuItem>
+                            )}
+                            {hasDeletePermission && (
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => handleDeleteProduct(product.id)}
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
