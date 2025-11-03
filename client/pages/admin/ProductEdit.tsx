@@ -134,17 +134,39 @@ export default function ProductEdit() {
 
   async function fetchProductDeliveryZones(productId: string) {
     try {
-      const { data } = await supabase
+      console.log("🔄 Fetching product delivery zones for product:", productId);
+
+      const { data, error } = await supabase
         .from("product_delivery_zones")
-        .select("zone_id, available_quantity")
+        .select("zone_id, available_quantity, is_available")
         .eq("product_id", productId);
 
-      if (data) {
+      if (error) {
+        if (error.code === "42P01") {
+          console.warn(
+            "⚠️ Product delivery zones table doesn't exist yet. Please run: product-delivery-zones-migration.sql",
+          );
+          return;
+        }
+        console.error("Failed to fetch product delivery zones:", error);
+        return;
+      }
+
+      if (data && data.length > 0) {
         const zonesMap: Record<string, number> = {};
         data.forEach((item) => {
-          zonesMap[item.zone_id] = item.available_quantity;
+          if (item.is_available) {
+            zonesMap[item.zone_id] = item.available_quantity;
+          }
         });
+        console.log(
+          `✅ Loaded ${data.length} delivery zones for product:`,
+          zonesMap,
+        );
         setProductDeliveryZones(zonesMap);
+      } else {
+        console.log("ℹ️ No delivery zones found for this product");
+        setProductDeliveryZones({});
       }
     } catch (error: any) {
       console.error("Failed to fetch product delivery zones:", error);
