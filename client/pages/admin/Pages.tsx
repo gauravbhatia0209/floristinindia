@@ -164,8 +164,9 @@ export default function Pages() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <PermissionGuard requiredModule="pages">
+      <div className="space-y-6">
+        {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Page Management</h1>
@@ -379,6 +380,7 @@ export default function Pages() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGuard>
   );
 }
 
