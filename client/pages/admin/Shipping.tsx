@@ -244,20 +244,24 @@ export default function Shipping() {
                           toggleZoneStatus(zone.id, zone.is_active)
                         }
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditingZone(zone)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteZone(zone.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </Button>
+                      {hasEditPermission && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditingZone(zone)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {hasDeletePermission && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteZone(zone.id)}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
