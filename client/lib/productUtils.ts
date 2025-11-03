@@ -258,25 +258,27 @@ export function getProductEffectivePriceSync(
   );
 
   if (activeVariants.length > 0) {
-    const toOrderValue = (value: unknown) => {
-      const parsed = parsePrice(value);
-      return parsed !== null ? parsed : Number.MAX_SAFE_INTEGER;
-    };
+    // Find the variant with the MINIMUM price for display on product cards
+    let minPriceVariant = activeVariants[0];
+    let minPrice = Number.MAX_SAFE_INTEGER;
+    let minSalePrice: number | null = null;
 
-    const sortedVariants = [...activeVariants].sort((a, b) => {
-      const sortDiff = toOrderValue(a.sort_order) - toOrderValue(b.sort_order);
-      if (sortDiff !== 0) return sortDiff;
+    for (const variant of activeVariants) {
+      const variantBasePrice = resolveVariantBasePriceValue(variant);
+      const variantSalePrice = resolveVariantSalePriceValue(variant);
 
-      const displayDiff =
-        toOrderValue(a.display_order) - toOrderValue(b.display_order);
-      if (displayDiff !== 0) return displayDiff;
+      // Use sale price if available, otherwise base price
+      const effectivePrice = variantSalePrice ?? variantBasePrice;
 
-      return (a.name || "").localeCompare(b.name || "");
-    });
+      if (effectivePrice !== null && effectivePrice < minPrice) {
+        minPrice = effectivePrice;
+        minPriceVariant = variant;
+        minSalePrice = variantSalePrice;
+      }
+    }
 
-    const defaultVariant = sortedVariants[0];
-    const variantBasePrice = resolveVariantBasePriceValue(defaultVariant);
-    const variantSalePrice = resolveVariantSalePriceValue(defaultVariant);
+    const variantBasePrice = resolveVariantBasePriceValue(minPriceVariant);
+    const variantSalePrice = resolveVariantSalePriceValue(minPriceVariant);
 
     const priceCandidate =
       variantBasePrice ??
@@ -292,7 +294,7 @@ export function getProductEffectivePriceSync(
       price: priceCandidate,
       salePrice: saleCandidate ?? null,
       hasVariants: true,
-      defaultVariant,
+      defaultVariant: minPriceVariant,
     };
   }
 
