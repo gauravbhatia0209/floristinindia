@@ -142,6 +142,18 @@ export default function ProductDetail() {
 
       if (zones && zones.length > 0) {
         const zone = zones[0];
+
+        // Check if product is available in this zone
+        const isProductAvailable = await isProductAvailableAtPincode(product.id, pincode);
+
+        if (!isProductAvailable) {
+          setDeliveryInfo({
+            available: false,
+            message: "Product not available at the Pincode entered.",
+          });
+          return;
+        }
+
         const availableMethods =
           zone.shipping_methods?.filter((method: any) => method.is_active) ||
           [];
@@ -154,7 +166,7 @@ export default function ProductDetail() {
       } else {
         setDeliveryInfo({
           available: false,
-          message: "Sorry, we don't deliver to this pincode yet.",
+          message: "We are currently not providing service in the pincode entered",
         });
       }
     } catch (error) {
