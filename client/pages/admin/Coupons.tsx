@@ -182,10 +182,12 @@ export default function Coupons() {
             Create and manage discount coupons
           </p>
         </div>
-        <Button onClick={() => setIsAddingCoupon(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Coupon
-        </Button>
+        {hasCreatePermission && (
+          <Button onClick={() => setIsAddingCoupon(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Coupon
+          </Button>
+        )}
       </div>
 
       {/* Statistics */}
