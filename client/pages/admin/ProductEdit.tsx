@@ -56,6 +56,10 @@ export default function ProductEdit() {
   const [isSaving, setIsSaving] = useState(false);
   const { clearProductCache, clearAllCache } = useClearMetaCacheOnSave();
   const { settings } = useSiteSettings();
+  const [shippingZones, setShippingZones] = useState<any[]>([]);
+  const [productDeliveryZones, setProductDeliveryZones] = useState<
+    Record<string, number>
+  >({});
 
   const [formData, setFormData] = useState({
     name: "",
