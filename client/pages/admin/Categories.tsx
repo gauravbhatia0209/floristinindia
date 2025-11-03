@@ -609,6 +609,7 @@ function MainCategoryAccordion({
 }
 
 export default function AdminCategories() {
+  const { user } = useAuth();
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -618,6 +619,10 @@ export default function AdminCategories() {
   const [isSaving, setIsSaving] = useState(false);
   const { clearCategoryCache, clearAllCache } = useClearMetaCacheOnSave();
   const { settings } = useSiteSettings();
+
+  const hasCreatePermission = canCreate(user?.permissions, "categories");
+  const hasEditPermission = canEdit(user?.permissions, "categories");
+  const hasDeletePermission = canDelete(user?.permissions, "categories");
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
