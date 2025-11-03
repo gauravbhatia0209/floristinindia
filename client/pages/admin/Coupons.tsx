@@ -36,11 +36,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 export default function Coupons() {
+  const { user } = useAuth();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
   const [isAddingCoupon, setIsAddingCoupon] = useState(false);
+
+  const hasCreatePermission = canCreate(user?.permissions, "coupons");
+  const hasEditPermission = canEdit(user?.permissions, "coupons");
+  const hasDeletePermission = canDelete(user?.permissions, "coupons");
 
   useEffect(() => {
     fetchCoupons();
