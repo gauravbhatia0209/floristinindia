@@ -378,9 +378,18 @@ export default function Orders() {
               margin-bottom: 15px;
             }
             .header-title {
-              font-size: 28px;
+              font-size: 10px;
               font-weight: bold;
               margin: 10px 0;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+            .delivery-date-top {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 20px;
+              padding-bottom: 15px;
+              border-bottom: 2px solid #333;
             }
             .order-number {
               font-size: 14px;
