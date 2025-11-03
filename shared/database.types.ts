@@ -738,7 +738,15 @@ export interface Database {
             | "testimonials"
             | "newsletter"
             | "features"
-            | "banner";
+            | "banner"
+            | "hero_carousel"
+            | "image"
+            | "button"
+            | "list"
+            | "separator"
+            | "heading"
+            | "paragraph"
+            | "image_with_link";
           title: string | null;
           subtitle: string | null;
           content: any; // JSON content specific to section type
@@ -760,7 +768,15 @@ export interface Database {
             | "testimonials"
             | "newsletter"
             | "features"
-            | "banner";
+            | "banner"
+            | "hero_carousel"
+            | "image"
+            | "button"
+            | "list"
+            | "separator"
+            | "heading"
+            | "paragraph"
+            | "image_with_link";
           title?: string | null;
           subtitle?: string | null;
           content?: any;
@@ -782,7 +798,15 @@ export interface Database {
             | "testimonials"
             | "newsletter"
             | "features"
-            | "banner";
+            | "banner"
+            | "hero_carousel"
+            | "image"
+            | "button"
+            | "list"
+            | "separator"
+            | "heading"
+            | "paragraph"
+            | "image_with_link";
           title?: string | null;
           subtitle?: string | null;
           content?: any;
