@@ -189,13 +189,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // Get user data
-      const tableName = userType === "admin" ? "admins" : "customers";
-      const { data: userData, error: userError } = await supabase
-        .from(tableName)
-        .select("*")
-        .eq("id", session.user_id)
-        .eq("is_active", true)
-        .single();
+      let userData;
+      let userError;
+
+      if (userType === "admin") {
+        // Try sub_users first
+        const { data: subUserData, error: subUserErr } = await supabase
+          .from("sub_users")
+          .select("*")
+          .eq("id", session.user_id)
+          .eq("is_active", true)
+          .single();
+
+        if (!subUserErr && subUserData) {
+          userData = subUserData;
+          userError = null;
+        } else {
+          // Fall back to admins table
+          const { data: adminData, error: adminErr } = await supabase
+            .from("admins")
+            .select("*")
+            .eq("id", session.user_id)
+            .eq("is_active", true)
+            .single();
+
+          userData = adminData;
+          userError = adminErr;
+        }
+      } else {
+        const { data: custData, error: custErr } = await supabase
+          .from("customers")
+          .select("*")
+          .eq("id", session.user_id)
+          .eq("is_active", true)
+          .single();
+
+        userData = custData;
+        userError = custErr;
+      }
 
       if (userError || !userData) {
         localStorage.removeItem("session_token");
@@ -207,7 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const userObj: User = {
         id: userData.id,
         email: userData.email,
-        name: userData.name,
+        name: userData.name || `${userData.first_name} ${userData.last_name}`,
         role: userData.role,
         user_type: userType,
         email_verified:
