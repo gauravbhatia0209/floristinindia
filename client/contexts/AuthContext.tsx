@@ -281,9 +281,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           if (subUserData.password) {
             // Check if password is bcrypt hashed (starts with $2a$, $2b$, or $2y$)
-            if (subUserData.password.startsWith("$2a$") ||
-                subUserData.password.startsWith("$2b$") ||
-                subUserData.password.startsWith("$2y$")) {
+            if (
+              subUserData.password.startsWith("$2a$") ||
+              subUserData.password.startsWith("$2b$") ||
+              subUserData.password.startsWith("$2y$")
+            ) {
               // Hashed password - use bcrypt verify
               isValidPassword = await verifyPassword(
                 password,
