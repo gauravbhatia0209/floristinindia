@@ -552,14 +552,22 @@ export default function Orders() {
                 <div class="info-label">Delivery Date:</div>
                 <div class="info-value">${order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" }) : "To be determined"}</div>
               </div>
-              ${order.delivery_slot ? `<div class="info-row">
+              ${
+                order.delivery_slot
+                  ? `<div class="info-row">
                 <div class="info-label">Time Slot:</div>
                 <div class="info-value">${order.delivery_slot}</div>
-              </div>` : ""}
-              ${order.customer_message ? `<div class="message-box">
+              </div>`
+                  : ""
+              }
+              ${
+                order.customer_message
+                  ? `<div class="message-box">
                 <strong>Customer Message:</strong><br/>
                 ${order.customer_message}
-              </div>` : ""}
+              </div>`
+                  : ""
+              }
             </div>
 
             <div class="footer">
