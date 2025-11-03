@@ -509,6 +509,10 @@ export default function Orders() {
         </head>
         <body>
           <div class="container">
+            <div class="delivery-date-top">
+              Delivery Date: ${order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" }) : "To be determined"}
+            </div>
+
             <div class="header">
               ${logoSection}
               <div class="header-title">SHIPPING SLIP</div>
@@ -1316,7 +1320,7 @@ export default function Orders() {
                                             {file.file_name}
                                           </p>
                                           <p className="text-sm text-blue-600">
-                                            📦 Product: {file.product_name}
+                                            �� Product: {file.product_name}
                                           </p>
                                           <div className="flex gap-4 mt-1">
                                             {file.file_size && (
