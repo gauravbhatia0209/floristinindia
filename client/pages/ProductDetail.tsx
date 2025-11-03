@@ -428,17 +428,6 @@ export default function ProductDetail() {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            {/* Show ratings only for products with variations */}
-            {product.has_variations && variants.length > 0 && (
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-1">
-                  <StarRating rating={4.8} size="md" showNumber />
-                  <span className="text-muted-foreground ml-2">
-                    • 156 reviews
-                  </span>
-                </div>
-              </div>
-            )}
 
             {/* Pricing */}
             <div className="flex items-center gap-4 mb-6">
