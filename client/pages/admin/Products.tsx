@@ -37,6 +37,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { getProductEffectivePriceSync } from "@/lib/productUtils";
 import { Product, ProductCategory, ProductVariant } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
 
 interface ProductWithCategoryAssignments extends Product {
   categoryAssignments?: { category_id: string; is_primary: boolean }[];
