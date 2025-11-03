@@ -159,461 +159,478 @@ export default function Customers() {
   return (
     <PermissionGuard requiredModule="customers">
       <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Customer Management</h1>
-          <p className="text-muted-foreground">
-            View and manage customer information
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
-        </div>
-      </div>
-
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">Total Customers</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">
-                {stats.verified}
-              </p>
-              <p className="text-sm text-muted-foreground">Verified</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{stats.active}</p>
-              <p className="text-sm text-muted-foreground">Active</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">
-                ₹{stats.totalSpent.toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">Total Revenue</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">
-                ₹{Math.round(stats.avgOrderValue).toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">Avg Order Value</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search customers by name, email, or phone..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Customer Management</h1>
+            <p className="text-muted-foreground">
+              View and manage customer information
+            </p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex gap-2">
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
 
-      {/* Customers List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Customers ({filteredCustomers.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {filteredCustomers.map((customer) => {
-              const tierInfo = getCustomerTier(customer.total_spent);
-              return (
-                <div
-                  key={customer.id}
-                  className="border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors"
-                  onClick={() => handleCustomerClick(customer)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-gradient-rose rounded-full flex items-center justify-center text-white font-semibold">
-                          {customer.first_name.charAt(0)}
-                          {customer.last_name.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">
-                            {customer.first_name} {customer.last_name}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {customer.email}
-                          </p>
-                        </div>
-                        <div
-                          className={`w-2 h-2 rounded-full ${tierInfo.color}`}
-                          title={`${tierInfo.tier} Customer`}
-                        ></div>
-                        <Badge variant="outline" className="text-xs">
-                          {tierInfo.tier}
-                        </Badge>
-                      </div>
+        {/* Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-sm text-muted-foreground">Total Customers</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.verified}
+                </p>
+                <p className="text-sm text-muted-foreground">Verified</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">
+                  {stats.active}
+                </p>
+                <p className="text-sm text-muted-foreground">Active</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold">
+                  ₹{stats.totalSpent.toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold">
+                  ₹{Math.round(stats.avgOrderValue).toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Avg Order Value</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-muted-foreground" />
-                          <span>
-                            {customer.phone || "No phone"}
-                            {customer.phone_verified && (
-                              <Badge variant="outline" className="ml-1 text-xs">
-                                ✓
+        {/* Search */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Search customers by name, email, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Customers List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Customers ({filteredCustomers.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {filteredCustomers.map((customer) => {
+                const tierInfo = getCustomerTier(customer.total_spent);
+                return (
+                  <div
+                    key={customer.id}
+                    className="border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+                    onClick={() => handleCustomerClick(customer)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 bg-gradient-rose rounded-full flex items-center justify-center text-white font-semibold">
+                            {customer.first_name.charAt(0)}
+                            {customer.last_name.charAt(0)}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">
+                              {customer.first_name} {customer.last_name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {customer.email}
+                            </p>
+                          </div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${tierInfo.color}`}
+                            title={`${tierInfo.tier} Customer`}
+                          ></div>
+                          <Badge variant="outline" className="text-xs">
+                            {tierInfo.tier}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            <span>
+                              {customer.phone || "No phone"}
+                              {customer.phone_verified && (
+                                <Badge
+                                  variant="outline"
+                                  className="ml-1 text-xs"
+                                >
+                                  ✓
+                                </Badge>
+                              )}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <ShoppingBag className="w-4 h-4 text-muted-foreground" />
+                            <span>
+                              {customer.total_orders} orders • ₹
+                              {customer.total_spent.toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span>
+                              Joined {formatDate(customer.created_at)}
+                              {customer.last_order_date && (
+                                <span className="text-muted-foreground">
+                                  {" "}
+                                  • Last order{" "}
+                                  {formatDate(customer.last_order_date)}
+                                </span>
+                              )}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={
+                                customer.is_active ? "default" : "secondary"
+                              }
+                            >
+                              {customer.is_active ? "Active" : "Inactive"}
+                            </Badge>
+                            {customer.email_verified && (
+                              <Badge variant="outline" className="text-xs">
+                                Email ✓
                               </Badge>
                             )}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <ShoppingBag className="w-4 h-4 text-muted-foreground" />
-                          <span>
-                            {customer.total_orders} orders • ₹
-                            {customer.total_spent.toLocaleString()}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-muted-foreground" />
-                          <span>
-                            Joined {formatDate(customer.created_at)}
-                            {customer.last_order_date && (
-                              <span className="text-muted-foreground">
-                                {" "}
-                                • Last order{" "}
-                                {formatDate(customer.last_order_date)}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant={
-                              customer.is_active ? "default" : "secondary"
-                            }
-                          >
-                            {customer.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                          {customer.email_verified && (
-                            <Badge variant="outline" className="text-xs">
-                              Email ✓
-                            </Badge>
-                          )}
+                          </div>
                         </div>
                       </div>
+
+                      <Button variant="ghost" size="icon">
+                        <Eye className="w-4 h-4" />
+                      </Button>
                     </div>
-
-                    <Button variant="ghost" size="icon">
-                      <Eye className="w-4 h-4" />
-                    </Button>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Customer Details Dialog */}
-      <Dialog
-        open={!!selectedCustomer}
-        onOpenChange={() => setSelectedCustomer(null)}
-      >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              Customer Details -{" "}
-              {selectedCustomer &&
-                `${selectedCustomer.first_name} ${selectedCustomer.last_name}`}
-            </DialogTitle>
-          </DialogHeader>
+        {/* Customer Details Dialog */}
+        <Dialog
+          open={!!selectedCustomer}
+          onOpenChange={() => setSelectedCustomer(null)}
+        >
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                Customer Details -{" "}
+                {selectedCustomer &&
+                  `${selectedCustomer.first_name} ${selectedCustomer.last_name}`}
+              </DialogTitle>
+            </DialogHeader>
 
-          {selectedCustomer && (
-            <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="profile">Profile</TabsTrigger>
-                <TabsTrigger value="orders">Orders</TabsTrigger>
-                <TabsTrigger value="addresses">Addresses</TabsTrigger>
-                <TabsTrigger value="preferences">Preferences</TabsTrigger>
-              </TabsList>
+            {selectedCustomer && (
+              <Tabs defaultValue="profile" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="profile">Profile</TabsTrigger>
+                  <TabsTrigger value="orders">Orders</TabsTrigger>
+                  <TabsTrigger value="addresses">Addresses</TabsTrigger>
+                  <TabsTrigger value="preferences">Preferences</TabsTrigger>
+                </TabsList>
 
-              <TabsContent value="profile" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Personal Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium">Full Name</p>
-                        <p>
-                          {selectedCustomer.first_name}{" "}
-                          {selectedCustomer.last_name}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Email</p>
-                        <div className="flex items-center gap-2">
-                          <p>{selectedCustomer.email}</p>
-                          {selectedCustomer.email_verified && (
-                            <Badge variant="outline" className="text-xs">
-                              Verified
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      {selectedCustomer.phone && (
+                <TabsContent value="profile" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Personal Information</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
                         <div>
-                          <p className="text-sm font-medium">Phone</p>
+                          <p className="text-sm font-medium">Full Name</p>
+                          <p>
+                            {selectedCustomer.first_name}{" "}
+                            {selectedCustomer.last_name}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Email</p>
                           <div className="flex items-center gap-2">
-                            <p>{selectedCustomer.phone}</p>
-                            {selectedCustomer.phone_verified && (
+                            <p>{selectedCustomer.email}</p>
+                            {selectedCustomer.email_verified && (
                               <Badge variant="outline" className="text-xs">
                                 Verified
                               </Badge>
                             )}
                           </div>
                         </div>
-                      )}
-                      {selectedCustomer.gender && (
-                        <div>
-                          <p className="text-sm font-medium">Gender</p>
-                          <p className="capitalize">
-                            {selectedCustomer.gender}
-                          </p>
-                        </div>
-                      )}
-                      {selectedCustomer.date_of_birth && (
-                        <div>
-                          <p className="text-sm font-medium">Date of Birth</p>
-                          <p>{formatDate(selectedCustomer.date_of_birth)}</p>
-                        </div>
-                      )}
-                      {selectedCustomer.anniversary_date && (
-                        <div>
-                          <p className="text-sm font-medium">Anniversary</p>
-                          <p>{formatDate(selectedCustomer.anniversary_date)}</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Account Statistics</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium">Customer Since</p>
-                        <p>{formatDate(selectedCustomer.created_at)}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Total Orders</p>
-                        <p className="text-2xl font-bold">
-                          {selectedCustomer.total_orders}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Total Spent</p>
-                        <p className="text-2xl font-bold">
-                          ₹{selectedCustomer.total_spent.toLocaleString()}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">
-                          Average Order Value
-                        </p>
-                        <p className="text-xl font-semibold">
-                          ₹
-                          {selectedCustomer.total_orders > 0
-                            ? Math.round(
-                                selectedCustomer.total_spent /
-                                  selectedCustomer.total_orders,
-                              ).toLocaleString()
-                            : 0}
-                        </p>
-                      </div>
-                      {selectedCustomer.last_order_date && (
-                        <div>
-                          <p className="text-sm font-medium">Last Order</p>
-                          <p>{formatDate(selectedCustomer.last_order_date)}</p>
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-sm font-medium">Customer Tier</p>
-                        <Badge
-                          className={
-                            getCustomerTier(selectedCustomer.total_spent)
-                              .color + " text-white"
-                          }
-                        >
-                          {getCustomerTier(selectedCustomer.total_spent).tier}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="orders" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Orders</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedCustomer.recent_orders &&
-                    selectedCustomer.recent_orders.length > 0 ? (
-                      <div className="space-y-4">
-                        {selectedCustomer.recent_orders.map((order) => (
-                          <div key={order.id} className="border rounded-lg p-4">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h4 className="font-medium">
-                                  #{order.order_number}
-                                </h4>
-                                <p className="text-sm text-muted-foreground">
-                                  {formatDate(order.created_at)}
-                                </p>
-                                <p className="text-sm">
-                                  {order.items.length} item
-                                  {order.items.length !== 1 ? "s" : ""}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <p className="font-semibold">
-                                  ₹{order.total_amount.toLocaleString()}
-                                </p>
-                                <Badge className="text-xs">
-                                  {order.status.toUpperCase()}
+                        {selectedCustomer.phone && (
+                          <div>
+                            <p className="text-sm font-medium">Phone</p>
+                            <div className="flex items-center gap-2">
+                              <p>{selectedCustomer.phone}</p>
+                              {selectedCustomer.phone_verified && (
+                                <Badge variant="outline" className="text-xs">
+                                  Verified
                                 </Badge>
-                              </div>
+                              )}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-center text-muted-foreground py-8">
-                        No orders found
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                        )}
+                        {selectedCustomer.gender && (
+                          <div>
+                            <p className="text-sm font-medium">Gender</p>
+                            <p className="capitalize">
+                              {selectedCustomer.gender}
+                            </p>
+                          </div>
+                        )}
+                        {selectedCustomer.date_of_birth && (
+                          <div>
+                            <p className="text-sm font-medium">Date of Birth</p>
+                            <p>{formatDate(selectedCustomer.date_of_birth)}</p>
+                          </div>
+                        )}
+                        {selectedCustomer.anniversary_date && (
+                          <div>
+                            <p className="text-sm font-medium">Anniversary</p>
+                            <p>
+                              {formatDate(selectedCustomer.anniversary_date)}
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
 
-              <TabsContent value="addresses" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Saved Addresses</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedCustomer.addresses &&
-                    selectedCustomer.addresses.length > 0 ? (
-                      <div className="space-y-4">
-                        {selectedCustomer.addresses.map(
-                          (address: any, index: number) => (
-                            <div key={index} className="border rounded-lg p-4">
-                              <div className="flex items-start gap-2">
-                                <MapPin className="w-4 h-4 mt-1 text-muted-foreground" />
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Account Statistics</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div>
+                          <p className="text-sm font-medium">Customer Since</p>
+                          <p>{formatDate(selectedCustomer.created_at)}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Total Orders</p>
+                          <p className="text-2xl font-bold">
+                            {selectedCustomer.total_orders}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Total Spent</p>
+                          <p className="text-2xl font-bold">
+                            ₹{selectedCustomer.total_spent.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            Average Order Value
+                          </p>
+                          <p className="text-xl font-semibold">
+                            ₹
+                            {selectedCustomer.total_orders > 0
+                              ? Math.round(
+                                  selectedCustomer.total_spent /
+                                    selectedCustomer.total_orders,
+                                ).toLocaleString()
+                              : 0}
+                          </p>
+                        </div>
+                        {selectedCustomer.last_order_date && (
+                          <div>
+                            <p className="text-sm font-medium">Last Order</p>
+                            <p>
+                              {formatDate(selectedCustomer.last_order_date)}
+                            </p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium">Customer Tier</p>
+                          <Badge
+                            className={
+                              getCustomerTier(selectedCustomer.total_spent)
+                                .color + " text-white"
+                            }
+                          >
+                            {getCustomerTier(selectedCustomer.total_spent).tier}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="orders" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Recent Orders</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {selectedCustomer.recent_orders &&
+                      selectedCustomer.recent_orders.length > 0 ? (
+                        <div className="space-y-4">
+                          {selectedCustomer.recent_orders.map((order) => (
+                            <div
+                              key={order.id}
+                              className="border rounded-lg p-4"
+                            >
+                              <div className="flex justify-between items-start">
                                 <div>
-                                  <p className="font-medium">{address.name}</p>
-                                  <p className="text-sm">
-                                    {address.address_line_1}
+                                  <h4 className="font-medium">
+                                    #{order.order_number}
+                                  </h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    {formatDate(order.created_at)}
                                   </p>
-                                  {address.address_line_2 && (
-                                    <p className="text-sm">
-                                      {address.address_line_2}
-                                    </p>
-                                  )}
                                   <p className="text-sm">
-                                    {address.city}, {address.state}{" "}
-                                    {address.pincode}
+                                    {order.items.length} item
+                                    {order.items.length !== 1 ? "s" : ""}
                                   </p>
-                                  {address.phone && (
-                                    <p className="text-sm text-muted-foreground">
-                                      Phone: {address.phone}
-                                    </p>
-                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-semibold">
+                                    ₹{order.total_amount.toLocaleString()}
+                                  </p>
+                                  <Badge className="text-xs">
+                                    {order.status.toUpperCase()}
+                                  </Badge>
                                 </div>
                               </div>
                             </div>
-                          ),
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-center text-muted-foreground py-8">
-                        No saved addresses
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-center text-muted-foreground py-8">
+                          No orders found
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-              <TabsContent value="preferences" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Customer Preferences</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedCustomer.preferences ? (
-                      <div className="space-y-3">
-                        {Object.entries(selectedCustomer.preferences).map(
-                          ([key, value]: [string, any]) => (
-                            <div key={key}>
-                              <p className="text-sm font-medium capitalize">
-                                {key.replace(/_/g, " ")}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                {typeof value === "boolean"
-                                  ? value
-                                    ? "Yes"
-                                    : "No"
-                                  : String(value)}
-                              </p>
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-center text-muted-foreground py-8">
-                        No preferences set
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+                <TabsContent value="addresses" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Saved Addresses</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {selectedCustomer.addresses &&
+                      selectedCustomer.addresses.length > 0 ? (
+                        <div className="space-y-4">
+                          {selectedCustomer.addresses.map(
+                            (address: any, index: number) => (
+                              <div
+                                key={index}
+                                className="border rounded-lg p-4"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <MapPin className="w-4 h-4 mt-1 text-muted-foreground" />
+                                  <div>
+                                    <p className="font-medium">
+                                      {address.name}
+                                    </p>
+                                    <p className="text-sm">
+                                      {address.address_line_1}
+                                    </p>
+                                    {address.address_line_2 && (
+                                      <p className="text-sm">
+                                        {address.address_line_2}
+                                      </p>
+                                    )}
+                                    <p className="text-sm">
+                                      {address.city}, {address.state}{" "}
+                                      {address.pincode}
+                                    </p>
+                                    {address.phone && (
+                                      <p className="text-sm text-muted-foreground">
+                                        Phone: {address.phone}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-center text-muted-foreground py-8">
+                          No saved addresses
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="preferences" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Customer Preferences</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {selectedCustomer.preferences ? (
+                        <div className="space-y-3">
+                          {Object.entries(selectedCustomer.preferences).map(
+                            ([key, value]: [string, any]) => (
+                              <div key={key}>
+                                <p className="text-sm font-medium capitalize">
+                                  {key.replace(/_/g, " ")}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {typeof value === "boolean"
+                                    ? value
+                                      ? "Yes"
+                                      : "No"
+                                    : String(value)}
+                                </p>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-center text-muted-foreground py-8">
+                          No preferences set
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     </PermissionGuard>
   );
 }

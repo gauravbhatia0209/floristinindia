@@ -948,284 +948,285 @@ CREATE POLICY "Admin access to analytics_cart_events" ON analytics_cart_events
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Database Setup</h1>
-        <p className="text-muted-foreground">
-          Run these SQL commands in your Supabase SQL Editor to create required
-          tables
-        </p>
-      </div>
+          <p className="text-muted-foreground">
+            Run these SQL commands in your Supabase SQL Editor to create
+            required tables
+          </p>
+        </div>
 
-      <div className="grid gap-6">
-        {/* Contact Submissions Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Contact Submissions Table
-              <Badge variant="outline">Required for Contact Form</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              This table stores contact form submissions from the website
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-orange-500" />
-                <span className="text-sm">
-                  Run this SQL in Supabase ��� SQL Editor → New Query
-                </span>
+        <div className="grid gap-6">
+          {/* Contact Submissions Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Contact Submissions Table
+                <Badge variant="outline">Required for Contact Form</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                This table stores contact form submissions from the website
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm">
+                    Run this SQL in Supabase ��� SQL Editor → New Query
+                  </span>
+                </div>
+                <div className="relative">
+                  <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                    <code>{contactSubmissionsSQL}</code>
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() =>
+                      copyToClipboard(contactSubmissionsSQL, "contact")
+                    }
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {copied === "contact" ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Pages Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Pages Table
+                <Badge variant="outline">Required for CMS Pages</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                This table stores dynamic pages (About Us, Privacy Policy, etc.)
+              </p>
+            </CardHeader>
+            <CardContent>
               <div className="relative">
                 <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>{contactSubmissionsSQL}</code>
+                  <code>{pagesTableSQL}</code>
                 </pre>
                 <Button
                   variant="outline"
                   size="sm"
                   className="absolute top-2 right-2"
-                  onClick={() =>
-                    copyToClipboard(contactSubmissionsSQL, "contact")
-                  }
+                  onClick={() => copyToClipboard(pagesTableSQL, "pages")}
                 >
                   <Copy className="h-4 w-4 mr-1" />
-                  {copied === "contact" ? "Copied!" : "Copy"}
+                  {copied === "pages" ? "Copied!" : "Copy"}
                 </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Pages Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Pages Table
-              <Badge variant="outline">Required for CMS Pages</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              This table stores dynamic pages (About Us, Privacy Policy, etc.)
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="relative">
-              <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-                <code>{pagesTableSQL}</code>
-              </pre>
-              <Button
-                variant="outline"
-                size="sm"
-                className="absolute top-2 right-2"
-                onClick={() => copyToClipboard(pagesTableSQL, "pages")}
-              >
-                <Copy className="h-4 w-4 mr-1" />
-                {copied === "pages" ? "Copied!" : "Copy"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Site Settings Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Site Settings Table
-              <Badge variant="outline">Required for Global Settings</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              This table stores global site configuration and contact
-              information
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="relative">
-              <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-                <code>{siteSettingsSQL}</code>
-              </pre>
-              <Button
-                variant="outline"
-                size="sm"
-                className="absolute top-2 right-2"
-                onClick={() => copyToClipboard(siteSettingsSQL, "settings")}
-              >
-                <Copy className="h-4 w-4 mr-1" />
-                {copied === "settings" ? "Copied!" : "Copy"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Analytics Tables */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Analytics Tables
-              <Badge variant="outline">For Statistics Dashboard</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Creates tables to track visitor behavior, page views, product
-              interactions, and cart events for the Analytics dashboard
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-blue-500" />
-                <span className="text-sm">
-                  Run this SQL to enable comprehensive analytics tracking
-                </span>
-              </div>
+          {/* Site Settings Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Site Settings Table
+                <Badge variant="outline">Required for Global Settings</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                This table stores global site configuration and contact
+                information
+              </p>
+            </CardHeader>
+            <CardContent>
               <div className="relative">
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
-                  <code>{analyticsTablesSQL}</code>
+                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                  <code>{siteSettingsSQL}</code>
                 </pre>
                 <Button
                   variant="outline"
                   size="sm"
                   className="absolute top-2 right-2"
-                  onClick={() =>
-                    copyToClipboard(analyticsTablesSQL, "analytics")
-                  }
+                  onClick={() => copyToClipboard(siteSettingsSQL, "settings")}
                 >
                   <Copy className="h-4 w-4 mr-1" />
-                  {copied === "analytics" ? "Copied!" : "Copy"}
+                  {copied === "settings" ? "Copied!" : "Copy"}
                 </Button>
               </div>
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>📊 What this creates:</strong>
-                </p>
-                <ul className="text-sm text-blue-700 mt-1 space-y-1">
-                  <li>
-                    • <strong>Sessions table</strong> - Track user sessions,
-                    devices, browsers
-                  </li>
-                  <li>
-                    • <strong>Page views table</strong> - Track which pages
-                    users visit
-                  </li>
-                  <li>
-                    • <strong>Product views table</strong> - Track product page
-                    visits
-                  </li>
-                  <li>
-                    • <strong>Cart events table</strong> - Track add/remove cart
-                    actions
-                  </li>
-                  <li>
-                    • <strong>Performance indexes</strong> - Fast data retrieval
-                  </li>
-                  <li>
-                    • <strong>Security policies</strong> - Admin-only access to
-                    analytics data
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* WhatsApp Widget Setup */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              WhatsApp Float Widget Setup
-              <Badge variant="outline">Add WhatsApp Chat</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Add this setting to enable the floating WhatsApp chat widget on
-              your website
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-green-500" />
-                <span className="text-sm">
-                  Run this SQL to add WhatsApp number setting (if not already
-                  present)
-                </span>
+          {/* Analytics Tables */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Analytics Tables
+                <Badge variant="outline">For Statistics Dashboard</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Creates tables to track visitor behavior, page views, product
+                interactions, and cart events for the Analytics dashboard
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm">
+                    Run this SQL to enable comprehensive analytics tracking
+                  </span>
+                </div>
+                <div className="relative">
+                  <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                    <code>{analyticsTablesSQL}</code>
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() =>
+                      copyToClipboard(analyticsTablesSQL, "analytics")
+                    }
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {copied === "analytics" ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>📊 What this creates:</strong>
+                  </p>
+                  <ul className="text-sm text-blue-700 mt-1 space-y-1">
+                    <li>
+                      • <strong>Sessions table</strong> - Track user sessions,
+                      devices, browsers
+                    </li>
+                    <li>
+                      • <strong>Page views table</strong> - Track which pages
+                      users visit
+                    </li>
+                    <li>
+                      • <strong>Product views table</strong> - Track product
+                      page visits
+                    </li>
+                    <li>
+                      • <strong>Cart events table</strong> - Track add/remove
+                      cart actions
+                    </li>
+                    <li>
+                      • <strong>Performance indexes</strong> - Fast data
+                      retrieval
+                    </li>
+                    <li>
+                      • <strong>Security policies</strong> - Admin-only access
+                      to analytics data
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div className="relative">
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>{`-- Add WhatsApp number setting for floating chat widget
+            </CardContent>
+          </Card>
+
+          {/* WhatsApp Widget Setup */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                WhatsApp Float Widget Setup
+                <Badge variant="outline">Add WhatsApp Chat</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Add this setting to enable the floating WhatsApp chat widget on
+                your website
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">
+                    Run this SQL to add WhatsApp number setting (if not already
+                    present)
+                  </span>
+                </div>
+                <div className="relative">
+                  <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                    <code>{`-- Add WhatsApp number setting for floating chat widget
 INSERT INTO site_settings (key, value, type, description)
 VALUES ('whatsapp_number', '', 'text', 'WhatsApp number for floating chat widget')
 ON CONFLICT (key) DO NOTHING;`}</code>
-                </pre>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="absolute top-2 right-2"
-                  onClick={() =>
-                    copyToClipboard(
-                      `-- Add WhatsApp number setting for floating chat widget
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() =>
+                      copyToClipboard(
+                        `-- Add WhatsApp number setting for floating chat widget
 INSERT INTO site_settings (key, value, type, description)
 VALUES ('whatsapp_number', '', 'text', 'WhatsApp number for floating chat widget')
 ON CONFLICT (key) DO NOTHING;`,
-                      "whatsapp",
-                    )
-                  }
-                >
-                  <Copy className="h-4 w-4 mr-1" />
-                  {copied === "whatsapp" ? "Copied!" : "Copy"}
-                </Button>
+                        "whatsapp",
+                      )
+                    }
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {copied === "whatsapp" ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+                <div className="bg-green-50 p-3 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    <strong>📱 How to use:</strong>
+                  </p>
+                  <ol className="text-sm text-green-700 mt-1 space-y-1">
+                    <li>1. Run the SQL above in Supabase SQL Editor</li>
+                    <li>
+                      2. Go to <strong>Admin → Settings → Contact Tab</strong>
+                    </li>
+                    <li>
+                      3. Enter your WhatsApp number with country code (e.g.,
+                      +919876543210)
+                    </li>
+                    <li>
+                      4. Save settings - the floating chat icon will appear on
+                      all pages
+                    </li>
+                    <li>
+                      5. Users can click the icon to start a WhatsApp chat with
+                      you
+                    </li>
+                  </ol>
+                </div>
               </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm text-green-800">
-                  <strong>📱 How to use:</strong>
-                </p>
-                <ol className="text-sm text-green-700 mt-1 space-y-1">
-                  <li>1. Run the SQL above in Supabase SQL Editor</li>
-                  <li>
-                    2. Go to <strong>Admin → Settings → Contact Tab</strong>
-                  </li>
-                  <li>
-                    3. Enter your WhatsApp number with country code (e.g.,
-                    +919876543210)
-                  </li>
-                  <li>
-                    4. Save settings - the floating chat icon will appear on all
-                    pages
-                  </li>
-                  <li>
-                    5. Users can click the icon to start a WhatsApp chat with
-                    you
-                  </li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Authentication Tables */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Authentication System Setup
-              <Badge variant="outline">Login/Signup System</Badge>
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Complete authentication system with admin and customer login,
-              secure password hashing, and session management
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-blue-500" />
-                <span className="text-sm">
-                  Run this SQL to create all authentication tables and security
-                  features
-                </span>
-              </div>
-              <div className="relative">
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
-                  <code>{`-- Authentication Tables Setup
+          {/* Authentication Tables */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Authentication System Setup
+                <Badge variant="outline">Login/Signup System</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Complete authentication system with admin and customer login,
+                secure password hashing, and session management
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm">
+                    Run this SQL to create all authentication tables and
+                    security features
+                  </span>
+                </div>
+                <div className="relative">
+                  <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                    <code>{`-- Authentication Tables Setup
 -- Complete authentication system with admin and customer login
 
 -- Admins table for admin users
@@ -1304,14 +1305,14 @@ VALUES (
   true,
   true
 ) ON CONFLICT (email) DO NOTHING;`}</code>
-                </pre>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="absolute top-2 right-2"
-                  onClick={() =>
-                    copyToClipboard(
-                      `-- Authentication Tables Setup
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() =>
+                      copyToClipboard(
+                        `-- Authentication Tables Setup
 -- Complete authentication system with admin and customer login
 
 -- Admins table for admin users
@@ -1390,208 +1391,214 @@ VALUES (
   true,
   true
 ) ON CONFLICT (email) DO NOTHING;`,
-                      "auth",
-                    )
-                  }
-                >
-                  <Copy className="h-4 w-4 mr-1" />
-                  {copied === "auth" ? "Copied!" : "Copy"}
-                </Button>
-              </div>
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>🔐 Security Features:</strong>
-                </p>
-                <ul className="text-sm text-blue-700 mt-1 space-y-1">
-                  <li>
-                    • <strong>Password encryption</strong> - Secure bcrypt
-                    hashing
-                  </li>
-                  <li>
-                    • <strong>Session management</strong> - Database-stored
-                    secure sessions
-                  </li>
-                  <li>
-                    • <strong>Brute force protection</strong> - Account locking
-                    after failed attempts
-                  </li>
-                  <li>
-                    • <strong>Login tracking</strong> - Monitor all login
-                    attempts
-                  </li>
-                  <li>
-                    • <strong>Password reset</strong> - Secure token-based
-                    password recovery
-                  </li>
-                  <li>
-                    • <strong>Role-based access</strong> - Admin vs customer
-                    permissions
-                  </li>
-                  <li>
-                    • <strong>Default admin</strong> - Email:
-                    admin@floristinindia.com, Password: admin123
-                  </li>
-                </ul>
-                <div className="mt-2 p-2 bg-red-100 rounded text-red-800 text-xs">
-                  <strong>⚠️ IMPORTANT:</strong> Change the default admin
-                  password immediately after setup!
+                        "auth",
+                      )
+                    }
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {copied === "auth" ? "Copied!" : "Copy"}
+                  </Button>
                 </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>🔐 Security Features:</strong>
+                  </p>
+                  <ul className="text-sm text-blue-700 mt-1 space-y-1">
+                    <li>
+                      • <strong>Password encryption</strong> - Secure bcrypt
+                      hashing
+                    </li>
+                    <li>
+                      • <strong>Session management</strong> - Database-stored
+                      secure sessions
+                    </li>
+                    <li>
+                      • <strong>Brute force protection</strong> - Account
+                      locking after failed attempts
+                    </li>
+                    <li>
+                      • <strong>Login tracking</strong> - Monitor all login
+                      attempts
+                    </li>
+                    <li>
+                      • <strong>Password reset</strong> - Secure token-based
+                      password recovery
+                    </li>
+                    <li>
+                      • <strong>Role-based access</strong> - Admin vs customer
+                      permissions
+                    </li>
+                    <li>
+                      • <strong>Default admin</strong> - Email:
+                      admin@floristinindia.com, Password: admin123
+                    </li>
+                  </ul>
+                  <div className="mt-2 p-2 bg-red-100 rounded text-red-800 text-xs">
+                    <strong>⚠️ IMPORTANT:</strong> Change the default admin
+                    password immediately after setup!
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* RLS Fix Section */}
+        <Card className="border-red-200 bg-red-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-800">
+              <AlertTriangle className="h-5 w-5" />
+              Fix RLS Policy Error
+              <Badge variant="outline" className="bg-red-100">
+                If Getting RLS Errors
+              </Badge>
+            </CardTitle>
+            <p className="text-sm text-red-700">
+              If you get "row-level security policy" errors when rebuilding
+              pages, run this SQL first
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="relative">
+              <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-48">
+                <code>{rlsFixSQL}</code>
+              </pre>
+              <Button
+                variant="outline"
+                size="sm"
+                className="absolute top-2 right-2"
+                onClick={() => copyToClipboard(rlsFixSQL, "rls")}
+              >
+                <Copy className="h-4 w-4 mr-1" />
+                {copied === "rls" ? "Copied!" : "Copy"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Clear Old Pages */}
+        <Card className="border-orange-200 bg-orange-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-orange-800">
+              <Trash2 className="h-5 w-5" />
+              Clear Old Page Data
+              <Badge variant="outline" className="bg-orange-100">
+                Maintenance Tool
+              </Badge>
+            </CardTitle>
+            <p className="text-sm text-orange-700">
+              If pages are showing old content format, clear existing records to
+              trigger creation of new structured content
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={clearOldPages}
+                disabled={isClearing}
+                variant="destructive"
+                size="sm"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {isClearing ? "Rebuilding..." : "Rebuild All 6 Pages"}
+              </Button>
+              {clearSuccess && (
+                <Badge
+                  variant="outline"
+                  className="bg-green-100 text-green-800"
+                >
+                  ✓ Cleared! Visit pages to create new content
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-orange-600 mt-2">
+              ⚠️ This will delete all existing page content. New structured
+              content will be created when you visit each page.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Sample Footer Sections */}
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-800">
+              <Database className="h-5 w-5" />
+              Create Sample Footer Sections
+              <Badge variant="outline" className="bg-blue-100">
+                Optional
+              </Badge>
+            </CardTitle>
+            <p className="text-sm text-blue-700">
+              Create sample footer sections to get started with the Footer
+              Editor
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={createSampleFooterSections}
+                disabled={isCreatingFooter}
+                variant="default"
+                size="sm"
+              >
+                <Database className="h-4 w-4 mr-2" />
+                {isCreatingFooter
+                  ? "Creating..."
+                  : "Create Sample Footer Sections"}
+              </Button>
+            </div>
+            <p className="text-xs text-blue-600 mt-2">
+              📋 Creates: Quick Links, Popular Categories, Customer Support
+              sections
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Database className="h-5 w-5 text-green-600 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-green-800">
+                  Setup Instructions:
+                </h3>
+                <ol className="mt-2 text-sm text-green-700 space-y-1">
+                  <li>1. Go to your Supabase Dashboard</li>
+                  <li>2. Navigate to SQL Editor</li>
+                  <li>3. Click "New Query"</li>
+                  <li>4. Copy and paste each SQL block above</li>
+                  <li>5. Run each query individually</li>
+                  <li>6. Go to Admin → Pages to edit About page content</li>
+                  <li>7. Test the Contact Form and About page</li>
+                </ol>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-blue-800">
+                  Complete Page Set:
+                </h3>
+                <p className="mt-2 text-sm text-blue-700">
+                  After running the Pages table SQL, comprehensive pages will be
+                  created:
+                  <strong>
+                    About Us, Help Center, Return & Refunds, Privacy Policy, and
+                    Terms & Conditions
+                  </strong>
+                  . All content is fully editable through{" "}
+                  <strong>Admin → Pages</strong> using the content block editor.
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* RLS Fix Section */}
-      <Card className="border-red-200 bg-red-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-800">
-            <AlertTriangle className="h-5 w-5" />
-            Fix RLS Policy Error
-            <Badge variant="outline" className="bg-red-100">
-              If Getting RLS Errors
-            </Badge>
-          </CardTitle>
-          <p className="text-sm text-red-700">
-            If you get "row-level security policy" errors when rebuilding pages,
-            run this SQL first
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="relative">
-            <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-48">
-              <code>{rlsFixSQL}</code>
-            </pre>
-            <Button
-              variant="outline"
-              size="sm"
-              className="absolute top-2 right-2"
-              onClick={() => copyToClipboard(rlsFixSQL, "rls")}
-            >
-              <Copy className="h-4 w-4 mr-1" />
-              {copied === "rls" ? "Copied!" : "Copy"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Clear Old Pages */}
-      <Card className="border-orange-200 bg-orange-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-orange-800">
-            <Trash2 className="h-5 w-5" />
-            Clear Old Page Data
-            <Badge variant="outline" className="bg-orange-100">
-              Maintenance Tool
-            </Badge>
-          </CardTitle>
-          <p className="text-sm text-orange-700">
-            If pages are showing old content format, clear existing records to
-            trigger creation of new structured content
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={clearOldPages}
-              disabled={isClearing}
-              variant="destructive"
-              size="sm"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              {isClearing ? "Rebuilding..." : "Rebuild All 6 Pages"}
-            </Button>
-            {clearSuccess && (
-              <Badge variant="outline" className="bg-green-100 text-green-800">
-                ✓ Cleared! Visit pages to create new content
-              </Badge>
-            )}
-          </div>
-          <p className="text-xs text-orange-600 mt-2">
-            ⚠️ This will delete all existing page content. New structured
-            content will be created when you visit each page.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Sample Footer Sections */}
-      <Card className="border-blue-200 bg-blue-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-800">
-            <Database className="h-5 w-5" />
-            Create Sample Footer Sections
-            <Badge variant="outline" className="bg-blue-100">
-              Optional
-            </Badge>
-          </CardTitle>
-          <p className="text-sm text-blue-700">
-            Create sample footer sections to get started with the Footer Editor
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={createSampleFooterSections}
-              disabled={isCreatingFooter}
-              variant="default"
-              size="sm"
-            >
-              <Database className="h-4 w-4 mr-2" />
-              {isCreatingFooter
-                ? "Creating..."
-                : "Create Sample Footer Sections"}
-            </Button>
-          </div>
-          <p className="text-xs text-blue-600 mt-2">
-            📋 Creates: Quick Links, Popular Categories, Customer Support
-            sections
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="border-green-200 bg-green-50">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-3">
-            <Database className="h-5 w-5 text-green-600 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-green-800">
-                Setup Instructions:
-              </h3>
-              <ol className="mt-2 text-sm text-green-700 space-y-1">
-                <li>1. Go to your Supabase Dashboard</li>
-                <li>2. Navigate to SQL Editor</li>
-                <li>3. Click "New Query"</li>
-                <li>4. Copy and paste each SQL block above</li>
-                <li>5. Run each query individually</li>
-                <li>6. Go to Admin → Pages to edit About page content</li>
-                <li>7. Test the Contact Form and About page</li>
-              </ol>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-blue-200 bg-blue-50">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-blue-800">Complete Page Set:</h3>
-              <p className="mt-2 text-sm text-blue-700">
-                After running the Pages table SQL, comprehensive pages will be
-                created:
-                <strong>
-                  About Us, Help Center, Return & Refunds, Privacy Policy, and
-                  Terms & Conditions
-                </strong>
-                . All content is fully editable through{" "}
-                <strong>Admin → Pages</strong> using the content block editor.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
     </AdminGuard>
   );
 }

@@ -167,227 +167,229 @@ export default function Pages() {
     <PermissionGuard requiredModule="pages">
       <div className="space-y-6">
         {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Page Management</h1>
-          <p className="text-muted-foreground">
-            Create and manage dynamic pages for your website
-          </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Page Management</h1>
+            <p className="text-muted-foreground">
+              Create and manage dynamic pages for your website
+            </p>
+          </div>
+          {hasCreatePermission && (
+            <Button onClick={() => setIsAddingPage(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Page
+            </Button>
+          )}
         </div>
-        {hasCreatePermission && (
-          <Button onClick={() => setIsAddingPage(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Page
-          </Button>
+
+        {/* About Page Info */}
+        {!pages.find((p) => p.slug === "about") && (
+          <Card className="border-blue-200 bg-blue-50">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <FileText className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-blue-800">
+                    About Page Setup
+                  </h3>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Create an "About" page with slug "about" to customize your
+                    About Us page content. This will override the default About
+                    page with your custom content.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
-      </div>
 
-      {/* About Page Info */}
-      {!pages.find((p) => p.slug === "about") && (
-        <Card className="border-blue-200 bg-blue-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <FileText className="h-5 w-5 text-blue-600 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-blue-800">About Page Setup</h3>
-                <p className="text-sm text-blue-700 mt-1">
-                  Create an "About" page with slug "about" to customize your
-                  About Us page content. This will override the default About
-                  page with your custom content.
-                </p>
+        {/* Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Pages</p>
+                  <p className="text-2xl font-bold">{pages.length}</p>
+                </div>
+                <FileText className="w-8 h-8 text-muted-foreground" />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Published</p>
+                  <p className="text-2xl font-bold">
+                    {pages.filter((p) => p.is_active).length}
+                  </p>
+                </div>
+                <Eye className="w-8 h-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">In Footer</p>
+                  <p className="text-2xl font-bold">
+                    {pages.filter((p) => p.show_in_footer).length}
+                  </p>
+                </div>
+                <Settings className="w-8 h-8 text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Draft</p>
+                  <p className="text-2xl font-bold">
+                    {pages.filter((p) => !p.is_active).length}
+                  </p>
+                </div>
+                <FileText className="w-8 h-8 text-orange-600" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Pages List */}
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Pages</p>
-                <p className="text-2xl font-bold">{pages.length}</p>
-              </div>
-              <FileText className="w-8 h-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Published</p>
-                <p className="text-2xl font-bold">
-                  {pages.filter((p) => p.is_active).length}
+          <CardHeader>
+            <CardTitle>All Pages</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {pages.length === 0 ? (
+              <div className="text-center py-12">
+                <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No pages yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create your first page to get started
                 </p>
+                {hasCreatePermission && (
+                  <Button onClick={() => setIsAddingPage(true)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Page
+                  </Button>
+                )}
               </div>
-              <Eye className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">In Footer</p>
-                <p className="text-2xl font-bold">
-                  {pages.filter((p) => p.show_in_footer).length}
-                </p>
-              </div>
-              <Settings className="w-8 h-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Draft</p>
-                <p className="text-2xl font-bold">
-                  {pages.filter((p) => !p.is_active).length}
-                </p>
-              </div>
-              <FileText className="w-8 h-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Pages List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Pages</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {pages.length === 0 ? (
-            <div className="text-center py-12">
-              <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No pages yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Create your first page to get started
-              </p>
-              {hasCreatePermission && (
-                <Button onClick={() => setIsAddingPage(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Page
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {pages.map((page) => (
-                <div key={page.id} className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold">{page.title}</h3>
-                        <Badge
-                          variant={page.is_active ? "default" : "secondary"}
-                        >
-                          {page.is_active ? "Published" : "Draft"}
-                        </Badge>
-                        {page.show_in_footer && (
-                          <Badge variant="outline">In Footer</Badge>
+            ) : (
+              <div className="space-y-4">
+                {pages.map((page) => (
+                  <div key={page.id} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold">{page.title}</h3>
+                          <Badge
+                            variant={page.is_active ? "default" : "secondary"}
+                          >
+                            {page.is_active ? "Published" : "Draft"}
+                          </Badge>
+                          {page.show_in_footer && (
+                            <Badge variant="outline">In Footer</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          /{page.slug}
+                        </p>
+                        {page.meta_description && (
+                          <p className="text-sm text-muted-foreground">
+                            {page.meta_description}
+                          </p>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        /{page.slug}
-                      </p>
-                      {page.meta_description && (
-                        <p className="text-sm text-muted-foreground">
-                          {page.meta_description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={page.is_active}
-                        onCheckedChange={() =>
-                          togglePageStatus(page.id, page.is_active)
-                        }
-                      />
-                      {hasEditPermission && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingPage(page)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      )}
-                      {hasDeletePermission && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deletePage(page.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={page.is_active}
+                          onCheckedChange={() =>
+                            togglePageStatus(page.id, page.is_active)
+                          }
+                        />
+                        {hasEditPermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingPage(page)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {hasDeletePermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deletePage(page.id)}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      {/* Add/Edit Page Dialog */}
-      <Dialog
-        open={isAddingPage || !!editingPage}
-        onOpenChange={() => {
-          setIsAddingPage(false);
-          setEditingPage(null);
-          setEditingSection(null); // Clear section editing when page dialog closes
-        }}
-      >
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingPage ? "Edit Page" : "Create New Page"}
-            </DialogTitle>
-          </DialogHeader>
-          <PageForm
-            page={editingPage}
-            onSave={savePage}
-            onCancel={() => {
-              setIsAddingPage(false);
-              setEditingPage(null);
-              setEditingSection(null);
-            }}
-            onSectionEdit={setEditingSection}
-            editingSection={editingSection}
-            onSectionSave={(updatedSection) => {
-              // Update the section in the current page being edited
-              if (editingPage) {
-                const updatedSections = (
-                  (editingPage.content as Section[]) || []
-                ).map((section) =>
-                  section.id === updatedSection.id ? updatedSection : section,
-                );
-                setEditingPage({
-                  ...editingPage,
-                  content: updatedSections,
-                });
-              }
-              setEditingSection(null);
-            }}
-            onSectionCancel={() => setEditingSection(null)}
-            onSectionsUpdate={(updatedSections) => {
-              if (editingPage) {
-                setEditingPage({
-                  ...editingPage,
-                  content: updatedSections,
-                });
-              }
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </div>
+        {/* Add/Edit Page Dialog */}
+        <Dialog
+          open={isAddingPage || !!editingPage}
+          onOpenChange={() => {
+            setIsAddingPage(false);
+            setEditingPage(null);
+            setEditingSection(null); // Clear section editing when page dialog closes
+          }}
+        >
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingPage ? "Edit Page" : "Create New Page"}
+              </DialogTitle>
+            </DialogHeader>
+            <PageForm
+              page={editingPage}
+              onSave={savePage}
+              onCancel={() => {
+                setIsAddingPage(false);
+                setEditingPage(null);
+                setEditingSection(null);
+              }}
+              onSectionEdit={setEditingSection}
+              editingSection={editingSection}
+              onSectionSave={(updatedSection) => {
+                // Update the section in the current page being edited
+                if (editingPage) {
+                  const updatedSections = (
+                    (editingPage.content as Section[]) || []
+                  ).map((section) =>
+                    section.id === updatedSection.id ? updatedSection : section,
+                  );
+                  setEditingPage({
+                    ...editingPage,
+                    content: updatedSections,
+                  });
+                }
+                setEditingSection(null);
+              }}
+              onSectionCancel={() => setEditingSection(null)}
+              onSectionsUpdate={(updatedSections) => {
+                if (editingPage) {
+                  setEditingPage({
+                    ...editingPage,
+                    content: updatedSections,
+                  });
+                }
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
     </PermissionGuard>
   );
 }

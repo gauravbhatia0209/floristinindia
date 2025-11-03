@@ -608,434 +608,440 @@ export default function Analytics() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Analytics & Statistics</h1>
-          <p className="text-muted-foreground">
-            Real-time insights and performance metrics for your store
-          </p>
+            <p className="text-muted-foreground">
+              Real-time insights and performance metrics for your store
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Select value={dateRange} onValueChange={setDateRange}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1d">Today</SelectItem>
+                <SelectItem value="7d">Last 7 days</SelectItem>
+                <SelectItem value="30d">Last 30 days</SelectItem>
+                <SelectItem value="90d">Last 90 days</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1d">Today</SelectItem>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Revenue</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(data.sales.totalRevenue)}
+                  </p>
+                </div>
+                <DollarSign className="w-8 h-8 text-green-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Orders</p>
+                  <p className="text-2xl font-bold">{data.sales.totalOrders}</p>
+                </div>
+                <ShoppingCart className="w-8 h-8 text-blue-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">New Customers</p>
+                  <p className="text-2xl font-bold">
+                    {data.customers.newCustomers}
+                  </p>
+                </div>
+                <Users className="w-8 h-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Avg Order Value
+                  </p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(data.sales.avgOrderValue)}
+                  </p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-orange-600" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold">
-                  {formatCurrency(data.sales.totalRevenue)}
-                </p>
-              </div>
-              <DollarSign className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Analytics Tabs */}
+        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="visitors">Visitors</TabsTrigger>
+            <TabsTrigger value="sales">Sales</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="customers">Customers</TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Orders</p>
-                <p className="text-2xl font-bold">{data.sales.totalOrders}</p>
-              </div>
-              <ShoppingCart className="w-8 h-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">New Customers</p>
-                <p className="text-2xl font-bold">
-                  {data.customers.newCustomers}
-                </p>
-              </div>
-              <Users className="w-8 h-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Avg Order Value</p>
-                <p className="text-2xl font-bold">
-                  {formatCurrency(data.sales.avgOrderValue)}
-                </p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Analytics Tabs */}
-      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="visitors">Visitors</TabsTrigger>
-          <TabsTrigger value="sales">Sales</TabsTrigger>
-          <TabsTrigger value="products">Products</TabsTrigger>
-          <TabsTrigger value="customers">Customers</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Top Products */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Selling Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {data.sales.topProducts.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.sales.topProducts.map((product, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center"
-                      >
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {product.sales} sold
-                          </p>
-                        </div>
-                        <p className="font-bold">
-                          {formatCurrency(product.revenue)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">No sales data yet</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Low Stock Alert */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-orange-500" />
-                  Inventory Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {data.products.lowStock.length > 0 ||
-                data.products.outOfStock > 0 ? (
-                  <div className="space-y-4">
-                    {data.products.outOfStock > 0 && (
-                      <div className="p-3 bg-red-50 rounded-lg border border-red-200">
-                        <p className="text-red-800 font-medium">
-                          {data.products.outOfStock} products out of stock
-                        </p>
-                      </div>
-                    )}
-                    {data.products.lowStock
-                      .slice(0, 5)
-                      .map((product, index) => (
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Top Products */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top Selling Products</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {data.sales.topProducts.length > 0 ? (
+                    <div className="space-y-4">
+                      {data.sales.topProducts.map((product, index) => (
                         <div
                           key={index}
                           className="flex justify-between items-center"
                         >
-                          <p className="font-medium">{product.name}</p>
-                          <Badge variant="destructive">
-                            {product.stock} left
-                          </Badge>
+                          <div>
+                            <p className="font-medium">{product.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {product.sales} sold
+                            </p>
+                          </div>
+                          <p className="font-bold">
+                            {formatCurrency(product.revenue)}
+                          </p>
                         </div>
                       ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Package className="w-12 h-12 mx-auto mb-4 text-green-600" />
-                    <p className="text-muted-foreground">
-                      All products well stocked
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">No sales data yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Low Stock Alert */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-orange-500" />
+                    Inventory Alerts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {data.products.lowStock.length > 0 ||
+                  data.products.outOfStock > 0 ? (
+                    <div className="space-y-4">
+                      {data.products.outOfStock > 0 && (
+                        <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                          <p className="text-red-800 font-medium">
+                            {data.products.outOfStock} products out of stock
+                          </p>
+                        </div>
+                      )}
+                      {data.products.lowStock
+                        .slice(0, 5)
+                        .map((product, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-between items-center"
+                          >
+                            <p className="font-medium">{product.name}</p>
+                            <Badge variant="destructive">
+                              {product.stock} left
+                            </Badge>
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Package className="w-12 h-12 mx-auto mb-4 text-green-600" />
+                      <p className="text-muted-foreground">
+                        All products well stocked
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="visitors" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Total Visitors
+                    </p>
+                    <p className="text-3xl font-bold">{data.visitors.total}</p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Visitor tracking not yet implemented
                     </p>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+                </CardContent>
+              </Card>
 
-        <TabsContent value="visitors" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Total Visitors
-                  </p>
-                  <p className="text-3xl font-bold">{data.visitors.total}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Visitor tracking not yet implemented
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">Page Views</p>
-                  <p className="text-3xl font-bold">
-                    {data.visitors.pageViews}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Page tracking coming soon
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">Bounce Rate</p>
-                  <p className="text-3xl font-bold">
-                    {data.visitors.bounceRate}%
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Analytics setup required
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Visitor Analytics Setup Required</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <Eye className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No Visitor Data Yet
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  To track visitors, page views, and user behavior, we need to
-                  implement analytics tracking.
-                </p>
-                <div className="text-left max-w-md mx-auto">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Features to implement:
-                  </p>
-                  <ul className="text-sm space-y-1">
-                    <li>• Page view tracking</li>
-                    <li>• Session management</li>
-                    <li>• Device/browser detection</li>
-                    <li>• Referrer tracking</li>
-                    <li>• Time on site measurement</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="sales" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sales Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {data.sales.totalOrders > 0 ? (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Total Revenue
-                        </p>
-                        <p className="text-2xl font-bold">
-                          {formatCurrency(data.sales.totalRevenue)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Total Orders
-                        </p>
-                        <p className="text-2xl font-bold">
-                          {data.sales.totalOrders}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Avg Order Value
-                        </p>
-                        <p className="text-xl font-semibold">
-                          {formatCurrency(data.sales.avgOrderValue)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Refunds</p>
-                        <p className="text-xl font-semibold">
-                          {data.sales.refunds}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">No sales data yet</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Revenue by Product</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {data.sales.topProducts.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={data.sales.topProducts}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip
-                        formatter={(value) => formatCurrency(Number(value))}
-                      />
-                      <Bar dataKey="revenue" fill="#8884d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="text-center py-8">
-                    <BarChart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">
-                      No product sales yet
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">Page Views</p>
+                    <p className="text-3xl font-bold">
+                      {data.visitors.pageViews}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Page tracking coming soon
                     </p>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+                </CardContent>
+              </Card>
 
-        <TabsContent value="products" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Inventory Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                    <span>Out of Stock</span>
-                    <Badge variant="destructive">
-                      {data.products.outOfStock} products
-                    </Badge>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">Bounce Rate</p>
+                    <p className="text-3xl font-bold">
+                      {data.visitors.bounceRate}%
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Analytics setup required
+                    </p>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
-                    <span>Low Stock (&lt;5 items)</span>
-                    <Badge variant="secondary">
-                      {data.products.lowStock.length} products
-                    </Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
 
             <Card>
               <CardHeader>
-                <CardTitle>Product Performance</CardTitle>
+                <CardTitle>Visitor Analytics Setup Required</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <MousePointer className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <Eye className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">
-                    Product Tracking Needed
+                    No Visitor Data Yet
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    To track visitors, page views, and user behavior, we need to
+                    implement analytics tracking.
+                  </p>
+                  <div className="text-left max-w-md mx-auto">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Features to implement:
+                    </p>
+                    <ul className="text-sm space-y-1">
+                      <li>• Page view tracking</li>
+                      <li>• Session management</li>
+                      <li>• Device/browser detection</li>
+                      <li>• Referrer tracking</li>
+                      <li>• Time on site measurement</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="sales" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sales Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {data.sales.totalOrders > 0 ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Total Revenue
+                          </p>
+                          <p className="text-2xl font-bold">
+                            {formatCurrency(data.sales.totalRevenue)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Total Orders
+                          </p>
+                          <p className="text-2xl font-bold">
+                            {data.sales.totalOrders}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Avg Order Value
+                          </p>
+                          <p className="text-xl font-semibold">
+                            {formatCurrency(data.sales.avgOrderValue)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            Refunds
+                          </p>
+                          <p className="text-xl font-semibold">
+                            {data.sales.refunds}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">No sales data yet</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue by Product</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {data.sales.topProducts.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={data.sales.topProducts}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip
+                          formatter={(value) => formatCurrency(Number(value))}
+                        />
+                        <Bar dataKey="revenue" fill="#8884d8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-8">
+                      <BarChart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">
+                        No product sales yet
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="products" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Inventory Status</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                      <span>Out of Stock</span>
+                      <Badge variant="destructive">
+                        {data.products.outOfStock} products
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+                      <span>Low Stock (&lt;5 items)</span>
+                      <Badge variant="secondary">
+                        {data.products.lowStock.length} products
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Product Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <MousePointer className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">
+                      Product Tracking Needed
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      To track product views and cart additions, implement
+                      product analytics
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="customers" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">
+                      New Customers
+                    </p>
+                    <p className="text-3xl font-bold">
+                      {data.customers.newCustomers}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      In selected time period
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Returning Customers
+                    </p>
+                    <p className="text-3xl font-bold">
+                      {data.customers.returningCustomers}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Customers with multiple orders
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Customer Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    Enhanced Customer Analytics Coming Soon
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    To track product views and cart additions, implement product
-                    analytics
+                    Features like customer location tracking, lifetime value,
+                    and behavior analysis will be added
                   </p>
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="customers" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">New Customers</p>
-                  <p className="text-3xl font-bold">
-                    {data.customers.newCustomers}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    In selected time period
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Returning Customers
-                  </p>
-                  <p className="text-3xl font-bold">
-                    {data.customers.returningCustomers}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Customers with multiple orders
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Customer Insights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">
-                  Enhanced Customer Analytics Coming Soon
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  Features like customer location tracking, lifetime value, and
-                  behavior analysis will be added
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </AdminGuard>
   );
 }

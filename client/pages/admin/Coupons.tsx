@@ -175,234 +175,234 @@ export default function Coupons() {
     <PermissionGuard requiredModule="coupons">
       <div className="space-y-6">
         {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Coupon Management</h1>
-          <p className="text-muted-foreground">
-            Create and manage discount coupons
-          </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Coupon Management</h1>
+            <p className="text-muted-foreground">
+              Create and manage discount coupons
+            </p>
+          </div>
+          {hasCreatePermission && (
+            <Button onClick={() => setIsAddingCoupon(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Coupon
+            </Button>
+          )}
         </div>
-        {hasCreatePermission && (
-          <Button onClick={() => setIsAddingCoupon(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Coupon
-          </Button>
-        )}
-      </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Coupons</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+        {/* Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Coupons</p>
+                  <p className="text-2xl font-bold">{stats.total}</p>
+                </div>
+                <Ticket className="w-8 h-8 text-muted-foreground" />
               </div>
-              <Ticket className="w-8 h-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Active</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.active}
-                </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Active</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {stats.active}
+                  </p>
+                </div>
+                <Ticket className="w-8 h-8 text-green-600" />
               </div>
-              <Ticket className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Expired</p>
-                <p className="text-2xl font-bold text-red-600">
-                  {stats.expired}
-                </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Expired</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {stats.expired}
+                  </p>
+                </div>
+                <Calendar className="w-8 h-8 text-red-600" />
               </div>
-              <Calendar className="w-8 h-8 text-red-600" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Usage</p>
-                <p className="text-2xl font-bold">{stats.totalUsage}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Usage</p>
+                  <p className="text-2xl font-bold">{stats.totalUsage}</p>
+                </div>
+                <Users className="w-8 h-8 text-blue-600" />
               </div>
-              <Users className="w-8 h-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Coupons List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Coupons</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {coupons.length === 0 ? (
-            <div className="text-center py-12">
-              <Ticket className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No coupons yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Create your first discount coupon to boost sales
-              </p>
-              {hasCreatePermission && (
-                <Button onClick={() => setIsAddingCoupon(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Coupon
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {coupons.map((coupon) => {
-                const statusInfo = getCouponStatus(coupon);
-                return (
-                  <div key={coupon.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-10 h-10 bg-gradient-rose rounded-lg flex items-center justify-center">
-                            {coupon.discount_type === "percentage" ? (
-                              <Percent className="w-5 h-5 text-white" />
-                            ) : (
-                              <IndianRupee className="w-5 h-5 text-white" />
-                            )}
+        {/* Coupons List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>All Coupons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {coupons.length === 0 ? (
+              <div className="text-center py-12">
+                <Ticket className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No coupons yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Create your first discount coupon to boost sales
+                </p>
+                {hasCreatePermission && (
+                  <Button onClick={() => setIsAddingCoupon(true)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Coupon
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {coupons.map((coupon) => {
+                  const statusInfo = getCouponStatus(coupon);
+                  return (
+                    <div key={coupon.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 bg-gradient-rose rounded-lg flex items-center justify-center">
+                              {coupon.discount_type === "percentage" ? (
+                                <Percent className="w-5 h-5 text-white" />
+                              ) : (
+                                <IndianRupee className="w-5 h-5 text-white" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">{coupon.name}</h3>
+                              <p className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                                {coupon.code}
+                              </p>
+                            </div>
+                            <Badge variant={statusInfo.color as any}>
+                              {statusInfo.status}
+                            </Badge>
                           </div>
-                          <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
-                            <p className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-                              {coupon.code}
+
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <p className="font-medium">Discount</p>
+                              <p>
+                                {coupon.discount_type === "percentage"
+                                  ? `${coupon.discount_value}%`
+                                  : `₹${coupon.discount_value}`}
+                                {coupon.maximum_discount_amount &&
+                                  coupon.discount_type === "percentage" &&
+                                  ` (max ₹${coupon.maximum_discount_amount})`}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Usage</p>
+                              <p>
+                                {coupon.usage_count}
+                                {coupon.usage_limit
+                                  ? ` / ${coupon.usage_limit}`
+                                  : " (unlimited)"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Valid Period</p>
+                              <p>
+                                {coupon.starts_at
+                                  ? formatDate(coupon.starts_at)
+                                  : "Anytime"}{" "}
+                                -{" "}
+                                {coupon.expires_at
+                                  ? formatDate(coupon.expires_at)
+                                  : "Never"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="font-medium">Min Order</p>
+                              <p>
+                                {coupon.minimum_order_amount
+                                  ? `₹${coupon.minimum_order_amount}`
+                                  : "No minimum"}
+                              </p>
+                            </div>
+                          </div>
+
+                          {coupon.description && (
+                            <p className="text-sm text-muted-foreground mt-2">
+                              {coupon.description}
                             </p>
-                          </div>
-                          <Badge variant={statusInfo.color as any}>
-                            {statusInfo.status}
-                          </Badge>
+                          )}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <p className="font-medium">Discount</p>
-                            <p>
-                              {coupon.discount_type === "percentage"
-                                ? `${coupon.discount_value}%`
-                                : `₹${coupon.discount_value}`}
-                              {coupon.maximum_discount_amount &&
-                                coupon.discount_type === "percentage" &&
-                                ` (max ₹${coupon.maximum_discount_amount})`}
-                            </p>
-                          </div>
-
-                          <div>
-                            <p className="font-medium">Usage</p>
-                            <p>
-                              {coupon.usage_count}
-                              {coupon.usage_limit
-                                ? ` / ${coupon.usage_limit}`
-                                : " (unlimited)"}
-                            </p>
-                          </div>
-
-                          <div>
-                            <p className="font-medium">Valid Period</p>
-                            <p>
-                              {coupon.starts_at
-                                ? formatDate(coupon.starts_at)
-                                : "Anytime"}{" "}
-                              -{" "}
-                              {coupon.expires_at
-                                ? formatDate(coupon.expires_at)
-                                : "Never"}
-                            </p>
-                          </div>
-
-                          <div>
-                            <p className="font-medium">Min Order</p>
-                            <p>
-                              {coupon.minimum_order_amount
-                                ? `₹${coupon.minimum_order_amount}`
-                                : "No minimum"}
-                            </p>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={coupon.is_active}
+                            onCheckedChange={() =>
+                              toggleCouponStatus(coupon.id, coupon.is_active)
+                            }
+                          />
+                          {hasEditPermission && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setEditingCoupon(coupon)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {hasDeletePermission && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteCoupon(coupon.id)}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </Button>
+                          )}
                         </div>
-
-                        {coupon.description && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            {coupon.description}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={coupon.is_active}
-                          onCheckedChange={() =>
-                            toggleCouponStatus(coupon.id, coupon.is_active)
-                          }
-                        />
-                        {hasEditPermission && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setEditingCoupon(coupon)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                        )}
-                        {hasDeletePermission && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => deleteCoupon(coupon.id)}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-600" />
-                          </Button>
-                        )}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      {/* Add/Edit Coupon Dialog */}
-      <Dialog
-        open={isAddingCoupon || !!editingCoupon}
-        onOpenChange={() => {
-          setIsAddingCoupon(false);
-          setEditingCoupon(null);
-        }}
-      >
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingCoupon ? "Edit Coupon" : "Create New Coupon"}
-            </DialogTitle>
-          </DialogHeader>
-          <CouponForm
-            coupon={editingCoupon}
-            categories={categories}
-            onSave={saveCoupon}
-            onCancel={() => {
-              setIsAddingCoupon(false);
-              setEditingCoupon(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </div>
+        {/* Add/Edit Coupon Dialog */}
+        <Dialog
+          open={isAddingCoupon || !!editingCoupon}
+          onOpenChange={() => {
+            setIsAddingCoupon(false);
+            setEditingCoupon(null);
+          }}
+        >
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingCoupon ? "Edit Coupon" : "Create New Coupon"}
+              </DialogTitle>
+            </DialogHeader>
+            <CouponForm
+              coupon={editingCoupon}
+              categories={categories}
+              onSave={saveCoupon}
+              onCancel={() => {
+                setIsAddingCoupon(false);
+                setEditingCoupon(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
     </PermissionGuard>
   );
 }

@@ -12,10 +12,10 @@ export function hasPermission(
   action: ActionName = "view",
 ): boolean {
   if (!permissions) return false;
-  
+
   const modulePerms = permissions[module];
   if (!modulePerms) return false;
-  
+
   return (modulePerms as any)[action] === true;
 }
 

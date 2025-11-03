@@ -1088,482 +1088,494 @@ export default function AdminCategories() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Categories</h1>
-          <p className="text-muted-foreground">
-            Organize your flower catalog with categories and subcategories
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() =>
-              window.open("/admin/categories/migrate-images", "_blank")
-            }
-          >
-            <Upload className="h-4 w-4 mr-2" />
-            Migrate Images
-          </Button>
-          <Button variant="outline" onClick={() => fetchCategories()}>
-            Refresh
-          </Button>
-          {hasCreatePermission && (
-            <Button onClick={() => startEditing()}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Category
+            <p className="text-muted-foreground">
+              Organize your flower catalog with categories and subcategories
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() =>
+                window.open("/admin/categories/migrate-images", "_blank")
+              }
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Migrate Images
             </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Categories
-            </CardTitle>
-            <FolderOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{categories.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Main Categories
-            </CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{parentCategories.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Subcategories</CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{subCategories.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active</CardTitle>
-            <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {categories.filter((cat) => cat.is_active).length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Hierarchical Categories */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>
-              Categories Hierarchy ({filteredCategories.length})
-            </CardTitle>
-            <div className="text-sm text-muted-foreground">
-              {parentCategories.length} main categories, {subCategories.length}{" "}
-              subcategories
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {filteredCategories.length === 0 ? (
-            <div className="text-center py-12">
-              <FolderOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">
-                No categories found
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                {searchQuery
-                  ? "Try adjusting your search"
-                  : "Get started by adding your first category"}
-              </p>
+            <Button variant="outline" onClick={() => fetchCategories()}>
+              Refresh
+            </Button>
+            {hasCreatePermission && (
               <Button onClick={() => startEditing()}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Category
               </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Main Categories */}
-              {parentCategories.map((parent) => (
-                <MainCategoryAccordion
-                  key={parent.id}
-                  parent={parent}
-                  subcategories={categories.filter(
-                    (cat) => cat.parent_id === parent.id,
-                  )}
-                  onEditCategory={startEditing}
-                  onDeleteCategory={deleteCategory}
-                  onToggleStatus={toggleCategoryStatus}
-                  onToggleMenuVisibility={toggleMenuVisibility}
-                  editingCategory={editingCategory}
-                  formData={formData}
-                  setFormData={setFormData}
-                  onSave={saveCategory}
-                  onCancel={cancelEditing}
-                  isSaving={isSaving}
-                  handleNameChange={handleNameChange}
-                  parentCategories={parentCategories}
-                  settings={settings}
-                />
-              ))}
+            )}
+          </div>
+        </div>
 
-              {/* Orphaned Subcategories */}
-              {subCategories.filter(
-                (sub) => !parentCategories.find((p) => p.id === sub.parent_id),
-              ).length > 0 && (
-                <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50">
-                  <div className="flex items-center gap-2 mb-3">
-                    <FolderOpen className="h-5 w-5 text-amber-600" />
-                    <span className="font-semibold text-amber-800">
-                      Orphaned Subcategories
-                    </span>
-                    <Badge
-                      variant="secondary"
-                      className="bg-amber-100 text-amber-800"
-                    >
-                      Missing Parent
-                    </Badge>
-                  </div>
-                  <div className="space-y-2 ml-6">
-                    {subCategories
-                      .filter(
-                        (sub) =>
-                          !parentCategories.find((p) => p.id === sub.parent_id),
-                      )
-                      .map((orphan) => (
-                        <CategoryRow
-                          key={orphan.id}
-                          category={orphan}
-                          isSubcategory={true}
-                          onEdit={startEditing}
-                          onDelete={deleteCategory}
-                          onToggleStatus={toggleCategoryStatus}
-                          onToggleMenuVisibility={toggleMenuVisibility}
-                          editingCategory={editingCategory}
-                          formData={formData}
-                          setFormData={setFormData}
-                          onSave={saveCategory}
-                          onCancel={cancelEditing}
-                          isSaving={isSaving}
-                          handleNameChange={handleNameChange}
-                          parentCategories={parentCategories}
-                          settings={settings}
-                          hasEditPermission={hasEditPermission}
-                          hasDeletePermission={hasDeletePermission}
-                        />
-                      ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Add New Category Form */}
-      {isCreating && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Add New Category</span>
-              <Button variant="outline" size="sm" onClick={cancelEditing}>
-                Cancel
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Basic Information</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Category Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="e.g., Birthday Flowers"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="slug">URL Slug *</Label>
-                  <Input
-                    id="slug"
-                    value={formData.slug}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, slug: e.target.value }))
-                    }
-                    placeholder="birthday-flowers"
-                  />
-                </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Categories
+              </CardTitle>
+              <FolderOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{categories.length}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Main Categories
+              </CardTitle>
+              <Tag className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {parentCategories.length}
               </div>
-
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  placeholder="Beautiful flowers perfect for birthday celebrations..."
-                  rows={3}
-                />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Subcategories
+              </CardTitle>
+              <Tag className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{subCategories.length}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active</CardTitle>
+              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {categories.filter((cat) => cat.is_active).length}
               </div>
+            </CardContent>
+          </Card>
+        </div>
 
-              <div>
-                <SingleImageUpload
-                  imageUrl={formData.image_url}
-                  onImageChange={(imageUrl) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      image_url: imageUrl,
-                    }))
-                  }
-                  label="Category Image"
-                />
-              </div>
-            </div>
-
-            {/* Category Settings */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Category Settings</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="parent_id">Parent Category</Label>
-                  <Select
-                    value={formData.parent_id}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({ ...prev, parent_id: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select parent (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        Main Category (No Parent)
-                      </SelectItem>
-                      {parentCategories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="sort_order">Sort Order</Label>
-                  <Input
-                    id="sort_order"
-                    type="number"
-                    value={formData.sort_order}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        sort_order: e.target.value,
-                      }))
-                    }
-                    placeholder="1"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="is_active">Active Status</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Active categories are visible to customers
-                    </p>
-                  </div>
-                  <Switch
-                    id="is_active"
-                    checked={formData.is_active}
-                    onCheckedChange={(checked) =>
-                      setFormData((prev) => ({ ...prev, is_active: checked }))
-                    }
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="show_in_menu">Show in Menu</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Display this category in the navigation menu
-                    </p>
-                  </div>
-                  <Switch
-                    id="show_in_menu"
-                    checked={formData.show_in_menu}
-                    onCheckedChange={(checked) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        show_in_menu: checked,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* SEO Settings */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">SEO Settings</h3>
-
-              <div>
-                <Label htmlFor="meta_title">Meta Title</Label>
-                <Input
-                  id="meta_title"
-                  value={formData.meta_title}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      meta_title: e.target.value,
-                    }))
-                  }
-                  placeholder={
-                    settings.defaultMetaTitle ||
-                    "Birthday Flowers - Fresh Delivery | Florist in India"
-                  }
-                />
-                {!formData.meta_title && settings.defaultMetaTitle && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Will use default: {settings.defaultMetaTitle}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="meta_description">Meta Description</Label>
-                <Textarea
-                  id="meta_description"
-                  value={formData.meta_description}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      meta_description: e.target.value,
-                    }))
-                  }
-                  placeholder={
-                    settings.defaultMetaDescription ||
-                    "Order beautiful birthday flowers with same-day delivery across India..."
-                  }
-                  rows={2}
-                />
-                {!formData.meta_description &&
-                  settings.defaultMetaDescription && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Will use default:{" "}
-                      {settings.defaultMetaDescription.substring(0, 100)}...
-                    </p>
-                  )}
-              </div>
-
-              <div>
-                <Label htmlFor="robots">Robots Directive</Label>
-                <Select
-                  value={formData.robots || "default"}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      robots: value === "default" ? "" : value,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={settings.defaultRobots || "index, follow"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Use default</SelectItem>
-                    <SelectItem value="index, follow">index, follow</SelectItem>
-                    <SelectItem value="noindex, follow">
-                      noindex, follow
-                    </SelectItem>
-                    <SelectItem value="index, nofollow">
-                      index, nofollow
-                    </SelectItem>
-                    <SelectItem value="noindex, nofollow">
-                      noindex, nofollow
-                    </SelectItem>
-                    <SelectItem value="noindex, nofollow, noarchive">
-                      noindex, nofollow, noarchive
-                    </SelectItem>
-                    <SelectItem value="nosnippet">nosnippet</SelectItem>
-                  </SelectContent>
-                </Select>
-                {!formData.robots && settings.defaultRobots && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Will use default: {settings.defaultRobots}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="og_image">Open Graph Image</Label>
-                <SingleImageUpload
-                  imageUrl={formData.og_image}
-                  onImageChange={(imageUrl) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      og_image: imageUrl,
-                    }))
-                  }
-                  label="Category OG Image"
-                />
-                {!formData.og_image && settings.defaultOgImage && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Will use default OG image from Site Settings
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Form Actions */}
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={cancelEditing}>
-                Cancel
-              </Button>
-              <Button onClick={saveCategory} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Create Category"}
-              </Button>
+        {/* Search */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </CardContent>
         </Card>
-      )}
-    </div>
+
+        {/* Hierarchical Categories */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                Categories Hierarchy ({filteredCategories.length})
+              </CardTitle>
+              <div className="text-sm text-muted-foreground">
+                {parentCategories.length} main categories,{" "}
+                {subCategories.length} subcategories
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {filteredCategories.length === 0 ? (
+              <div className="text-center py-12">
+                <FolderOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">
+                  No categories found
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery
+                    ? "Try adjusting your search"
+                    : "Get started by adding your first category"}
+                </p>
+                <Button onClick={() => startEditing()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Category
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Main Categories */}
+                {parentCategories.map((parent) => (
+                  <MainCategoryAccordion
+                    key={parent.id}
+                    parent={parent}
+                    subcategories={categories.filter(
+                      (cat) => cat.parent_id === parent.id,
+                    )}
+                    onEditCategory={startEditing}
+                    onDeleteCategory={deleteCategory}
+                    onToggleStatus={toggleCategoryStatus}
+                    onToggleMenuVisibility={toggleMenuVisibility}
+                    editingCategory={editingCategory}
+                    formData={formData}
+                    setFormData={setFormData}
+                    onSave={saveCategory}
+                    onCancel={cancelEditing}
+                    isSaving={isSaving}
+                    handleNameChange={handleNameChange}
+                    parentCategories={parentCategories}
+                    settings={settings}
+                  />
+                ))}
+
+                {/* Orphaned Subcategories */}
+                {subCategories.filter(
+                  (sub) =>
+                    !parentCategories.find((p) => p.id === sub.parent_id),
+                ).length > 0 && (
+                  <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FolderOpen className="h-5 w-5 text-amber-600" />
+                      <span className="font-semibold text-amber-800">
+                        Orphaned Subcategories
+                      </span>
+                      <Badge
+                        variant="secondary"
+                        className="bg-amber-100 text-amber-800"
+                      >
+                        Missing Parent
+                      </Badge>
+                    </div>
+                    <div className="space-y-2 ml-6">
+                      {subCategories
+                        .filter(
+                          (sub) =>
+                            !parentCategories.find(
+                              (p) => p.id === sub.parent_id,
+                            ),
+                        )
+                        .map((orphan) => (
+                          <CategoryRow
+                            key={orphan.id}
+                            category={orphan}
+                            isSubcategory={true}
+                            onEdit={startEditing}
+                            onDelete={deleteCategory}
+                            onToggleStatus={toggleCategoryStatus}
+                            onToggleMenuVisibility={toggleMenuVisibility}
+                            editingCategory={editingCategory}
+                            formData={formData}
+                            setFormData={setFormData}
+                            onSave={saveCategory}
+                            onCancel={cancelEditing}
+                            isSaving={isSaving}
+                            handleNameChange={handleNameChange}
+                            parentCategories={parentCategories}
+                            settings={settings}
+                            hasEditPermission={hasEditPermission}
+                            hasDeletePermission={hasDeletePermission}
+                          />
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Add New Category Form */}
+        {isCreating && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Add New Category</span>
+                <Button variant="outline" size="sm" onClick={cancelEditing}>
+                  Cancel
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Basic Information</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Category Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                      placeholder="e.g., Birthday Flowers"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="slug">URL Slug *</Label>
+                    <Input
+                      id="slug"
+                      value={formData.slug}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          slug: e.target.value,
+                        }))
+                      }
+                      placeholder="birthday-flowers"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="Beautiful flowers perfect for birthday celebrations..."
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <SingleImageUpload
+                    imageUrl={formData.image_url}
+                    onImageChange={(imageUrl) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        image_url: imageUrl,
+                      }))
+                    }
+                    label="Category Image"
+                  />
+                </div>
+              </div>
+
+              {/* Category Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Category Settings</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="parent_id">Parent Category</Label>
+                    <Select
+                      value={formData.parent_id}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, parent_id: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select parent (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">
+                          Main Category (No Parent)
+                        </SelectItem>
+                        {parentCategories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="sort_order">Sort Order</Label>
+                    <Input
+                      id="sort_order"
+                      type="number"
+                      value={formData.sort_order}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          sort_order: e.target.value,
+                        }))
+                      }
+                      placeholder="1"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="is_active">Active Status</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Active categories are visible to customers
+                      </p>
+                    </div>
+                    <Switch
+                      id="is_active"
+                      checked={formData.is_active}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({ ...prev, is_active: checked }))
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="show_in_menu">Show in Menu</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display this category in the navigation menu
+                      </p>
+                    </div>
+                    <Switch
+                      id="show_in_menu"
+                      checked={formData.show_in_menu}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          show_in_menu: checked,
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* SEO Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">SEO Settings</h3>
+
+                <div>
+                  <Label htmlFor="meta_title">Meta Title</Label>
+                  <Input
+                    id="meta_title"
+                    value={formData.meta_title}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        meta_title: e.target.value,
+                      }))
+                    }
+                    placeholder={
+                      settings.defaultMetaTitle ||
+                      "Birthday Flowers - Fresh Delivery | Florist in India"
+                    }
+                  />
+                  {!formData.meta_title && settings.defaultMetaTitle && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Will use default: {settings.defaultMetaTitle}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="meta_description">Meta Description</Label>
+                  <Textarea
+                    id="meta_description"
+                    value={formData.meta_description}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        meta_description: e.target.value,
+                      }))
+                    }
+                    placeholder={
+                      settings.defaultMetaDescription ||
+                      "Order beautiful birthday flowers with same-day delivery across India..."
+                    }
+                    rows={2}
+                  />
+                  {!formData.meta_description &&
+                    settings.defaultMetaDescription && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Will use default:{" "}
+                        {settings.defaultMetaDescription.substring(0, 100)}...
+                      </p>
+                    )}
+                </div>
+
+                <div>
+                  <Label htmlFor="robots">Robots Directive</Label>
+                  <Select
+                    value={formData.robots || "default"}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        robots: value === "default" ? "" : value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={settings.defaultRobots || "index, follow"}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Use default</SelectItem>
+                      <SelectItem value="index, follow">
+                        index, follow
+                      </SelectItem>
+                      <SelectItem value="noindex, follow">
+                        noindex, follow
+                      </SelectItem>
+                      <SelectItem value="index, nofollow">
+                        index, nofollow
+                      </SelectItem>
+                      <SelectItem value="noindex, nofollow">
+                        noindex, nofollow
+                      </SelectItem>
+                      <SelectItem value="noindex, nofollow, noarchive">
+                        noindex, nofollow, noarchive
+                      </SelectItem>
+                      <SelectItem value="nosnippet">nosnippet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {!formData.robots && settings.defaultRobots && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Will use default: {settings.defaultRobots}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="og_image">Open Graph Image</Label>
+                  <SingleImageUpload
+                    imageUrl={formData.og_image}
+                    onImageChange={(imageUrl) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        og_image: imageUrl,
+                      }))
+                    }
+                    label="Category OG Image"
+                  />
+                  {!formData.og_image && settings.defaultOgImage && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Will use default OG image from Site Settings
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={cancelEditing}>
+                  Cancel
+                </Button>
+                <Button onClick={saveCategory} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Create Category"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </PermissionGuard>
   );
 }

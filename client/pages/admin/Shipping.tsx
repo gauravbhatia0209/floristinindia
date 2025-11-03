@@ -190,205 +190,65 @@ export default function Shipping() {
     <PermissionGuard requiredModule="shipping">
       <div className="space-y-6">
         {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Shipping Management</h1>
-          <p className="text-muted-foreground">
-            Manage delivery zones, pincodes, and shipping methods
-          </p>
-        </div>
-      </div>
-
-      <Tabs defaultValue="zones" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="zones">Shipping Zones</TabsTrigger>
-          <TabsTrigger value="methods">Shipping Methods</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="zones" className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Delivery Zones</h2>
-            {hasCreatePermission && (
-              <Button onClick={() => setIsAddingZone(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Zone
-              </Button>
-            )}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Shipping Management</h1>
+            <p className="text-muted-foreground">
+              Manage delivery zones, pincodes, and shipping methods
+            </p>
           </div>
+        </div>
 
-          <div className="grid gap-6">
-            {zones.map((zone) => (
-              <Card key={zone.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <MapPin className="w-5 h-5" />
-                        {zone.name}
-                        <Badge
-                          variant={zone.is_active ? "default" : "secondary"}
-                        >
-                          {zone.is_active ? "Active" : "Inactive"}
-                        </Badge>
-                      </CardTitle>
-                      {zone.description && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {zone.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={zone.is_active}
-                        onCheckedChange={() =>
-                          toggleZoneStatus(zone.id, zone.is_active)
-                        }
-                      />
-                      {hasEditPermission && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingZone(zone)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      )}
-                      {hasDeletePermission && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteZone(zone.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium mb-2">
-                        Covered Pincodes ({zone.pincodes.length})
-                      </h4>
-                      <div className="flex flex-wrap gap-1">
-                        {zone.pincodes.slice(0, 10).map((pincode) => (
+        <Tabs defaultValue="zones" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="zones">Shipping Zones</TabsTrigger>
+            <TabsTrigger value="methods">Shipping Methods</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="zones" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Delivery Zones</h2>
+              {hasCreatePermission && (
+                <Button onClick={() => setIsAddingZone(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Zone
+                </Button>
+              )}
+            </div>
+
+            <div className="grid gap-6">
+              {zones.map((zone) => (
+                <Card key={zone.id}>
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <MapPin className="w-5 h-5" />
+                          {zone.name}
                           <Badge
-                            key={pincode}
-                            variant="outline"
-                            className="text-xs"
+                            variant={zone.is_active ? "default" : "secondary"}
                           >
-                            {pincode}
+                            {zone.is_active ? "Active" : "Inactive"}
                           </Badge>
-                        ))}
-                        {zone.pincodes.length > 10 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{zone.pincodes.length - 10} more
-                          </Badge>
+                        </CardTitle>
+                        {zone.description && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {zone.description}
+                          </p>
                         )}
                       </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium mb-2">
-                        Shipping Methods ({zone.shipping_methods.length})
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {zone.shipping_methods.map((method) => (
-                          <div
-                            key={method.id}
-                            className="border rounded-lg p-3"
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <h5 className="font-medium text-sm">
-                                {method.name}
-                              </h5>
-                              <Badge
-                                variant={
-                                  method.is_active ? "default" : "secondary"
-                                }
-                                className="text-xs"
-                              >
-                                {method.is_active ? "Active" : "Inactive"}
-                              </Badge>
-                            </div>
-                            <p className="text-xs text-muted-foreground mb-2">
-                              {method.description}
-                            </p>
-                            <div className="flex justify-between items-center text-xs">
-                              <span className="font-medium">
-                                ₹{method.price}
-                              </span>
-                              <span className="text-muted-foreground">
-                                {method.delivery_time}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="methods" className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Shipping Methods</h2>
-            {hasCreatePermission && (
-              <Button onClick={() => setIsAddingMethod(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Method
-              </Button>
-            )}
-          </div>
-
-          <div className="grid gap-4">
-            {methods.map((method) => {
-              const zone = zones.find((z) => z.id === method.zone_id);
-              return (
-                <Card key={method.id}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Truck className="w-4 h-4" />
-                          <h3 className="font-semibold">{method.name}</h3>
-                          <Badge
-                            variant={method.is_active ? "default" : "secondary"}
-                          >
-                            {method.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                          <Badge variant="outline">{method.type}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {method.description}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="flex items-center gap-1">
-                            <IndianRupee className="w-3 h-3" />
-                            {method.price}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {method.delivery_time}
-                          </span>
-                          {zone && (
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              {zone.name}
-                            </span>
-                          )}
-                        </div>
-                      </div>
                       <div className="flex items-center gap-2">
+                        <Switch
+                          checked={zone.is_active}
+                          onCheckedChange={() =>
+                            toggleZoneStatus(zone.id, zone.is_active)
+                          }
+                        />
                         {hasEditPermission && (
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => setEditingMethod(method)}
+                            onClick={() => setEditingZone(zone)}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -397,72 +257,214 @@ export default function Shipping() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => deleteMethod(method.id)}
+                            onClick={() => deleteZone(zone.id)}
                           >
                             <Trash2 className="w-4 h-4 text-red-600" />
                           </Button>
                         )}
                       </div>
                     </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">
+                          Covered Pincodes ({zone.pincodes.length})
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {zone.pincodes.slice(0, 10).map((pincode) => (
+                            <Badge
+                              key={pincode}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {pincode}
+                            </Badge>
+                          ))}
+                          {zone.pincodes.length > 10 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{zone.pincodes.length - 10} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium mb-2">
+                          Shipping Methods ({zone.shipping_methods.length})
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {zone.shipping_methods.map((method) => (
+                            <div
+                              key={method.id}
+                              className="border rounded-lg p-3"
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <h5 className="font-medium text-sm">
+                                  {method.name}
+                                </h5>
+                                <Badge
+                                  variant={
+                                    method.is_active ? "default" : "secondary"
+                                  }
+                                  className="text-xs"
+                                >
+                                  {method.is_active ? "Active" : "Inactive"}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground mb-2">
+                                {method.description}
+                              </p>
+                              <div className="flex justify-between items-center text-xs">
+                                <span className="font-medium">
+                                  ₹{method.price}
+                                </span>
+                                <span className="text-muted-foreground">
+                                  {method.delivery_time}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-              );
-            })}
-          </div>
-        </TabsContent>
-      </Tabs>
+              ))}
+            </div>
+          </TabsContent>
 
-      {/* Add/Edit Zone Dialog */}
-      <Dialog
-        open={isAddingZone || !!editingZone}
-        onOpenChange={() => {
-          setIsAddingZone(false);
-          setEditingZone(null);
-        }}
-      >
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingZone ? "Edit Zone" : "Add New Zone"}
-            </DialogTitle>
-          </DialogHeader>
-          <ZoneForm
-            zone={editingZone}
-            onSave={saveZone}
-            onCancel={() => {
-              setIsAddingZone(false);
-              setEditingZone(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+          <TabsContent value="methods" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Shipping Methods</h2>
+              {hasCreatePermission && (
+                <Button onClick={() => setIsAddingMethod(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Method
+                </Button>
+              )}
+            </div>
 
-      {/* Add/Edit Method Dialog */}
-      <Dialog
-        open={isAddingMethod || !!editingMethod}
-        onOpenChange={() => {
-          setIsAddingMethod(false);
-          setEditingMethod(null);
-        }}
-      >
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingMethod ? "Edit Method" : "Add New Method"}
-            </DialogTitle>
-          </DialogHeader>
-          <MethodForm
-            method={editingMethod}
-            zones={zones}
-            onSave={saveMethod}
-            onCancel={() => {
-              setIsAddingMethod(false);
-              setEditingMethod(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </div>
+            <div className="grid gap-4">
+              {methods.map((method) => {
+                const zone = zones.find((z) => z.id === method.zone_id);
+                return (
+                  <Card key={method.id}>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Truck className="w-4 h-4" />
+                            <h3 className="font-semibold">{method.name}</h3>
+                            <Badge
+                              variant={
+                                method.is_active ? "default" : "secondary"
+                              }
+                            >
+                              {method.is_active ? "Active" : "Inactive"}
+                            </Badge>
+                            <Badge variant="outline">{method.type}</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {method.description}
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <span className="flex items-center gap-1">
+                              <IndianRupee className="w-3 h-3" />
+                              {method.price}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {method.delivery_time}
+                            </span>
+                            {zone && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="w-3 h-3" />
+                                {zone.name}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {hasEditPermission && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setEditingMethod(method)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {hasDeletePermission && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteMethod(method.id)}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Add/Edit Zone Dialog */}
+        <Dialog
+          open={isAddingZone || !!editingZone}
+          onOpenChange={() => {
+            setIsAddingZone(false);
+            setEditingZone(null);
+          }}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingZone ? "Edit Zone" : "Add New Zone"}
+              </DialogTitle>
+            </DialogHeader>
+            <ZoneForm
+              zone={editingZone}
+              onSave={saveZone}
+              onCancel={() => {
+                setIsAddingZone(false);
+                setEditingZone(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Add/Edit Method Dialog */}
+        <Dialog
+          open={isAddingMethod || !!editingMethod}
+          onOpenChange={() => {
+            setIsAddingMethod(false);
+            setEditingMethod(null);
+          }}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingMethod ? "Edit Method" : "Add New Method"}
+              </DialogTitle>
+            </DialogHeader>
+            <MethodForm
+              method={editingMethod}
+              zones={zones}
+              onSave={saveMethod}
+              onCancel={() => {
+                setIsAddingMethod(false);
+                setEditingMethod(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
     </PermissionGuard>
   );
 }
