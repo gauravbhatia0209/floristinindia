@@ -490,7 +490,15 @@ function ProductCarouselSection({ content }: { content: any }) {
                     min_variation_price: minPrice,
                   };
                   console.log(
-                    `Product ${product.name}: variants count=${variants.length}, prices=${variantPrices}, minPrice=${minPrice}`
+                    `Product ${product.name} (ID: ${product.id}):`,
+                    {
+                      has_variations: (product as any)?.has_variations,
+                      original_price: product.price,
+                      original_sale_price: product.sale_price,
+                      variants_count: variants.length,
+                      variant_prices: variantPrices,
+                      min_variation_price: minPrice,
+                    }
                   );
                 }
               } catch (err) {
