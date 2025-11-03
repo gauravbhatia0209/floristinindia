@@ -435,6 +435,8 @@ export default function Index() {
         return renderTestimonials(section);
       case "newsletter":
         return renderNewsletter(section);
+      case "image_with_link":
+        return renderImageWithLink(section);
       default:
         console.log(`Homepage: Unknown section type "${section.type}"`);
         return null;
