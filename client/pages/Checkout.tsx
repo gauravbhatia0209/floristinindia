@@ -54,6 +54,7 @@ interface ShippingMethodCardProps {
   pincode: string;
   orderValue: number;
   selectedMethodId: string | null;
+  cartItems: any[];
   onMethodSelect: (
     method: AvailableShippingMethod | null,
     cost: number,
