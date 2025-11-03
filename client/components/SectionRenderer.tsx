@@ -411,33 +411,41 @@ function ProductCarouselSection({ content }: { content: any }) {
 
   useEffect(() => {
     fetchProducts();
-  }, [content.product_filter, content.show_count]);
+  }, [content.product_filter, content.show_count, content.selected_products]);
 
   async function fetchProducts() {
     try {
       setLoading(true);
+      const selectedProductIds = content.selected_products || [];
+
       let query = supabase.from("products").select("*").eq("is_active", true);
 
-      // Apply filter based on content settings
-      switch (content.product_filter) {
-        case "featured":
-          query = query.eq("is_featured", true);
-          break;
-        case "sale":
-          query = query.not("sale_price", "is", null);
-          break;
-        case "latest":
-          query = query.order("created_at", { ascending: false });
-          break;
-        case "popular":
-          // For now, order by featured then created_at
-          query = query.order("is_featured", { ascending: false });
-          break;
-        default:
-          query = query.eq("is_featured", true);
-      }
+      // If specific products are selected, use those
+      if (selectedProductIds.length > 0) {
+        query = query.in("id", selectedProductIds);
+        // Don't apply limit when using selected products - preserve all selected items
+      } else {
+        // Apply filter based on content settings
+        switch (content.product_filter) {
+          case "featured":
+            query = query.eq("is_featured", true);
+            break;
+          case "sale":
+            query = query.not("sale_price", "is", null);
+            break;
+          case "latest":
+            query = query.order("created_at", { ascending: false });
+            break;
+          case "popular":
+            // For now, order by featured then created_at
+            query = query.order("is_featured", { ascending: false });
+            break;
+          default:
+            query = query.eq("is_featured", true);
+        }
 
-      query = query.limit(content.show_count || 8);
+        query = query.limit(content.show_count || 8);
+      }
 
       const { data, error } = await query;
 
@@ -445,7 +453,15 @@ function ProductCarouselSection({ content }: { content: any }) {
         console.error("Error fetching products:", error);
         setProducts([]);
       } else {
-        setProducts(data || []);
+        // If selected products are specified, order them according to the selection order
+        if (selectedProductIds.length > 0 && data) {
+          const orderedProducts = selectedProductIds
+            .map((id: string) => data.find((prod) => prod.id === id))
+            .filter((prod): prod is Product => prod !== undefined);
+          setProducts(orderedProducts);
+        } else {
+          setProducts(data || []);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch products:", error);
