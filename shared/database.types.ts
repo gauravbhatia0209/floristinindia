@@ -881,6 +881,8 @@ export interface Database {
           role: "admin" | "manager" | "editor" | "viewer";
           permissions: any; // JSON object with module permissions
           is_active: boolean;
+          password: string | null;
+          password_changed_at: string | null;
           last_login: string | null;
           created_by: string | null;
           created_at: string;
@@ -894,6 +896,8 @@ export interface Database {
           role: "admin" | "manager" | "editor" | "viewer";
           permissions: any;
           is_active?: boolean;
+          password?: string | null;
+          password_changed_at?: string | null;
           last_login?: string | null;
           created_by?: string | null;
           created_at?: string;
@@ -907,6 +911,8 @@ export interface Database {
           role?: "admin" | "manager" | "editor" | "viewer";
           permissions?: any;
           is_active?: boolean;
+          password?: string | null;
+          password_changed_at?: string | null;
           last_login?: string | null;
           created_by?: string | null;
           created_at?: string;
