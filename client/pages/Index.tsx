@@ -755,18 +755,31 @@ export default function Index() {
   function renderCategoryGrid(section: HomepageSection) {
     const content = section.content as any;
     const showCount = content?.show_count || 8;
+    const selectedCategoryIds = content?.selected_categories || [];
 
     // Only use title/subtitle if they exist and are not empty
     const hasTitle = section.title && section.title.trim() !== "";
     const hasSubtitle = section.subtitle && section.subtitle.trim() !== "";
     const hasAnyText = hasTitle || hasSubtitle;
 
-    // Filter out any invalid categories and limit display count
-    const validCategories = categories
-      .filter(
-        (category) => category && category.id && category.name && category.slug,
-      )
-      .slice(0, showCount);
+    // Determine which categories to show based on section content
+    let validCategories: ProductCategory[] = [];
+
+    if (selectedCategoryIds.length > 0) {
+      // Use only the selected categories for this specific section
+      validCategories = selectedCategoryIds
+        .map((id: string) => categories.find((cat) => cat.id === id))
+        .filter((cat): cat is ProductCategory =>
+          cat !== undefined && cat.id && cat.name && cat.slug
+        );
+    } else {
+      // Fallback to all categories if none selected
+      validCategories = categories
+        .filter(
+          (category) => category && category.id && category.name && category.slug,
+        )
+        .slice(0, showCount);
+    }
 
     if (validCategories.length === 0) {
       return (
