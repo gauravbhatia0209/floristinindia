@@ -128,13 +128,21 @@ export default function Users() {
 
   async function saveUser(userData: Partial<SubUser>) {
     try {
+      // Hash password if it's provided
+      let dataToSave = { ...userData };
+      if (userData.password && userData.password.trim()) {
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+        dataToSave.password = hashedPassword;
+      }
+
       if (editingUser) {
         await supabase
           .from("sub_users")
-          .update(userData)
+          .update(dataToSave)
           .eq("id", editingUser.id);
       } else {
-        await supabase.from("sub_users").insert(userData);
+        await supabase.from("sub_users").insert(dataToSave);
       }
 
       fetchUsers();
