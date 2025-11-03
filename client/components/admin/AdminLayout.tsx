@@ -223,10 +223,16 @@ function AdminSidebar() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Filter navigation items based on user permissions
-  const filteredNavigation = navigation.filter((item) =>
-    canAccessNav(item.href, user?.permissions),
-  );
+  // Filter navigation items based on user permissions and role
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const filteredNavigation = navigation.filter((item) => {
+    // Admin-only pages require admin role
+    if (isAdminOnlyPage(item.href) && !isAdmin) {
+      return false;
+    }
+    // Check module-based permissions
+    return canAccessNav(item.href, user?.permissions);
+  });
 
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 border-r border-gray-200">
