@@ -60,6 +60,16 @@ export function canDelete(
 }
 
 /**
+ * Admin-only pages (require admin/super_admin role)
+ */
+const adminOnlyPages = new Set([
+  "/admin/database-setup",
+  "/admin/users",
+  "/admin/contact-submissions",
+  "/admin/settings",
+]);
+
+/**
  * Map navigation items to required module permissions
  */
 export function getRequiredModuleForNav(href: string): ModuleName | null {
@@ -74,13 +84,17 @@ export function getRequiredModuleForNav(href: string): ModuleName | null {
     "/admin/homepage": "homepage",
     "/admin/footer-editor": "pages",
     "/admin/menu-bar": "pages",
-    "/admin/settings": "settings",
-    "/admin/users": "users",
-    "/admin/contact-submissions": "users",
     "/admin/analytics": "orders",
   };
 
   return moduleMap[href] || null;
+}
+
+/**
+ * Check if a page requires admin-only access
+ */
+export function isAdminOnlyPage(href: string): boolean {
+  return adminOnlyPages.has(href);
 }
 
 /**
