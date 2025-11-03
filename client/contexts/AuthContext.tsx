@@ -232,9 +232,81 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     try {
       console.log("🔐 Login attempt:", { email, userType });
+
+      // For admin users, check sub_users table first, then fall back to admins table
+      if (userType === "admin") {
+        // Try sub_users table first (new way)
+        const { data: subUserData, error: subUserError } = await supabase
+          .from("sub_users")
+          .select("*")
+          .eq("email", email.toLowerCase())
+          .eq("is_active", true)
+          .single();
+
+        if (!subUserError && subUserData) {
+          // Verify password for sub_users
+          const isValidPassword = await verifyPassword(
+            password,
+            subUserData.password || "",
+          );
+
+          if (!isValidPassword) {
+            await logLoginAttempt(email, userType, false, "Invalid password");
+            return { success: false, error: "Invalid email or password" };
+          }
+
+          // Successful login - create session
+          const sessionToken = generateSessionToken();
+          const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+          const { error: sessionError } = await supabase
+            .from("user_sessions")
+            .insert({
+              user_id: subUserData.id,
+              user_type: userType,
+              session_token: sessionToken,
+              expires_at: expiresAt.toISOString(),
+              ip_address: await getClientIP(),
+              user_agent: navigator.userAgent,
+            });
+
+          if (sessionError) {
+            console.error("Session creation failed:", sessionError);
+            return { success: false, error: "Login failed. Please try again." };
+          }
+
+          // Update last login
+          await supabase
+            .from("sub_users")
+            .update({
+              last_login: new Date().toISOString(),
+            })
+            .eq("id", subUserData.id);
+
+          // Store session
+          localStorage.setItem("session_token", sessionToken);
+          localStorage.setItem("user_type", userType);
+
+          const userObj: User = {
+            id: subUserData.id,
+            email: subUserData.email,
+            name: `${subUserData.first_name} ${subUserData.last_name}`,
+            role: subUserData.role === "admin" ? "admin" : undefined,
+            user_type: userType,
+            email_verified: true,
+            last_login: new Date().toISOString(),
+          };
+
+          setUser(userObj);
+          await logLoginAttempt(email, userType, true);
+
+          return { success: true, user: userObj };
+        }
+      }
+
+      // Fall back to original admins/customers table logic
       const tableName = userType === "admin" ? "admins" : "customers";
 
-      // Check if user exists and is active
       console.log("🔍 Checking user in table:", tableName);
       const { data: userData, error: userError } = await supabase
         .from(tableName)
