@@ -32,6 +32,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
 import { ShippingZone, ShippingMethod } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 interface ShippingZoneWithMethods extends ShippingZone {
   shipping_methods: ShippingMethod[];
