@@ -65,6 +65,7 @@ function ShippingMethodCard({
   pincode,
   orderValue,
   selectedMethodId,
+  cartItems,
   onMethodSelect,
 }: ShippingMethodCardProps) {
   const [availableMethods, setAvailableMethods] = useState<
@@ -96,6 +97,32 @@ function ShippingMethodCard({
         setAvailableMethods([]);
         onMethodSelect(null, 0);
         return;
+      }
+
+      // Validate that all products in cart are available at this pincode
+      if (cartItems && cartItems.length > 0) {
+        const unavailableProducts = [];
+
+        for (const item of cartItems) {
+          const isAvailable = await isProductAvailableAtPincode(
+            item.product_id,
+            pincode,
+          );
+
+          if (!isAvailable) {
+            unavailableProducts.push(item.product_name);
+          }
+        }
+
+        if (unavailableProducts.length > 0) {
+          const productList = unavailableProducts.join(", ");
+          setError(
+            `The following products are not available at the pincode entered: ${productList}`,
+          );
+          setAvailableMethods([]);
+          onMethodSelect(null, 0);
+          return;
+        }
       }
 
       setAvailableMethods(methods);
