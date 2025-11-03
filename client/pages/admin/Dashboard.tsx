@@ -306,100 +306,104 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
-                Recent Orders
-              </CardTitle>
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/admin/orders">View All</Link>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {stats.recentOrders.length > 0 ? (
-                stats.recentOrders.map((order: any) => (
-                  <div
-                    key={order.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div>
-                      <p className="font-medium">#{order.order_number}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.customers?.first_name}{" "}
-                        {order.customers?.last_name}
-                      </p>
+      {/* Recent Activity - Admin Only */}
+      {isAdmin && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Orders */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5" />
+                  Recent Orders
+                </CardTitle>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/admin/orders">View All</Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {stats.recentOrders.length > 0 ? (
+                  stats.recentOrders.map((order: any) => (
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="font-medium">#{order.order_number}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {order.customers?.first_name}{" "}
+                          {order.customers?.last_name}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">
+                          ₹{order.total_amount.toLocaleString()}
+                        </p>
+                        <Badge
+                          variant={
+                            order.status === "delivered"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {order.status}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">
-                        ₹{order.total_amount.toLocaleString()}
-                      </p>
-                      <Badge
-                        variant={
-                          order.status === "delivered" ? "default" : "secondary"
-                        }
-                      >
-                        {order.status}
-                      </Badge>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-muted-foreground py-4">
-                  No orders yet
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    No orders yet
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Featured Products */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Star className="w-5 h-5" />
-                Featured Products
-              </CardTitle>
-              <Button variant="outline" size="sm" asChild>
-                <Link to="/admin/products">Manage</Link>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {stats.topProducts.length > 0 ? (
-                stats.topProducts.map((product: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <div>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {product.is_featured ? "Featured" : "Regular"} Product
-                      </p>
+          {/* Featured Products */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  Featured Products
+                </CardTitle>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/admin/products">Manage</Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {stats.topProducts.length > 0 ? (
+                  stats.topProducts.map((product: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="font-medium">{product.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {product.is_featured ? "Featured" : "Regular"} Product
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">₹{product.price}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium">₹{product.price}</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-muted-foreground py-4">
-                  No products yet
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    No products yet
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* CMS Quick Actions */}
       <Card>
