@@ -172,8 +172,9 @@ export default function Coupons() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <PermissionGuard requiredModule="coupons">
+      <div className="space-y-6">
+        {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Coupon Management</h1>
@@ -394,6 +395,7 @@ export default function Coupons() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGuard>
   );
 }
 
