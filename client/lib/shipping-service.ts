@@ -173,3 +173,121 @@ export async function isDeliveryAvailable(pincode: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Check if a specific product is available at a given pincode
+ */
+export async function isProductAvailableAtPincode(
+  productId: string,
+  pincode: string,
+): Promise<boolean> {
+  try {
+    // First, find the zone that contains this pincode
+    const { data: zones, error: zoneError } = await supabase
+      .from("shipping_zones")
+      .select("id")
+      .eq("is_active", true);
+
+    if (zoneError) throw zoneError;
+
+    if (!zones || zones.length === 0) {
+      return false;
+    }
+
+    // Find zone containing the pincode
+    let zoneId: string | null = null;
+    for (const zone of zones) {
+      const { data: zoneData, error: zoneDetailsError } = await supabase
+        .from("shipping_zones")
+        .select("pincodes")
+        .eq("id", zone.id)
+        .single();
+
+      if (!zoneDetailsError && zoneData?.pincodes?.includes(pincode)) {
+        zoneId = zone.id;
+        break;
+      }
+    }
+
+    if (!zoneId) {
+      return false;
+    }
+
+    // Check if product is available in this zone
+    const { data: productZone, error: productError } = await supabase
+      .from("product_delivery_zones")
+      .select("is_available, available_quantity")
+      .eq("product_id", productId)
+      .eq("zone_id", zoneId)
+      .single();
+
+    if (productError) {
+      // No entry means product is not available in this zone
+      return false;
+    }
+
+    return productZone?.is_available === true && productZone?.available_quantity > 0;
+  } catch (error) {
+    console.error("Error checking product availability at pincode:", error);
+    return false;
+  }
+}
+
+/**
+ * Get product availability details for a pincode
+ */
+export async function getProductAvailabilityAtPincode(
+  productId: string,
+  pincode: string,
+): Promise<{
+  isAvailable: boolean;
+  quantity: number;
+  zoneId: string | null;
+} | null> {
+  try {
+    // Find the zone that contains this pincode
+    const { data: zones, error: zoneError } = await supabase
+      .from("shipping_zones")
+      .select("id, pincodes")
+      .eq("is_active", true);
+
+    if (zoneError) throw zoneError;
+
+    if (!zones || zones.length === 0) {
+      return { isAvailable: false, quantity: 0, zoneId: null };
+    }
+
+    let zoneId: string | null = null;
+    for (const zone of zones) {
+      if (zone.pincodes?.includes(pincode)) {
+        zoneId = zone.id;
+        break;
+      }
+    }
+
+    if (!zoneId) {
+      return { isAvailable: false, quantity: 0, zoneId: null };
+    }
+
+    // Get product availability in this zone
+    const { data: productZone } = await supabase
+      .from("product_delivery_zones")
+      .select("is_available, available_quantity")
+      .eq("product_id", productId)
+      .eq("zone_id", zoneId)
+      .single();
+
+    if (!productZone) {
+      return { isAvailable: false, quantity: 0, zoneId };
+    }
+
+    return {
+      isAvailable: productZone.is_available === true && productZone.available_quantity > 0,
+      quantity: productZone.available_quantity || 0,
+      zoneId,
+    };
+  } catch (error) {
+    console.error("Error getting product availability details:", error);
+    return null;
+  }
+}
