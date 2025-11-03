@@ -455,14 +455,53 @@ function ProductCarouselSection({ content }: { content: any }) {
         console.error("Error fetching products:", error);
         setProducts([]);
       } else {
+        let productsToSet = data || [];
+
+        // Fetch variations for products with has_variations = true
+        const productsWithVariations = productsToSet.filter(
+          (p) => (p as any)?.has_variations
+        );
+
+        if (productsWithVariations.length > 0) {
+          for (const product of productsWithVariations) {
+            try {
+              const { data: variants } = await supabase
+                .from("product_variants")
+                .select("price, sale_price")
+                .eq("product_id", product.id)
+                .eq("is_active", true);
+
+              if (variants && variants.length > 0) {
+                // Find minimum price among variants
+                const minPrice = Math.min(
+                  ...variants.map((v: any) => {
+                    const variantPrice = v.sale_price ?? v.price;
+                    return typeof variantPrice === "number"
+                      ? variantPrice
+                      : Number(variantPrice ?? 0);
+                  })
+                );
+
+                // Store the minimum variant price in a temporary property for display
+                (product as any).min_variation_price = minPrice;
+              }
+            } catch (err) {
+              console.error(
+                `Failed to fetch variants for product ${product.id}:`,
+                err
+              );
+            }
+          }
+        }
+
         // If selected products are specified, order them according to the selection order
         if (selectedProductIds.length > 0 && data) {
           const orderedProducts = selectedProductIds
-            .map((id: string) => data.find((prod) => prod.id === id))
+            .map((id: string) => productsToSet.find((prod) => prod.id === id))
             .filter((prod): prod is Product => prod !== undefined);
           setProducts(orderedProducts);
         } else {
-          setProducts(data || []);
+          setProducts(productsToSet);
         }
       }
     } catch (error) {
