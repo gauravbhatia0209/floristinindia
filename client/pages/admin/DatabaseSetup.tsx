@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Database, AlertTriangle, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import AdminGuard from "@/components/AdminGuard";
 
 export default function DatabaseSetup() {
   const [copied, setCopied] = useState<string | null>(null);
