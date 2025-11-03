@@ -32,6 +32,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
 import { Customer, Order } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { canEdit, canDelete } from "@/lib/permissionUtils";
 
 interface CustomerWithOrders extends Customer {
   recent_orders?: Order[];
