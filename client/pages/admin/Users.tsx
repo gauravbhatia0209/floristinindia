@@ -231,10 +231,28 @@ export default function Users() {
             Manage admin users and their permissions
           </p>
         </div>
-        <Button onClick={() => setIsAddingUser(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add User
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowPasswords(!showPasswords)}
+          >
+            {showPasswords ? (
+              <>
+                <EyeOff className="w-4 h-4 mr-2" />
+                Hide Passwords
+              </>
+            ) : (
+              <>
+                <Eye className="w-4 h-4 mr-2" />
+                Show Passwords
+              </>
+            )}
+          </Button>
+          <Button onClick={() => setIsAddingUser(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add User
+          </Button>
+        </div>
       </div>
 
       {/* Statistics */}
