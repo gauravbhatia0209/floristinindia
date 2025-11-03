@@ -41,12 +41,16 @@ interface OrderWithCustomer extends Order {
 }
 
 export default function Orders() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState<OrderWithCustomer[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderWithCustomer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithCustomer | null>(
     null,
   );
+
+  const hasEditPermission = canEdit(user?.permissions, "orders");
+  const hasDeletePermission = canDelete(user?.permissions, "orders");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [deliveryDateFilter, setDeliveryDateFilter] = useState<string>("");
