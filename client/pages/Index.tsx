@@ -776,12 +776,12 @@ export default function Index() {
 
     if (validCategories.length === 0) {
       return (
-        <section className={`${hasAnyText ? "py-20" : "py-8"}`}>
+        <section className={`${hasAnyText ? "py-5" : "py-8"}`}>
           <div className="container">
             {hasAnyText && (
               <div className="text-center mb-12">
                 {hasTitle && (
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  <h2 className="text-3xl md:text-4xl font-bold">
                     {section.title}
                   </h2>
                 )}
