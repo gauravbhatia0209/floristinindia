@@ -455,7 +455,7 @@ function ProductCarouselSection({ content }: { content: any }) {
         console.error("Error fetching products:", error);
         setProducts([]);
       } else {
-        let productsToSet = data || [];
+        let productsToSet = [...(data || [])];
 
         // Fetch variations for products with has_variations = true
         const productsWithVariations = productsToSet.filter(
@@ -463,42 +463,48 @@ function ProductCarouselSection({ content }: { content: any }) {
         );
 
         if (productsWithVariations.length > 0) {
-          for (const product of productsWithVariations) {
-            try {
-              const { data: variants } = await supabase
-                .from("product_variants")
-                .select("price, sale_price")
-                .eq("product_id", product.id)
-                .eq("is_active", true);
+          for (let i = 0; i < productsToSet.length; i++) {
+            const product = productsToSet[i];
+            if ((product as any)?.has_variations) {
+              try {
+                const { data: variants } = await supabase
+                  .from("product_variants")
+                  .select("price, sale_price")
+                  .eq("product_id", product.id)
+                  .eq("is_active", true);
 
-              if (variants && variants.length > 0) {
-                // Find minimum price among variants
-                const variantPrices = variants.map((v: any) => {
-                  const variantPrice = v.sale_price ?? v.price;
-                  return typeof variantPrice === "number"
-                    ? variantPrice
-                    : Number(variantPrice ?? 0);
-                });
+                if (variants && variants.length > 0) {
+                  // Find minimum price among variants
+                  const variantPrices = variants.map((v: any) => {
+                    const variantPrice = v.sale_price ?? v.price;
+                    return typeof variantPrice === "number"
+                      ? variantPrice
+                      : Number(variantPrice ?? 0);
+                  });
 
-                const minPrice = Math.min(...variantPrices);
+                  const minPrice = Math.min(...variantPrices);
 
-                // Store the minimum variant price in a temporary property for display
-                (product as any).min_variation_price = minPrice;
-                console.log(
-                  `Product ${product.name}: variants count=${variants.length}, prices=${variantPrices}, minPrice=${minPrice}`
+                  // Create a new product object with the min_variation_price
+                  productsToSet[i] = {
+                    ...product,
+                    min_variation_price: minPrice,
+                  };
+                  console.log(
+                    `Product ${product.name}: variants count=${variants.length}, prices=${variantPrices}, minPrice=${minPrice}`
+                  );
+                }
+              } catch (err) {
+                console.error(
+                  `Failed to fetch variants for product ${product.id}:`,
+                  err
                 );
               }
-            } catch (err) {
-              console.error(
-                `Failed to fetch variants for product ${product.id}:`,
-                err
-              );
             }
           }
         }
 
         // If selected products are specified, order them according to the selection order
-        if (selectedProductIds.length > 0 && data) {
+        if (selectedProductIds.length > 0) {
           const orderedProducts = selectedProductIds
             .map((id: string) => productsToSet.find((prod) => prod.id === id))
             .filter((prod): prod is Product => prod !== undefined);
