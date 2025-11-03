@@ -177,17 +177,21 @@ function CategoryRow({
                     <Eye className="h-4 w-4 mr-2" />
                     View Products
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onEdit(category)}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-red-600"
-                    onClick={() => onDelete(category.id)}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
+                  {hasEditPermission && (
+                    <DropdownMenuItem onClick={() => onEdit(category)}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {hasDeletePermission && (
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onClick={() => onDelete(category.id)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
