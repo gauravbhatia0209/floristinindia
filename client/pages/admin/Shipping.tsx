@@ -208,10 +208,12 @@ export default function Shipping() {
         <TabsContent value="zones" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Delivery Zones</h2>
-            <Button onClick={() => setIsAddingZone(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Zone
-            </Button>
+            {hasCreatePermission && (
+              <Button onClick={() => setIsAddingZone(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Zone
+              </Button>
+            )}
           </div>
 
           <div className="grid gap-6">
