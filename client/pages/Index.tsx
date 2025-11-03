@@ -141,7 +141,7 @@ export default function Index() {
         total_price: unitPrice * quantity,
       });
 
-      console.log("✅ Successfully added to cart:", product.name);
+      console.log("��� Successfully added to cart:", product.name);
 
       // Show success notification
       toast({
@@ -779,7 +779,7 @@ export default function Index() {
         <section className={`${hasAnyText ? "py-5" : "py-8"}`}>
           <div className="container">
             {hasAnyText && (
-              <div className="text-center mb-12">
+              <div className="text-center mb-4">
                 {hasTitle && (
                   <h2 className="text-3xl md:text-4xl font-bold italic">
                     {section.title}
