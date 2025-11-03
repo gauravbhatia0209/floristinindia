@@ -459,7 +459,7 @@ function ProductCarouselSection({ content }: { content: any }) {
 
         // Fetch variations for products with has_variations = true
         const productsWithVariations = productsToSet.filter(
-          (p) => (p as any)?.has_variations
+          (p) => (p as any)?.has_variations,
         );
 
         if (productsWithVariations.length > 0) {
@@ -489,22 +489,19 @@ function ProductCarouselSection({ content }: { content: any }) {
                     ...product,
                     min_variation_price: minPrice,
                   };
-                  console.log(
-                    `Product ${product.name} (ID: ${product.id}):`,
-                    {
-                      has_variations: (product as any)?.has_variations,
-                      original_price: product.price,
-                      original_sale_price: product.sale_price,
-                      variants_count: variants.length,
-                      variant_prices: variantPrices,
-                      min_variation_price: minPrice,
-                    }
-                  );
+                  console.log(`Product ${product.name} (ID: ${product.id}):`, {
+                    has_variations: (product as any)?.has_variations,
+                    original_price: product.price,
+                    original_sale_price: product.sale_price,
+                    variants_count: variants.length,
+                    variant_prices: variantPrices,
+                    min_variation_price: minPrice,
+                  });
                 }
               } catch (err) {
                 console.error(
                   `Failed to fetch variants for product ${product.id}:`,
-                  err
+                  err,
                 );
               }
             }
@@ -640,16 +637,21 @@ function ProductCarouselSection({ content }: { content: any }) {
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-primary">
                       {(product as any)?.has_variations ? (
-                        <>from ₹{(product as any)?.min_variation_price || product.price}</>
+                        <>
+                          from ₹
+                          {(product as any)?.min_variation_price ||
+                            product.price}
+                        </>
                       ) : (
                         <>₹{product.sale_price || product.price}</>
                       )}
                     </span>
-                    {product.sale_price && !(product as any)?.has_variations && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        ₹{product.price}
-                      </span>
-                    )}
+                    {product.sale_price &&
+                      !(product as any)?.has_variations && (
+                        <span className="text-sm text-muted-foreground line-through">
+                          ₹{product.price}
+                        </span>
+                      )}
                   </div>
                 </div>
               </div>
