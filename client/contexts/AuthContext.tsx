@@ -352,6 +352,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             user_type: userType,
             email_verified: true,
             last_login: new Date().toISOString(),
+            permissions: subUserData.permissions,
           };
 
           setUser(userObj);
