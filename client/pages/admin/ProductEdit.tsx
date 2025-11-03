@@ -561,6 +561,8 @@ export default function ProductEdit() {
 
   async function saveProductDeliveryZones(productId: string) {
     try {
+      console.log("🔄 Saving product delivery zones...", { productId, productDeliveryZones });
+
       // First check if table exists by trying to query it
       const { error: checkError } = await supabase
         .from("product_delivery_zones")
@@ -569,34 +571,10 @@ export default function ProductEdit() {
 
       // If table doesn't exist, skip this step
       if (checkError?.code === "42P01") {
-        console.log(
-          "⚠️ Product delivery zones table doesn't exist. Please run the migration: product-delivery-zones-migration.sql",
+        console.warn(
+          "⚠️ Product delivery zones table doesn't exist. Please run the migration file: product-delivery-zones-migration.sql",
         );
         return;
-      }
-
-      // Delete existing entries
-      const { error: deleteError } = await supabase
-        .from("product_delivery_zones")
-        .delete()
-        .eq("product_id", productId);
-
-      if (deleteError) {
-        const errorMsg =
-          deleteError?.message ||
-          deleteError?.error_description ||
-          deleteError?.details ||
-          JSON.stringify(deleteError);
-        console.error(
-          "Failed to delete existing product delivery zones:",
-          errorMsg,
-        );
-        // If it's a table not found error, skip
-        if (deleteError.code === "42P01") {
-          console.log("Product delivery zones table doesn't exist. Skipping.");
-          return;
-        }
-        // For other errors, log but continue
       }
 
       // Prepare delivery zone entries
@@ -609,15 +587,49 @@ export default function ProductEdit() {
           is_available: true,
         }));
 
+      console.log("📦 Delivery zone entries to save:", deliveryZoneEntries);
+
       if (deliveryZoneEntries.length === 0) {
-        console.log("No delivery zones selected for this product");
+        console.log("✅ No delivery zones selected for this product - clearing any existing entries");
+
+        // Delete existing entries if no new ones selected
+        const { error: deleteError } = await supabase
+          .from("product_delivery_zones")
+          .delete()
+          .eq("product_id", productId);
+
+        if (deleteError && deleteError.code !== "42P01") {
+          const errorMsg =
+            deleteError?.message ||
+            deleteError?.error_description ||
+            deleteError?.details ||
+            JSON.stringify(deleteError);
+          console.error("Failed to delete product delivery zones:", errorMsg);
+        }
         return;
       }
 
-      // Insert new entries
-      const { error: insertError } = await supabase
+      // Delete existing entries first
+      const { error: deleteError } = await supabase
         .from("product_delivery_zones")
-        .insert(deliveryZoneEntries);
+        .delete()
+        .eq("product_id", productId);
+
+      if (deleteError && deleteError.code !== "42P01") {
+        const errorMsg =
+          deleteError?.message ||
+          deleteError?.error_description ||
+          deleteError?.details ||
+          JSON.stringify(deleteError);
+        console.error("Failed to delete existing product delivery zones:", errorMsg);
+        throw new Error(`Delete failed: ${errorMsg}`);
+      }
+
+      // Insert new entries
+      const { data: insertData, error: insertError } = await supabase
+        .from("product_delivery_zones")
+        .insert(deliveryZoneEntries)
+        .select();
 
       if (insertError) {
         const errorMsg =
@@ -625,18 +637,14 @@ export default function ProductEdit() {
           insertError?.error_description ||
           insertError?.details ||
           JSON.stringify(insertError);
-        console.error("Failed to save product delivery zones:", errorMsg);
-
-        if (insertError.code === "42P01") {
-          console.log("Product delivery zones table doesn't exist. Skipping.");
-          return;
-        }
-        // For other errors, log but allow save to continue
-      } else {
-        console.log(
-          `✅ Successfully saved ${deliveryZoneEntries.length} delivery zone assignments`,
-        );
+        console.error("❌ Failed to save product delivery zones:", errorMsg);
+        throw new Error(`Insert failed: ${errorMsg}`);
       }
+
+      console.log(
+        `✅ Successfully saved ${deliveryZoneEntries.length} delivery zone assignments:`,
+        insertData,
+      );
     } catch (error: any) {
       const errorMsg =
         error?.message ||
@@ -644,7 +652,8 @@ export default function ProductEdit() {
         error?.details ||
         JSON.stringify(error);
       console.error("❌ Error saving product delivery zones:", errorMsg);
-      // Don't throw - allow save to continue
+      // Log to console but don't throw - allow product save to complete
+      // User can check browser console for details
     }
   }
 
