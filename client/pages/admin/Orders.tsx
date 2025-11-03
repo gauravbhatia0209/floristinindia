@@ -559,21 +559,17 @@ export default function Orders() {
               </table>
             </div>
 
-            <div class="section">
+            ${
+              order.delivery_slot
+                ? `<div class="section">
               <div class="section-title">DELIVERY INFORMATION</div>
               <div class="info-row">
-                <div class="info-label">Delivery Date:</div>
-                <div class="info-value">${order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" }) : "To be determined"}</div>
-              </div>
-              ${
-                order.delivery_slot
-                  ? `<div class="info-row">
                 <div class="info-label">Time Slot:</div>
                 <div class="info-value">${order.delivery_slot}</div>
-              </div>`
-                  : ""
-              }
-            </div>
+              </div>
+            </div>`
+                : ""
+            }
 
             <div class="section">
               <div class="section-title">PAYMENT INFORMATION</div>
@@ -1320,7 +1316,7 @@ export default function Orders() {
                                             {file.file_name}
                                           </p>
                                           <p className="text-sm text-blue-600">
-                                            �� Product: {file.product_name}
+                                            📦 Product: {file.product_name}
                                           </p>
                                           <div className="flex gap-4 mt-1">
                                             {file.file_size && (
