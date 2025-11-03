@@ -597,23 +597,42 @@ function CategoryGridSection({ content }: { content: any }) {
 
   useEffect(() => {
     fetchCategories();
-  }, [content.show_count]);
+  }, [content.show_count, content.selected_categories]);
 
   async function fetchCategories() {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const selectedCategoryIds = content.selected_categories || [];
+
+      let query = supabase
         .from("product_categories")
         .select("*")
-        .eq("is_active", true)
-        .order("sort_order")
-        .limit(content.show_count || 8);
+        .eq("is_active", true);
+
+      // If specific categories are selected, filter by those IDs
+      if (selectedCategoryIds.length > 0) {
+        query = query.in("id", selectedCategoryIds);
+        // Don't apply limit when using selected categories - preserve all selected items
+      } else {
+        // If no categories are selected, show categories in sort order
+        query = query.order("sort_order").limit(content.show_count || 8);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error("Error fetching categories:", error);
         setCategories([]);
       } else {
-        setCategories(data || []);
+        // If selected categories are specified, order them according to the selection order
+        if (selectedCategoryIds.length > 0 && data) {
+          const orderedCategories = selectedCategoryIds
+            .map((id: string) => data.find((cat) => cat.id === id))
+            .filter((cat): cat is ProductCategory => cat !== undefined);
+          setCategories(orderedCategories);
+        } else {
+          setCategories(data || []);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch categories:", error);
