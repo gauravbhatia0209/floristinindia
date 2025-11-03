@@ -268,10 +268,12 @@ export default function Pages() {
               <p className="text-muted-foreground mb-4">
                 Create your first page to get started
               </p>
-              <Button onClick={() => setIsAddingPage(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Page
-              </Button>
+              {hasCreatePermission && (
+                <Button onClick={() => setIsAddingPage(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Page
+                </Button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
