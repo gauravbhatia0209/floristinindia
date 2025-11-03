@@ -577,7 +577,7 @@ function UserForm({
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Password will be displayed as plain text in the users list
+              Password will be securely hashed and cannot be displayed
             </p>
           </div>
 
