@@ -473,17 +473,20 @@ function ProductCarouselSection({ content }: { content: any }) {
 
               if (variants && variants.length > 0) {
                 // Find minimum price among variants
-                const minPrice = Math.min(
-                  ...variants.map((v: any) => {
-                    const variantPrice = v.sale_price ?? v.price;
-                    return typeof variantPrice === "number"
-                      ? variantPrice
-                      : Number(variantPrice ?? 0);
-                  })
-                );
+                const variantPrices = variants.map((v: any) => {
+                  const variantPrice = v.sale_price ?? v.price;
+                  return typeof variantPrice === "number"
+                    ? variantPrice
+                    : Number(variantPrice ?? 0);
+                });
+
+                const minPrice = Math.min(...variantPrices);
 
                 // Store the minimum variant price in a temporary property for display
                 (product as any).min_variation_price = minPrice;
+                console.log(
+                  `Product ${product.name}: variants count=${variants.length}, prices=${variantPrices}, minPrice=${minPrice}`
+                );
               }
             } catch (err) {
               console.error(
