@@ -41,6 +41,7 @@ interface ShippingZoneWithMethods extends ShippingZone {
 }
 
 export default function Shipping() {
+  const { user } = useAuth();
   const [zones, setZones] = useState<ShippingZoneWithMethods[]>([]);
   const [methods, setMethods] = useState<ShippingMethod[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +51,10 @@ export default function Shipping() {
   );
   const [isAddingZone, setIsAddingZone] = useState(false);
   const [isAddingMethod, setIsAddingMethod] = useState(false);
+
+  const hasCreatePermission = canCreate(user?.permissions, "shipping");
+  const hasEditPermission = canEdit(user?.permissions, "shipping");
+  const hasDeletePermission = canDelete(user?.permissions, "shipping");
 
   useEffect(() => {
     fetchShippingData();
