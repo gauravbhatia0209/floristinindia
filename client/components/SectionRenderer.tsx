@@ -68,6 +68,8 @@ function SectionComponent({ section }: { section: Section }) {
       return <NewsletterSection content={section.content} />;
     case "banner":
       return <BannerSection content={section.content} />;
+    case "image_with_link":
+      return <ImageWithLinkSection content={section.content} />;
     default:
       return null;
   }
