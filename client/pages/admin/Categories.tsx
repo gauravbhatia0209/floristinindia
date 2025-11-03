@@ -89,6 +89,8 @@ function CategoryRow({
   handleNameChange,
   parentCategories,
   settings,
+  hasEditPermission = true,
+  hasDeletePermission = true,
 }: CategoryRowProps) {
   const isEditing = editingCategory?.id === category.id;
 
