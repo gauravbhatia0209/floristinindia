@@ -89,6 +89,7 @@ export default function ProductEdit() {
 
   useEffect(() => {
     fetchCategories();
+    fetchShippingZones();
     if (!isNew && id) {
       fetchProduct(id);
     } else {
