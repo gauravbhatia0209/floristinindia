@@ -962,6 +962,14 @@ function ProductCarouselEditor({
   products: Product[];
   categories: ProductCategory[];
 }) {
+  const toggleProductSelection = (productId: string) => {
+    const currentSelection = content?.selected_products || [];
+    const newSelection = currentSelection.includes(productId)
+      ? currentSelection.filter((id: string) => id !== productId)
+      : [...currentSelection, productId];
+    updateContent("selected_products", newSelection);
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -1004,6 +1012,55 @@ function ProductCarouselEditor({
           min="1"
           max="20"
         />
+      </div>
+
+      <div>
+        <Label>Select Products to Feature</Label>
+        {products.length === 0 ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No products available
+          </div>
+        ) : (
+          <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+            {products.map((product) => {
+              const isSelected =
+                (content?.selected_products || []).includes(product.id);
+              return (
+                <div
+                  key={product.id}
+                  className={`flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50 ${
+                    isSelected ? "bg-blue-50 border-blue-300" : ""
+                  }`}
+                  onClick={() => toggleProductSelection(product.id)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleProductSelection(product.id)}
+                    className="rounded"
+                  />
+                  {product.images?.[0] && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-medium">{product.name}</div>
+                    <div className="text-sm text-gray-600">
+                      ₹{product.sale_price || product.price}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p className="text-xs text-gray-600 mt-1">
+          Selected:{" "}
+          {(content?.selected_products || []).length} products
+        </p>
       </div>
 
       <div className="flex items-center justify-between">
