@@ -315,11 +315,12 @@ export default function Orders() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Orders Management</h1>
+    <PermissionGuard requiredModule="orders">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Orders Management</h1>
           <p className="text-muted-foreground">
             Track and manage customer orders
           </p>
@@ -1113,5 +1114,6 @@ export default function Orders() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGuard>
   );
 }
