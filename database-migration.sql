@@ -249,7 +249,7 @@ BEGIN
     -- Update type constraint to include new types
     ALTER TABLE homepage_sections DROP CONSTRAINT IF EXISTS homepage_sections_type_check;
     ALTER TABLE homepage_sections ADD CONSTRAINT homepage_sections_type_check
-        CHECK (type IN ('hero', 'category_grid', 'product_carousel', 'product_grid', 'text_block', 'image_block', 'testimonials', 'newsletter', 'features', 'banner'));
+        CHECK (type IN ('hero', 'category_grid', 'product_carousel', 'product_grid', 'text_block', 'image_block', 'testimonials', 'newsletter', 'features', 'banner', 'hero_carousel', 'image', 'button', 'list', 'separator', 'heading', 'paragraph', 'image_with_link'));
 END $$;
 
 -- Menu Items Table
