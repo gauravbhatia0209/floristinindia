@@ -349,20 +349,24 @@ export default function Coupons() {
                             toggleCouponStatus(coupon.id, coupon.is_active)
                           }
                         />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingCoupon(coupon)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteCoupon(coupon.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
+                        {hasEditPermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingCoupon(coupon)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {hasDeletePermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteCoupon(coupon.id)}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
