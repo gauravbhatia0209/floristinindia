@@ -470,10 +470,12 @@ function UserForm({
     first_name: user?.first_name || "",
     last_name: user?.last_name || "",
     email: user?.email || "",
+    password: user?.password || "",
     role: user?.role || ("viewer" as const),
     permissions: user?.permissions || defaultPermissions,
     is_active: user?.is_active ?? true,
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleRoleChange(role: string) {
     setFormData({
