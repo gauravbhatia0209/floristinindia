@@ -832,3 +832,38 @@ function BannerSection({ content }: { content: any }) {
     </section>
   );
 }
+
+function ImageWithLinkSection({ content }: { content: any }) {
+  if (!content.image) return null;
+
+  const imageElement = (
+    <img
+      src={content.image}
+      alt={content.alt || "Section image"}
+      className="w-full h-auto object-cover block"
+    />
+  );
+
+  // If there's a link, wrap the image in an anchor tag
+  if (content.link && content.link.trim()) {
+    return (
+      <section className="w-full">
+        <a
+          href={content.link}
+          target={content.target || "_self"}
+          rel={content.target === "_blank" ? "noopener noreferrer" : undefined}
+          className="block w-full hover:opacity-95 transition-opacity"
+        >
+          {imageElement}
+        </a>
+      </section>
+    );
+  }
+
+  // Without a link, just display the image
+  return (
+    <section className="w-full">
+      {imageElement}
+    </section>
+  );
+}
