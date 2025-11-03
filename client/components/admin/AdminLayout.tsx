@@ -221,6 +221,12 @@ export default function AdminLayout() {
 
 function AdminSidebar() {
   const location = useLocation();
+  const { user } = useAuth();
+
+  // Filter navigation items based on user permissions
+  const filteredNavigation = navigation.filter((item) =>
+    canAccessNav(item.href, user?.permissions),
+  );
 
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 border-r border-gray-200">
@@ -243,7 +249,7 @@ function AdminSidebar() {
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
-              {navigation.map((item) => {
+              {filteredNavigation.map((item) => {
                 const isActive = location.pathname === item.href;
                 return (
                   <li key={item.name}>
