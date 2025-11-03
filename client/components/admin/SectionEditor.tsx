@@ -1023,8 +1023,9 @@ function ProductCarouselEditor({
         ) : (
           <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
             {products.map((product) => {
-              const isSelected =
-                (content?.selected_products || []).includes(product.id);
+              const isSelected = (content?.selected_products || []).includes(
+                product.id,
+              );
               return (
                 <div
                   key={product.id}
@@ -1058,8 +1059,7 @@ function ProductCarouselEditor({
           </div>
         )}
         <p className="text-xs text-gray-600 mt-1">
-          Selected:{" "}
-          {(content?.selected_products || []).length} products
+          Selected: {(content?.selected_products || []).length} products
         </p>
       </div>
 
@@ -1146,8 +1146,9 @@ function CategoryGridEditor({
         ) : (
           <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
             {categories.map((category) => {
-              const isSelected =
-                (content?.selected_categories || []).includes(category.id);
+              const isSelected = (content?.selected_categories || []).includes(
+                category.id,
+              );
               return (
                 <div
                   key={category.id}
@@ -1171,9 +1172,7 @@ function CategoryGridEditor({
                   )}
                   <div className="flex-1">
                     <div className="font-medium">{category.name}</div>
-                    <div className="text-sm text-gray-600">
-                      {category.slug}
-                    </div>
+                    <div className="text-sm text-gray-600">{category.slug}</div>
                   </div>
                 </div>
               );
@@ -1181,8 +1180,7 @@ function CategoryGridEditor({
           </div>
         )}
         <p className="text-xs text-gray-600 mt-1">
-          Selected:{" "}
-          {(content?.selected_categories || []).length} categories
+          Selected: {(content?.selected_categories || []).length} categories
         </p>
       </div>
     </div>

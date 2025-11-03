@@ -760,14 +760,16 @@ export default function Index() {
       // Use only the selected categories for this specific section
       validCategories = selectedCategoryIds
         .map((id: string) => categories.find((cat) => cat.id === id))
-        .filter((cat): cat is ProductCategory =>
-          cat !== undefined && cat.id && cat.name && cat.slug
+        .filter(
+          (cat): cat is ProductCategory =>
+            cat !== undefined && cat.id && cat.name && cat.slug,
         );
     } else {
       // Fallback to all categories if none selected
       validCategories = categories
         .filter(
-          (category) => category && category.id && category.name && category.slug,
+          (category) =>
+            category && category.id && category.name && category.slug,
         )
         .slice(0, showCount);
     }
