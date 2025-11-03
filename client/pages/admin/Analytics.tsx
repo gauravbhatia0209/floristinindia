@@ -602,7 +602,7 @@ export default function Analytics() {
   }
 
   return (
-    <PermissionGuard requiredModule="orders">
+    <AdminGuard>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -1036,6 +1036,6 @@ export default function Analytics() {
         </TabsContent>
       </Tabs>
     </div>
-    </PermissionGuard>
+    </AdminGuard>
   );
 }
