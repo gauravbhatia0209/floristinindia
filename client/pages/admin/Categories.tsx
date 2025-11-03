@@ -608,6 +608,8 @@ function MainCategoryAccordion({
                   handleNameChange={handleNameChange}
                   parentCategories={parentCategories}
                   settings={settings}
+                  hasEditPermission={hasEditPermission}
+                  hasDeletePermission={hasDeletePermission}
                 />
               ))}
             </div>
