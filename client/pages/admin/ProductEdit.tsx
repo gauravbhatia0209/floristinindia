@@ -317,6 +317,10 @@ export default function ProductEdit() {
       await saveCategoryAssignments(productId);
       console.log("✅ Category assignments save completed");
 
+      // Save product delivery zones
+      await saveProductDeliveryZones(productId);
+      console.log("✅ Product delivery zones save completed");
+
       // Clear meta cache for product
       try {
         await clearProductCache(formData.slug);
