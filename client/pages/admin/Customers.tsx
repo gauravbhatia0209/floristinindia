@@ -136,6 +136,61 @@ export default function Customers() {
     return { tier: "New", color: "bg-blue-500" };
   }
 
+  function exportCustomersToCSV() {
+    const csvHeaders = [
+      "ID",
+      "First Name",
+      "Last Name",
+      "Email",
+      "Phone",
+      "Total Orders",
+      "Total Spent",
+      "Email Verified",
+      "Phone Verified",
+      "Created At",
+    ];
+
+    const csvData = customers.map((customer) => [
+      customer.id,
+      customer.first_name || "",
+      customer.last_name || "",
+      customer.email,
+      customer.phone || "",
+      customer.total_orders || 0,
+      customer.total_spent || 0,
+      customer.email_verified ? "Yes" : "No",
+      customer.phone_verified ? "Yes" : "No",
+      new Date(customer.created_at).toLocaleDateString(),
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(","),
+      ...csvData.map((row) =>
+        row
+          .map((cell) => {
+            const cellStr = String(cell);
+            return cellStr.includes(",") ? `"${cellStr}"` : cellStr;
+          })
+          .join(","),
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `customers-${new Date().toISOString().split("T")[0]}.csv`,
+    );
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
