@@ -88,7 +88,7 @@ function ShippingMethodCard({
       const methods = await getAvailableShippingMethods(pincode);
 
       if (methods.length === 0) {
-        setError("Sorry, delivery is not available to this pincode.");
+        setError("We are currently not providing service in the pincode entered");
         setAvailableMethods([]);
         onMethodSelect(null, 0);
         return;
