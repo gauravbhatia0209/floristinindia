@@ -43,6 +43,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import { ProductCategory } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
