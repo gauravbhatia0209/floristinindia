@@ -504,7 +504,14 @@ function UserForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave(formData);
+
+    // If editing a user and password is empty, keep the existing password
+    const dataToSave = { ...formData };
+    if (user && !formData.password) {
+      dataToSave.password = user.password;
+    }
+
+    onSave(dataToSave);
   }
 
   return (
