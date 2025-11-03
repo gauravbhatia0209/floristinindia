@@ -1452,3 +1452,60 @@ function BannerEditor({
     </div>
   );
 }
+
+function ImageWithLinkEditor({
+  content,
+  updateContent,
+}: {
+  content: any;
+  updateContent: (key: string, value: any) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="image">Image</Label>
+        <SingleImageUpload
+          imageUrl={content.image || ""}
+          onImageChange={(url) => updateContent("image", url)}
+          label="Section Image"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="alt">Alt Text</Label>
+        <Input
+          id="alt"
+          value={content.alt || ""}
+          onChange={(e) => updateContent("alt", e.target.value)}
+          placeholder="Describe the image"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="link">Link URL (optional)</Label>
+        <Input
+          id="link"
+          value={content.link || ""}
+          onChange={(e) => updateContent("link", e.target.value)}
+          placeholder="/products or https://example.com"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="target">Link Target</Label>
+        <Select
+          value={content.target || "_self"}
+          onValueChange={(value) => updateContent("target", value)}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="_self">Same Window</SelectItem>
+            <SelectItem value="_blank">New Tab</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+}
