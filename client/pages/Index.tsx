@@ -781,7 +781,7 @@ export default function Index() {
             {hasAnyText && (
               <div className="text-center mb-4">
                 {hasTitle && (
-                  <h2 className="text-3xl md:text-4xl font-bold italic">
+                  <h2 className="text-4xl md:text-5xl font-impressive font-bold text-gradient-rose">
                     {section.title}
                   </h2>
                 )}
@@ -812,7 +812,7 @@ export default function Index() {
           {hasAnyText && (
             <div className="text-center mb-4">
               {hasTitle && (
-                <h2 className="text-3xl md:text-4xl font-bold italic">
+                <h2 className="text-4xl md:text-5xl font-impressive font-bold text-gradient-rose">
                   {section.title}
                 </h2>
               )}
