@@ -247,6 +247,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           userData.email_verified || userData.is_verified || false,
         phone: userData.phone,
         last_login: userData.last_login,
+        permissions: userData.permissions,
       };
 
       setUser(userObj);
