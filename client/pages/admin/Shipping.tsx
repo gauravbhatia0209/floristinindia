@@ -187,8 +187,9 @@ export default function Shipping() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <PermissionGuard requiredModule="shipping">
+      <div className="space-y-6">
+        {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Shipping Management</h1>
@@ -450,6 +451,7 @@ export default function Shipping() {
         </DialogContent>
       </Dialog>
     </div>
+    </PermissionGuard>
   );
 }
 
