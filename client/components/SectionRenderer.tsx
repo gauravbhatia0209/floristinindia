@@ -622,9 +622,13 @@ function ProductCarouselSection({ content }: { content: any }) {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-primary">
-                      ₹{product.sale_price || product.price}
+                      {(product as any)?.has_variations ? (
+                        <>from ₹{(product as any)?.min_variation_price || product.price}</>
+                      ) : (
+                        <>₹{product.sale_price || product.price}</>
+                      )}
                     </span>
-                    {product.sale_price && (
+                    {product.sale_price && !(product as any)?.has_variations && (
                       <span className="text-sm text-muted-foreground line-through">
                         ₹{product.price}
                       </span>
