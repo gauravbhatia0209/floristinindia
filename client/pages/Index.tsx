@@ -567,7 +567,7 @@ export default function Index() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center space-y-4 p-8">
                       <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-4xl">
-                        {content?.feature_box_emoji || "����"}
+                        {content?.feature_box_emoji || "🌺"}
                       </div>
                       <div className="space-y-2">
                         <h3 className="text-white font-semibold text-lg">
@@ -857,8 +857,8 @@ export default function Index() {
                         🌸
                       </span>
                     </div>
-                    <CardContent className="p-3 text-center">
-                      <h3 className="text-sm font-semibold leading-tight">
+                    <CardContent className="p-3 text-center transition-colors duration-300 group-hover:bg-rose/5">
+                      <h3 className="text-sm font-semibold leading-tight transition-colors duration-300 group-hover:text-primary">
                         {category.name}
                       </h3>
                     </CardContent>
