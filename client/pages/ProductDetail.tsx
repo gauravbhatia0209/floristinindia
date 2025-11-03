@@ -33,6 +33,7 @@ import StructuredData from "@/components/StructuredData";
 import AIMetaTags from "@/components/AIMetaTags";
 import { ProductVariationSelector } from "@/components/ProductVariationSelector";
 import { toast } from "@/hooks/use-toast";
+import { isProductAvailableAtPincode } from "@/lib/shipping-service";
 import {
   Product,
   ProductVariant,
