@@ -389,16 +389,18 @@ export default function Orders() {
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">
-                ₹{stats.totalRevenue.toLocaleString()}
-              </p>
-              <p className="text-sm text-muted-foreground">Revenue</p>
-            </div>
-          </CardContent>
-        </Card>
+        {(user?.role === "admin" || user?.role === "super_admin") && (
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold">
+                  ₹{stats.totalRevenue.toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Revenue</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Filters */}
@@ -813,7 +815,7 @@ export default function Orders() {
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors"
                                       >
-                                        📁 Download File
+                                        ��� Download File
                                       </a>
                                     </div>
                                   ) : item.upload_status ? (
