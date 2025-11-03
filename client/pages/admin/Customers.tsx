@@ -64,14 +64,54 @@ export default function Customers() {
 
   async function fetchCustomers() {
     try {
-      const { data } = await supabase
+      const { data: customersData } = await supabase
         .from("customers")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (data) {
-        setCustomers(data);
+      if (!customersData) {
+        setIsLoading(false);
+        return;
       }
+
+      // Fetch orders to calculate customer totals
+      const { data: ordersData } = await supabase
+        .from("orders")
+        .select("customer_id, total_amount");
+
+      // Create a map of customer order totals
+      const customerOrderMap: Record<
+        string,
+        { total_orders: number; total_spent: number }
+      > = {};
+
+      if (ordersData) {
+        ordersData.forEach((order) => {
+          if (!customerOrderMap[order.customer_id]) {
+            customerOrderMap[order.customer_id] = {
+              total_orders: 0,
+              total_spent: 0,
+            };
+          }
+          customerOrderMap[order.customer_id].total_orders++;
+          customerOrderMap[order.customer_id].total_spent += order.total_amount;
+        });
+      }
+
+      // Merge order data with customer data
+      const enrichedCustomers = customersData.map((customer) => ({
+        ...customer,
+        total_orders:
+          customerOrderMap[customer.id]?.total_orders ||
+          customer.total_orders ||
+          0,
+        total_spent:
+          customerOrderMap[customer.id]?.total_spent ||
+          customer.total_spent ||
+          0,
+      }));
+
+      setCustomers(enrichedCustomers);
     } catch (error) {
       console.error("Failed to fetch customers:", error);
     } finally {
