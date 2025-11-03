@@ -36,6 +36,9 @@ import { SectionEditor } from "@/components/admin/SectionEditor";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
+import PermissionGuard from "@/components/PermissionGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 interface PageContent {
   type: "heading" | "paragraph" | "image" | "button" | "list" | "separator";
