@@ -781,7 +781,7 @@ export default function Index() {
             {hasAnyText && (
               <div className="text-center mb-12">
                 {hasTitle && (
-                  <h2 className="text-3xl md:text-4xl font-bold">
+                  <h2 className="text-3xl md:text-4xl font-bold italic">
                     {section.title}
                   </h2>
                 )}
@@ -812,7 +812,7 @@ export default function Index() {
           {hasAnyText && (
             <div className="text-center mb-12">
               {hasTitle && (
-                <h2 className="text-3xl md:text-4xl font-bold">
+                <h2 className="text-3xl md:text-4xl font-bold italic">
                   {section.title}
                 </h2>
               )}
@@ -957,7 +957,7 @@ export default function Index() {
     }
 
     console.log(
-      "��� Product Carousel: Rendering section with title:",
+      "���� Product Carousel: Rendering section with title:",
       displayTitle,
     );
     console.log(
