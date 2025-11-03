@@ -174,10 +174,12 @@ export default function Pages() {
             Create and manage dynamic pages for your website
           </p>
         </div>
-        <Button onClick={() => setIsAddingPage(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Page
-        </Button>
+        {hasCreatePermission && (
+          <Button onClick={() => setIsAddingPage(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Page
+          </Button>
+        )}
       </div>
 
       {/* About Page Info */}
