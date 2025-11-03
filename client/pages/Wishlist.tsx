@@ -20,7 +20,9 @@ export default function Wishlist() {
           <CardContent className="text-center space-y-6 py-8">
             <Heart className="h-16 w-16 mx-auto text-gray-300" />
             <div>
-              <h2 className="text-2xl font-bold mb-2">Sign in to your Wishlist</h2>
+              <h2 className="text-2xl font-bold mb-2">
+                Sign in to your Wishlist
+              </h2>
               <p className="text-gray-600 mb-6">
                 Log in to save and view your favorite products
               </p>
@@ -54,9 +56,7 @@ export default function Wishlist() {
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Your wishlist is empty
             </h3>
-            <p className="text-gray-600 mb-4">
-              Save items you love for later.
-            </p>
+            <p className="text-gray-600 mb-4">Save items you love for later.</p>
             <Button asChild>
               <a href="/">Browse Products</a>
             </Button>
