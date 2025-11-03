@@ -333,17 +333,11 @@ export default function Index() {
         console.log("Homepage: Loaded sections from database:", sectionsData);
         setSections(sectionsData);
 
-        // Extract selected category IDs from sections (first grid if present)
-        const categorySection = sectionsData.find(
-          (s) => s.type === "category_grid",
-        );
-
         console.log("🏠 Homepage: All sections loaded:", sectionsData);
         console.log(
           "🏠 Homepage: Section types found:",
           sectionsData.map((s) => s.type),
         );
-        console.log("🏠 Homepage: Category section found:", categorySection);
 
         // Prepare products per product_carousel section
         const productSections = sectionsData.filter(
@@ -368,19 +362,16 @@ export default function Index() {
           setSectionProducts(mapping);
         }
 
-        // Fetch admin-selected categories for the grid
+        // Fetch all active categories - each section will filter by its own selected_categories
         const { data: categoriesData } = await supabase
           .from("product_categories")
           .select("*")
-          .in("id", categorySection.content.selected_categories)
-          .eq("is_active", true);
+          .eq("is_active", true)
+          .order("sort_order");
 
         if (categoriesData) {
-          // Sort categories by the order they were selected
-          const sortedCategories = categorySection.content.selected_categories
-            .map((id: string) => categoriesData.find((cat) => cat.id === id))
-            .filter(Boolean);
-          setCategories(sortedCategories);
+          setCategories(categoriesData);
+          console.log("🏠 Homepage: Categories loaded:", categoriesData);
         }
       } else {
         // Fallback to featured categories if none selected
