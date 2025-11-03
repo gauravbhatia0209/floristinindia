@@ -902,6 +902,78 @@ export default function ProductEdit() {
 
           <Card>
             <CardHeader>
+              <CardTitle>Delivery Zones</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-sm text-muted-foreground mb-4">
+                Select the delivery zones where this product is available and specify the quantity available in each zone.
+              </div>
+
+              {shippingZones.length === 0 ? (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                  No active delivery zones found. Please create delivery zones in Shipping Management first.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {shippingZones.map((zone) => (
+                    <div
+                      key={zone.id}
+                      className="border rounded-lg p-3 space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Label className="font-semibold">{zone.name}</Label>
+                        <input
+                          type="checkbox"
+                          checked={zone.id in productDeliveryZones}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setProductDeliveryZones({
+                                ...productDeliveryZones,
+                                [zone.id]: 10, // Default quantity
+                              });
+                            } else {
+                              const updated = { ...productDeliveryZones };
+                              delete updated[zone.id];
+                              setProductDeliveryZones(updated);
+                            }
+                          }}
+                          className="w-4 h-4 rounded"
+                        />
+                      </div>
+
+                      {zone.id in productDeliveryZones && (
+                        <div>
+                          <Label htmlFor={`qty-${zone.id}`} className="text-xs">
+                            Available Quantity
+                          </Label>
+                          <Input
+                            id={`qty-${zone.id}`}
+                            type="number"
+                            min="0"
+                            value={productDeliveryZones[zone.id]}
+                            onChange={(e) => {
+                              setProductDeliveryZones({
+                                ...productDeliveryZones,
+                                [zone.id]: parseInt(e.target.value) || 0,
+                              });
+                            }}
+                            placeholder="0"
+                          />
+                        </div>
+                      )}
+
+                      <div className="text-xs text-muted-foreground">
+                        Pincodes: {zone.pincodes?.join(", ")}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Product Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
