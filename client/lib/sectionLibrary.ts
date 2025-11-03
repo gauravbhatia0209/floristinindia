@@ -302,6 +302,20 @@ export const sectionTemplates: SectionTemplate[] = [
       closeable: false,
     },
   },
+  {
+    type: "image_with_link",
+    name: "Image with Link",
+    icon: Image,
+    description: "Full-width image with optional clickable link",
+    category: "content",
+    availableFor: ["homepage", "pages"],
+    defaultContent: {
+      image: "",
+      alt: "Image",
+      link: "",
+      target: "_self",
+    },
+  },
 ];
 
 export function getSectionTemplatesForPage(
