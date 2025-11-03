@@ -182,7 +182,7 @@ export default function HomepageBuilder() {
       console.error("Failed to add section:", error);
       console.error("Error type:", typeof error);
       console.error("Error keys:", Object.keys(error || {}));
-      console.error("Full error object:", error);
+      console.error("Full error object:", JSON.stringify(error, null, 2));
 
       let errorMessage = "Unknown error";
 
@@ -201,12 +201,13 @@ export default function HomepageBuilder() {
           errorMessage = `Database error (${error.code}): ${error.hint || error.message || "Unknown database error"}`;
         } else {
           // Try to extract any meaningful text from the error
-          errorMessage = String(error);
+          errorMessage = JSON.stringify(error);
         }
       } catch (stringifyError) {
         errorMessage = "Error occurred but could not extract details";
       }
 
+      console.error("Final error message to show:", errorMessage);
       alert(`Failed to add section: ${errorMessage}`);
     }
   }
