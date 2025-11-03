@@ -102,6 +102,7 @@ export default function Users() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<SubUser | null>(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
 
   useEffect(() => {
     fetchUsers();
