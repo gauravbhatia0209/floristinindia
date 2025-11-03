@@ -301,6 +301,153 @@ export default function Orders() {
     });
   }
 
+  function printShippingSlip(order: OrderWithCustomer) {
+    if (!order) return;
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const items = (order.items || [])
+      .map(
+        (item: any) =>
+          `<tr>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.product_name}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">₹${item.unit_price.toLocaleString()}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">₹${item.total_price.toLocaleString()}</td>
+      </tr>`,
+      )
+      .join("");
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Shipping Slip - Order #${order.order_number}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+          .container { max-width: 800px; margin: 0 auto; }
+          .header { border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+          .title { font-size: 24px; font-weight: bold; margin: 0; }
+          .subtitle { font-size: 12px; color: #666; margin: 5px 0 0 0; }
+          .section { margin-bottom: 20px; }
+          .section-title { font-size: 14px; font-weight: bold; background: #f5f5f5; padding: 8px; margin: 0 0 10px 0; }
+          .row { display: flex; margin-bottom: 8px; }
+          .label { width: 150px; font-weight: bold; }
+          .value { flex: 1; }
+          table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+          th { background: #f5f5f5; padding: 10px; text-align: left; font-weight: bold; border-bottom: 2px solid #ddd; }
+          td { padding: 8px; border-bottom: 1px solid #eee; }
+          .total-row { display: flex; justify-content: flex-end; margin-top: 15px; }
+          .total-item { width: 300px; display: flex; justify-content: space-between; padding: 8px 0; border-top: 2px solid #000; }
+          .total-value { font-weight: bold; font-size: 16px; }
+          .footer { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 15px; font-size: 12px; text-align: center; color: #666; }
+          @media print { body { margin: 0; } }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <p class="title">SHIPPING SLIP</p>
+            <p class="subtitle">Order #${order.order_number}</p>
+          </div>
+
+          <div style="display: flex; gap: 40px; margin-bottom: 20px;">
+            <div style="flex: 1;">
+              <div class="section-title">FROM (Sender)</div>
+              <div class="row">
+                <div class="value">
+                  <p style="margin: 0; font-weight: bold;">Your Store Name</p>
+                  <p style="margin: 5px 0; font-size: 12px;">Your Store Address</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex: 1;">
+              <div class="section-title">TO (Receiver)</div>
+              <div style="margin: 10px 0;">
+                <p style="margin: 0; font-weight: bold; font-size: 16px;">${order.receiver_name || order.customer?.first_name + " " + order.customer?.last_name}</p>
+                <p style="margin: 8px 0; font-size: 14px;">
+                  ${order.shipping_address.address_line_1}<br/>
+                  ${order.shipping_address.address_line_2 ? order.shipping_address.address_line_2 + "<br/>" : ""}
+                  ${order.shipping_address.city}, ${order.shipping_address.state} ${order.shipping_address.postal_code}<br/>
+                  ${order.shipping_address.country}
+                </p>
+                <p style="margin: 8px 0; font-size: 12px;">
+                  <strong>Phone:</strong> ${order.customer?.phone || "N/A"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">ORDER DETAILS</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align: center; width: 80px;">Qty</th>
+                  <th style="text-align: right; width: 100px;">Price</th>
+                  <th style="text-align: right; width: 100px;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${items}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="total-row">
+            <div>
+              <div class="total-item">
+                <span>Subtotal:</span>
+                <span>₹${(order.total_amount - order.shipping_amount - order.tax_amount + order.discount_amount).toLocaleString()}</span>
+              </div>
+              <div class="total-item">
+                <span>Shipping:</span>
+                <span>₹${order.shipping_amount.toLocaleString()}</span>
+              </div>
+              ${order.discount_amount > 0 ? `<div class="total-item" style="color: green;">
+                <span>Discount:</span>
+                <span>-₹${order.discount_amount.toLocaleString()}</span>
+              </div>` : ""}
+              <div class="total-item">
+                <span>Tax:</span>
+                <span>₹${order.tax_amount.toLocaleString()}</span>
+              </div>
+              <div class="total-item" style="border-top: 3px solid #000; font-size: 18px;">
+                <span>Total:</span>
+                <span class="total-value">₹${order.total_amount.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">DELIVERY INFORMATION</div>
+            <div class="row">
+              <div class="label">Delivery Date:</div>
+              <div class="value">${order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "To be determined"}</div>
+            </div>
+            <div class="row">
+              <div class="label">Delivery Notes:</div>
+              <div class="value">${order.delivery_notes || "None"}</div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <p>This is an automated shipping slip. Please verify all details before dispatch.</p>
+            <p>Printed on: ${new Date().toLocaleString("en-IN")}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
