@@ -54,6 +54,7 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
+import PermissionGuard from "@/components/PermissionGuard";
 
 interface AnalyticsData {
   visitors: {
