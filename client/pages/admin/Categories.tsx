@@ -69,6 +69,8 @@ interface CategoryRowProps {
   handleNameChange: (name: string) => void;
   parentCategories: ProductCategory[];
   settings: any;
+  hasEditPermission?: boolean;
+  hasDeletePermission?: boolean;
 }
 
 function CategoryRow({
