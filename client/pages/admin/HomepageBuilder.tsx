@@ -1318,6 +1318,76 @@ function EditSectionFormContent({
         </div>
       )}
 
+      {/* Image with Link Specific Fields */}
+      {section.type === "image_with_link" && (
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="image">Image</Label>
+            <SingleImageUpload
+              imageUrl={(formData.content as any)?.image || ""}
+              onImageChange={(url) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, image: url },
+                })
+              }
+              label="Section Image"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="alt">Alt Text</Label>
+            <Input
+              id="alt"
+              value={(formData.content as any)?.alt || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, alt: e.target.value },
+                })
+              }
+              placeholder="Describe the image"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="link">Link URL (optional)</Label>
+            <Input
+              id="link"
+              value={(formData.content as any)?.link || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, link: e.target.value },
+                })
+              }
+              placeholder="/products or https://example.com"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="target">Link Target</Label>
+            <Select
+              value={(formData.content as any)?.target || "_self"}
+              onValueChange={(value) =>
+                setFormData({
+                  ...formData,
+                  content: { ...formData.content, target: value },
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_self">Same Window</SelectItem>
+                <SelectItem value="_blank">New Tab</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
       <div>
         <Label htmlFor="content">Content (JSON)</Label>
         <Textarea
