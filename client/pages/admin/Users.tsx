@@ -10,6 +10,7 @@ import {
   Crown,
   User,
 } from "lucide-react";
+import bcrypt from "bcryptjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
