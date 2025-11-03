@@ -861,9 +861,5 @@ function ImageWithLinkSection({ content }: { content: any }) {
   }
 
   // Without a link, just display the image
-  return (
-    <section className="w-full">
-      {imageElement}
-    </section>
-  );
+  return <section className="w-full">{imageElement}</section>;
 }
