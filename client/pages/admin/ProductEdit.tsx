@@ -116,6 +116,41 @@ export default function ProductEdit() {
     }
   }
 
+  async function fetchShippingZones() {
+    try {
+      const { data } = await supabase
+        .from("shipping_zones")
+        .select("*")
+        .eq("is_active", true)
+        .order("name");
+
+      if (data) {
+        setShippingZones(data);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch shipping zones:", error);
+    }
+  }
+
+  async function fetchProductDeliveryZones(productId: string) {
+    try {
+      const { data } = await supabase
+        .from("product_delivery_zones")
+        .select("zone_id, available_quantity")
+        .eq("product_id", productId);
+
+      if (data) {
+        const zonesMap: Record<string, number> = {};
+        data.forEach((item) => {
+          zonesMap[item.zone_id] = item.available_quantity;
+        });
+        setProductDeliveryZones(zonesMap);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch product delivery zones:", error);
+    }
+  }
+
   async function fetchProduct(productId: string) {
     try {
       console.log("Fetching product with ID:", productId);
