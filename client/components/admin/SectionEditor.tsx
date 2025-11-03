@@ -267,6 +267,11 @@ function SectionContentEditor({
     case "banner":
       return <BannerEditor content={content} updateContent={updateContent} />;
 
+    case "image_with_link":
+      return (
+        <ImageWithLinkEditor content={content} updateContent={updateContent} />
+      );
+
     default:
       return (
         <div className="text-muted-foreground">
