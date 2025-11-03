@@ -680,7 +680,7 @@ export default function Index() {
         icon: "truck",
         title: "Same Day Delivery",
         description:
-          "Order before 2 PM and get fresh flowers delivered the same day",
+          "Order before 6 PM and get fresh flowers delivered the same day",
       },
       {
         icon: "shield",
