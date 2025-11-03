@@ -38,6 +38,8 @@ import { supabase } from "@/lib/supabase";
 import { getProductEffectivePriceSync } from "@/lib/productUtils";
 import { Product, ProductCategory, ProductVariant } from "@shared/database.types";
 import PermissionGuard from "@/components/PermissionGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 interface ProductWithCategoryAssignments extends Product {
   categoryAssignments?: { category_id: string; is_primary: boolean }[];
