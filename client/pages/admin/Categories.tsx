@@ -1063,11 +1063,12 @@ export default function AdminCategories() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Categories</h1>
+    <PermissionGuard requiredModule="categories">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Categories</h1>
           <p className="text-muted-foreground">
             Organize your flower catalog with categories and subcategories
           </p>
@@ -1540,5 +1541,6 @@ export default function AdminCategories() {
         </Card>
       )}
     </div>
+    </PermissionGuard>
   );
 }
