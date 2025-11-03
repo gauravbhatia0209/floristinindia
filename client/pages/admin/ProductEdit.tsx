@@ -34,7 +34,19 @@ import PermissionGuard from "@/components/PermissionGuard";
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isNew = !id;
+
+  const hasCreatePermission = canCreate(user?.permissions, "products");
+  const hasEditPermission = canEdit(user?.permissions, "products");
+
+  useEffect(() => {
+    if (!isNew && !hasEditPermission) {
+      navigate("/admin/products");
+    } else if (isNew && !hasCreatePermission) {
+      navigate("/admin/products");
+    }
+  }, [isNew, hasEditPermission, hasCreatePermission, navigate]);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
