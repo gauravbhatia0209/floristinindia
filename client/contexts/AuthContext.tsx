@@ -276,10 +276,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (!subUserError && subUserData) {
           // Verify password for sub_users
-          const isValidPassword = await verifyPassword(
-            password,
-            subUserData.password || "",
-          );
+          // Handle both hashed (bcrypt) and plain text passwords for backward compatibility
+          let isValidPassword = false;
+
+          if (subUserData.password) {
+            // Check if password is bcrypt hashed (starts with $2a$, $2b$, or $2y$)
+            if (subUserData.password.startsWith("$2a$") ||
+                subUserData.password.startsWith("$2b$") ||
+                subUserData.password.startsWith("$2y$")) {
+              // Hashed password - use bcrypt verify
+              isValidPassword = await verifyPassword(
+                password,
+                subUserData.password,
+              );
+            } else {
+              // Plain text password (backward compatibility) - direct comparison
+              isValidPassword = password === subUserData.password;
+              // If valid, hash it for future logins
+              if (isValidPassword) {
+                const hashedPassword = await hashPassword(password);
+                await supabase
+                  .from("sub_users")
+                  .update({ password: hashedPassword })
+                  .eq("id", subUserData.id);
+              }
+            }
+          }
 
           if (!isValidPassword) {
             await logLoginAttempt(email, userType, false, "Invalid password");
