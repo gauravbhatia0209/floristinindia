@@ -384,20 +384,24 @@ export default function Shipping() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingMethod(method)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteMethod(method.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
+                        {hasEditPermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingMethod(method)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {hasDeletePermission && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteMethod(method.id)}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
