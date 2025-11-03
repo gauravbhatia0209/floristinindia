@@ -27,6 +27,9 @@ import { MultiCategorySelect } from "@/components/ui/multi-category-select";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit } from "@/lib/permissionUtils";
+import PermissionGuard from "@/components/PermissionGuard";
 
 export default function ProductEdit() {
   const { id } = useParams<{ id: string }>();
