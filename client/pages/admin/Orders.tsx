@@ -32,6 +32,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
 import { Order, Customer } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
 
 interface OrderWithCustomer extends Order {
   customer: Customer | null; // Customer can be null if order was created without customer data
