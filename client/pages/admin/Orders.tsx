@@ -1010,15 +1010,22 @@ export default function Orders() {
                         )}
                         <p>
                           <span className="font-medium">Total Orders:</span>{" "}
-                          {orders.filter((o) => o.customer_id === selectedOrder.customer?.id).length}
+                          {
+                            orders.filter(
+                              (o) =>
+                                o.customer_id === selectedOrder.customer?.id,
+                            ).length
+                          }
                         </p>
                         <p>
                           <span className="font-medium">Total Spent:</span> ₹
-                          {(
-                            orders
-                              .filter((o) => o.customer_id === selectedOrder.customer?.id)
-                              .reduce((sum, o) => sum + o.total_amount, 0)
-                          ).toLocaleString()}
+                          {orders
+                            .filter(
+                              (o) =>
+                                o.customer_id === selectedOrder.customer?.id,
+                            )
+                            .reduce((sum, o) => sum + o.total_amount, 0)
+                            .toLocaleString()}
                         </p>
                       </CardContent>
                     </Card>
