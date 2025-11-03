@@ -602,11 +602,12 @@ export default function Analytics() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Analytics & Statistics</h1>
+    <PermissionGuard requiredModule="orders">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Analytics & Statistics</h1>
           <p className="text-muted-foreground">
             Real-time insights and performance metrics for your store
           </p>
@@ -1035,5 +1036,6 @@ export default function Analytics() {
         </TabsContent>
       </Tabs>
     </div>
+    </PermissionGuard>
   );
 }
