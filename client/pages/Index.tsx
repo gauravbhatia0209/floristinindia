@@ -1241,7 +1241,9 @@ export default function Index() {
           <a
             href={content.link}
             target={content.target || "_self"}
-            rel={content.target === "_blank" ? "noopener noreferrer" : undefined}
+            rel={
+              content.target === "_blank" ? "noopener noreferrer" : undefined
+            }
             className="block w-full hover:opacity-95 transition-opacity"
           >
             {imageElement}
