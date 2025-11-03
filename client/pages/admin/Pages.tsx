@@ -46,12 +46,17 @@ interface PageContent {
 }
 
 export default function Pages() {
+  const { user } = useAuth();
   const [pages, setPages] = useState<Page[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [isAddingPage, setIsAddingPage] = useState(false);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
   const { clearPageCache, clearAllCache } = useClearMetaCacheOnSave();
+
+  const hasCreatePermission = canCreate(user?.permissions, "pages");
+  const hasEditPermission = canEdit(user?.permissions, "pages");
+  const hasDeletePermission = canDelete(user?.permissions, "pages");
 
   useEffect(() => {
     fetchPages();
