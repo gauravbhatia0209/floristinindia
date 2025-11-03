@@ -944,9 +944,10 @@ CREATE POLICY "Admin access to analytics_cart_events" ON analytics_cart_events
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Database Setup</h1>
+    <AdminGuard>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Database Setup</h1>
         <p className="text-muted-foreground">
           Run these SQL commands in your Supabase SQL Editor to create required
           tables
@@ -1591,5 +1592,6 @@ VALUES (
         </CardContent>
       </Card>
     </div>
+    </AdminGuard>
   );
 }
