@@ -441,17 +441,6 @@ export function Header() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            {siteSettings.logo_url ? (
-              <img
-                src={siteSettings.logo_url}
-                alt={siteSettings.site_name || "Logo"}
-                className="w-10 h-10 object-contain"
-              />
-            ) : (
-              <div className="w-10 h-10 bg-gradient-rose rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🌹</span>
-              </div>
-            )}
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-gradient-rose">
                 {siteSettings.site_name || "Florist in India"}
