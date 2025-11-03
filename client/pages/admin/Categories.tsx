@@ -47,6 +47,8 @@ import PermissionGuard from "@/components/PermissionGuard";
 import { SingleImageUpload } from "@/components/ui/single-image-upload";
 import { useClearMetaCacheOnSave } from "@/lib/meta-cache";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 interface CategoryRowProps {
   category: ProductCategory;
