@@ -561,6 +561,20 @@ export default function ProductEdit() {
 
   async function saveProductDeliveryZones(productId: string) {
     try {
+      // First check if table exists by trying to query it
+      const { error: checkError } = await supabase
+        .from("product_delivery_zones")
+        .select("id")
+        .limit(1);
+
+      // If table doesn't exist, skip this step
+      if (checkError?.code === "42P01") {
+        console.log(
+          "⚠️ Product delivery zones table doesn't exist. Please run the migration: product-delivery-zones-migration.sql",
+        );
+        return;
+      }
+
       // Delete existing entries
       const { error: deleteError } = await supabase
         .from("product_delivery_zones")
@@ -568,12 +582,21 @@ export default function ProductEdit() {
         .eq("product_id", productId);
 
       if (deleteError) {
-        console.error("Failed to delete existing product delivery zones:", deleteError);
-        // Check if table doesn't exist
+        const errorMsg =
+          deleteError?.message ||
+          deleteError?.error_description ||
+          deleteError?.details ||
+          JSON.stringify(deleteError);
+        console.error(
+          "Failed to delete existing product delivery zones:",
+          errorMsg,
+        );
+        // If it's a table not found error, skip
         if (deleteError.code === "42P01") {
-          console.log("Product delivery zones table doesn't exist. Skipping delivery zone save.");
+          console.log("Product delivery zones table doesn't exist. Skipping.");
           return;
         }
+        // For other errors, log but continue
       }
 
       // Prepare delivery zone entries
@@ -597,19 +620,30 @@ export default function ProductEdit() {
         .insert(deliveryZoneEntries);
 
       if (insertError) {
-        console.error("Failed to save product delivery zones:", insertError);
+        const errorMsg =
+          insertError?.message ||
+          insertError?.error_description ||
+          insertError?.details ||
+          JSON.stringify(insertError);
+        console.error("Failed to save product delivery zones:", errorMsg);
+
         if (insertError.code === "42P01") {
-          console.log("Product delivery zones table doesn't exist. Skipping delivery zone save.");
+          console.log("Product delivery zones table doesn't exist. Skipping.");
           return;
         }
-        throw insertError;
+        // For other errors, log but allow save to continue
+      } else {
+        console.log(
+          `✅ Successfully saved ${deliveryZoneEntries.length} delivery zone assignments`,
+        );
       }
-
-      console.log(
-        `✅ Successfully saved ${deliveryZoneEntries.length} delivery zone assignments`,
-      );
     } catch (error: any) {
-      console.error("❌ Error saving product delivery zones:", error);
+      const errorMsg =
+        error?.message ||
+        error?.error_description ||
+        error?.details ||
+        JSON.stringify(error);
+      console.error("❌ Error saving product delivery zones:", errorMsg);
       // Don't throw - allow save to continue
     }
   }
