@@ -567,7 +567,7 @@ export default function Index() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center space-y-4 p-8">
                       <div className="w-20 h-20 mx-auto rounded-full bg-white/20 flex items-center justify-center text-4xl">
-                        {content?.feature_box_emoji || "🌺"}
+                        {content?.feature_box_emoji || "����"}
                       </div>
                       <div className="space-y-2">
                         <h3 className="text-white font-semibold text-lg">
@@ -832,13 +832,13 @@ export default function Index() {
                   to={`/category/${category.slug}`}
                   className="group"
                 >
-                  <Card className="border-0 shadow-lg overflow-hidden h-full">
-                    <div className="aspect-square bg-gradient-to-br from-rose/20 to-peach/20 flex items-center justify-center text-4xl">
+                  <Card className="border-0 shadow-lg overflow-hidden h-full transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer">
+                    <div className="aspect-square bg-gradient-to-br from-rose/20 to-peach/20 flex items-center justify-center text-4xl overflow-hidden">
                       {category.image_url ? (
                         <img
                           src={category.image_url}
                           alt={category.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                           onError={(e) => {
                             e.currentTarget.style.display = "none";
                             const placeholder =
