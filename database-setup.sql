@@ -191,7 +191,7 @@ CREATE TABLE pages (
 -- Homepage Sections Table - Dynamic and reorderable
 CREATE TABLE homepage_sections (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    type VARCHAR(50) NOT NULL CHECK (type IN ('hero', 'category_grid', 'product_carousel', 'product_grid', 'text_block', 'image_block', 'testimonials', 'newsletter', 'features', 'banner')),
+    type VARCHAR(50) NOT NULL CHECK (type IN ('hero', 'category_grid', 'product_carousel', 'product_grid', 'text_block', 'image_block', 'testimonials', 'newsletter', 'features', 'banner', 'hero_carousel', 'image', 'button', 'list', 'separator', 'heading', 'paragraph', 'image_with_link')),
     title VARCHAR(255),
     subtitle VARCHAR(255),
     content JSONB NOT NULL DEFAULT '{}',
