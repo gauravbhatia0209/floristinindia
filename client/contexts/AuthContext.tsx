@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import bcrypt from "bcryptjs";
+import { UserPermissions } from "@shared/database.types";
 
 export interface User {
   id: string;
@@ -11,6 +12,7 @@ export interface User {
   email_verified: boolean;
   phone?: string;
   last_login?: string;
+  permissions?: UserPermissions;
 }
 
 export interface AuthContextType {
