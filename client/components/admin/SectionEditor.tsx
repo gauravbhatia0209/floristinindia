@@ -1027,6 +1027,14 @@ function CategoryGridEditor({
   updateContent: (key: string, value: any) => void;
   categories: ProductCategory[];
 }) {
+  const toggleCategorySelection = (categoryId: string) => {
+    const currentSelection = content?.selected_categories || [];
+    const newSelection = currentSelection.includes(categoryId)
+      ? currentSelection.filter((id: string) => id !== categoryId)
+      : [...currentSelection, categoryId];
+    updateContent("selected_categories", newSelection);
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -1070,6 +1078,55 @@ function CategoryGridEditor({
             updateContent("show_product_count", checked)
           }
         />
+      </div>
+
+      <div>
+        <Label>Select Categories to Feature</Label>
+        {categories.length === 0 ? (
+          <div className="text-center py-4 text-muted-foreground">
+            No categories available
+          </div>
+        ) : (
+          <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+            {categories.map((category) => {
+              const isSelected =
+                (content?.selected_categories || []).includes(category.id);
+              return (
+                <div
+                  key={category.id}
+                  className={`flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50 ${
+                    isSelected ? "bg-blue-50 border-blue-300" : ""
+                  }`}
+                  onClick={() => toggleCategorySelection(category.id)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleCategorySelection(category.id)}
+                    className="rounded"
+                  />
+                  {category.image_url && (
+                    <img
+                      src={category.image_url}
+                      alt={category.name}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-medium">{category.name}</div>
+                    <div className="text-sm text-gray-600">
+                      {category.slug}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p className="text-xs text-gray-600 mt-1">
+          Selected:{" "}
+          {(content?.selected_categories || []).length} categories
+        </p>
       </div>
     </div>
   );
