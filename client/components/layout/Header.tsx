@@ -609,28 +609,14 @@ export function Header() {
             </Button>
 
             {/* Wishlist */}
-            {isAuthenticated ? (
-              <Link to="/account?tab=wishlist">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Heart className="h-5 w-5" />
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-rose text-white">
-                    0
-                  </Badge>
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative"
-                onClick={() => navigate("/login")}
-              >
+            <Link to="/wishlist">
+              <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-5 w-5" />
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-rose text-white">
                   0
                 </Badge>
               </Button>
-            )}
+            </Link>
 
             {/* Cart */}
             <Link to="/cart">
