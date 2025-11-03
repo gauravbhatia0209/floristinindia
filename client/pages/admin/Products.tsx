@@ -47,6 +47,7 @@ interface ProductWithCategoryAssignments extends Product {
 }
 
 export default function AdminProducts() {
+  const { user } = useAuth();
   const [products, setProducts] = useState<ProductWithCategoryAssignments[]>(
     [],
   );
@@ -55,6 +56,10 @@ export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
+
+  const hasCreatePermission = canCreate(user?.permissions, "products");
+  const hasEditPermission = canEdit(user?.permissions, "products");
+  const hasDeletePermission = canDelete(user?.permissions, "products");
 
   useEffect(() => {
     fetchData();
