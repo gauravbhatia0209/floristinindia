@@ -62,23 +62,15 @@ export default function AdminLogin() {
       const result = await login(formData.email, formData.password, "admin");
 
       if (result.success && result.user) {
-        // Verify user has admin role
+        // Verify user has admin user type
         if (result.user.user_type !== "admin") {
           setError("Access denied. Admin credentials required.");
           await logout(); // Clear any session
           return;
         }
 
-        // Verify user has proper admin role (admin or super_admin)
-        if (
-          !result.user.role ||
-          !["admin", "super_admin"].includes(result.user.role)
-        ) {
-          setError("Access denied. Insufficient privileges.");
-          await logout(); // Clear any session
-          return;
-        }
-
+        // User is authenticated as admin, navigate to admin panel
+        // Permission checks for specific modules are handled in the admin UI
         navigate("/admin");
       } else {
         setError(result.error || "Login failed");
