@@ -44,6 +44,7 @@ import { AvailableShippingMethod } from "@/types/shipping";
 import {
   getAvailableShippingMethods,
   calculateShippingCost,
+  isProductAvailableAtPincode,
 } from "@/lib/shipping-service";
 import { useGoogleAnalytics } from "@/components/GoogleAnalytics";
 import { useFacebookPixel } from "@/components/FacebookPixel";
