@@ -609,7 +609,7 @@ export function Header() {
             </Button>
 
             {/* Wishlist */}
-            <Link to="/wishlist">
+            <Link to="/account">
               <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-5 w-5" />
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-rose text-white">
