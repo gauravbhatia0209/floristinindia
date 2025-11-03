@@ -559,6 +559,61 @@ export default function ProductEdit() {
     }
   }
 
+  async function saveProductDeliveryZones(productId: string) {
+    try {
+      // Delete existing entries
+      const { error: deleteError } = await supabase
+        .from("product_delivery_zones")
+        .delete()
+        .eq("product_id", productId);
+
+      if (deleteError) {
+        console.error("Failed to delete existing product delivery zones:", deleteError);
+        // Check if table doesn't exist
+        if (deleteError.code === "42P01") {
+          console.log("Product delivery zones table doesn't exist. Skipping delivery zone save.");
+          return;
+        }
+      }
+
+      // Prepare delivery zone entries
+      const deliveryZoneEntries = Object.entries(productDeliveryZones)
+        .filter(([_, quantity]) => quantity > 0)
+        .map(([zoneId, quantity]) => ({
+          product_id: productId,
+          zone_id: zoneId,
+          available_quantity: quantity,
+          is_available: true,
+        }));
+
+      if (deliveryZoneEntries.length === 0) {
+        console.log("No delivery zones selected for this product");
+        return;
+      }
+
+      // Insert new entries
+      const { error: insertError } = await supabase
+        .from("product_delivery_zones")
+        .insert(deliveryZoneEntries);
+
+      if (insertError) {
+        console.error("Failed to save product delivery zones:", insertError);
+        if (insertError.code === "42P01") {
+          console.log("Product delivery zones table doesn't exist. Skipping delivery zone save.");
+          return;
+        }
+        throw insertError;
+      }
+
+      console.log(
+        `✅ Successfully saved ${deliveryZoneEntries.length} delivery zone assignments`,
+      );
+    } catch (error: any) {
+      console.error("❌ Error saving product delivery zones:", error);
+      // Don't throw - allow save to continue
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-6">
