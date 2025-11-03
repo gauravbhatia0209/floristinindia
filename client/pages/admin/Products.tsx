@@ -300,12 +300,14 @@ export default function AdminProducts() {
               Manage your flower catalog and inventory
             </p>
           </div>
-        <Button asChild>
-          <Link to="/admin/products/new">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Product
-          </Link>
-        </Button>
+        {hasCreatePermission && (
+          <Button asChild>
+            <Link to="/admin/products/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Product
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Stats Cards */}
