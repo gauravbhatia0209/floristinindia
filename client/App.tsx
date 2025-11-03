@@ -46,6 +46,7 @@ import OrderConfirmation from "@/pages/OrderConfirmation";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
 import Orders from "@/pages/Orders";
 import Account from "@/pages/Account";
+import Wishlist from "@/pages/Wishlist";
 import Page from "@/pages/Page";
 import NotFound from "@/pages/NotFound";
 
