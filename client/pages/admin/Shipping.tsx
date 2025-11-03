@@ -337,10 +337,12 @@ export default function Shipping() {
         <TabsContent value="methods" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Shipping Methods</h2>
-            <Button onClick={() => setIsAddingMethod(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Method
-            </Button>
+            {hasCreatePermission && (
+              <Button onClick={() => setIsAddingMethod(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Method
+              </Button>
+            )}
           </div>
 
           <div className="grid gap-4">
