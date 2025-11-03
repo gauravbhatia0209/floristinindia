@@ -41,6 +41,7 @@ interface CustomerWithOrders extends Customer {
 }
 
 export default function Customers() {
+  const { user } = useAuth();
   const [customers, setCustomers] = useState<CustomerWithOrders[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<
     CustomerWithOrders[]
@@ -49,6 +50,9 @@ export default function Customers() {
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerWithOrders | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const hasEditPermission = canEdit(user?.permissions, "customers");
+  const hasDeletePermission = canDelete(user?.permissions, "customers");
 
   useEffect(() => {
     fetchCustomers();
