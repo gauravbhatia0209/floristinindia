@@ -255,10 +255,12 @@ export default function Coupons() {
               <p className="text-muted-foreground mb-4">
                 Create your first discount coupon to boost sales
               </p>
-              <Button onClick={() => setIsAddingCoupon(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Coupon
-              </Button>
+              {hasCreatePermission && (
+                <Button onClick={() => setIsAddingCoupon(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Coupon
+                </Button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
