@@ -31,6 +31,9 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { Coupon, ProductCategory } from "@shared/database.types";
+import PermissionGuard from "@/components/PermissionGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { canCreate, canEdit, canDelete } from "@/lib/permissionUtils";
 
 export default function Coupons() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
