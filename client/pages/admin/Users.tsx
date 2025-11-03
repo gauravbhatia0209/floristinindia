@@ -352,7 +352,7 @@ export default function Users() {
                           </Badge>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                           <div>
                             <p className="font-medium">Joined</p>
                             <p>{formatDate(user.created_at)}</p>
@@ -379,14 +379,6 @@ export default function Users() {
                               modules
                             </p>
                           </div>
-                          {showPasswords && (
-                            <div>
-                              <p className="font-medium">Password</p>
-                              <p className="text-muted-foreground font-mono text-xs break-all">
-                                {user.password || "—"}
-                              </p>
-                            </div>
-                          )}
                         </div>
                       </div>
 
