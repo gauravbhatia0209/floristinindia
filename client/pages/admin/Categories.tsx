@@ -530,6 +530,8 @@ function MainCategoryAccordion({
   handleNameChange,
   parentCategories,
   settings,
+  hasEditPermission,
+  hasDeletePermission,
 }: MainCategoryAccordionProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
