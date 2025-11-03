@@ -784,10 +784,21 @@ export default function Orders() {
           onOpenChange={() => setSelectedOrder(null)}
         >
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
+            <DialogHeader className="flex flex-row justify-between items-center">
               <DialogTitle>
                 Order Details - #{selectedOrder?.order_number}
               </DialogTitle>
+              {selectedOrder && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => printShippingSlip(selectedOrder)}
+                  className="flex items-center gap-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print Slip
+                </Button>
+              )}
             </DialogHeader>
 
             {selectedOrder && (
