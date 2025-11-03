@@ -210,6 +210,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="wishlist" element={<Wishlist />} />
               {/* Specific static routes - must come before dynamic route */}
               <Route path="about" element={<Page />} />
               <Route path="help" element={<Page />} />
