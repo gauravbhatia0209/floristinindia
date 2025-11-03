@@ -205,6 +205,9 @@ export default function ProductEdit() {
           setSelectedCategoryIds([data.category_id]);
           setPrimaryCategoryId(data.category_id);
         }
+
+        // Load product delivery zones
+        await fetchProductDeliveryZones(productId);
       } else {
         throw new Error("Product not found");
       }
