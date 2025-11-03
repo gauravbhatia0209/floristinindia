@@ -1236,6 +1236,8 @@ export default function AdminCategories() {
                     handleNameChange={handleNameChange}
                     parentCategories={parentCategories}
                     settings={settings}
+                    hasEditPermission={hasEditPermission}
+                    hasDeletePermission={hasDeletePermission}
                   />
                 ))}
 
