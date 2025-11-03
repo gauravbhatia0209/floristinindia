@@ -1093,10 +1093,12 @@ export default function AdminCategories() {
           <Button variant="outline" onClick={() => fetchCategories()}>
             Refresh
           </Button>
-          <Button onClick={() => startEditing()}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Category
-          </Button>
+          {hasCreatePermission && (
+            <Button onClick={() => startEditing()}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Category
+            </Button>
+          )}
         </div>
       </div>
 
