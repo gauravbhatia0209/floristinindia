@@ -560,33 +560,37 @@ export default function Orders() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <Select
-                            value={order.status}
-                            onValueChange={(value: Order["status"]) =>
-                              updateOrderStatus(order.id, value)
-                            }
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="confirmed">
-                                Confirmed
-                              </SelectItem>
-                              <SelectItem value="processing">
-                                Processing
-                              </SelectItem>
-                              <SelectItem value="shipped">Shipped</SelectItem>
-                              <SelectItem value="delivered">
-                                Delivered
-                              </SelectItem>
-                              <SelectItem value="cancelled">
-                                Cancelled
-                              </SelectItem>
-                              <SelectItem value="refunded">Refunded</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          {hasEditPermission ? (
+                            <Select
+                              value={order.status}
+                              onValueChange={(value: Order["status"]) =>
+                                updateOrderStatus(order.id, value)
+                              }
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="confirmed">
+                                  Confirmed
+                                </SelectItem>
+                                <SelectItem value="processing">
+                                  Processing
+                                </SelectItem>
+                                <SelectItem value="shipped">Shipped</SelectItem>
+                                <SelectItem value="delivered">
+                                  Delivered
+                                </SelectItem>
+                                <SelectItem value="cancelled">
+                                  Cancelled
+                                </SelectItem>
+                                <SelectItem value="refunded">Refunded</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Badge variant="outline">{order.status}</Badge>
+                          )}
 
                           <Button
                             variant="ghost"
