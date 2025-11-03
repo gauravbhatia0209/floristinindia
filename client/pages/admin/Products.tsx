@@ -283,15 +283,16 @@ export default function AdminProducts() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">Products</h1>
-          <p className="text-muted-foreground">
-            Manage your flower catalog and inventory
-          </p>
-        </div>
+    <PermissionGuard requiredModule="products">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Products</h1>
+            <p className="text-muted-foreground">
+              Manage your flower catalog and inventory
+            </p>
+          </div>
         <Button asChild>
           <Link to="/admin/products/new">
             <Plus className="h-4 w-4 mr-2" />
@@ -575,5 +576,6 @@ export default function AdminProducts() {
         </CardContent>
       </Card>
     </div>
+    </PermissionGuard>
   );
 }
