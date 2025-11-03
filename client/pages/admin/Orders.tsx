@@ -560,14 +560,38 @@ export default function Orders() {
               </div>`
                   : ""
               }
+            </div>
+
+            <div class="section">
+              <div class="section-title">PAYMENT INFORMATION</div>
               ${
-                order.customer_message
-                  ? `<div class="message-box">
-                <strong>Customer Message:</strong><br/>
-                ${order.customer_message}
+                order.payment_method
+                  ? `<div class="info-row">
+                <div class="info-label">Payment Method:</div>
+                <div class="info-value">${order.payment_method === "cod" ? "Cash on Delivery" : order.payment_method}</div>
               </div>`
                   : ""
               }
+              ${
+                order.payment_status
+                  ? `<div class="info-row">
+                <div class="info-label">Payment Status:</div>
+                <div class="info-value">${order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}</div>
+              </div>`
+                  : ""
+              }
+            </div>
+
+            ${
+              order.customer_message
+                ? `<div class="section">
+              <div class="section-title">CUSTOMER MESSAGE</div>
+              <div class="message-box" style="border-left: none; background: #f9f9f9; padding: 12px; border-radius: 2px;">
+                ${order.customer_message}
+              </div>
+            </div>`
+                : ""
+            }
             </div>
 
             <div class="footer">
