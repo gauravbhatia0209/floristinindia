@@ -409,7 +409,7 @@ export const generateOrderStatusUpdateEmail = (
       message: "Your order has been delivered",
     },
     cancelled: {
-      icon: "❌",
+      icon: "��",
       color: "#ef4444",
       message: "Your order has been cancelled",
     },
@@ -627,14 +627,44 @@ export const sendOrderStatusUpdateEmail = async (
   newStatus: string,
 ) => {
   const transporter = createTransporter();
-  const { customer } = orderData;
+  const { customer, order } = orderData;
 
   try {
-    const statusEmail = generateOrderStatusUpdateEmail(
-      orderData,
-      oldStatus,
-      newStatus,
-    );
+    // Try to fetch custom template from database for this status
+    let statusEmail = null;
+    const customTemplate = await fetchEmailTemplate("status_update", newStatus);
+
+    if (customTemplate) {
+      // Build template variables
+      const templateVars = {
+        ORDER_NUMBER: order.order_number,
+        CUSTOMER_NAME: customer.name,
+        TOTAL_AMOUNT: (order.total_amount || 0).toFixed(2),
+        ORDER_DATE: new Date(order.created_at).toLocaleDateString("en-IN"),
+        OLD_STATUS: oldStatus,
+        NEW_STATUS: newStatus,
+        DELIVERY_DATE: order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "",
+        DELIVERY_SLOT: order.delivery_slot || "",
+      };
+
+      const processedBody = processTemplateVariables(customTemplate.body, templateVars);
+      const processedSubject = processTemplateVariables(customTemplate.subject, templateVars);
+
+      statusEmail = {
+        subject: processedSubject,
+        html: processedBody,
+      };
+      console.log(`��� Using custom status update template for "${newStatus}" from database`);
+    } else {
+      // Fall back to hardcoded template
+      statusEmail = generateOrderStatusUpdateEmail(
+        orderData,
+        oldStatus,
+        newStatus,
+      );
+      console.log(`⚠️ Using default status update template for "${newStatus}" (no custom template found)`);
+    }
+
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: customer.email,
