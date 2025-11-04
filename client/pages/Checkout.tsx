@@ -1366,10 +1366,7 @@ export default function Checkout() {
           items.map(async (item: any) => {
             // Try different possible property names for product name
             let productName =
-              item.product_name ||
-              item.name ||
-              item.title ||
-              item.productName;
+              item.product_name || item.name || item.title || item.productName;
 
             // If product name is still not found, fetch from database
             if (!productName && item.product_id) {
@@ -1381,7 +1378,8 @@ export default function Checkout() {
                   .single();
 
                 if (product) {
-                  productName = product.name || product.title || "Unknown Product";
+                  productName =
+                    product.name || product.title || "Unknown Product";
                 }
               } catch (err) {
                 console.warn(

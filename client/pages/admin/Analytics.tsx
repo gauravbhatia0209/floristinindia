@@ -1197,10 +1197,11 @@ export default function Analytics() {
                       {(() => {
                         const maxRevenue = Math.max(
                           ...data.sales.topProducts.map((p) => p.revenue),
-                          1
+                          1,
                         );
                         return data.sales.topProducts.map((product, index) => {
-                          const percentage = (product.revenue / maxRevenue) * 100;
+                          const percentage =
+                            (product.revenue / maxRevenue) * 100;
                           return (
                             <div key={index} className="space-y-2">
                               <div className="flex justify-between items-start">
