@@ -10,7 +10,7 @@ import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
 import emailTemplatesRoutes from "./routes/email-templates.js";
-import visitorAnalyticsRoutes from "./routes/visitor-analytics";
+import visitorAnalyticsRoutes from "./routes/visitor-analytics.js";
 import {
   injectMetaTags,
   getMetaDataHandler,
@@ -64,7 +64,7 @@ export function createServer() {
   app.use("/api/email", emailRoutes);
 
   // Email templates routes
-  console.log("🔧 Mounting email templates routes at /api/email-templates");
+  console.log("���� Mounting email templates routes at /api/email-templates");
   app.use("/api/email-templates", emailTemplatesRoutes);
 
   // Visitor analytics routes
