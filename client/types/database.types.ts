@@ -451,6 +451,9 @@ export type ShippingMethod =
   Database["public"]["Tables"]["shipping_methods"]["Row"];
 export type EmailTemplate =
   Database["public"]["Tables"]["email_templates"]["Row"];
+export type VisitorSession =
+  Database["public"]["Tables"]["visitor_sessions"]["Row"];
+export type PageView = Database["public"]["Tables"]["page_views"]["Row"];
 
 // Additional missing types
 export interface CartItem {
