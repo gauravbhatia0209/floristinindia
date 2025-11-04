@@ -216,11 +216,10 @@ export default function Orders() {
     if (orderPlacedDateFilter) {
       filtered = filtered.filter((order) => {
         if (!order.created_at) return false;
-        // Compare dates in YYYY-MM-DD format
-        const orderPlacedDate = new Date(order.created_at)
-          .toISOString()
-          .split("T")[0];
-        return orderPlacedDate === orderPlacedDateFilter;
+        // Compare dates as strings in YYYY-MM-DD format
+        // Handle both date-only strings and ISO datetime strings
+        const createdDateStr = order.created_at.split("T")[0];
+        return createdDateStr === orderPlacedDateFilter;
       });
     }
 
