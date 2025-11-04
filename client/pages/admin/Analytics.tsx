@@ -401,8 +401,10 @@ export default function Analytics() {
                 "Order items details:",
                 orderItems.map((oi) => ({
                   product_id: oi.product_id,
+                  product_name: oi.product_name,
                   quantity: oi.quantity,
                   price: oi.price,
+                  order_id: oi.order_id,
                 })),
               );
 
@@ -434,6 +436,15 @@ export default function Analytics() {
               console.log("📊 All product sales aggregated:", productSales);
             } else {
               console.log("⚠️ No order items found for the given orders");
+              console.log("📊 Confirmed orders with no items:", orderIds);
+              // Check which orders have no items
+              const { data: existingItems } = await supabase
+                .from("order_items")
+                .select("order_id")
+                .in("order_id", orderIds);
+              const itemsOrderIds = new Set(existingItems?.map((i: any) => i.order_id) || []);
+              const ordersWithoutItems = orderIds.filter((oid) => !itemsOrderIds.has(oid));
+              console.log("🔍 Orders without items in DB:", ordersWithoutItems);
             }
           } else {
             console.log("⚠️ No valid order IDs to fetch items for");
