@@ -558,29 +558,37 @@ router.get("/sitemap", async (req, res) => {
 // Generate text sitemap for simple AI parsing
 router.get("/sitemap.txt", async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const host = req.get("host") || "floristinindia.com";
+    const protocol = req.protocol || "https";
+    const normalizedHost = host.replace("www.", "");
+    const canonicalUrl = `${protocol}://www.${normalizedHost}`;
 
     // Set headers for AI systems
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.setHeader("X-Content-Source", "real-time-database");
     res.setHeader("X-Admin-Configurable", "true");
     res.setHeader("X-Generated-At", new Date().toISOString());
+    res.setHeader("Content-Type", "text/plain; charset=UTF-8");
 
-    // Fetch active products, categories, and pages
+    // Fetch active products, categories, and published pages
     const { data: products } = await supabase
       .from("products")
       .select("slug")
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("slug", { ascending: true });
 
     const { data: categories } = await supabase
       .from("product_categories")
       .select("slug")
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("slug", { ascending: true });
 
     const { data: pages } = await supabase
       .from("pages")
       .select("slug")
-      .eq("is_active", true);
+      .eq("status", "published")
+      .eq("is_active", true)
+      .order("slug", { ascending: true });
 
     // Fetch additional sitemap URLs from settings
     const { data: settings } = await supabase
@@ -589,32 +597,49 @@ router.get("/sitemap.txt", async (req, res) => {
       .eq("key", "additional_sitemap_urls")
       .single();
 
-    let urls = [
-      baseUrl,
-      `${baseUrl}/about`,
-      `${baseUrl}/contact`,
-      `${baseUrl}/cart`,
-    ];
+    let content = `# Florist in India - URL Sitemap
+# Generated: ${new Date().toISOString()}
+# Total URLs: ${1 + (products?.length || 0) + (categories?.length || 0) + (pages?.length || 0) + 7}
+# For search engines and AI crawlers
 
-    // Add page URLs
-    if (pages) {
-      pages.forEach((page) => {
-        urls.push(`${baseUrl}/pages/${page.slug}`);
-      });
-    }
+# Core Pages
+${canonicalUrl}
+${canonicalUrl}/about
+${canonicalUrl}/contact
+${canonicalUrl}/delivery-info
+
+# Legal & Policies
+${canonicalUrl}/privacy-policy
+${canonicalUrl}/terms-and-conditions
+${canonicalUrl}/refund-policy
+
+`;
 
     // Add category URLs
-    if (categories) {
+    if (categories && categories.length > 0) {
+      content += `# Product Categories (${categories.length})\n`;
       categories.forEach((category) => {
-        urls.push(`${baseUrl}/category/${category.slug}`);
+        content += `${canonicalUrl}/category/${category.slug}\n`;
       });
+      content += "\n";
     }
 
     // Add product URLs
-    if (products) {
+    if (products && products.length > 0) {
+      content += `# Products (${products.length})\n`;
       products.forEach((product) => {
-        urls.push(`${baseUrl}/product/${product.slug}`);
+        content += `${canonicalUrl}/product/${product.slug}\n`;
       });
+      content += "\n";
+    }
+
+    // Add page URLs
+    if (pages && pages.length > 0) {
+      content += `# Dynamic Pages (${pages.length})\n`;
+      pages.forEach((page) => {
+        content += `${canonicalUrl}/pages/${page.slug}\n`;
+      });
+      content += "\n";
     }
 
     // Add additional admin-configured URLs
@@ -622,19 +647,21 @@ router.get("/sitemap.txt", async (req, res) => {
       const additionalUrls = settings.value
         .split("\n")
         .filter((url) => url.trim());
-      additionalUrls.forEach((url) => {
-        const cleanUrl = url.trim();
-        if (cleanUrl) {
-          const fullUrl = cleanUrl.startsWith("http")
-            ? cleanUrl
-            : `${baseUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
-          urls.push(fullUrl);
-        }
-      });
+      if (additionalUrls.length > 0) {
+        content += `# Admin Configured URLs\n`;
+        additionalUrls.forEach((url) => {
+          const cleanUrl = url.trim();
+          if (cleanUrl) {
+            const fullUrl = cleanUrl.startsWith("http")
+              ? cleanUrl
+              : `${canonicalUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
+            content += `${fullUrl}\n`;
+          }
+        });
+      }
     }
 
-    res.setHeader("Content-Type", "text/plain");
-    res.send(urls.join("\n"));
+    res.send(content);
   } catch (error) {
     console.error("Error generating text sitemap:", error);
     res.status(500).send("Error generating sitemap");
