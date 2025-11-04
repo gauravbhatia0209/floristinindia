@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Database, AlertTriangle, Trash2 } from "lucide-react";
+import { Copy, Database, AlertTriangle, Trash2, Info } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import AdminGuard from "@/components/AdminGuard";
 
