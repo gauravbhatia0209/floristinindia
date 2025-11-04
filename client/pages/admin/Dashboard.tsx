@@ -100,10 +100,11 @@ export default function Dashboard() {
           .limit(5),
       ]);
 
-      // Calculate total revenue
+      // Calculate total revenue (excluding pending, refunded, and cancelled orders)
       const { data: orders } = await supabase
         .from("orders")
-        .select("total_amount");
+        .select("total_amount, status")
+        .not("status", "in", '("pending", "refunded", "cancelled")');
 
       const totalRevenue = orders?.reduce(
         (sum, order) => sum + order.total_amount,
