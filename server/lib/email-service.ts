@@ -567,15 +567,71 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
     const customTemplate = await fetchEmailTemplate("order_confirmation");
 
     if (customTemplate) {
-      // Build template variables
+      // Build template variables including billing, shipping, and product details
+      const shippingAddr = order.shipping_address || {};
+      const billingAddr = order.billing_address || {};
+
+      // Generate products HTML table
+      const productsHtml = (orderData.items || [])
+        .map((item: any) => `
+          <tr>
+            <td style="padding: 12px; border-bottom: 1px solid #eee;">
+              <strong>${item.product_name}</strong>
+              ${item.variant_name ? `<br><small style="color: #666;">Variant: ${item.variant_name}</small>` : ""}
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${(item.price || 0).toFixed(2)}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;"><strong>₹${(item.total_price || 0).toFixed(2)}</strong></td>
+          </tr>
+        `)
+        .join("");
+
       const templateVars = {
+        // Order Details
         ORDER_NUMBER: order.order_number,
-        CUSTOMER_NAME: customer.name,
-        TOTAL_AMOUNT: (order.total_amount || 0).toFixed(2),
         ORDER_DATE: new Date(order.created_at).toLocaleDateString("en-IN"),
-        PAYMENT_STATUS: order.payment_status,
+        CUSTOMER_NAME: customer.name,
+        CUSTOMER_EMAIL: customer.email || "",
+        CUSTOMER_PHONE: customer.phone || "",
+
+        // Payment Details
+        TOTAL_AMOUNT: (order.total_amount || 0).toFixed(2),
+        SUBTOTAL: ((order.total_amount || 0) - (order.shipping_amount || 0) - (order.tax_amount || 0) + (order.discount_amount || 0)).toFixed(2),
+        SHIPPING_AMOUNT: (order.shipping_amount || 0).toFixed(2),
+        TAX_AMOUNT: (order.tax_amount || 0).toFixed(2),
+        DISCOUNT_AMOUNT: (order.discount_amount || 0).toFixed(2),
+        PAYMENT_STATUS: order.payment_status || "pending",
+        PAYMENT_METHOD: order.payment_method || "N/A",
+
+        // Delivery Details
         DELIVERY_DATE: order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "",
         DELIVERY_SLOT: order.delivery_slot || "",
+
+        // Shipping Address
+        SHIPPING_NAME: order.receiver_name || customer.name,
+        SHIPPING_ADDRESS_LINE1: shippingAddr.line1 || "",
+        SHIPPING_ADDRESS_LINE2: shippingAddr.line2 || "",
+        SHIPPING_CITY: shippingAddr.city || "",
+        SHIPPING_STATE: shippingAddr.state || "",
+        SHIPPING_PINCODE: shippingAddr.pincode || "",
+        SHIPPING_PHONE: order.receiver_phone || customer.phone || "",
+        SHIPPING_ADDRESS_FULL: `${shippingAddr.line1 || ""}${shippingAddr.line2 ? ", " + shippingAddr.line2 : ""}, ${shippingAddr.city || ""}, ${shippingAddr.state || ""} - ${shippingAddr.pincode || ""}`,
+
+        // Billing Address
+        BILLING_NAME: billingAddr.name || customer.name,
+        BILLING_ADDRESS_LINE1: billingAddr.line1 || "",
+        BILLING_ADDRESS_LINE2: billingAddr.line2 || "",
+        BILLING_CITY: billingAddr.city || "",
+        BILLING_STATE: billingAddr.state || "",
+        BILLING_PINCODE: billingAddr.pincode || "",
+        BILLING_PHONE: billingAddr.phone || customer.phone || "",
+        BILLING_ADDRESS_FULL: `${billingAddr.line1 || ""}${billingAddr.line2 ? ", " + billingAddr.line2 : ""}, ${billingAddr.city || ""}, ${billingAddr.state || ""} - ${billingAddr.pincode || ""}`,
+
+        // Products (HTML table)
+        PRODUCTS_HTML: productsHtml ? `<table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;"><thead><tr style="background-color: #f9fafb;"><th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Product</th><th style="padding: 12px; text-align: center; border-bottom: 1px solid #e5e7eb;">Qty</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Price</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Total</th></tr></thead><tbody>${productsHtml}</tbody></table>` : "",
+
+        // Special Instructions
+        SPECIAL_INSTRUCTIONS: order.special_instructions || "",
       };
 
       const processedBody = processTemplateVariables(customTemplate.body, templateVars);
