@@ -69,30 +69,45 @@ export default function Dashboard() {
 
   async function fetchTodayAndTomorrowOrders() {
     try {
+      // Get today's date in local timezone (YYYY-MM-DD format)
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const todayDateString = today.getFullYear() +
+        "-" +
+        String(today.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(today.getDate()).padStart(2, "0");
+
+      // Get tomorrow's date in local timezone
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowDateString = tomorrow.getFullYear() +
+        "-" +
+        String(tomorrow.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(tomorrow.getDate()).padStart(2, "0");
 
-      const todayEnd = new Date(today);
-      todayEnd.setHours(23, 59, 59, 999);
-
-      const tomorrowEnd = new Date(tomorrow);
-      tomorrowEnd.setHours(23, 59, 59, 999);
+      // Get day after tomorrow for the upper bound
+      const dayAfterTomorrow = new Date(tomorrow);
+      dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+      const dayAfterTomorrowDateString = dayAfterTomorrow.getFullYear() +
+        "-" +
+        String(dayAfterTomorrow.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(dayAfterTomorrow.getDate()).padStart(2, "0");
 
       // Fetch orders for today
       const { data: todayData } = await supabase
         .from("orders")
         .select("status, delivery_date")
-        .gte("delivery_date", today.toISOString().split("T")[0])
-        .lt("delivery_date", tomorrow.toISOString().split("T")[0]);
+        .gte("delivery_date", todayDateString)
+        .lt("delivery_date", tomorrowDateString);
 
       // Fetch orders for tomorrow
       const { data: tomorrowData } = await supabase
         .from("orders")
         .select("status, delivery_date")
-        .gte("delivery_date", tomorrow.toISOString().split("T")[0])
-        .lt("delivery_date", new Date(tomorrow.getTime() + 86400000).toISOString().split("T")[0]);
+        .gte("delivery_date", tomorrowDateString)
+        .lt("delivery_date", dayAfterTomorrowDateString);
 
       // Process today's orders
       const todayOrderCounts = {
