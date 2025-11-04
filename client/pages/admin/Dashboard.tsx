@@ -285,7 +285,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>
-              {new Date().toLocaleDateString(undefined, {
+              {currentTime.toLocaleDateString(undefined, {
                 weekday: "short",
                 year: "numeric",
                 month: "short",
