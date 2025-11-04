@@ -1,33 +1,22 @@
 {
   "buildCommand": "npm run build:client",
   "outputDirectory": "client/dist",
-  "headers": [
-    {
-      "source": "/sitemap.xml",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
-      ]
-    }
-  ],
   "rewrites": [
     {
       "source": "/robots.txt",
-      "destination": "/api/[...path]?path=robots.txt"
+      "destination": "/api/robots.txt"
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/[...path]?path=sitemap.xml"
+      "destination": "/api/sitemap.xml"
     },
     {
       "source": "/sitemap.txt",
-      "destination": "/api/[...path]?path=sitemap.txt"
+      "destination": "/api/sitemap.txt"
     },
     {
-      "source": "/sitemap(?:/)?$",
-      "destination": "/api/[...path]?path=sitemap"
+      "source": "/sitemap$",
+      "destination": "/api/sitemap"
     },
     {
       "source": "/(.*)",
