@@ -1333,6 +1333,8 @@ export default function Checkout() {
           price: item.price,
         }));
 
+        console.log("Order items to insert:", orderItems);
+
         const { error: itemsError } = await supabase
           .from("order_items")
           .insert(orderItems);
@@ -1340,7 +1342,7 @@ export default function Checkout() {
         if (itemsError) {
           console.error(
             "❌ createOrderBeforePayment(): Error inserting order items:",
-            itemsError,
+            itemsError.message || itemsError.details || JSON.stringify(itemsError),
           );
         } else {
           console.log(
