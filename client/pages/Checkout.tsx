@@ -1324,14 +1324,25 @@ export default function Checkout() {
         console.log(
           "📦 createOrderBeforePayment(): Inserting order items...",
         );
+        console.log("Cart items structure:", items[0]);
 
-        const orderItems = items.map((item) => ({
-          order_id: order.id,
-          product_id: item.product_id,
-          product_name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        }));
+        const orderItems = items.map((item: any) => {
+          // Try different possible property names for product name
+          const productName =
+            item.name ||
+            item.product_name ||
+            item.title ||
+            item.productName ||
+            "Unknown Product";
+
+          return {
+            order_id: order.id,
+            product_id: item.product_id || item.productId || item.id,
+            product_name: productName,
+            quantity: item.quantity || 1,
+            price: item.price || item.unit_price || 0,
+          };
+        });
 
         console.log("Order items to insert:", orderItems);
 
