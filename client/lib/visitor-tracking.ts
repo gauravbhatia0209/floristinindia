@@ -211,7 +211,10 @@ class VisitorTracker {
       });
 
       if (error) {
-        console.error("Error recording page view:", error);
+        console.error(
+          "Error recording page view:",
+          error.message || JSON.stringify(error)
+        );
       }
     } catch (error) {
       console.error("Error in recordPageView:", error);
