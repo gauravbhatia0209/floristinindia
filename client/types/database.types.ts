@@ -389,6 +389,8 @@ export type ShippingZone =
   Database["public"]["Tables"]["shipping_zones"]["Row"];
 export type ShippingMethod =
   Database["public"]["Tables"]["shipping_methods"]["Row"];
+export type EmailTemplate =
+  Database["public"]["Tables"]["email_templates"]["Row"];
 
 // Additional missing types
 export interface CartItem {
