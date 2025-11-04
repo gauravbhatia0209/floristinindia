@@ -67,6 +67,10 @@ export function createServer() {
   console.log("🔧 Mounting email templates routes at /api/email-templates");
   app.use("/api/email-templates", emailTemplatesRoutes);
 
+  // Visitor analytics routes
+  console.log("🔧 Mounting visitor analytics routes at /api/visitor-analytics");
+  app.use("/api/visitor-analytics", visitorAnalyticsRoutes);
+
   // Explicit route for serving uploaded files
   app.get("/uploads/*", (req, res) => {
     const filePath = req.path.replace("/uploads/", "");
