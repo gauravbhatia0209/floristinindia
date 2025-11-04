@@ -1441,6 +1441,153 @@ VALUES (
               </div>
             </CardContent>
           </Card>
+
+          {/* Order Items Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Order Items Table
+                <Badge variant="outline">Required for Analytics</Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                This table stores individual items from orders and is required for the Revenue by Product analytics to work correctly
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm">
+                    Run this SQL if "Revenue by Product" shows no data in Analytics
+                  </span>
+                </div>
+                <div className="relative">
+                  <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                    <code>{`-- Create order_items table if it doesn't exist
+CREATE TABLE IF NOT EXISTS order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  price DECIMAL(10, 2) NOT NULL,
+  total_price DECIMAL(10, 2) GENERATED ALWAYS AS (quantity * price) STORED,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indices for faster queries
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_created_at ON order_items(created_at);
+
+-- Drop existing policies
+DROP POLICY IF EXISTS "Allow authenticated users to read order items" ON order_items;
+DROP POLICY IF EXISTS "Allow anyone to insert order items" ON order_items;
+DROP POLICY IF EXISTS "Allow authenticated users to update order items" ON order_items;
+DROP POLICY IF EXISTS "Allow service role full access to order items" ON order_items;
+
+-- Enable RLS (Row Level Security)
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+-- Allow anyone (anon + authenticated) to read order items
+CREATE POLICY "Allow anyone to read order items" ON order_items
+  FOR SELECT USING (true);
+
+-- Allow anyone to insert order items (for checkout)
+CREATE POLICY "Allow anyone to insert order items" ON order_items
+  FOR INSERT WITH CHECK (true);
+
+-- Allow authenticated users to update
+CREATE POLICY "Allow authenticated users to update order items" ON order_items
+  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- Grant permissions
+GRANT SELECT ON order_items TO anon;
+GRANT SELECT ON order_items TO authenticated;
+GRANT INSERT ON order_items TO anon;
+GRANT INSERT ON order_items TO authenticated;
+GRANT UPDATE ON order_items TO authenticated;
+GRANT DELETE ON order_items TO authenticated;`}</code>
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() =>
+                      copyToClipboard(
+                        `-- Create order_items table if it doesn't exist
+CREATE TABLE IF NOT EXISTS order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  price DECIMAL(10, 2) NOT NULL,
+  total_price DECIMAL(10, 2) GENERATED ALWAYS AS (quantity * price) STORED,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indices for faster queries
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_created_at ON order_items(created_at);
+
+-- Drop existing policies
+DROP POLICY IF EXISTS "Allow authenticated users to read order items" ON order_items;
+DROP POLICY IF EXISTS "Allow anyone to insert order items" ON order_items;
+DROP POLICY IF EXISTS "Allow authenticated users to update order items" ON order_items;
+DROP POLICY IF EXISTS "Allow service role full access to order items" ON order_items;
+
+-- Enable RLS (Row Level Security)
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+-- Allow anyone (anon + authenticated) to read order items
+CREATE POLICY "Allow anyone to read order items" ON order_items
+  FOR SELECT USING (true);
+
+-- Allow anyone to insert order items (for checkout)
+CREATE POLICY "Allow anyone to insert order items" ON order_items
+  FOR INSERT WITH CHECK (true);
+
+-- Allow authenticated users to update
+CREATE POLICY "Allow authenticated users to update order items" ON order_items
+  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- Grant permissions
+GRANT SELECT ON order_items TO anon;
+GRANT SELECT ON order_items TO authenticated;
+GRANT INSERT ON order_items TO anon;
+GRANT INSERT ON order_items TO authenticated;
+GRANT UPDATE ON order_items TO authenticated;
+GRANT DELETE ON order_items TO authenticated;`,
+                        "orderItems",
+                      )
+                    }
+                  >
+                    <Copy className="h-4 w-4 mr-1" />
+                    {copied === "orderItems" ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+                <div className="bg-orange-50 p-3 rounded-lg">
+                  <p className="text-sm text-orange-800">
+                    <strong>📊 What this creates:</strong>
+                  </p>
+                  <ul className="text-sm text-orange-700 mt-1 space-y-1">
+                    <li>• <strong>order_items table</strong> - Stores line items from each order</li>
+                    <li>• <strong>Product relationships</strong> - Links items to products and orders</li>
+                    <li>• <strong>Performance indexes</strong> - Fast lookups by order_id or product_id</li>
+                    <li>• <strong>Public read access</strong> - Both anonymous and authenticated users can read</li>
+                    <li>• <strong>Write protection</strong> - Only during checkout (anon insert) and admin updates</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* RLS Fix Section */}
