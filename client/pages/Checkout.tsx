@@ -1143,7 +1143,7 @@ export default function Checkout() {
     }
 
     console.log(
-      "🔄 createOrderBeforePayment(): Creating order with status 'Payment Pending'",
+      "��� createOrderBeforePayment(): Creating order with status 'Payment Pending'",
     );
 
     // Generate order number
@@ -1290,16 +1290,6 @@ export default function Checkout() {
           : `${form.phoneCountryCode}${form.phone}`,
         alternate_phone: form.alternatePhone || "",
       },
-      billing_address: {
-        name: form.fullName,
-        line1: form.addressLine1,
-        line2: form.addressLine2 || "",
-        city: form.city,
-        state: form.state,
-        pincode: form.pincode,
-        phone: `${form.phoneCountryCode}${form.phone}`,
-        alternate_phone: form.alternatePhone || "",
-      },
       delivery_date: form.deliveryDate || null,
       delivery_slot: form.deliverySlot || null,
       special_instructions: form.specialInstructions || null,
@@ -1308,7 +1298,6 @@ export default function Checkout() {
       receiver_phone: form.receiverPhone
         ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
         : `${form.phoneCountryCode}${form.phone}`,
-      alternate_phone: form.alternatePhone || "",
       delivery_instructions: form.specialInstructions || null,
       billing_address: form.useSameAddress
         ? null
