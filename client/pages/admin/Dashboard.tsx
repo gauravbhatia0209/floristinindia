@@ -63,7 +63,62 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    fetchTodayAndTomorrowOrders();
   }, []);
+
+  async function fetchTodayAndTomorrowOrders() {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const todayEnd = new Date(today);
+      todayEnd.setHours(23, 59, 59, 999);
+
+      const tomorrowEnd = new Date(tomorrow);
+      tomorrowEnd.setHours(23, 59, 59, 999);
+
+      // Fetch orders for today
+      const { data: todayData } = await supabase
+        .from("orders")
+        .select("status, delivery_date")
+        .gte("delivery_date", today.toISOString().split("T")[0])
+        .lt("delivery_date", tomorrow.toISOString().split("T")[0]);
+
+      // Fetch orders for tomorrow
+      const { data: tomorrowData } = await supabase
+        .from("orders")
+        .select("status, delivery_date")
+        .gte("delivery_date", tomorrow.toISOString().split("T")[0])
+        .lt("delivery_date", new Date(tomorrow.getTime() + 86400000).toISOString().split("T")[0]);
+
+      // Process today's orders
+      const todayOrderCounts = {
+        total: todayData?.length || 0,
+        confirmed: todayData?.filter((o: any) => o.status === "confirmed").length || 0,
+        processing: todayData?.filter((o: any) => o.status === "processing").length || 0,
+        shipped: todayData?.filter((o: any) => o.status === "shipped").length || 0,
+        delivered: todayData?.filter((o: any) => o.status === "delivered").length || 0,
+        cancelled: todayData?.filter((o: any) => o.status === "cancelled").length || 0,
+      };
+
+      // Process tomorrow's orders
+      const tomorrowOrderCounts = {
+        total: tomorrowData?.length || 0,
+        confirmed: tomorrowData?.filter((o: any) => o.status === "confirmed").length || 0,
+        processing: tomorrowData?.filter((o: any) => o.status === "processing").length || 0,
+        shipped: tomorrowData?.filter((o: any) => o.status === "shipped").length || 0,
+        delivered: tomorrowData?.filter((o: any) => o.status === "delivered").length || 0,
+        cancelled: tomorrowData?.filter((o: any) => o.status === "cancelled").length || 0,
+      };
+
+      setTodayOrders(todayOrderCounts);
+      setTomorrowOrders(tomorrowOrderCounts);
+    } catch (error) {
+      console.error("Failed to fetch today and tomorrow orders:", error);
+    }
+  }
 
   async function fetchDashboardData() {
     try {
