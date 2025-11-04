@@ -702,7 +702,7 @@ export default function Checkout() {
           total < coupon.minimum_order_amount
         ) {
           setErrors({
-            coupon: `Minimum order amount is ₹${coupon.minimum_order_amount}`,
+            coupon: `Minimum order amount is ���${coupon.minimum_order_amount}`,
           });
           return;
         }
@@ -2288,7 +2288,7 @@ export default function Checkout() {
                     </CardContent>
                   </Card>
 
-                  {/* 6. Shipping Methods */}
+                  {/* 5. Shipping Methods */}
                   <ShippingMethodCard
                     pincode={form.pincode}
                     orderValue={total}
