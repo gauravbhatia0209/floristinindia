@@ -67,8 +67,75 @@ VALUES (
   'order_confirmation',
   NULL,
   'Order Confirmation #{ORDER_NUMBER} - Florist in India',
-  '<h2>Order Confirmed!</h2><p>Thank you for your order, {CUSTOMER_NAME}!</p><p>Your order number is <strong>#{ORDER_NUMBER}</strong></p><p>Total: ₹{TOTAL_AMOUNT}</p>',
-  '{"items_table": true, "delivery_address": true, "delivery_date": true, "special_instructions": true}',
+  '<h2 style="color: #1f2937;">Order Confirmed!</h2>
+<p style="color: #6b7280;">Thank you for your order, {CUSTOMER_NAME}!</p>
+
+<div style="background-color: #f9fafb; padding: 16px; border-radius: 8px; margin: 20px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div>
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">Order Number</p>
+      <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">#{ORDER_NUMBER}</p>
+    </div>
+    <div>
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">Order Date</p>
+      <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">{ORDER_DATE}</p>
+    </div>
+    <div>
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">Total Amount</p>
+      <p style="margin: 4px 0 0 0; color: #1f2937; font-weight: 600;">₹{TOTAL_AMOUNT}</p>
+    </div>
+    <div>
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">Payment Status</p>
+      <p style="margin: 4px 0 0 0; color: #10b981; font-weight: 600;">{PAYMENT_STATUS}</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="color: #1f2937; margin-top: 24px;">Order Items</h3>
+{PRODUCTS_HTML}
+
+<h3 style="color: #1f2937; margin-top: 24px;">Shipping Address</h3>
+<div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px;">
+  <p style="margin: 0; color: #374151; line-height: 1.6;">
+    <strong>{SHIPPING_NAME}</strong><br>
+    {SHIPPING_ADDRESS_LINE1}<br>
+    {SHIPPING_ADDRESS_LINE2}
+    {SHIPPING_CITY}, {SHIPPING_STATE} - {SHIPPING_PINCODE}<br>
+    Phone: {SHIPPING_PHONE}
+  </p>
+</div>
+
+<h3 style="color: #1f2937; margin-top: 24px;">Billing Address</h3>
+<div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px;">
+  <p style="margin: 0; color: #374151; line-height: 1.6;">
+    <strong>{BILLING_NAME}</strong><br>
+    {BILLING_ADDRESS_LINE1}<br>
+    {BILLING_ADDRESS_LINE2}
+    {BILLING_CITY}, {BILLING_STATE} - {BILLING_PINCODE}<br>
+    Phone: {BILLING_PHONE}
+  </p>
+</div>
+
+<h3 style="color: #1f2937; margin-top: 24px;">Delivery Information</h3>
+<div style="background-color: #fef3c7; border-radius: 8px; padding: 16px;">
+  <p style="margin: 0; color: #92400e;">
+    <strong>Delivery Date:</strong> {DELIVERY_DATE}
+    {DELIVERY_SLOT}
+  </p>
+</div>
+
+{SPECIAL_INSTRUCTIONS}
+
+<div style="border-top: 1px solid #e5e7eb; padding-top: 24px; margin-top: 24px;">
+  <h4 style="color: #1f2937; margin: 0 0 12px 0;">What Happens Next?</h4>
+  <ul style="color: #6b7280; margin: 0; padding-left: 20px;">
+    <li>We will prepare your order with care</li>
+    <li>You will receive updates via email as your order progresses</li>
+    <li>Our delivery team will contact you before delivery</li>
+    <li>Track your order status in your account</li>
+  </ul>
+</div>',
+  '{"items_table": true, "delivery_address": true, "billing_address": true, "delivery_date": true, "special_instructions": true}',
   true
 ),
 (
