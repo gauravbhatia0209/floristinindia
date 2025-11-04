@@ -6,7 +6,11 @@ const router = Router();
 // Generate robots.txt
 router.get("/robots.txt", async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // Build canonical URL (www variant)
+    const host = req.get("host") || "floristinindia.com";
+    const protocol = req.protocol || "https";
+    const normalizedHost = host.replace("www.", "");
+    const canonicalUrl = `${protocol}://www.${normalizedHost}`;
 
     // Fetch robots.txt content from site settings
     const { data: settings } = await supabase
@@ -28,14 +32,20 @@ router.get("/robots.txt", async (req, res) => {
     // If no custom robots.txt content, generate default
     if (!robotsContent || robotsContent.trim() === "") {
       const defaultRobots = settingsMap.defaultRobots || "index, follow";
-      robotsContent = `User-agent: *
+      robotsContent = `# Florist in India - Robots.txt
+# SEO-Optimized for Search Engines and AI Crawlers
+# Compatible: Google, Bing, Yahoo, DuckDuckGo, OpenAI, Perplexity
+
+User-agent: *
 ${defaultRobots.includes("noindex") ? "Disallow: /" : "Allow: /"}
 
-# Sitemap
-Sitemap: ${baseUrl}/sitemap.xml
+# Sitemaps - For search engines and AI crawlers
+Sitemap: ${canonicalUrl}/sitemap.xml
+Sitemap: ${canonicalUrl}/sitemap.txt
 
-# Common crawl delays
+# Crawl Delay
 Crawl-delay: 1
+Request-rate: 10/1s
 
 # Block sensitive areas
 Disallow: /admin/
@@ -43,10 +53,36 @@ Disallow: /api/
 Disallow: /uploads/temp/
 Disallow: /*?*
 
-# Allow specific API endpoints for AI
+# Allow specific API endpoints for AI crawlers
 Allow: /api/ai/
 Allow: /api/sitemap
-Allow: /api/meta`;
+Allow: /api/meta
+
+# Allow search engine crawlers
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 0
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 0
+
+User-agent: CCBot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 0`;
     }
 
     res.setHeader("Content-Type", "text/plain");
