@@ -802,8 +802,14 @@ export default function Analytics() {
                 setDateRange(value);
               }
             }}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
+              <SelectTrigger className="w-48">
+                <SelectValue
+                  placeholder={
+                    dateRange === "custom"
+                      ? `${customStartDate} to ${customEndDate}`
+                      : undefined
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="1d">Today</SelectItem>
