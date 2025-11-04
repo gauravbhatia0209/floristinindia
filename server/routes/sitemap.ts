@@ -124,11 +124,10 @@ router.get("/sitemap.xml", async (req, res) => {
       .eq("is_active", true)
       .order("updated_at", { ascending: false });
 
-    // Fetch published pages only
+    // Fetch active pages only (pages table uses is_active, not status field)
     const { data: pages } = await supabase
       .from("pages")
       .select("slug, updated_at")
-      .eq("status", "published")
       .eq("is_active", true)
       .order("updated_at", { ascending: false });
 
