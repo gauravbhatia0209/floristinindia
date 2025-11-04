@@ -10,7 +10,7 @@ import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
 import emailTemplatesRoutes from "./routes/email-templates.js";
-import visitorAnalyticsRoutes from "./routes/visitor-analytics.js";
+import visitorAnalyticsRoutes from "./routes/visitor-analytics";
 import {
   injectMetaTags,
   getMetaDataHandler,
