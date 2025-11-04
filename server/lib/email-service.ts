@@ -25,12 +25,15 @@ const createTransporter = () => {
 const getSupabaseClient = () => {
   return createClient(
     process.env.VITE_SUPABASE_URL || "",
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+    process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   );
 };
 
 // Process template variables in HTML
-const processTemplateVariables = (html: string, variables: Record<string, any>): string => {
+const processTemplateVariables = (
+  html: string,
+  variables: Record<string, any>,
+): string => {
   let result = html;
   Object.entries(variables).forEach(([key, value]) => {
     const placeholder = new RegExp(`{${key}}`, "g");
@@ -44,7 +47,7 @@ const processTemplateVariables = (html: string, variables: Record<string, any>):
 // Fetch email template from database
 export const fetchEmailTemplate = async (
   templateType: "order_confirmation" | "status_update",
-  orderStatus?: string
+  orderStatus?: string,
 ) => {
   try {
     const supabase = getSupabaseClient();
@@ -64,7 +67,9 @@ export const fetchEmailTemplate = async (
     const { data, error } = await query.single();
 
     if (error) {
-      console.warn(`Could not fetch email template from database: ${error.message}`);
+      console.warn(
+        `Could not fetch email template from database: ${error.message}`,
+      );
       return null;
     }
 
@@ -575,7 +580,8 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
 
       // Generate products HTML table
       const productsHtml = (orderData.items || [])
-        .map((item: any) => `
+        .map(
+          (item: any) => `
           <tr>
             <td style="padding: 12px; border-bottom: 1px solid #eee;">
               <strong>${item.product_name}</strong>
@@ -585,7 +591,8 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
             <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${(item.price || 0).toFixed(2)}</td>
             <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;"><strong>₹${(item.total_price || 0).toFixed(2)}</strong></td>
           </tr>
-        `)
+        `,
+        )
         .join("");
 
       const templateVars = {
@@ -598,7 +605,12 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
 
         // Payment Details
         TOTAL_AMOUNT: (order.total_amount || 0).toFixed(2),
-        SUBTOTAL: ((order.total_amount || 0) - (order.shipping_amount || 0) - (order.tax_amount || 0) + (order.discount_amount || 0)).toFixed(2),
+        SUBTOTAL: (
+          (order.total_amount || 0) -
+          (order.shipping_amount || 0) -
+          (order.tax_amount || 0) +
+          (order.discount_amount || 0)
+        ).toFixed(2),
         SHIPPING_AMOUNT: (order.shipping_amount || 0).toFixed(2),
         TAX_AMOUNT: (order.tax_amount || 0).toFixed(2),
         DISCOUNT_AMOUNT: (order.discount_amount || 0).toFixed(2),
@@ -606,7 +618,9 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
         PAYMENT_METHOD: order.payment_method || "N/A",
 
         // Delivery Details
-        DELIVERY_DATE: order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "",
+        DELIVERY_DATE: order.delivery_date
+          ? new Date(order.delivery_date).toLocaleDateString("en-IN")
+          : "",
         DELIVERY_SLOT: order.delivery_slot || "",
 
         // Shipping Address
@@ -630,14 +644,22 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
         BILLING_ADDRESS_FULL: `${billingAddr.line1 || ""}${billingAddr.line2 ? ", " + billingAddr.line2 : ""}, ${billingAddr.city || ""}, ${billingAddr.state || ""} - ${billingAddr.pincode || ""}`,
 
         // Products (HTML table)
-        PRODUCTS_HTML: productsHtml ? `<table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;"><thead><tr style="background-color: #f9fafb;"><th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Product</th><th style="padding: 12px; text-align: center; border-bottom: 1px solid #e5e7eb;">Qty</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Price</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Total</th></tr></thead><tbody>${productsHtml}</tbody></table>` : "",
+        PRODUCTS_HTML: productsHtml
+          ? `<table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;"><thead><tr style="background-color: #f9fafb;"><th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Product</th><th style="padding: 12px; text-align: center; border-bottom: 1px solid #e5e7eb;">Qty</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Price</th><th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Total</th></tr></thead><tbody>${productsHtml}</tbody></table>`
+          : "",
 
         // Special Instructions
         SPECIAL_INSTRUCTIONS: order.special_instructions || "",
       };
 
-      const processedBody = processTemplateVariables(customTemplate.body, templateVars);
-      const processedSubject = processTemplateVariables(customTemplate.subject, templateVars);
+      const processedBody = processTemplateVariables(
+        customTemplate.body,
+        templateVars,
+      );
+      const processedSubject = processTemplateVariables(
+        customTemplate.subject,
+        templateVars,
+      );
 
       customerEmail = {
         subject: processedSubject,
@@ -647,7 +669,9 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
     } else {
       // Fall back to hardcoded template
       customerEmail = generateOrderConfirmationEmail(orderData);
-      console.log("⚠️ Using default order confirmation template (no custom template found)");
+      console.log(
+        "⚠️ Using default order confirmation template (no custom template found)",
+      );
     }
 
     await transporter.sendMail({
@@ -701,18 +725,28 @@ export const sendOrderStatusUpdateEmail = async (
         ORDER_DATE: new Date(order.created_at).toLocaleDateString("en-IN"),
         OLD_STATUS: oldStatus,
         NEW_STATUS: newStatus,
-        DELIVERY_DATE: order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "",
+        DELIVERY_DATE: order.delivery_date
+          ? new Date(order.delivery_date).toLocaleDateString("en-IN")
+          : "",
         DELIVERY_SLOT: order.delivery_slot || "",
       };
 
-      const processedBody = processTemplateVariables(customTemplate.body, templateVars);
-      const processedSubject = processTemplateVariables(customTemplate.subject, templateVars);
+      const processedBody = processTemplateVariables(
+        customTemplate.body,
+        templateVars,
+      );
+      const processedSubject = processTemplateVariables(
+        customTemplate.subject,
+        templateVars,
+      );
 
       statusEmail = {
         subject: processedSubject,
         html: processedBody,
       };
-      console.log(`��� Using custom status update template for "${newStatus}" from database`);
+      console.log(
+        `��� Using custom status update template for "${newStatus}" from database`,
+      );
     } else {
       // Fall back to hardcoded template
       statusEmail = generateOrderStatusUpdateEmail(
@@ -720,7 +754,9 @@ export const sendOrderStatusUpdateEmail = async (
         oldStatus,
         newStatus,
       );
-      console.log(`⚠️ Using default status update template for "${newStatus}" (no custom template found)`);
+      console.log(
+        `⚠️ Using default status update template for "${newStatus}" (no custom template found)`,
+      );
     }
 
     await transporter.sendMail({

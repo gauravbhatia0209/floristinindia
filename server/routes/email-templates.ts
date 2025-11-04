@@ -14,9 +14,7 @@ router.get("/", async (req, res) => {
 
     if (error) {
       console.error("Error fetching email templates:", error);
-      return res
-        .status(400)
-        .json({ success: false, error: error.message });
+      return res.status(400).json({ success: false, error: error.message });
     }
 
     res.json({ success: true, data });
@@ -95,9 +93,7 @@ router.post("/", async (req, res) => {
 
     if (error) {
       console.error("Error creating email template:", error);
-      return res
-        .status(400)
-        .json({ success: false, error: error.message });
+      return res.status(400).json({ success: false, error: error.message });
     }
 
     res.json({ success: true, data });
@@ -111,13 +107,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      subject,
-      body,
-      sections,
-      template_variables,
-      is_active,
-    } = req.body;
+    const { subject, body, sections, template_variables, is_active } = req.body;
 
     const { data, error } = await supabase
       .from("email_templates")
@@ -135,9 +125,7 @@ router.put("/:id", async (req, res) => {
 
     if (error) {
       console.error("Error updating email template:", error);
-      return res
-        .status(400)
-        .json({ success: false, error: error.message });
+      return res.status(400).json({ success: false, error: error.message });
     }
 
     res.json({ success: true, data });
@@ -159,9 +147,7 @@ router.delete("/:id", async (req, res) => {
 
     if (error) {
       console.error("Error deleting email template:", error);
-      return res
-        .status(400)
-        .json({ success: false, error: error.message });
+      return res.status(400).json({ success: false, error: error.message });
     }
 
     res.json({ success: true, message: "Template deleted successfully" });

@@ -7,11 +7,13 @@ This feature allows non-technical admins to customize the HTML emails sent to cu
 ## What You Can Customize
 
 ### 1. **Order Confirmation Email**
+
 - Sent when customer completes payment
 - Customize the subject line and email body
 - Use template variables like `{ORDER_NUMBER}`, `{CUSTOMER_NAME}`, `{TOTAL_AMOUNT}`, etc.
 
 ### 2. **Status Update Emails** (Per Status)
+
 - **Confirmed**: Sent when order status changes to "confirmed"
 - **Processing**: Sent when order status changes to "processing"
 - **Shipped**: Sent when order status changes to "shipped"
@@ -44,6 +46,7 @@ Each status has its own customizable template with status-specific available var
 Available variables are listed on the right side of the editor. Click any variable to insert it into your template.
 
 **Order Confirmation Variables:**
+
 - `{ORDER_NUMBER}` - The order number
 - `{CUSTOMER_NAME}` - Customer's name
 - `{TOTAL_AMOUNT}` - Total order amount
@@ -53,6 +56,7 @@ Available variables are listed on the right side of the editor. Click any variab
 - `{DELIVERY_SLOT}` - Delivery time slot if specified
 
 **Status Update Variables:**
+
 - `{ORDER_NUMBER}` - The order number
 - `{CUSTOMER_NAME}` - Customer's name
 - `{TOTAL_AMOUNT}` - Total order amount
@@ -67,15 +71,20 @@ Available variables are listed on the right side of the editor. Click any variab
 ### Example 1: Simple Order Confirmation
 
 **Subject:**
+
 ```
 Thank you for your order #{ORDER_NUMBER}!
 ```
 
 **Body:**
+
 ```html
 <h2>Order Confirmed!</h2>
 <p>Hi {CUSTOMER_NAME},</p>
-<p>Thank you for your order #{ORDER_NUMBER}. We have received your payment of ₹{TOTAL_AMOUNT}.</p>
+<p>
+  Thank you for your order #{ORDER_NUMBER}. We have received your payment of
+  ₹{TOTAL_AMOUNT}.
+</p>
 <p>Your order will be delivered on {DELIVERY_DATE}.</p>
 <p>Thank you for shopping with us!</p>
 ```
@@ -83,11 +92,13 @@ Thank you for your order #{ORDER_NUMBER}!
 ### Example 2: Shipment Status Update
 
 **Subject:**
+
 ```
 Your order #{ORDER_NUMBER} is on the way!
 ```
 
 **Body:**
+
 ```html
 <h2>Your Order is Shipped!</h2>
 <p>Hi {CUSTOMER_NAME},</p>
@@ -118,17 +129,18 @@ CREATE TABLE email_templates (
 
 ### API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/email-templates` | List all templates |
-| GET | `/api/email-templates/:type/:status?` | Get specific template |
-| POST | `/api/email-templates` | Create new template |
-| PUT | `/api/email-templates/:id` | Update template |
-| DELETE | `/api/email-templates/:id` | Delete template |
+| Method | Endpoint                              | Description           |
+| ------ | ------------------------------------- | --------------------- |
+| GET    | `/api/email-templates`                | List all templates    |
+| GET    | `/api/email-templates/:type/:status?` | Get specific template |
+| POST   | `/api/email-templates`                | Create new template   |
+| PUT    | `/api/email-templates/:id`            | Update template       |
+| DELETE | `/api/email-templates/:id`            | Delete template       |
 
 ### How It Works Behind the Scenes
 
 1. When a customer completes payment:
+
    - System checks if custom template exists for "order_confirmation"
    - If found, uses custom template and replaces variables
    - If not found, uses default hardcoded template
@@ -161,16 +173,19 @@ If no custom template is found, the system automatically falls back to the defau
 ## Troubleshooting
 
 ### Email Not Sending
+
 - Check if email credentials are configured in `server/.env`
 - Check server logs for error messages
 - Verify admin email address is correct
 
 ### Variables Not Replacing
+
 - Make sure variable names are exact (case-sensitive)
 - Use curly braces: `{VARIABLE_NAME}` not `[VARIABLE_NAME]`
 - Check available variables for your template type
 
 ### HTML Not Rendering
+
 - Paste HTML only (no plain text)
 - Ensure all tags are properly closed
 - Test in email client for compatibility
@@ -179,11 +194,13 @@ If no custom template is found, the system automatically falls back to the defau
 ## Files Modified/Created
 
 ### Backend
+
 - `server/routes/email-templates.ts` - API endpoints for template management
 - `server/lib/email-service.ts` - Updated to fetch and use database templates
 - `email-templates-migration.sql` - Database schema migration
 
 ### Frontend
+
 - `client/pages/admin/EmailTemplates.tsx` - Admin UI for template editing
 - `client/types/database.types.ts` - TypeScript types for email templates
 - `client/components/admin/AdminLayout.tsx` - Added navigation link
@@ -195,11 +212,13 @@ If no custom template is found, the system automatically falls back to the defau
 To enable this feature:
 
 1. **Create the database table:**
+
    ```bash
    # Execute the SQL from email-templates-migration.sql in your Supabase SQL editor
    ```
 
 2. **Restart the dev server:**
+
    ```bash
    npm run dev
    ```
@@ -211,6 +230,7 @@ To enable this feature:
 ## Future Enhancements
 
 Potential improvements:
+
 - Email preview sending to test address
 - Template versioning and history
 - Template categories and tags

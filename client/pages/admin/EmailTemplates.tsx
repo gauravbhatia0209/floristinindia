@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -82,7 +88,8 @@ interface EditingTemplate extends EmailTemplate {
 
 export default function EmailTemplates() {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
-  const [editingTemplate, setEditingTemplate] = useState<EditingTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] =
+    useState<EditingTemplate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +113,8 @@ export default function EmailTemplates() {
       setTemplates(data || []);
       setError(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load templates";
+      const message =
+        err instanceof Error ? err.message : "Failed to load templates";
       setError(message);
       console.error("Error loading templates:", err);
     } finally {
@@ -119,7 +127,10 @@ export default function EmailTemplates() {
     setPreviewMode(false);
   };
 
-  const handleCreateNew = (templateType: "order_confirmation" | "status_update", orderStatus?: string) => {
+  const handleCreateNew = (
+    templateType: "order_confirmation" | "status_update",
+    orderStatus?: string,
+  ) => {
     setEditingTemplate({
       id: Math.random().toString(),
       template_type: templateType,
@@ -171,14 +182,17 @@ export default function EmailTemplates() {
           .eq("id", id);
 
         if (updateError) throw updateError;
-        setTemplates(templates.map((t) => (t.id === id ? { ...t, ...templateData } : t)));
+        setTemplates(
+          templates.map((t) => (t.id === id ? { ...t, ...templateData } : t)),
+        );
         setSuccess("Template updated successfully!");
       }
 
       setEditingTemplate(null);
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to save template";
+      const message =
+        err instanceof Error ? err.message : "Failed to save template";
       setError(message);
       console.error("Error saving template:", err);
     } finally {
@@ -200,7 +214,17 @@ export default function EmailTemplates() {
   }
 
   if (editingTemplate) {
-    return <TemplateEditor template={editingTemplate} setTemplate={setEditingTemplate} onSave={handleSaveTemplate} onCancel={handleCancel} isSaving={isSaving} previewMode={previewMode} setPreviewMode={setPreviewMode} />;
+    return (
+      <TemplateEditor
+        template={editingTemplate}
+        setTemplate={setEditingTemplate}
+        onSave={handleSaveTemplate}
+        onCancel={handleCancel}
+        isSaving={isSaving}
+        previewMode={previewMode}
+        setPreviewMode={setPreviewMode}
+      />
+    );
   }
 
   return (
@@ -209,7 +233,8 @@ export default function EmailTemplates() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Email Templates</h1>
         <p className="text-gray-600 mt-2">
-          Customize the emails sent to customers when orders are placed and status changes
+          Customize the emails sent to customers when orders are placed and
+          status changes
         </p>
       </div>
 
@@ -231,7 +256,9 @@ export default function EmailTemplates() {
       {/* Templates Tabs */}
       <Tabs defaultValue="order_confirmation" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="order_confirmation">Order Confirmation</TabsTrigger>
+          <TabsTrigger value="order_confirmation">
+            Order Confirmation
+          </TabsTrigger>
           <TabsTrigger value="status_update">Status Updates</TabsTrigger>
         </TabsList>
 
@@ -245,7 +272,9 @@ export default function EmailTemplates() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <CardTitle>{template.subject || "No subject"}</CardTitle>
+                        <CardTitle>
+                          {template.subject || "No subject"}
+                        </CardTitle>
                         <CardDescription>
                           Sent when customer completes payment
                         </CardDescription>
@@ -272,7 +301,9 @@ export default function EmailTemplates() {
           <div className="grid gap-4">
             {ORDER_STATUSES.map((status) => {
               const template = templates.find(
-                (t) => t.template_type === "status_update" && t.order_status === status
+                (t) =>
+                  t.template_type === "status_update" &&
+                  t.order_status === status,
               );
               return (
                 <Card key={status}>
@@ -281,7 +312,9 @@ export default function EmailTemplates() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <CardTitle className="capitalize">{status}</CardTitle>
-                          <Badge variant="secondary">{template ? "Customized" : "Default"}</Badge>
+                          <Badge variant="secondary">
+                            {template ? "Customized" : "Default"}
+                          </Badge>
                         </div>
                         <CardDescription>
                           Sent when order status changes to {status}
@@ -302,7 +335,9 @@ export default function EmailTemplates() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleCreateNew("status_update", status)}
+                            onClick={() =>
+                              handleCreateNew("status_update", status)
+                            }
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Create
@@ -340,7 +375,10 @@ function TemplateEditor({
   previewMode,
   setPreviewMode,
 }: TemplateEditorProps) {
-  const availableVariables = AVAILABLE_VARIABLES[template.template_type as keyof typeof AVAILABLE_VARIABLES] || [];
+  const availableVariables =
+    AVAILABLE_VARIABLES[
+      template.template_type as keyof typeof AVAILABLE_VARIABLES
+    ] || [];
 
   return (
     <div className="space-y-6">
@@ -348,10 +386,16 @@ function TemplateEditor({
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            {template.isNew ? "Create" : "Edit"} {TEMPLATE_TYPES.find((t) => t.value === template.template_type)?.label}
+            {template.isNew ? "Create" : "Edit"}{" "}
+            {
+              TEMPLATE_TYPES.find((t) => t.value === template.template_type)
+                ?.label
+            }
           </h1>
           {template.order_status && (
-            <p className="text-gray-600 mt-2">Status: <Badge className="ml-2">{template.order_status}</Badge></p>
+            <p className="text-gray-600 mt-2">
+              Status: <Badge className="ml-2">{template.order_status}</Badge>
+            </p>
           )}
         </div>
         <div className="flex gap-2">
@@ -392,12 +436,16 @@ function TemplateEditor({
         <Card>
           <CardHeader>
             <CardTitle>Preview</CardTitle>
-            <CardDescription>This is how the email will look to customers</CardDescription>
+            <CardDescription>
+              This is how the email will look to customers
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="bg-gray-50 rounded-lg p-6 border">
               <div className="mb-4 pb-4 border-b">
-                <h2 className="text-lg font-semibold text-gray-900">Subject: {template.subject}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Subject: {template.subject}
+                </h2>
               </div>
               <div
                 className="prose prose-sm max-w-none"
@@ -426,7 +474,8 @@ function TemplateEditor({
                   className="w-full"
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  Use variables like {"{ORDER_NUMBER}"} to insert dynamic content
+                  Use variables like {"{ORDER_NUMBER}"} to insert dynamic
+                  content
                 </p>
               </CardContent>
             </Card>
