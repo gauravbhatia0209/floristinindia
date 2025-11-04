@@ -140,12 +140,13 @@ export default function Analytics() {
       console.log("Date range calculated:", { startDate, endDate });
 
       // Fetch real data from database with individual error handling
-      const [salesData, customerData, productData, ordersData] =
+      const [salesData, customerData, productData, ordersData, visitorData] =
         await Promise.allSettled([
           fetchSalesData(startDate, endDate),
           fetchCustomerData(startDate, endDate),
           fetchProductData(startDate, endDate),
           fetchOrdersData(startDate, endDate),
+          fetchVisitorData(),
         ]).then((results) => {
           return results.map((result, index) => {
             if (result.status === "fulfilled") {
@@ -186,6 +187,17 @@ export default function Analytics() {
                   return {
                     totalOrders: 0,
                   };
+                case 4: // visitorData
+                  return {
+                    total: 0,
+                    unique: 0,
+                    pageViews: 0,
+                    bounceRate: 0,
+                    avgTimeOnSite: 0,
+                    topPages: [],
+                    devices: [],
+                    referrers: [],
+                  };
                 default:
                   return {};
               }
@@ -198,19 +210,19 @@ export default function Analytics() {
         customerData,
         productData,
         ordersData,
+        visitorData,
       });
 
-      // Since visitor tracking isn't implemented yet, show empty state
       const analyticsData: AnalyticsData = {
         visitors: {
-          total: 0,
-          unique: 0,
-          pageViews: 0,
-          bounceRate: 0,
-          avgTimeOnSite: 0,
-          topPages: [],
-          devices: [],
-          referrers: [],
+          total: visitorData?.total || 0,
+          unique: visitorData?.unique || 0,
+          pageViews: visitorData?.pageViews || 0,
+          bounceRate: visitorData?.bounceRate || 0,
+          avgTimeOnSite: visitorData?.avgTimeOnSite || 0,
+          topPages: visitorData?.topPages || [],
+          devices: visitorData?.devices || [],
+          referrers: visitorData?.referrers || [],
         },
         sales: {
           totalRevenue: 0,
