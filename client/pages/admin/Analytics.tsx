@@ -332,18 +332,24 @@ export default function Analytics() {
       if (orders && orders.length > 0) {
         console.log(
           "Order details:",
-          orders.map((o) => ({ id: o.id, total: o.total_amount })),
+          orders.map((o) => ({ id: o.id, total: o.total_amount, status: o.status })),
         );
       }
 
+      // Filter to only include confirmed orders (exclude pending)
+      const confirmedOrders =
+        orders?.filter((order) => order.status !== "pending") || [];
+
+      console.log("✅ Confirmed orders (excluding pending):", confirmedOrders.length);
+
       const totalRevenue =
-        orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
-      const totalOrders = orders?.length || 0;
+        confirmedOrders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+      const totalOrders = confirmedOrders?.length || 0;
       const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
       // Calculate refunds
       const refunds =
-        orders?.filter(
+        confirmedOrders?.filter(
           (order) =>
             order.status === "cancelled" || order.status === "refunded",
         ).length || 0;
