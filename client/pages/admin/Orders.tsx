@@ -228,11 +228,10 @@ export default function Orders() {
     if (deliveryDateFilter) {
       filtered = filtered.filter((order) => {
         if (!order.delivery_date) return false;
-        // Compare dates in YYYY-MM-DD format
-        const orderDeliveryDate = new Date(order.delivery_date)
-          .toISOString()
-          .split("T")[0];
-        return orderDeliveryDate === deliveryDateFilter;
+        // Compare dates as strings in YYYY-MM-DD format
+        // Handle both date-only strings and ISO datetime strings
+        const deliveryDateStr = order.delivery_date.split("T")[0];
+        return deliveryDateStr === deliveryDateFilter;
       });
     }
 
