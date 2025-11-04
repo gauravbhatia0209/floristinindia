@@ -570,7 +570,7 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
 
   try {
     // Try to fetch custom template from database
-    let customerEmail = null;
+    let customerEmail: { subject: string; html: string } | null = null;
     const customTemplate = await fetchEmailTemplate("order_confirmation");
 
     if (customTemplate) {
