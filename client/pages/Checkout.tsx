@@ -1295,6 +1295,15 @@ export default function Checkout() {
         : `${form.phoneCountryCode}${form.phone}`,
       alternate_phone: form.alternatePhone || "",
       delivery_instructions: form.specialInstructions || null,
+      billing_address: form.useSameAddress
+        ? null
+        : {
+            line1: form.billingAddressLine1,
+            line2: form.billingAddressLine2 || "",
+            city: form.billingCity,
+            state: form.billingState,
+            pincode: form.billingPincode,
+          },
       uploaded_files: uploadedFiles,
       payment_method: selectedPaymentMethod?.name || "pending",
       payment_status: "pending", // Will be updated after successful payment
