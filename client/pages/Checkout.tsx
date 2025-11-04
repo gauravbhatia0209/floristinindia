@@ -1186,7 +1186,18 @@ export default function Checkout() {
                 ? `${form.receiverPhoneCountryCode}${form.receiverPhone}`
                 : `${form.phoneCountryCode}${form.phone}`,
               alternate_phone: form.alternatePhone || "",
+              type: "delivery",
             },
+            ...((!form.useSameAddress && form.billingAddressLine1) ? [{
+              name: form.fullName,
+              line1: form.billingAddressLine1,
+              line2: form.billingAddressLine2 || "",
+              city: form.billingCity,
+              state: form.billingState,
+              pincode: form.billingPincode,
+              phone: `${form.phoneCountryCode}${form.phone}`,
+              type: "billing",
+            }] : []),
           ],
         },
         {
@@ -1607,7 +1618,7 @@ export default function Checkout() {
         setPaymentIntentId(paymentIntentId);
 
         // Save order ID for status update after payment
-        console.log("💾 Saving order ID for status update after payment");
+        console.log("�� Saving order ID for status update after payment");
         localStorage.setItem("pendingOrderNumber", createdOrderNumber);
 
         // Redirect to local payment page with order data
