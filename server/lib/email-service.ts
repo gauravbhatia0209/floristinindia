@@ -559,11 +559,39 @@ export const generateOrderStatusUpdateEmail = (
 // Email sending functions
 export const sendOrderConfirmationEmails = async (orderData: any) => {
   const transporter = createTransporter();
-  const { customer } = orderData;
+  const { customer, order } = orderData;
 
   try {
-    // Send confirmation email to customer
-    const customerEmail = generateOrderConfirmationEmail(orderData);
+    // Try to fetch custom template from database
+    let customerEmail = null;
+    const customTemplate = await fetchEmailTemplate("order_confirmation");
+
+    if (customTemplate) {
+      // Build template variables
+      const templateVars = {
+        ORDER_NUMBER: order.order_number,
+        CUSTOMER_NAME: customer.name,
+        TOTAL_AMOUNT: (order.total_amount || 0).toFixed(2),
+        ORDER_DATE: new Date(order.created_at).toLocaleDateString("en-IN"),
+        PAYMENT_STATUS: order.payment_status,
+        DELIVERY_DATE: order.delivery_date ? new Date(order.delivery_date).toLocaleDateString("en-IN") : "",
+        DELIVERY_SLOT: order.delivery_slot || "",
+      };
+
+      const processedBody = processTemplateVariables(customTemplate.body, templateVars);
+      const processedSubject = processTemplateVariables(customTemplate.subject, templateVars);
+
+      customerEmail = {
+        subject: processedSubject,
+        html: processedBody,
+      };
+      console.log("✅ Using custom order confirmation template from database");
+    } else {
+      // Fall back to hardcoded template
+      customerEmail = generateOrderConfirmationEmail(orderData);
+      console.log("⚠️ Using default order confirmation template (no custom template found)");
+    }
+
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: customer.email,
@@ -575,7 +603,7 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
       `✅ Order confirmation email sent to customer: ${customer.email}`,
     );
 
-    // Send notification email to admin
+    // Send notification email to admin (admin always gets the default template)
     const adminEmail = generateAdminOrderNotification(orderData);
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
