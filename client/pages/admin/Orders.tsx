@@ -63,6 +63,7 @@ export default function Orders() {
   const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
   const [searchQuery, setSearchQuery] = useState("");
   const [deliveryDateFilter, setDeliveryDateFilter] = useState<string>(initialDate);
+  const [orderPlacedDateFilter, setOrderPlacedDateFilter] = useState<string>("");
   const [productImages, setProductImages] = useState<Record<string, string>>(
     {},
   );
@@ -74,7 +75,7 @@ export default function Orders() {
 
   useEffect(() => {
     filterOrders();
-  }, [orders, statusFilter, searchQuery, deliveryDateFilter]);
+  }, [orders, statusFilter, searchQuery, deliveryDateFilter, orderPlacedDateFilter]);
 
   async function fetchOrders() {
     try {
