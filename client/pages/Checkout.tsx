@@ -1318,6 +1318,43 @@ export default function Checkout() {
       newOrderNumber,
     );
 
+    // Insert order items
+    if (order && items.length > 0) {
+      try {
+        console.log(
+          "📦 createOrderBeforePayment(): Inserting order items...",
+        );
+
+        const orderItems = items.map((item) => ({
+          order_id: order.id,
+          product_id: item.product_id,
+          product_name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        }));
+
+        const { error: itemsError } = await supabase
+          .from("order_items")
+          .insert(orderItems);
+
+        if (itemsError) {
+          console.error(
+            "❌ createOrderBeforePayment(): Error inserting order items:",
+            itemsError,
+          );
+        } else {
+          console.log(
+            "✅ createOrderBeforePayment(): Order items inserted successfully",
+          );
+        }
+      } catch (itemsException) {
+        console.error(
+          "❌ createOrderBeforePayment(): Exception inserting order items:",
+          itemsException,
+        );
+      }
+    }
+
     // Send admin notification about new order
     try {
       console.log(
