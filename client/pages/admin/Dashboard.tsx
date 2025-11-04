@@ -317,6 +317,303 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Order for Today and Tomorrow - Admin Only */}
+      {isAdmin && (
+        <div className="space-y-6">
+          {/* Order for Today */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">Orders for Today</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+              <Card
+                className="border-l-4 border-l-slate-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Orders
+                  </CardTitle>
+                  <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{todayOrders.total}</div>
+                  <p className="text-xs text-muted-foreground">All statuses</p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}&status=confirmed`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Confirmed
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">
+                    {todayOrders.confirmed}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Confirmed orders
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}&status=processing`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Processing
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {todayOrders.processing}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Being processed
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-orange-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}&status=shipped`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Shipped</CardTitle>
+                  <Truck className="h-4 w-4 text-orange-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {todayOrders.shipped}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    On the way
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-purple-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}&status=delivered`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Delivered
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-purple-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {todayOrders.delivered}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Delivered today
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  navigate(`/admin/orders?date=${today}&status=cancelled`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Cancelled
+                  </CardTitle>
+                  <X className="h-4 w-4 text-red-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-red-600">
+                    {todayOrders.cancelled}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Cancelled orders
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Order for Tomorrow */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">Orders for Tomorrow</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+              <Card
+                className="border-l-4 border-l-slate-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(`/admin/orders?date=${tomorrow.toISOString().split("T")[0]}`);
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Orders
+                  </CardTitle>
+                  <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{tomorrowOrders.total}</div>
+                  <p className="text-xs text-muted-foreground">All statuses</p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(
+                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=confirmed`
+                  );
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Confirmed
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">
+                    {tomorrowOrders.confirmed}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Confirmed orders
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(
+                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=processing`
+                  );
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Processing
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {tomorrowOrders.processing}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Being processed
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-orange-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(
+                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=shipped`
+                  );
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Shipped</CardTitle>
+                  <Truck className="h-4 w-4 text-orange-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {tomorrowOrders.shipped}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    On the way
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-purple-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(
+                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=delivered`
+                  );
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Delivered
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-purple-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {tomorrowOrders.delivered}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Delivered tomorrow
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  navigate(
+                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=cancelled`
+                  );
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Cancelled
+                  </CardTitle>
+                  <X className="h-4 w-4 text-red-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-red-600">
+                    {tomorrowOrders.cancelled}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Cancelled orders
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CMS Content Stats */}
       <div>
         <h2 className="text-lg font-semibold mb-4">Content Management</h2>
