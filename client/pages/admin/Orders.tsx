@@ -85,6 +85,15 @@ export default function Orders() {
     orderPlacedDateFilter,
   ]);
 
+  // Auto-refresh orders every 30 seconds
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      fetchOrders();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(refreshInterval);
+  }, []);
+
   async function fetchOrders() {
     try {
       console.log("🔄 Admin: Fetching orders from database...");
