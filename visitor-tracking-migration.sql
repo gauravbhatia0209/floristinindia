@@ -1,14 +1,4 @@
--- Drop existing policies first (if they exist)
-DROP POLICY IF EXISTS "Allow public to insert visitor sessions" ON visitor_sessions;
-DROP POLICY IF EXISTS "Allow public to read visitor sessions" ON visitor_sessions;
-DROP POLICY IF EXISTS "Allow public to update visitor sessions" ON visitor_sessions;
-DROP POLICY IF EXISTS "Allow authenticated users to read visitor sessions" ON visitor_sessions;
-DROP POLICY IF EXISTS "Allow public to insert page views" ON page_views;
-DROP POLICY IF EXISTS "Allow public to update page views" ON page_views;
-DROP POLICY IF EXISTS "Allow authenticated users to read page views" ON page_views;
-DROP POLICY IF EXISTS "Allow public to read page views" ON page_views;
-
--- Drop existing tables first (if they exist)
+-- Drop existing tables first (this will cascade and drop policies)
 DROP TABLE IF EXISTS page_views CASCADE;
 DROP TABLE IF EXISTS visitor_sessions CASCADE;
 
