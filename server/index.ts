@@ -86,8 +86,9 @@ export function createServer() {
   // AI-readable data routes
   app.use("/api/ai", aiDataRoutes);
 
-  // Sitemap routes
+  // Sitemap routes - mount at both root and API paths for serverless compatibility
   app.use("/", sitemapRoutes);
+  app.use("/api", sitemapRoutes);
 
   // Admin update notification routes for AI cache management
   app.use("/api/admin", adminUpdatesRoutes);
