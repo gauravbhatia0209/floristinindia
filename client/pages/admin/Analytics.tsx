@@ -1175,23 +1175,41 @@ export default function Analytics() {
                   <CardTitle>Revenue by Product</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {data.sales.topProducts.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={data.sales.topProducts}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip
-                          formatter={(value) => formatCurrency(Number(value))}
-                        />
-                        <Bar dataKey="revenue" fill="#8884d8" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                  {data.sales.topProducts && data.sales.topProducts.length > 0 ? (
+                    <div className="space-y-4">
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={data.sales.topProducts}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis
+                            dataKey="name"
+                            angle={-45}
+                            textAnchor="end"
+                            height={80}
+                          />
+                          <YAxis />
+                          <Tooltip
+                            formatter={(value) => formatCurrency(Number(value))}
+                          />
+                          <Bar dataKey="revenue" fill="#0088FE" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                      <div className="space-y-2 mt-4">
+                        {data.sales.topProducts.map((product, index) => (
+                          <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                            <span className="text-sm font-medium">{product.name}</span>
+                            <span className="text-sm font-bold">{formatCurrency(product.revenue)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   ) : (
                     <div className="text-center py-8">
-                      <BarChart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">
-                        No product sales yet
+                      <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground font-medium">
+                        No product sales data available
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Sales data will appear once orders with items are placed
                       </p>
                     </div>
                   )}
