@@ -395,24 +395,16 @@ export default function Analytics() {
                   itemsError.details ||
                   JSON.stringify(itemsError),
               );
-            } else if (orderItems && orderItems.length > 0) {
-              console.log("✅ Found order items:", orderItems.length);
-              console.log(
-                "Order items details:",
-                orderItems.map((oi) => ({
-                  product_id: oi.product_id,
-                  product_name: oi.product_name,
-                  quantity: oi.quantity,
-                  price: oi.price,
-                  order_id: oi.order_id,
-                })),
-              );
+            }
 
-              // Get top products from order items
-              const productSales: {
-                [key: string]: { sales: number; revenue: number; name: string };
-              } = {};
+            // Aggregate product sales from both sources
+            const productSales: {
+              [key: string]: { sales: number; revenue: number; name: string };
+            } = {};
 
+            // Process database order_items records
+            if (orderItems && orderItems.length > 0) {
+              console.log("✅ Found order items in DB:", orderItems.length);
               orderItems.forEach((item: any) => {
                 const productId = item.product_id || "unknown";
                 if (!productSales[productId]) {
@@ -427,7 +419,48 @@ export default function Analytics() {
                 productSales[productId].revenue +=
                   (item.quantity || 0) * (item.price || 0);
               });
+            } else {
+              console.log("⚠️ No order items found in order_items table");
+            }
 
+            // Process items from orders.items JSON for orders without order_items records
+            const dbOrderIds = new Set(
+              orderItems?.map((i: any) => i.order_id) || []
+            );
+            const ordersWithoutDbItems = confirmedOrders.filter(
+              (order: any) => !dbOrderIds.has(order.id)
+            );
+
+            if (ordersWithoutDbItems.length > 0) {
+              console.log(
+                "📋 Processing items from JSON for",
+                ordersWithoutDbItems.length,
+                "orders without DB records"
+              );
+              ordersWithoutDbItems.forEach((order: any) => {
+                if (order.items && Array.isArray(order.items) && order.items.length > 0) {
+                  order.items.forEach((item: any) => {
+                    const productId = item.product_id || item.id || "unknown";
+                    const productName =
+                      item.product_name || item.name || `Product ${productId}`;
+                    const quantity = parseInt(item.quantity || "1", 10) || 1;
+                    const price = parseFloat(item.price || "0") || 0;
+
+                    if (!productSales[productId]) {
+                      productSales[productId] = {
+                        sales: 0,
+                        revenue: 0,
+                        name: productName,
+                      };
+                    }
+                    productSales[productId].sales += quantity;
+                    productSales[productId].revenue += quantity * price;
+                  });
+                }
+              });
+            }
+
+            if (Object.keys(productSales).length > 0) {
               topProducts = Object.values(productSales)
                 .sort((a, b) => b.revenue - a.revenue)
                 .slice(0, 5);
@@ -438,19 +471,12 @@ export default function Analytics() {
               // Detailed breakdown for debugging
               console.log("🔍 Product Sales Breakdown:");
               Object.entries(productSales).forEach(([productId, data]) => {
-                console.log(`  - ${data.name} (ID: ${productId}): ${data.sales} sold, ₹${data.revenue.toFixed(2)} revenue`);
+                console.log(
+                  `  - ${data.name} (ID: ${productId}): ${data.sales} sold, ₹${data.revenue.toFixed(2)} revenue`
+                );
               });
             } else {
-              console.log("⚠️ No order items found for the given orders");
-              console.log("📊 Confirmed orders with no items:", orderIds);
-              // Check which orders have no items
-              const { data: existingItems } = await supabase
-                .from("order_items")
-                .select("order_id")
-                .in("order_id", orderIds);
-              const itemsOrderIds = new Set(existingItems?.map((i: any) => i.order_id) || []);
-              const ordersWithoutItems = orderIds.filter((oid) => !itemsOrderIds.has(oid));
-              console.log("🔍 Orders without items in DB:", ordersWithoutItems);
+              console.log("⚠️ No items found from any source");
             }
           } else {
             console.log("⚠️ No valid order IDs to fetch items for");
