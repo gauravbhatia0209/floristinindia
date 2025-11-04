@@ -1188,16 +1188,20 @@ export default function Checkout() {
               alternate_phone: form.alternatePhone || "",
               type: "delivery",
             },
-            ...((!form.useSameAddress && form.billingAddressLine1) ? [{
-              name: form.fullName,
-              line1: form.billingAddressLine1,
-              line2: form.billingAddressLine2 || "",
-              city: form.billingCity,
-              state: form.billingState,
-              pincode: form.billingPincode,
-              phone: `${form.phoneCountryCode}${form.phone}`,
-              type: "billing",
-            }] : []),
+            ...(!form.useSameAddress && form.billingAddressLine1
+              ? [
+                  {
+                    name: form.fullName,
+                    line1: form.billingAddressLine1,
+                    line2: form.billingAddressLine2 || "",
+                    city: form.billingCity,
+                    state: form.billingState,
+                    pincode: form.billingPincode,
+                    phone: `${form.phoneCountryCode}${form.phone}`,
+                    type: "billing",
+                  },
+                ]
+              : []),
           ],
         },
         {
@@ -1355,9 +1359,7 @@ export default function Checkout() {
     // Insert order items
     if (order && items.length > 0) {
       try {
-        console.log(
-          "📦 createOrderBeforePayment(): Inserting order items...",
-        );
+        console.log("📦 createOrderBeforePayment(): Inserting order items...");
         console.log("Cart items structure:", items[0]);
 
         const orderItems = items.map((item: any) => {
@@ -1387,7 +1389,9 @@ export default function Checkout() {
         if (itemsError) {
           console.error(
             "❌ createOrderBeforePayment(): Error inserting order items:",
-            itemsError.message || itemsError.details || JSON.stringify(itemsError),
+            itemsError.message ||
+              itemsError.details ||
+              JSON.stringify(itemsError),
           );
         } else {
           console.log(

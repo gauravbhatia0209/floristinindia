@@ -327,7 +327,10 @@ export default function Analytics() {
         .lte("created_at", endDate.toISOString());
 
       if (ordersError) {
-        console.error("❌ Error fetching orders:", ordersError.message || ordersError);
+        console.error(
+          "❌ Error fetching orders:",
+          ordersError.message || ordersError,
+        );
         // If orders table doesn't exist or has permission issues, return empty data
         return {
           totalRevenue: 0,
@@ -342,7 +345,10 @@ export default function Analytics() {
 
       console.log("✅ Found orders:", orders?.length || 0);
       if (orders && orders.length > 0) {
-        console.log("Order details:", orders.map(o => ({ id: o.id, total: o.total_amount })));
+        console.log(
+          "Order details:",
+          orders.map((o) => ({ id: o.id, total: o.total_amount })),
+        );
       }
 
       const totalRevenue =
@@ -375,10 +381,22 @@ export default function Analytics() {
               .in("order_id", orderIds);
 
             if (itemsError) {
-              console.error("❌ Error fetching order items:", itemsError.message || itemsError.details || JSON.stringify(itemsError));
+              console.error(
+                "❌ Error fetching order items:",
+                itemsError.message ||
+                  itemsError.details ||
+                  JSON.stringify(itemsError),
+              );
             } else if (orderItems && orderItems.length > 0) {
               console.log("✅ Found order items:", orderItems.length);
-              console.log("Order items details:", orderItems.map(oi => ({ product_id: oi.product_id, quantity: oi.quantity, price: oi.price })));
+              console.log(
+                "Order items details:",
+                orderItems.map((oi) => ({
+                  product_id: oi.product_id,
+                  quantity: oi.quantity,
+                  price: oi.price,
+                })),
+              );
 
               // Get top products from order items
               const productSales: {
@@ -391,7 +409,8 @@ export default function Analytics() {
                   productSales[productId] = {
                     sales: 0,
                     revenue: 0,
-                    name: item.product_name || item.name || `Product ${productId}`,
+                    name:
+                      item.product_name || item.name || `Product ${productId}`,
                   };
                 }
                 productSales[productId].sales += item.quantity || 0;
@@ -613,7 +632,7 @@ export default function Analytics() {
       console.log("Fetching visitor analytics");
 
       const response = await fetch(
-        `/api/visitor-analytics/analytics?dateRange=${dateRange}`
+        `/api/visitor-analytics/analytics?dateRange=${dateRange}`,
       );
 
       if (!response.ok) {
@@ -1044,19 +1063,19 @@ export default function Analytics() {
                       {data.visitors.devices.map((device, index) => {
                         const total = data.visitors.devices.reduce(
                           (sum, d) => sum + d.count,
-                          0
+                          0,
                         );
                         const percentage =
-                          total > 0 ? ((device.count / total) * 100).toFixed(1) : 0;
+                          total > 0
+                            ? ((device.count / total) * 100).toFixed(1)
+                            : 0;
                         return (
                           <div key={index} className="space-y-2">
                             <div className="flex justify-between items-center">
                               <p className="font-medium capitalize text-sm">
                                 {device.device}
                               </p>
-                              <p className="text-sm font-bold">
-                                {percentage}%
-                              </p>
+                              <p className="text-sm font-bold">{percentage}%</p>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <div
@@ -1094,10 +1113,12 @@ export default function Analytics() {
                     {data.visitors.referrers.map((referrer, index) => {
                       const total = data.visitors.referrers.reduce(
                         (sum, r) => sum + r.count,
-                        0
+                        0,
                       );
                       const percentage =
-                        total > 0 ? ((referrer.count / total) * 100).toFixed(1) : 0;
+                        total > 0
+                          ? ((referrer.count / total) * 100).toFixed(1)
+                          : 0;
                       return (
                         <div key={index} className="space-y-2">
                           <div className="flex justify-between items-center">
@@ -1185,7 +1206,8 @@ export default function Analytics() {
                   <CardTitle>Revenue by Product</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {data.sales.topProducts && data.sales.topProducts.length > 0 ? (
+                  {data.sales.topProducts &&
+                  data.sales.topProducts.length > 0 ? (
                     <div className="space-y-4">
                       <ResponsiveContainer width="100%" height={250}>
                         <BarChart data={data.sales.topProducts}>
@@ -1205,9 +1227,16 @@ export default function Analytics() {
                       </ResponsiveContainer>
                       <div className="space-y-2 mt-4">
                         {data.sales.topProducts.map((product, index) => (
-                          <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                            <span className="text-sm font-medium">{product.name}</span>
-                            <span className="text-sm font-bold">{formatCurrency(product.revenue)}</span>
+                          <div
+                            key={index}
+                            className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                          >
+                            <span className="text-sm font-medium">
+                              {product.name}
+                            </span>
+                            <span className="text-sm font-bold">
+                              {formatCurrency(product.revenue)}
+                            </span>
                           </div>
                         ))}
                       </div>

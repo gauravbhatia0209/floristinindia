@@ -63,9 +63,7 @@ class VisitorTracker {
     ) {
       return "mobile";
     } else if (
-      /ipad|android|silk|tablet|playbook|bb10|nexus 7|nexus 10/i.test(
-        userAgent,
-      )
+      /ipad|android|silk|tablet|playbook|bb10|nexus 7|nexus 10/i.test(userAgent)
     ) {
       return "tablet";
     }
@@ -113,7 +111,7 @@ class VisitorTracker {
       if (checkError && checkError.code !== "PGRST116") {
         console.error(
           "Error checking session:",
-          checkError.message || JSON.stringify(checkError)
+          checkError.message || JSON.stringify(checkError),
         );
         return;
       }
@@ -136,11 +134,11 @@ class VisitorTracker {
           });
 
         if (insertError) {
-        console.error(
-          "Error creating session:",
-          insertError.message || JSON.stringify(insertError)
-        );
-      }
+          console.error(
+            "Error creating session:",
+            insertError.message || JSON.stringify(insertError),
+          );
+        }
       }
 
       this.sessionInitialized = true;
@@ -213,7 +211,7 @@ class VisitorTracker {
       if (error) {
         console.error(
           "Error recording page view:",
-          error.message || JSON.stringify(error)
+          error.message || JSON.stringify(error),
         );
       }
     } catch (error) {
@@ -248,7 +246,7 @@ class VisitorTracker {
         if (fetchError) {
           console.warn(
             "Warning fetching page view:",
-            fetchError.message || "Unknown error"
+            fetchError.message || "Unknown error",
           );
           return;
         }
@@ -273,12 +271,15 @@ class VisitorTracker {
         if (updateError) {
           console.warn(
             "Warning updating page time:",
-            updateError.message || "Unknown error"
+            updateError.message || "Unknown error",
           );
         }
       } catch (innerError) {
         // Silently fail on network errors - don't clutter console
-        if (innerError instanceof TypeError && innerError.message.includes("fetch")) {
+        if (
+          innerError instanceof TypeError &&
+          innerError.message.includes("fetch")
+        ) {
           // Network error - skip silently
           return;
         }
