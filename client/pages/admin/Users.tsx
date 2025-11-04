@@ -96,6 +96,18 @@ const rolePermissions: Record<string, UserPermissions> = {
     settings: { view: false, edit: false },
     users: { view: false, create: false, edit: false, delete: false },
   },
+  order_manager: {
+    products: { view: true, create: false, edit: false, delete: false },
+    orders: { view: true, create: false, edit: true, delete: false },
+    customers: { view: false, create: false, edit: false, delete: false },
+    categories: { view: false, create: false, edit: false, delete: false },
+    coupons: { view: false, create: false, edit: false, delete: false },
+    shipping: { view: false, create: false, edit: false, delete: false },
+    pages: { view: false, create: false, edit: false, delete: false },
+    homepage: { view: false, edit: false },
+    settings: { view: false, edit: false },
+    users: { view: false, create: false, edit: false, delete: false },
+  },
 };
 
 export default function Users() {
