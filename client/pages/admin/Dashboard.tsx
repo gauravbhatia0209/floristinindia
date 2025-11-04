@@ -311,8 +311,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Order for Today and Tomorrow - Admin Only */}
-      {isAdmin && (
+      {/* Order for Today and Tomorrow - Admin and Order Manager */}
+      {canSeeOrdersData && (
         <div className="space-y-6">
           {/* Order for Today */}
           <div>
