@@ -600,8 +600,13 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=shipped`
+                    `/admin/orders?date=${tomorrowDateString}&status=shipped`
                   );
                 }}
               >
@@ -624,8 +629,13 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=delivered`
+                    `/admin/orders?date=${tomorrowDateString}&status=delivered`
                   );
                 }}
               >
@@ -650,8 +660,13 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=cancelled`
+                    `/admin/orders?date=${tomorrowDateString}&status=cancelled`
                   );
                 }}
               >
