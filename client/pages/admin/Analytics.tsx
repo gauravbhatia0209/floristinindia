@@ -357,37 +357,56 @@ export default function Analytics() {
       let topProducts: Array<{ name: string; sales: number; revenue: number }> =
         [];
 
-      try {
-        const { data: orderItems, error: itemsError } = await supabase
-          .from("order_items")
-          .select("*")
-          .in("order_id", orders?.map((order) => order.id) || []);
+      if (orders && orders.length > 0) {
+        try {
+          console.log("Fetching order items for orders:", orders.map(o => o.id));
 
-        if (!itemsError && orderItems) {
-          // Get top products from order items
-          const productSales: {
-            [key: string]: { sales: number; revenue: number; name: string };
-          } = {};
+          const orderIds = orders.map((order: any) => order.id).filter(Boolean);
 
-          orderItems.forEach((item: any) => {
-            if (!productSales[item.product_id]) {
-              productSales[item.product_id] = {
-                sales: 0,
-                revenue: 0,
-                name: item.product_name || "Unknown Product",
-              };
+          if (orderIds.length > 0) {
+            const { data: orderItems, error: itemsError } = await supabase
+              .from("order_items")
+              .select("*")
+              .in("order_id", orderIds);
+
+            if (itemsError) {
+              console.error("Error fetching order items:", itemsError);
+            } else if (orderItems && orderItems.length > 0) {
+              console.log("Found order items:", orderItems.length);
+
+              // Get top products from order items
+              const productSales: {
+                [key: string]: { sales: number; revenue: number; name: string };
+              } = {};
+
+              orderItems.forEach((item: any) => {
+                const productId = item.product_id || "unknown";
+                if (!productSales[productId]) {
+                  productSales[productId] = {
+                    sales: 0,
+                    revenue: 0,
+                    name: item.product_name || item.name || `Product ${productId}`,
+                  };
+                }
+                productSales[productId].sales += item.quantity || 0;
+                productSales[productId].revenue +=
+                  (item.quantity || 0) * (item.price || 0);
+              });
+
+              topProducts = Object.values(productSales)
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 5);
+
+              console.log("Processed top products:", topProducts);
+            } else {
+              console.log("No order items found for the given orders");
             }
-            productSales[item.product_id].sales += item.quantity || 0;
-            productSales[item.product_id].revenue +=
-              (item.quantity || 0) * (item.price || 0);
-          });
-
-          topProducts = Object.values(productSales)
-            .sort((a, b) => b.revenue - a.revenue)
-            .slice(0, 5);
+          }
+        } catch (itemsError) {
+          console.error("Error processing order items:", itemsError);
         }
-      } catch (itemsError) {
-        console.log("Order items table not available yet:", itemsError);
+      } else {
+        console.log("No orders found in date range");
       }
 
       return {
