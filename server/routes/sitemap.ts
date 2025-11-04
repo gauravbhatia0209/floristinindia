@@ -154,11 +154,22 @@ router.get("/sitemap.xml", async (req, res) => {
     }
 
     // Count total URLs for sitemap index decision
-    const totalUrls = 1 + (products?.length || 0) + (categories?.length || 0) + (pages?.length || 0) + 7;
+    const totalUrls =
+      1 +
+      (products?.length || 0) +
+      (categories?.length || 0) +
+      (pages?.length || 0) +
+      7;
 
     // If too many URLs, generate sitemap index instead
     if (totalUrls > 50000) {
-      return generateSitemapIndex(res, baseUrl, products?.length || 0, categories?.length || 0, pages?.length || 0);
+      return generateSitemapIndex(
+        res,
+        baseUrl,
+        products?.length || 0,
+        categories?.length || 0,
+        pages?.length || 0,
+      );
     }
 
     // Generate sitemap XML with SEO-optimized metadata
@@ -234,8 +245,8 @@ router.get("/sitemap.xml", async (req, res) => {
     if (pages && pages.length > 0) {
       pages.forEach((page) => {
         const lastmod = page.updated_at
-          ? new Date(page.updated_at).toISOString().split('T')[0]
-          : new Date().toISOString().split('T')[0];
+          ? new Date(page.updated_at).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0];
         sitemap += `  <!-- Dynamic Page: ${page.slug} -->
   <url>
     <loc>${canonicalUrl}/pages/${page.slug}</loc>
@@ -251,8 +262,8 @@ router.get("/sitemap.xml", async (req, res) => {
     if (categories && categories.length > 0) {
       categories.forEach((category) => {
         const lastmod = category.updated_at
-          ? new Date(category.updated_at).toISOString().split('T')[0]
-          : new Date().toISOString().split('T')[0];
+          ? new Date(category.updated_at).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0];
         sitemap += `  <!-- Category: ${category.slug} -->
   <url>
     <loc>${canonicalUrl}/category/${category.slug}</loc>
@@ -268,8 +279,8 @@ router.get("/sitemap.xml", async (req, res) => {
     if (products && products.length > 0) {
       products.forEach((product) => {
         const lastmod = product.updated_at
-          ? new Date(product.updated_at).toISOString().split('T')[0]
-          : new Date().toISOString().split('T')[0];
+          ? new Date(product.updated_at).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0];
         sitemap += `  <!-- Product: ${product.slug} -->
   <url>
     <loc>${canonicalUrl}/product/${product.slug}</loc>
@@ -294,7 +305,7 @@ router.get("/sitemap.xml", async (req, res) => {
           sitemap += `  <!-- Admin Configured URL -->
   <url>
     <loc>${fullUrl}</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -314,7 +325,13 @@ router.get("/sitemap.xml", async (req, res) => {
 });
 
 // Helper function to generate sitemap index for large sitemaps
-async function generateSitemapIndex(res: any, baseUrl: string, productCount: number, categoryCount: number, pageCount: number) {
+async function generateSitemapIndex(
+  res: any,
+  baseUrl: string,
+  productCount: number,
+  categoryCount: number,
+  pageCount: number,
+) {
   const normalizedHost = baseUrl.replace(/^https?:\/\/(www\.)?/, "");
   const protocol = baseUrl.split("://")[0];
   const canonicalUrl = `${protocol}://www.${normalizedHost}`;
@@ -323,7 +340,7 @@ async function generateSitemapIndex(res: any, baseUrl: string, productCount: num
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>${canonicalUrl}/sitemap-main.xml</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
   </sitemap>
 `;
 
@@ -333,14 +350,14 @@ async function generateSitemapIndex(res: any, baseUrl: string, productCount: num
     for (let i = 1; i <= productSitemaps; i++) {
       sitemapIndex += `  <sitemap>
     <loc>${canonicalUrl}/sitemap-products-${i}.xml</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
   </sitemap>
 `;
     }
   } else if (productCount > 0) {
     sitemapIndex += `  <sitemap>
     <loc>${canonicalUrl}/sitemap-products.xml</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
   </sitemap>
 `;
   }
@@ -546,35 +563,47 @@ router.get("/sitemap", async (req, res) => {
                 </ul>
             </div>
 
-            ${categories && categories.length > 0 ? `
+            ${
+              categories && categories.length > 0
+                ? `
             <!-- Categories Section -->
             <div class="sitemap-section">
                 <h2>Product Categories <span class="count">${categories.length} categories</span></h2>
                 <ul>
-                    ${categories.map(cat => `<li><a href="${canonicalUrl}/category/${cat.slug}">${cat.name}</a></li>`).join('\n                    ')}
+                    ${categories.map((cat) => `<li><a href="${canonicalUrl}/category/${cat.slug}">${cat.name}</a></li>`).join("\n                    ")}
                 </ul>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
 
-            ${products && products.length > 0 ? `
+            ${
+              products && products.length > 0
+                ? `
             <!-- Products Section -->
             <div class="sitemap-section">
                 <h2>Products <span class="count">${products.length} products</span></h2>
                 <ul>
-                    ${products.map(prod => `<li><a href="${canonicalUrl}/product/${prod.slug}">${prod.name}</a></li>`).join('\n                    ')}
+                    ${products.map((prod) => `<li><a href="${canonicalUrl}/product/${prod.slug}">${prod.name}</a></li>`).join("\n                    ")}
                 </ul>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
 
-            ${pages && pages.length > 0 ? `
+            ${
+              pages && pages.length > 0
+                ? `
             <!-- Dynamic Pages Section -->
             <div class="sitemap-section">
                 <h2>Pages <span class="count">${pages.length} pages</span></h2>
                 <ul>
-                    ${pages.map(page => `<li><a href="${canonicalUrl}/pages/${page.slug}">${page.title}</a></li>`).join('\n                    ')}
+                    ${pages.map((page) => `<li><a href="${canonicalUrl}/pages/${page.slug}">${page.title}</a></li>`).join("\n                    ")}
                 </ul>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
         </main>
         <footer>
             <p>&copy; ${currentYear} Florist in India. All rights reserved. | Sitemap updated: ${new Date().toLocaleDateString()}</p>
@@ -714,7 +743,8 @@ router.post("/api/sitemap/verify", async (req, res) => {
     }
 
     const token = authHeader.substring(7);
-    const { data: session, error: authError } = await supabase.auth.getUser(token);
+    const { data: session, error: authError } =
+      await supabase.auth.getUser(token);
 
     if (authError || !session?.user) {
       return res.status(401).json({ error: "Invalid authentication" });
@@ -757,7 +787,12 @@ router.post("/api/sitemap/verify", async (req, res) => {
         products: products?.length || 0,
         dynamicPages: pages?.length || 0,
       },
-      totalUrls: 1 + 7 + (products?.length || 0) + (categories?.length || 0) + (pages?.length || 0),
+      totalUrls:
+        1 +
+        7 +
+        (products?.length || 0) +
+        (categories?.length || 0) +
+        (pages?.length || 0),
       sitemapUrls: {
         xml: "/sitemap.xml",
         html: "/sitemap",
@@ -800,13 +835,14 @@ router.get("/api/sitemap/config", async (req, res) => {
       .select("key, value")
       .in("key", ["sitemap_enabled", "additional_sitemap_urls"]);
 
-    const config = settings?.reduce(
-      (acc, setting) => {
-        acc[setting.key] = setting.value;
-        return acc;
-      },
-      {} as Record<string, string>,
-    ) || {};
+    const config =
+      settings?.reduce(
+        (acc, setting) => {
+          acc[setting.key] = setting.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ) || {};
 
     res.json({
       enabled: config.sitemap_enabled !== "false",
