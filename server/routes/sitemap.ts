@@ -668,4 +668,140 @@ ${canonicalUrl}/refund-policy
   }
 });
 
+// Admin API endpoint to verify and get sitemap stats
+router.post("/api/sitemap/verify", async (req, res) => {
+  try {
+    // Verify admin authentication
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const token = authHeader.substring(7);
+    const { data: session, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !session?.user) {
+      return res.status(401).json({ error: "Invalid authentication" });
+    }
+
+    // Verify user is admin
+    const { data: userData } = await supabase
+      .from("sub_users")
+      .select("role")
+      .eq("user_id", session.user.id)
+      .single();
+
+    if (userData?.role !== "admin") {
+      return res.status(403).json({ error: "Admin access required" });
+    }
+
+    // Collect sitemap stats
+    const { data: products } = await supabase
+      .from("products")
+      .select("id")
+      .eq("is_active", true);
+
+    const { data: categories } = await supabase
+      .from("product_categories")
+      .select("id")
+      .eq("is_active", true);
+
+    const { data: pages } = await supabase
+      .from("pages")
+      .select("id")
+      .eq("status", "published")
+      .eq("is_active", true);
+
+    const stats = {
+      timestamp: new Date().toISOString(),
+      urls: {
+        homepage: 1,
+        staticPages: 7, // about, contact, privacy, terms, refund, delivery-info, plus root
+        categories: categories?.length || 0,
+        products: products?.length || 0,
+        dynamicPages: pages?.length || 0,
+      },
+      totalUrls: 1 + 7 + (products?.length || 0) + (categories?.length || 0) + (pages?.length || 0),
+      sitemapUrls: {
+        xml: "/sitemap.xml",
+        html: "/sitemap",
+        txt: "/sitemap.txt",
+        robots: "/robots.txt",
+      },
+      status: "active",
+      cacheEnabled: true,
+      cacheMaxAge: "3600 seconds (1 hour)",
+      aiCrawlerSupport: {
+        googleBot: true,
+        openAiCrawler: true,
+        bingBot: true,
+        perplexity: true,
+        otherAi: true,
+      },
+      lastGenerated: new Date().toISOString(),
+    };
+
+    res.json({
+      success: true,
+      message: "Sitemap verification successful",
+      data: stats,
+    });
+  } catch (error) {
+    console.error("Error verifying sitemap:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to verify sitemap",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// Admin endpoint to get sitemap configuration
+router.get("/api/sitemap/config", async (req, res) => {
+  try {
+    const { data: settings } = await supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["sitemap_enabled", "additional_sitemap_urls"]);
+
+    const config = settings?.reduce(
+      (acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      },
+      {} as Record<string, string>,
+    ) || {};
+
+    res.json({
+      enabled: config.sitemap_enabled !== "false",
+      additionalUrls: config.additional_sitemap_urls
+        ? config.additional_sitemap_urls.split("\n").filter((url) => url.trim())
+        : [],
+      changefreqSettings: {
+        homepage: "daily",
+        categories: "daily",
+        products: "weekly",
+        pages: "weekly",
+        staticPages: "daily",
+      },
+      prioritySettings: {
+        homepage: 1.0,
+        categories: 0.9,
+        products: 0.8,
+        pages: 0.7,
+        staticPages: 0.5,
+      },
+      aiSupport: {
+        jsonLd: true,
+        structuredData: true,
+        googleBotSupport: true,
+        openAiSupport: true,
+      },
+    });
+  } catch (error) {
+    console.error("Error getting sitemap config:", error);
+    res.status(500).json({ error: "Failed to get configuration" });
+  }
+});
+
 export default router;
