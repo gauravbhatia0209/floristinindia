@@ -22,6 +22,22 @@ export default defineConfig({
         target: "http://localhost:3000",
         changeOrigin: true,
       },
+      "/sitemap.xml": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/sitemap.txt": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/sitemap": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+      "/robots.txt": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
     },
   },
   build: {
