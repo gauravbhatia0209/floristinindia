@@ -795,7 +795,13 @@ export default function Analytics() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Select value={dateRange} onValueChange={setDateRange}>
+            <Select value={dateRange} onValueChange={(value) => {
+              if (value === "custom") {
+                setShowCustomDatePicker(true);
+              } else {
+                setDateRange(value);
+              }
+            }}>
               <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
@@ -804,6 +810,8 @@ export default function Analytics() {
                 <SelectItem value="7d">Last 7 days</SelectItem>
                 <SelectItem value="30d">Last 30 days</SelectItem>
                 <SelectItem value="90d">Last 90 days</SelectItem>
+                <SelectItem value="1y">This Year</SelectItem>
+                <SelectItem value="custom">Custom Range</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline" onClick={handleExport}>
