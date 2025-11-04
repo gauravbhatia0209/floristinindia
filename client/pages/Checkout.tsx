@@ -2252,7 +2252,7 @@ export default function Checkout() {
                     </CardContent>
                   </Card>
 
-                  {/* 5. Message with Order */}
+                  {/* 4. Message with Order */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
