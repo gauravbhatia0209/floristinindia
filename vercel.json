@@ -1,22 +1,27 @@
 {
   "buildCommand": "npm run build:server && npm run build:client",
   "outputDirectory": "client/dist",
+  "functions": {
+    "api/[...path].js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/robots.txt",
-      "destination": "/api/robots.txt"
+      "destination": "/api/[...path]"
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/sitemap.xml"
+      "destination": "/api/[...path]"
     },
     {
       "source": "/sitemap.txt",
-      "destination": "/api/sitemap.txt"
+      "destination": "/api/[...path]"
     },
     {
-      "source": "/sitemap$",
-      "destination": "/api/sitemap"
+      "source": "/sitemap",
+      "destination": "/api/[...path]"
     },
     {
       "source": "/(.*)",
