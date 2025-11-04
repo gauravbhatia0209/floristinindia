@@ -93,6 +93,9 @@ export default function Analytics() {
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState("7d");
   const [selectedTab, setSelectedTab] = useState("overview");
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
+  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   useEffect(() => {
     fetchAnalyticsData();
