@@ -1317,6 +1317,39 @@ export default function Checkout() {
       "✅ createOrderBeforePayment(): Order created successfully with number:",
       newOrderNumber,
     );
+
+    // Send payment pending notification to customer and admin
+    try {
+      console.log(
+        "📧 createOrderBeforePayment(): Sending payment pending email notification...",
+      );
+      const { emailAPI } = await import("@/lib/email-api");
+
+      // Send payment pending notification
+      await fetch(`${import.meta.env.VITE_API_URL || ""}/api/email/order-payment-pending`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderNumber: newOrderNumber }),
+      }).catch((err) => {
+        console.warn(
+          "⚠️ createOrderBeforePayment(): Could not send payment pending email (non-critical):",
+          err,
+        );
+      });
+
+      console.log(
+        "✅ createOrderBeforePayment(): Payment pending email notification sent",
+      );
+    } catch (emailError) {
+      console.warn(
+        "⚠️ createOrderBeforePayment(): Could not send email notification (non-critical):",
+        emailError,
+      );
+      // Don't fail the order creation if email fails - it's a best-effort notification
+    }
+
     return newOrderNumber;
   }
 
