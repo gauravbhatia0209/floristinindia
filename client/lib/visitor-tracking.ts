@@ -225,41 +225,67 @@ class VisitorTracker {
     try {
       const timeOnPage = Math.round((Date.now() - this.pageStartTime) / 1000);
 
-      if (timeOnPage > 0 && this.currentPage) {
+      // Only record if time on page is meaningful (at least 1 second)
+      if (timeOnPage < 1 || !this.currentPage) {
+        return;
+      }
+
+      // Silently skip if not initialized yet (avoid too many early requests)
+      if (!this.sessionInitialized) {
+        return;
+      }
+
+      try {
         // First fetch the latest page view record for this session and page
         const { data: pageViews, error: fetchError } = await supabase
           .from("page_views")
-          .select("id")
+          .select("id, time_on_page")
           .eq("session_id", this.sessionId)
           .eq("page_url", this.currentPage)
           .order("created_at", { ascending: false })
           .limit(1);
 
         if (fetchError) {
-          console.error(
-            "Error fetching page view:",
-            fetchError.message || JSON.stringify(fetchError)
+          console.warn(
+            "Warning fetching page view:",
+            fetchError.message || "Unknown error"
           );
           return;
         }
 
-        if (pageViews && pageViews.length > 0) {
-          // Update the latest page view with time on page
-          const { error: updateError } = await supabase
-            .from("page_views")
-            .update({ time_on_page: timeOnPage })
-            .eq("id", pageViews[0].id);
-
-          if (updateError) {
-            console.error(
-              "Error updating page time:",
-              updateError.message || JSON.stringify(updateError)
-            );
-          }
+        if (!pageViews || pageViews.length === 0) {
+          return;
         }
+
+        const pageView = pageViews[0];
+
+        // Only update if time has increased
+        if ((pageView.time_on_page || 0) >= timeOnPage) {
+          return;
+        }
+
+        // Update the latest page view with time on page
+        const { error: updateError } = await supabase
+          .from("page_views")
+          .update({ time_on_page: timeOnPage })
+          .eq("id", pageView.id);
+
+        if (updateError) {
+          console.warn(
+            "Warning updating page time:",
+            updateError.message || "Unknown error"
+          );
+        }
+      } catch (innerError) {
+        // Silently fail on network errors - don't clutter console
+        if (innerError instanceof TypeError && innerError.message.includes("fetch")) {
+          // Network error - skip silently
+          return;
+        }
+        console.warn("Warning in page time update:", innerError);
       }
     } catch (error) {
-      console.error("Error in recordPageTime:", error);
+      console.warn("Warning in recordPageTime:", error);
     }
   }
 
