@@ -1317,6 +1317,25 @@ export default function Checkout() {
       "✅ createOrderBeforePayment(): Order created successfully with number:",
       newOrderNumber,
     );
+
+    // Send admin notification about new order
+    try {
+      console.log(
+        "📧 createOrderBeforePayment(): Notifying admin about new order...",
+      );
+      const { emailAPI } = await import("@/lib/email-api");
+      await emailAPI.sendOrderCreatedNotification(newOrderNumber);
+      console.log(
+        "✅ createOrderBeforePayment(): Admin notification sent successfully",
+      );
+    } catch (emailError) {
+      console.warn(
+        "⚠️ createOrderBeforePayment(): Admin notification failed (non-critical):",
+        emailError,
+      );
+      // Don't fail the order creation if notification fails
+    }
+
     return newOrderNumber;
   }
 
