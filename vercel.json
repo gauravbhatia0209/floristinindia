@@ -9,6 +9,12 @@
   },
   "routes": [
     {
+      "src": "/assets/.*",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
       "src": "/robots.txt",
       "dest": "/api/[...path].js"
     },
@@ -26,6 +32,10 @@
     },
     {
       "src": "/api/(.*)",
+      "dest": "/api/[...path].js"
+    },
+    {
+      "src": "/uploads/(.*)",
       "dest": "/api/[...path].js"
     },
     {
