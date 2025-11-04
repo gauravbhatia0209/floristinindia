@@ -3,6 +3,22 @@
   "outputDirectory": "client/dist",
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "/api/[...path]?path=sitemap.xml"
+    },
+    {
+      "source": "/sitemap.txt",
+      "destination": "/api/[...path]?path=sitemap.txt"
+    },
+    {
+      "source": "/sitemap",
+      "destination": "/api/[...path]?path=sitemap"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/[...path]?path=robots.txt"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
