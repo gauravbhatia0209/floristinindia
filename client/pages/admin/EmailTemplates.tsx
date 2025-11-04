@@ -25,13 +25,44 @@ const ORDER_STATUSES = [
 
 const AVAILABLE_VARIABLES = {
   order_confirmation: [
+    // Order Details
     "ORDER_NUMBER",
-    "CUSTOMER_NAME",
-    "TOTAL_AMOUNT",
     "ORDER_DATE",
+    "CUSTOMER_NAME",
+    "CUSTOMER_EMAIL",
+    "CUSTOMER_PHONE",
+    // Payment Details
+    "TOTAL_AMOUNT",
+    "SUBTOTAL",
+    "SHIPPING_AMOUNT",
+    "TAX_AMOUNT",
+    "DISCOUNT_AMOUNT",
     "PAYMENT_STATUS",
+    "PAYMENT_METHOD",
+    // Delivery Details
     "DELIVERY_DATE",
     "DELIVERY_SLOT",
+    // Shipping Address
+    "SHIPPING_NAME",
+    "SHIPPING_ADDRESS_LINE1",
+    "SHIPPING_ADDRESS_LINE2",
+    "SHIPPING_CITY",
+    "SHIPPING_STATE",
+    "SHIPPING_PINCODE",
+    "SHIPPING_PHONE",
+    "SHIPPING_ADDRESS_FULL",
+    // Billing Address
+    "BILLING_NAME",
+    "BILLING_ADDRESS_LINE1",
+    "BILLING_ADDRESS_LINE2",
+    "BILLING_CITY",
+    "BILLING_STATE",
+    "BILLING_PINCODE",
+    "BILLING_PHONE",
+    "BILLING_ADDRESS_FULL",
+    // Products & Instructions
+    "PRODUCTS_HTML",
+    "SPECIAL_INSTRUCTIONS",
   ],
   status_update: [
     "ORDER_NUMBER",
