@@ -373,6 +373,66 @@ export interface Database {
           created_by?: string | null;
         };
       };
+
+      visitor_sessions: {
+        Row: {
+          id: string;
+          session_id: string;
+          device_type: "mobile" | "tablet" | "desktop";
+          referrer_source: string | null;
+          user_agent: string | null;
+          created_at: string;
+          last_activity_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          device_type: "mobile" | "tablet" | "desktop";
+          referrer_source?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+          last_activity_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          device_type?: "mobile" | "tablet" | "desktop";
+          referrer_source?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+          last_activity_at?: string;
+        };
+      };
+
+      page_views: {
+        Row: {
+          id: string;
+          session_id: string;
+          page_url: string;
+          page_title: string | null;
+          time_on_page: number;
+          is_bounce: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          page_url: string;
+          page_title?: string | null;
+          time_on_page?: number;
+          is_bounce?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          page_url?: string;
+          page_title?: string | null;
+          time_on_page?: number;
+          is_bounce?: boolean;
+          created_at?: string;
+        };
+      };
     };
   };
 }
