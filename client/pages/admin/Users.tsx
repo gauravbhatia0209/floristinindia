@@ -602,6 +602,7 @@ function UserForm({
               <SelectContent>
                 <SelectItem value="admin">Admin - Full Access</SelectItem>
                 <SelectItem value="manager">Manager - Most Features</SelectItem>
+                <SelectItem value="order_manager">Order Manager - Order & Product Management</SelectItem>
                 <SelectItem value="editor">Editor - Content Only</SelectItem>
                 <SelectItem value="viewer">Viewer - Read Only</SelectItem>
               </SelectContent>
