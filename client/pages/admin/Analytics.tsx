@@ -574,6 +574,75 @@ export default function Analytics() {
     }).format(amount);
   };
 
+  const handleExport = () => {
+    if (!data) return;
+
+    const exportData = {
+      exportDate: new Date().toISOString(),
+      dateRange,
+      summary: {
+        totalRevenue: data.sales.totalRevenue,
+        totalOrders: data.sales.totalOrders,
+        newCustomers: data.customers.newCustomers,
+        returningCustomers: data.customers.returningCustomers,
+        avgOrderValue: data.sales.avgOrderValue,
+        refunds: data.sales.refunds,
+      },
+      topProducts: data.sales.topProducts,
+      lowStockProducts: data.products.lowStock,
+    };
+
+    // Convert to CSV
+    let csv = "Analytics & Statistics Report\n";
+    csv += `Exported: ${new Date().toLocaleString()}\n`;
+    csv += `Date Range: ${dateRange}\n\n`;
+
+    // Summary section
+    csv += "SUMMARY\n";
+    csv += `Total Revenue,${formatCurrency(data.sales.totalRevenue)}\n`;
+    csv += `Total Orders,${data.sales.totalOrders}\n`;
+    csv += `New Customers,${data.customers.newCustomers}\n`;
+    csv += `Returning Customers,${data.customers.returningCustomers}\n`;
+    csv += `Average Order Value,${formatCurrency(data.sales.avgOrderValue)}\n`;
+    csv += `Refunds,${data.sales.refunds}\n\n`;
+
+    // Top Products section
+    if (data.sales.topProducts.length > 0) {
+      csv += "TOP SELLING PRODUCTS\n";
+      csv += "Product Name,Sales,Revenue\n";
+      data.sales.topProducts.forEach((product) => {
+        csv += `"${product.name}",${product.sales},${formatCurrency(product.revenue)}\n`;
+      });
+      csv += "\n";
+    }
+
+    // Low Stock Products section
+    if (data.products.lowStock.length > 0) {
+      csv += "LOW STOCK PRODUCTS\n";
+      csv += "Product Name,Stock Level\n";
+      data.products.lowStock.forEach((product) => {
+        csv += `"${product.name}",${product.stock}\n`;
+      });
+      csv += "\n";
+    }
+
+    // Create and download file
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `analytics-${dateRange}-${new Date().getTime()}.csv`,
+    );
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
