@@ -324,7 +324,7 @@ export default function Analytics() {
       // First, try to fetch orders without nested select to check if table exists
       const { data: orders, error: ordersError } = await supabase
         .from("orders")
-        .select("*")
+        .select("id, total_amount, status, items, created_at, customer_id, customer_email, customer_phone")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString());
 
