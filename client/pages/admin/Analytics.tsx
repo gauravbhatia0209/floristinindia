@@ -819,6 +819,19 @@ export default function Analytics() {
     try {
       console.log(`🔧 Attempting to populate ${ordersWithoutItems.length} orders...`);
 
+      // First, fetch all existing products to validate product_ids
+      const { data: allProducts } = await supabase
+        .from("products")
+        .select("id, name");
+
+      const validProductIds = new Set(allProducts?.map((p: any) => p.id) || []);
+      const productNameMap: { [key: string]: string } = {};
+      allProducts?.forEach((p: any) => {
+        productNameMap[p.id] = p.name;
+      });
+
+      console.log(`📊 Found ${validProductIds.size} products in database`);
+
       let populatedCount = 0;
       let skippedCount = 0;
       let errorDetails: any[] = [];
@@ -832,16 +845,34 @@ export default function Analytics() {
         }
 
         try {
-          // Create order_items records from the items array
-          const itemsToInsert = order.items.map((item: any) => ({
-            order_id: order.id,
-            product_id: item.product_id || item.id,
-            product_name: item.product_name || item.name,
-            quantity: item.quantity || 1,
-            price: item.price || 0,
-          }));
+          // Validate and prepare order_items records
+          const itemsToInsert = order.items
+            .map((item: any) => {
+              const productId = item.product_id || item.id;
+              const isValidProduct = validProductIds.has(productId);
 
-          console.log(`📦 Order ${order.id} - items to insert:`, itemsToInsert);
+              if (!isValidProduct) {
+                console.warn(`⚠️  Order ${order.id} - Product ID ${productId} not found in products table`);
+                return null;
+              }
+
+              return {
+                order_id: order.id,
+                product_id: productId,
+                product_name: item.product_name || item.name || productNameMap[productId] || "Unknown Product",
+                quantity: parseInt(item.quantity || "1", 10),
+                price: parseFloat(item.price || "0"),
+              };
+            })
+            .filter((item: any) => item !== null);
+
+          if (itemsToInsert.length === 0) {
+            console.log(`⏭️  Skipping order ${order.id} - no valid products found`);
+            skippedCount++;
+            continue;
+          }
+
+          console.log(`📦 Order ${order.id} - inserting ${itemsToInsert.length} items:`, itemsToInsert);
 
           const { data: insertData, error: insertError } = await supabase
             .from("order_items")
@@ -851,10 +882,9 @@ export default function Analytics() {
             const errorMsg = insertError.message || JSON.stringify(insertError);
             console.error(`❌ Failed to populate order ${order.id}:`, {
               message: errorMsg,
-              details: insertError.details,
+              details: (insertError as any).details,
               hint: (insertError as any).hint,
               code: (insertError as any).code,
-              fullError: insertError,
             });
             errorDetails.push({
               orderId: order.id,
@@ -863,7 +893,6 @@ export default function Analytics() {
             });
           } else {
             console.log(`✅ Populated order ${order.id} with ${itemsToInsert.length} items`);
-            console.log(`   Response:`, insertData);
             populatedCount++;
           }
         } catch (error: any) {
@@ -871,7 +900,6 @@ export default function Analytics() {
           console.error(`❌ Error processing order ${order.id}:`, {
             message: errorMsg,
             stack: error?.stack,
-            error: error,
           });
           errorDetails.push({
             orderId: order.id,
@@ -902,7 +930,6 @@ export default function Analytics() {
       console.error("Error during population:", {
         message: error?.message || String(error),
         stack: error?.stack,
-        error: error,
       });
     }
   };
