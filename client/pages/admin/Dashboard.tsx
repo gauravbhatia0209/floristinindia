@@ -28,6 +28,7 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function Dashboard() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const canSeeOrdersData = isAdmin || user?.role === "order_manager";
 
   const navigate = useNavigate();
   const [stats, setStats] = useState({
