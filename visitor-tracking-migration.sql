@@ -49,8 +49,14 @@ CREATE POLICY "Allow authenticated users to read visitor sessions" ON visitor_se
 CREATE POLICY "Allow public to insert page views" ON page_views
   FOR INSERT WITH CHECK (true);
 
+CREATE POLICY "Allow public to update page views" ON page_views
+  FOR UPDATE USING (true) WITH CHECK (true);
+
 CREATE POLICY "Allow authenticated users to read page views" ON page_views
   FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow public to read page views" ON page_views
+  FOR SELECT USING (true);
 
 -- Grant permissions
 GRANT INSERT, UPDATE ON visitor_sessions TO anon;
