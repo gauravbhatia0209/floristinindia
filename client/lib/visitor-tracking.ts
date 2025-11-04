@@ -111,7 +111,10 @@ class VisitorTracker {
         .single();
 
       if (checkError && checkError.code !== "PGRST116") {
-        console.error("Error checking session:", checkError);
+        console.error(
+          "Error checking session:",
+          checkError.message || JSON.stringify(checkError)
+        );
         return;
       }
 
