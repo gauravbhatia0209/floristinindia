@@ -2049,144 +2049,206 @@ export default function Checkout() {
                     </CardContent>
                   </Card>
 
-                  {/* 3. Billing Address (Optional) */}
+                  {/* 3. Delivery Address */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-                    <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-t-lg">
+                    <CardHeader className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
                         <div className="bg-white/20 rounded-lg p-2">
                           <MapPin className="w-6 h-6" />
                         </div>
-                        Billing Address (Optional)
+                        Delivery Address
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6 space-y-4">
+                    <CardContent className="p-6 space-y-6">
                       <div>
-                        <Label className="text-sm font-semibold text-gray-700 mb-3 block flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={form.useSameAddress}
-                            onChange={(e) =>
-                              setForm({
-                                ...form,
-                                useSameAddress: e.target.checked,
-                              })
-                            }
-                            className="w-4 h-4 cursor-pointer"
-                          />
-                          Same as Delivery Address
+                        <Label
+                          htmlFor="receiverName"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Receiver's Name *
                         </Label>
+                        <Input
+                          id="receiverName"
+                          placeholder="Name of person receiving the order"
+                          value={form.receiverName}
+                          onChange={(e) =>
+                            setForm({ ...form, receiverName: e.target.value })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                          required
+                        />
                       </div>
 
-                      {!form.useSameAddress && (
-                        <>
-                          <div>
-                            <Label
-                              htmlFor="billingAddressLine1"
-                              className="text-sm font-semibold text-gray-700 mb-2 block"
-                            >
-                              Address Line 1
-                            </Label>
+                      <div>
+                        <Label
+                          htmlFor="addressLine1"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Address Line 1 *
+                        </Label>
+                        <Input
+                          id="addressLine1"
+                          placeholder="House/Flat No., Building Name"
+                          value={form.addressLine1}
+                          onChange={(e) =>
+                            setForm({ ...form, addressLine1: e.target.value })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label
+                          htmlFor="addressLine2"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Address Line 2 (Optional)
+                        </Label>
+                        <Input
+                          id="addressLine2"
+                          placeholder="Street Name, Area, Landmark"
+                          value={form.addressLine2}
+                          onChange={(e) =>
+                            setForm({ ...form, addressLine2: e.target.value })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label
+                            htmlFor="city"
+                            className="text-sm font-semibold text-gray-700 mb-2 block"
+                          >
+                            City *
+                          </Label>
+                          <Input
+                            id="city"
+                            placeholder="Mumbai"
+                            value={form.city}
+                            onChange={(e) =>
+                              setForm({ ...form, city: e.target.value })
+                            }
+                            className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label
+                            htmlFor="state"
+                            className="text-sm font-semibold text-gray-700 mb-2 block"
+                          >
+                            State *
+                          </Label>
+                          <Input
+                            id="state"
+                            placeholder="Maharashtra"
+                            value={form.state}
+                            onChange={(e) =>
+                              setForm({ ...form, state: e.target.value })
+                            }
+                            className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label
+                          htmlFor="pincode"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Pincode *
+                        </Label>
+                        <Input
+                          id="pincode"
+                          placeholder="400001"
+                          value={form.pincode}
+                          onChange={(e) =>
+                            setForm({ ...form, pincode: e.target.value })
+                          }
+                          maxLength={6}
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                          required
+                        />
+                        {errors.pincode && (
+                          <p className="text-red-600 text-sm mt-2 bg-red-50 p-2 rounded">
+                            {errors.pincode}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <Label
+                          htmlFor="receiverPhone"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Receiver's Phone Number *
+                        </Label>
+                        <div className="flex gap-3">
+                          <Select
+                            value={form.receiverPhoneCountryCode}
+                            onValueChange={(value) =>
+                              setForm({
+                                ...form,
+                                receiverPhoneCountryCode: value,
+                              })
+                            }
+                          >
+                            <SelectTrigger className="w-24 py-3 border-2 border-gray-200 rounded-xl">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="+91">+91</SelectItem>
+                              <SelectItem value="+1">+1</SelectItem>
+                              <SelectItem value="+44">+44</SelectItem>
+                              <SelectItem value="+971">+971</SelectItem>
+                              <SelectItem value="+65">+65</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <div className="relative flex-1">
+                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                             <Input
-                              id="billingAddressLine1"
-                              placeholder="House/Flat No., Building Name"
-                              value={form.billingAddressLine1}
+                              id="receiverPhone"
+                              type="tel"
+                              placeholder="9876543210"
+                              value={form.receiverPhone}
                               onChange={(e) =>
                                 setForm({
                                   ...form,
-                                  billingAddressLine1: e.target.value,
+                                  receiverPhone: e.target.value,
                                 })
                               }
-                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                              className="pl-11 py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                              required
                             />
                           </div>
+                        </div>
+                      </div>
 
-                          <div>
-                            <Label
-                              htmlFor="billingAddressLine2"
-                              className="text-sm font-semibold text-gray-700 mb-2 block"
-                            >
-                              Address Line 2 (Optional)
-                            </Label>
-                            <Input
-                              id="billingAddressLine2"
-                              placeholder="Street Name, Area, Landmark"
-                              value={form.billingAddressLine2}
-                              onChange={(e) =>
-                                setForm({
-                                  ...form,
-                                  billingAddressLine2: e.target.value,
-                                })
-                              }
-                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
-                            />
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label
-                                htmlFor="billingCity"
-                                className="text-sm font-semibold text-gray-700 mb-2 block"
-                              >
-                                City
-                              </Label>
-                              <Input
-                                id="billingCity"
-                                placeholder="City"
-                                value={form.billingCity}
-                                onChange={(e) =>
-                                  setForm({
-                                    ...form,
-                                    billingCity: e.target.value,
-                                  })
-                                }
-                                className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
-                              />
-                            </div>
-
-                            <div>
-                              <Label
-                                htmlFor="billingState"
-                                className="text-sm font-semibold text-gray-700 mb-2 block"
-                              >
-                                State
-                              </Label>
-                              <Input
-                                id="billingState"
-                                placeholder="State"
-                                value={form.billingState}
-                                onChange={(e) =>
-                                  setForm({
-                                    ...form,
-                                    billingState: e.target.value,
-                                  })
-                                }
-                                className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <Label
-                              htmlFor="billingPincode"
-                              className="text-sm font-semibold text-gray-700 mb-2 block"
-                            >
-                              Postal Code
-                            </Label>
-                            <Input
-                              id="billingPincode"
-                              placeholder="000000"
-                              value={form.billingPincode}
-                              onChange={(e) =>
-                                setForm({
-                                  ...form,
-                                  billingPincode: e.target.value,
-                                })
-                              }
-                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
-                            />
-                          </div>
-                        </>
-                      )}
+                      <div>
+                        <Label
+                          htmlFor="alternatePhone"
+                          className="text-sm font-semibold text-gray-700 mb-2 block"
+                        >
+                          Alternate Phone No.
+                        </Label>
+                        <Input
+                          id="alternatePhone"
+                          type="tel"
+                          placeholder="9876543210"
+                          value={form.alternatePhone}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              alternatePhone: e.target.value,
+                            })
+                          }
+                          className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-green-500"
+                        />
+                      </div>
                     </CardContent>
                   </Card>
 
