@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { createClient } from "@supabase/supabase-js";
 
 // Email configuration
 const createTransporter = () => {
@@ -18,6 +19,58 @@ const createTransporter = () => {
       pass: process.env.EMAIL_PASS,
     },
   });
+};
+
+// Initialize Supabase client for fetching templates
+const getSupabaseClient = () => {
+  return createClient(
+    process.env.VITE_SUPABASE_URL || "",
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+  );
+};
+
+// Process template variables in HTML
+const processTemplateVariables = (html: string, variables: Record<string, any>): string => {
+  let result = html;
+  Object.entries(variables).forEach(([key, value]) => {
+    const placeholder = new RegExp(`{${key}}`, "g");
+    result = result.replace(placeholder, String(value || ""));
+  });
+  return result;
+};
+
+// Fetch email template from database
+export const fetchEmailTemplate = async (
+  templateType: "order_confirmation" | "status_update",
+  orderStatus?: string
+) => {
+  try {
+    const supabase = getSupabaseClient();
+
+    let query = supabase
+      .from("email_templates")
+      .select("*")
+      .eq("template_type", templateType)
+      .eq("is_active", true);
+
+    if (orderStatus) {
+      query = query.eq("order_status", orderStatus);
+    } else {
+      query = query.is("order_status", null);
+    }
+
+    const { data, error } = await query.single();
+
+    if (error) {
+      console.warn(`Could not fetch email template from database: ${error.message}`);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.warn("Error fetching email template:", error);
+    return null;
+  }
 };
 
 // Email templates
