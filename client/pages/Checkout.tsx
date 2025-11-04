@@ -354,6 +354,14 @@ interface CheckoutForm {
   receiverPhoneCountryCode: string;
   alternatePhone: string;
 
+  // Billing Address (Optional)
+  useSameAddress: boolean;
+  billingAddressLine1: string;
+  billingAddressLine2: string;
+  billingCity: string;
+  billingState: string;
+  billingPincode: string;
+
   // Message with Order
   orderMessage: string;
 
