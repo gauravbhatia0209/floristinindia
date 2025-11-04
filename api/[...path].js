@@ -1,12 +1,11 @@
-// Catch-all handler for API routes
+// Catch-all handler for API and root routes
 const { createServer } = require("../server/dist/index.js");
 
 let app;
 
 module.exports = async (req, res) => {
   try {
-    console.log(`API Request: ${req.method} ${req.url}`);
-    console.log(`API Headers:`, req.headers);
+    console.log(`Request: ${req.method} ${req.url}`);
 
     if (!app) {
       console.log("Creating Express app...");
@@ -15,15 +14,20 @@ module.exports = async (req, res) => {
 
     return app(req, res);
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("Server Error:", error);
 
-    // Ensure JSON response
-    res.setHeader("Content-Type", "application/json");
-    res.status(500).json({
-      success: false,
-      error: "Server initialization error",
-      details: error.message,
-      stack: error.stack,
-    });
+    // Return appropriate error response
+    res.status(500);
+
+    if (req.url.includes(".xml") || req.url.includes(".txt")) {
+      res.send("Error generating sitemap");
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        success: false,
+        error: "Server initialization error",
+        details: error.message,
+      });
+    }
   }
 };
