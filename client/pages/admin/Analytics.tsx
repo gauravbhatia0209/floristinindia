@@ -821,10 +821,12 @@ export default function Analytics() {
 
       let populatedCount = 0;
       let skippedCount = 0;
+      let errorDetails: any[] = [];
 
       for (const order of ordersWithoutItems) {
         if (!order.items || !Array.isArray(order.items) || order.items.length === 0) {
           console.log(`⏭️  Skipping order ${order.id} - no items data`);
+          console.log(`   Order items field:`, order.items);
           skippedCount++;
           continue;
         }
@@ -839,30 +841,69 @@ export default function Analytics() {
             price: item.price || 0,
           }));
 
-          const { error: insertError } = await supabase
+          console.log(`📦 Order ${order.id} - items to insert:`, itemsToInsert);
+
+          const { data: insertData, error: insertError } = await supabase
             .from("order_items")
             .insert(itemsToInsert);
 
           if (insertError) {
-            console.error(`❌ Failed to populate order ${order.id}:`, insertError);
+            const errorMsg = insertError.message || JSON.stringify(insertError);
+            console.error(`❌ Failed to populate order ${order.id}:`, {
+              message: errorMsg,
+              details: insertError.details,
+              hint: (insertError as any).hint,
+              code: (insertError as any).code,
+              fullError: insertError,
+            });
+            errorDetails.push({
+              orderId: order.id,
+              error: errorMsg,
+              itemCount: itemsToInsert.length,
+            });
           } else {
             console.log(`✅ Populated order ${order.id} with ${itemsToInsert.length} items`);
+            console.log(`   Response:`, insertData);
             populatedCount++;
           }
-        } catch (error) {
-          console.error(`❌ Error processing order ${order.id}:`, error);
+        } catch (error: any) {
+          const errorMsg = error?.message || String(error);
+          console.error(`❌ Error processing order ${order.id}:`, {
+            message: errorMsg,
+            stack: error?.stack,
+            error: error,
+          });
+          errorDetails.push({
+            orderId: order.id,
+            error: errorMsg,
+            isException: true,
+          });
         }
       }
 
       console.log(`\n📈 Populate complete: ${populatedCount} orders updated, ${skippedCount} skipped`);
 
+      if (errorDetails.length > 0) {
+        console.log("\n❌ Error Details:");
+        errorDetails.forEach(err => {
+          console.log(`  Order ${err.orderId}: ${err.error}`);
+        });
+      }
+
       // Refresh analytics after population
       if (populatedCount > 0) {
         alert(`Successfully populated ${populatedCount} orders.\n\nRefreshing analytics...`);
         fetchAnalyticsData();
+      } else if (errorDetails.length > 0) {
+        console.log("\n💡 Check the console for detailed error information");
+        alert(`Failed to populate orders. Check the browser console (F12) for detailed error messages.`);
       }
-    } catch (error) {
-      console.error("Error during population:", error);
+    } catch (error: any) {
+      console.error("Error during population:", {
+        message: error?.message || String(error),
+        stack: error?.stack,
+        error: error,
+      });
     }
   };
 
