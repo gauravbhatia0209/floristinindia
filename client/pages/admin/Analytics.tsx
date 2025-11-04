@@ -358,11 +358,11 @@ export default function Analytics() {
       let topProducts: Array<{ name: string; sales: number; revenue: number }> =
         [];
 
-      if (orders && orders.length > 0) {
+      if (confirmedOrders && confirmedOrders.length > 0) {
         try {
-          console.log("📦 Fetching order items for", orders.length, "orders");
+          console.log("📦 Fetching order items for", confirmedOrders.length, "confirmed orders");
 
-          const orderIds = orders.map((order: any) => order.id).filter(Boolean);
+          const orderIds = confirmedOrders.map((order: any) => order.id).filter(Boolean);
           console.log("Order IDs to fetch items for:", orderIds);
 
           if (orderIds.length > 0) {
