@@ -21,6 +21,7 @@ import AIMetaTags from "@/components/AIMetaTags";
 import FaviconManager from "@/components/FaviconManager";
 import SEOManager from "@/components/SEOManager";
 import { supabase } from "@/lib/supabase";
+import { initializeVisitorTracking } from "@/lib/visitor-tracking";
 
 // ScrollToTop component to handle scroll restoration
 function ScrollToTop() {
