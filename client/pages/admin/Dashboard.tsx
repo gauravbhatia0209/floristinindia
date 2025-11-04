@@ -28,6 +28,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin" || user?.role === "super_admin";
 
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalOrders: 0,
@@ -43,6 +44,22 @@ export default function Dashboard() {
     topProducts: [],
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [todayOrders, setTodayOrders] = useState({
+    total: 0,
+    confirmed: 0,
+    processing: 0,
+    shipped: 0,
+    delivered: 0,
+    cancelled: 0,
+  });
+  const [tomorrowOrders, setTomorrowOrders] = useState({
+    total: 0,
+    confirmed: 0,
+    processing: 0,
+    shipped: 0,
+    delivered: 0,
+    cancelled: 0,
+  });
 
   useEffect(() => {
     fetchDashboardData();
