@@ -579,6 +579,47 @@ export default function Analytics() {
     }
   }
 
+  async function fetchVisitorData() {
+    try {
+      console.log("Fetching visitor analytics");
+
+      const response = await fetch(
+        `/api/visitor-analytics/analytics?dateRange=${dateRange}`
+      );
+
+      if (!response.ok) {
+        console.error("Error fetching visitor analytics:", response.statusText);
+        return {
+          total: 0,
+          unique: 0,
+          pageViews: 0,
+          bounceRate: 0,
+          avgTimeOnSite: 0,
+          topPages: [],
+          devices: [],
+          referrers: [],
+        };
+      }
+
+      const data = await response.json();
+      console.log("Visitor analytics fetched:", data);
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching visitor data:", error.message || error);
+      return {
+        total: 0,
+        unique: 0,
+        pageViews: 0,
+        bounceRate: 0,
+        avgTimeOnSite: 0,
+        topPages: [],
+        devices: [],
+        referrers: [],
+      };
+    }
+  }
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
