@@ -1,29 +1,34 @@
 {
   "buildCommand": "npm run build:client",
   "outputDirectory": "client/dist",
-  "redirects": [
-    {
-      "source": "/robots.txt",
-      "destination": "/api/_sitemap/robots",
-      "permanent": true
-    },
+  "headers": [
     {
       "source": "/sitemap.xml",
-      "destination": "/api/_sitemap/xml",
-      "permanent": true
-    },
-    {
-      "source": "/sitemap.txt",
-      "destination": "/api/_sitemap/txt",
-      "permanent": true
-    },
-    {
-      "source": "/sitemap",
-      "destination": "/api/_sitemap/html",
-      "permanent": true
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/robots.txt",
+      "destination": "/api/[...path]?path=robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/[...path]?path=sitemap.xml"
+    },
+    {
+      "source": "/sitemap.txt",
+      "destination": "/api/[...path]?path=sitemap.txt"
+    },
+    {
+      "source": "/sitemap(?:/)?$",
+      "destination": "/api/[...path]?path=sitemap"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
