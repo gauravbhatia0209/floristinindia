@@ -72,6 +72,7 @@ import MenuBar from "@/pages/admin/MenuBar";
 import Settings from "@/pages/admin/Settings";
 import Users from "@/pages/admin/Users";
 import ContactSubmissions from "@/pages/admin/ContactSubmissions";
+import EmailTemplates from "@/pages/admin/EmailTemplates";
 import DatabaseSetup from "@/pages/admin/DatabaseSetup";
 import DatabaseTest from "@/pages/admin/DatabaseTest";
 import FooterEditor from "@/pages/admin/FooterEditor";
