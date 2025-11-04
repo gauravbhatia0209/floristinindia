@@ -9,6 +9,7 @@ import sitemapRoutes from "./routes/sitemap.js";
 import adminUpdatesRoutes from "./routes/admin-updates.js";
 import paymentsRoutes from "./routes/payments.js";
 import emailRoutes from "./routes/email.js";
+import emailTemplatesRoutes from "./routes/email-templates.js";
 import {
   injectMetaTags,
   getMetaDataHandler,
