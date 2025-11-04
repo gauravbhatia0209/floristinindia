@@ -434,6 +434,12 @@ export default function Analytics() {
 
               console.log("✅ Processed top products:", topProducts);
               console.log("📊 All product sales aggregated:", productSales);
+
+              // Detailed breakdown for debugging
+              console.log("🔍 Product Sales Breakdown:");
+              Object.entries(productSales).forEach(([productId, data]) => {
+                console.log(`  - ${data.name} (ID: ${productId}): ${data.sales} sold, ₹${data.revenue.toFixed(2)} revenue`);
+              });
             } else {
               console.log("⚠️ No order items found for the given orders");
               console.log("📊 Confirmed orders with no items:", orderIds);
