@@ -7,9 +7,38 @@
 [functions]
   external_node_modules = ["express"]
   node_bundler = "esbuild"
-  
+
+# API routes
 [[redirects]]
   force = true
   from = "/api/*"
   status = 200
   to = "/.netlify/functions/api/:splat"
+
+# Sitemap XML
+[[redirects]]
+  force = true
+  from = "/sitemap.xml"
+  status = 200
+  to = "/.netlify/functions/api/sitemap.xml"
+
+# Sitemap HTML
+[[redirects]]
+  force = true
+  from = "/sitemap"
+  status = 200
+  to = "/.netlify/functions/api/sitemap"
+
+# Sitemap Text
+[[redirects]]
+  force = true
+  from = "/sitemap.txt"
+  status = 200
+  to = "/.netlify/functions/api/sitemap.txt"
+
+# Robots.txt
+[[redirects]]
+  force = true
+  from = "/robots.txt"
+  status = 200
+  to = "/.netlify/functions/api/robots.txt"
