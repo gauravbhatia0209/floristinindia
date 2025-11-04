@@ -99,6 +99,9 @@ function App() {
     window.addEventListener("error", handleError);
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
+    // Initialize visitor tracking
+    initializeVisitorTracking();
+
     // Fetch Google Analytics ID
     fetchGoogleAnalyticsId();
 
