@@ -552,9 +552,60 @@ export default function Analytics() {
 
   async function fetchProductData(startDate: Date, endDate: Date) {
     try {
-      console.log("Fetching product data");
+      console.log("Fetching product data for date range:", { startDate, endDate });
 
-      // Fetch products and their stock levels
+      // Fetch orders within date range
+      const { data: ordersInRange, error: ordersError } = await supabase
+        .from("orders")
+        .select("id")
+        .gte("created_at", startDate.toISOString())
+        .lte("created_at", endDate.toISOString());
+
+      if (ordersError) {
+        console.error("Error fetching orders for product stats:", ordersError);
+        // Still fetch general product info
+      }
+
+      // Fetch order items for the orders in the date range
+      let topProducts = [];
+      if (ordersInRange && ordersInRange.length > 0) {
+        const orderIds = ordersInRange.map((o) => o.id);
+        const { data: orderItems, error: itemsError } = await supabase
+          .from("order_items")
+          .select("product_id, product_name, quantity")
+          .in("order_id", orderIds);
+
+        if (!itemsError && orderItems && orderItems.length > 0) {
+          // Group by product and sum quantities
+          const productMap: {
+            [key: string]: { name: string; quantity: number };
+          } = {};
+
+          orderItems.forEach((item) => {
+            const productId = item.product_id || "unknown";
+            if (!productMap[productId]) {
+              productMap[productId] = {
+                name: item.product_name || "Unknown Product",
+                quantity: 0,
+              };
+            }
+            productMap[productId].quantity += item.quantity || 1;
+          });
+
+          // Convert to array and sort by quantity
+          topProducts = Object.entries(productMap)
+            .map(([id, data]) => ({
+              name: data.name,
+              views: data.quantity,
+            }))
+            .sort((a, b) => b.views - a.views)
+            .slice(0, 5);
+
+          console.log("Top products in date range:", topProducts);
+        }
+      }
+
+      // Fetch all products for stock levels (not date-filtered)
       const { data: products, error } = await supabase
         .from("products")
         .select("id, name, stock_quantity");
@@ -562,8 +613,8 @@ export default function Analytics() {
       if (error) {
         console.error("Error fetching products:", error);
         return {
-          topViewed: [],
-          cartAdds: [],
+          topViewed: topProducts,
+          cartAdds: topProducts,
           lowStock: [],
           outOfStock: 0,
         };
@@ -583,8 +634,8 @@ export default function Analytics() {
         products?.filter((product) => product.stock_quantity === 0).length || 0;
 
       return {
-        topViewed: [], // Would need view tracking
-        cartAdds: [], // Would need cart tracking
+        topViewed: topProducts, // Now uses actual order data from date range
+        cartAdds: topProducts, // Now uses actual order data from date range
         lowStock: lowStock.map((product) => ({
           name: product.name,
           stock: product.stock_quantity || 0,
