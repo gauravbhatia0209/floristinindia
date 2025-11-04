@@ -1193,38 +1193,39 @@ export default function Analytics() {
                 <CardContent>
                   {data.sales.topProducts &&
                   data.sales.topProducts.length > 0 ? (
-                    <div className="space-y-4">
-                      <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={data.sales.topProducts}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis
-                            dataKey="name"
-                            angle={-45}
-                            textAnchor="end"
-                            height={80}
-                          />
-                          <YAxis />
-                          <Tooltip
-                            formatter={(value) => formatCurrency(Number(value))}
-                          />
-                          <Bar dataKey="revenue" fill="#0088FE" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                      <div className="space-y-2 mt-4">
-                        {data.sales.topProducts.map((product, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                          >
-                            <span className="text-sm font-medium">
-                              {product.name}
-                            </span>
-                            <span className="text-sm font-bold">
-                              {formatCurrency(product.revenue)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="space-y-6">
+                      {(() => {
+                        const maxRevenue = Math.max(
+                          ...data.sales.topProducts.map((p) => p.revenue),
+                          1
+                        );
+                        return data.sales.topProducts.map((product, index) => {
+                          const percentage = (product.revenue / maxRevenue) * 100;
+                          return (
+                            <div key={index} className="space-y-2">
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {product.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {product.sales} items sold
+                                  </p>
+                                </div>
+                                <p className="text-sm font-bold text-blue-600 ml-4">
+                                  {formatCurrency(product.revenue)}
+                                </p>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div
+                                  className="bg-blue-600 h-3 rounded-full transition-all duration-500"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        });
+                      })()}
                     </div>
                   ) : (
                     <div className="text-center py-8">
