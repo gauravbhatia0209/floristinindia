@@ -136,8 +136,11 @@ class VisitorTracker {
           });
 
         if (insertError) {
-          console.error("Error creating session:", insertError);
-        }
+        console.error(
+          "Error creating session:",
+          insertError.message || JSON.stringify(insertError)
+        );
+      }
       }
 
       this.sessionInitialized = true;
