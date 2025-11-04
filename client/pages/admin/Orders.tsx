@@ -212,6 +212,18 @@ export default function Orders() {
       );
     }
 
+    // Filter by order placed date (created_at)
+    if (orderPlacedDateFilter) {
+      filtered = filtered.filter((order) => {
+        if (!order.created_at) return false;
+        // Compare dates in YYYY-MM-DD format
+        const orderPlacedDate = new Date(order.created_at)
+          .toISOString()
+          .split("T")[0];
+        return orderPlacedDate === orderPlacedDateFilter;
+      });
+    }
+
     // Filter by delivery date
     if (deliveryDateFilter) {
       filtered = filtered.filter((order) => {
@@ -1196,7 +1208,7 @@ export default function Orders() {
                                   ₹{item.total_price.toLocaleString()}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                  ₹{item.unit_price} each
+                                  ���{item.unit_price} each
                                 </p>
                               </div>
                             </div>
