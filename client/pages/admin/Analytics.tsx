@@ -993,6 +993,10 @@ export default function Analytics() {
                 <SelectItem value="custom">Custom Range</SelectItem>
               </SelectContent>
             </Select>
+            <Button variant="outline" onClick={handleDatabaseDiagnostics}>
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Diagnose Data
+            </Button>
             <Button variant="outline" onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
               Export
