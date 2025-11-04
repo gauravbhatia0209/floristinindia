@@ -363,9 +363,10 @@ export default function Analytics() {
 
       if (orders && orders.length > 0) {
         try {
-          console.log("Fetching order items for orders:", orders.map(o => o.id));
+          console.log("📦 Fetching order items for", orders.length, "orders");
 
           const orderIds = orders.map((order: any) => order.id).filter(Boolean);
+          console.log("Order IDs to fetch items for:", orderIds);
 
           if (orderIds.length > 0) {
             const { data: orderItems, error: itemsError } = await supabase
@@ -374,9 +375,10 @@ export default function Analytics() {
               .in("order_id", orderIds);
 
             if (itemsError) {
-              console.error("Error fetching order items:", itemsError.message || itemsError.details || JSON.stringify(itemsError));
+              console.error("❌ Error fetching order items:", itemsError.message || itemsError.details || JSON.stringify(itemsError));
             } else if (orderItems && orderItems.length > 0) {
-              console.log("Found order items:", orderItems.length);
+              console.log("✅ Found order items:", orderItems.length);
+              console.log("Order items details:", orderItems.map(oi => ({ product_id: oi.product_id, quantity: oi.quantity, price: oi.price })));
 
               // Get top products from order items
               const productSales: {
@@ -401,17 +403,21 @@ export default function Analytics() {
                 .sort((a, b) => b.revenue - a.revenue)
                 .slice(0, 5);
 
-              console.log("Processed top products:", topProducts);
+              console.log("✅ Processed top products:", topProducts);
             } else {
-              console.log("No order items found for the given orders");
+              console.log("⚠️ No order items found for the given orders");
             }
+          } else {
+            console.log("⚠️ No valid order IDs to fetch items for");
           }
         } catch (itemsError) {
-          console.error("Error processing order items:", itemsError);
+          console.error("❌ Error processing order items:", itemsError);
         }
       } else {
-        console.log("No orders found in date range");
+        console.log("⚠️ No orders found in date range");
       }
+
+      console.log("=== SALES DATA FETCH END ===");
 
       return {
         totalRevenue,
