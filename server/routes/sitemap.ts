@@ -315,6 +315,246 @@ async function generateSitemapIndex(res: any, baseUrl: string, productCount: num
   res.send(sitemapIndex);
 }
 
+// Generate HTML sitemap for user-friendly browsing
+router.get("/sitemap", async (req, res) => {
+  try {
+    const host = req.get("host") || "floristinindia.com";
+    const protocol = req.protocol || "https";
+    const normalizedHost = host.replace("www.", "");
+    const canonicalUrl = `${protocol}://www.${normalizedHost}`;
+
+    // Fetch active products
+    const { data: products } = await supabase
+      .from("products")
+      .select("slug, name")
+      .eq("is_active", true)
+      .order("name", { ascending: true });
+
+    // Fetch active categories
+    const { data: categories } = await supabase
+      .from("product_categories")
+      .select("slug, name")
+      .eq("is_active", true)
+      .order("name", { ascending: true });
+
+    // Fetch published pages
+    const { data: pages } = await supabase
+      .from("pages")
+      .select("slug, title")
+      .eq("status", "published")
+      .eq("is_active", true)
+      .order("title", { ascending: true });
+
+    const currentYear = new Date().getFullYear();
+
+    const htmlSitemap = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap | Florist in India</title>
+    <meta name="description" content="Complete sitemap of Florist in India - Browse all products, categories, and pages">
+    <meta name="robots" content="index, follow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        main {
+            padding: 40px;
+        }
+        .sitemap-section {
+            margin-bottom: 50px;
+        }
+        .sitemap-section h2 {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .sitemap-section ul {
+            list-style: none;
+        }
+        .sitemap-section li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .sitemap-section li:last-child {
+            border-bottom: none;
+        }
+        .sitemap-section a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        .sitemap-section a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .sitemap-section a::before {
+            content: "→";
+            margin-right: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sitemap-section a:hover::before {
+            opacity: 1;
+        }
+        .count {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            color: #666;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+        }
+        .xml-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .xml-link:hover {
+            background: #764ba2;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            main {
+                padding: 20px;
+            }
+            .sitemap-section h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sitemap</h1>
+            <p>Complete directory of Florist in India</p>
+        </header>
+        <main>
+            <a href="${canonicalUrl}/sitemap.xml" class="xml-link" target="_blank">📄 View XML Sitemap</a>
+
+            <!-- Homepage Section -->
+            <div class="sitemap-section">
+                <h2>Core Pages</h2>
+                <ul>
+                    <li><a href="${canonicalUrl}/">Home</a></li>
+                    <li><a href="${canonicalUrl}/about">About Us</a></li>
+                    <li><a href="${canonicalUrl}/contact">Contact Us</a></li>
+                    <li><a href="${canonicalUrl}/delivery-info">Delivery Information</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal Pages Section -->
+            <div class="sitemap-section">
+                <h2>Legal & Policies</h2>
+                <ul>
+                    <li><a href="${canonicalUrl}/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="${canonicalUrl}/terms-and-conditions">Terms & Conditions</a></li>
+                    <li><a href="${canonicalUrl}/refund-policy">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            ${categories && categories.length > 0 ? `
+            <!-- Categories Section -->
+            <div class="sitemap-section">
+                <h2>Product Categories <span class="count">${categories.length} categories</span></h2>
+                <ul>
+                    ${categories.map(cat => `<li><a href="${canonicalUrl}/category/${cat.slug}">${cat.name}</a></li>`).join('\n                    ')}
+                </ul>
+            </div>
+            ` : ''}
+
+            ${products && products.length > 0 ? `
+            <!-- Products Section -->
+            <div class="sitemap-section">
+                <h2>Products <span class="count">${products.length} products</span></h2>
+                <ul>
+                    ${products.map(prod => `<li><a href="${canonicalUrl}/product/${prod.slug}">${prod.name}</a></li>`).join('\n                    ')}
+                </ul>
+            </div>
+            ` : ''}
+
+            ${pages && pages.length > 0 ? `
+            <!-- Dynamic Pages Section -->
+            <div class="sitemap-section">
+                <h2>Pages <span class="count">${pages.length} pages</span></h2>
+                <ul>
+                    ${pages.map(page => `<li><a href="${canonicalUrl}/pages/${page.slug}">${page.title}</a></li>`).join('\n                    ')}
+                </ul>
+            </div>
+            ` : ''}
+        </main>
+        <footer>
+            <p>&copy; ${currentYear} Florist in India. All rights reserved. | Sitemap updated: ${new Date().toLocaleDateString()}</p>
+        </footer>
+    </div>
+</body>
+</html>`;
+
+    res.setHeader("Content-Type", "text/html; charset=UTF-8");
+    res.send(htmlSitemap);
+  } catch (error) {
+    console.error("Error generating HTML sitemap:", error);
+    res.status(500).send("Error generating sitemap");
+  }
+});
+
 // Generate text sitemap for simple AI parsing
 router.get("/sitemap.txt", async (req, res) => {
   try {
