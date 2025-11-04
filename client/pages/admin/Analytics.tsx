@@ -353,20 +353,25 @@ export default function Analytics() {
         );
       }
 
-      // Filter to only include confirmed orders (exclude pending)
+      // Filter to only include confirmed orders (exclude pending, refunded, cancelled)
       const confirmedOrders =
-        orders?.filter((order) => order.status !== "pending") || [];
+        orders?.filter(
+          (order) =>
+            order.status !== "pending" &&
+            order.status !== "refunded" &&
+            order.status !== "cancelled"
+        ) || [];
 
-      console.log("✅ Confirmed orders (excluding pending):", confirmedOrders.length);
+      console.log("✅ Confirmed orders (excluding pending, refunded, cancelled):", confirmedOrders.length);
 
       const totalRevenue =
         confirmedOrders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
       const totalOrders = confirmedOrders?.length || 0;
       const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-      // Calculate refunds
+      // Calculate refunds (count refunded/cancelled orders from all orders)
       const refunds =
-        confirmedOrders?.filter(
+        orders?.filter(
           (order) =>
             order.status === "cancelled" || order.status === "refunded",
         ).length || 0;
