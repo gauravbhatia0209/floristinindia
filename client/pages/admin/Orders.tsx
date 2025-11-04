@@ -44,6 +44,7 @@ interface OrderWithCustomer extends Order {
 
 export default function Orders() {
   const { user } = useAuth();
+  const location = useLocation();
   const [orders, setOrders] = useState<OrderWithCustomer[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderWithCustomer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,9 +54,15 @@ export default function Orders() {
 
   const hasEditPermission = canEdit(user?.permissions, "orders");
   const hasDeletePermission = canDelete(user?.permissions, "orders");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Read query parameters from URL
+  const queryParams = new URLSearchParams(location.search);
+  const initialStatus = queryParams.get("status") || "all";
+  const initialDate = queryParams.get("date") || "";
+
+  const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
   const [searchQuery, setSearchQuery] = useState("");
-  const [deliveryDateFilter, setDeliveryDateFilter] = useState<string>("");
+  const [deliveryDateFilter, setDeliveryDateFilter] = useState<string>(initialDate);
   const [productImages, setProductImages] = useState<Record<string, string>>(
     {},
   );
