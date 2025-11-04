@@ -331,6 +331,48 @@ export interface Database {
           updated_at?: string;
         };
       };
+
+      email_templates: {
+        Row: {
+          id: string;
+          template_type: "order_confirmation" | "status_update";
+          order_status: string | null;
+          subject: string;
+          body: string;
+          sections: Record<string, boolean>;
+          template_variables: Record<string, string>;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          template_type: "order_confirmation" | "status_update";
+          order_status?: string | null;
+          subject: string;
+          body: string;
+          sections?: Record<string, boolean>;
+          template_variables?: Record<string, string>;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          template_type?: "order_confirmation" | "status_update";
+          order_status?: string | null;
+          subject?: string;
+          body?: string;
+          sections?: Record<string, boolean>;
+          template_variables?: Record<string, string>;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+      };
     };
   };
 }
