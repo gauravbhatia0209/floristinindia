@@ -674,12 +674,14 @@ export const sendOrderConfirmationEmails = async (orderData: any) => {
       );
     }
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: customer.email,
-      subject: customerEmail.subject,
-      html: customerEmail.html,
-    });
+    if (customerEmail) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: customer.email,
+        subject: customerEmail.subject,
+        html: customerEmail.html,
+      });
+    }
 
     console.log(
       `✅ Order confirmation email sent to customer: ${customer.email}`,
@@ -759,12 +761,14 @@ export const sendOrderStatusUpdateEmail = async (
       );
     }
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: customer.email,
-      subject: statusEmail.subject,
-      html: statusEmail.html,
-    });
+    if (statusEmail) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: customer.email,
+        subject: statusEmail.subject,
+        html: statusEmail.html,
+      });
+    }
 
     console.log(
       `✅ Order status update email sent to customer: ${customer.email} (${oldStatus} → ${newStatus})`,
