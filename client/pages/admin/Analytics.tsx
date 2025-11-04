@@ -313,9 +313,10 @@ export default function Analytics() {
 
   async function fetchSalesData(startDate: Date, endDate: Date) {
     try {
+      console.log("=== SALES DATA FETCH START ===");
       console.log("Fetching sales data for date range:", {
-        startDate,
-        endDate,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       });
 
       // First, try to fetch orders without nested select to check if table exists
@@ -326,7 +327,7 @@ export default function Analytics() {
         .lte("created_at", endDate.toISOString());
 
       if (ordersError) {
-        console.error("Error fetching orders:", ordersError);
+        console.error("❌ Error fetching orders:", ordersError.message || ordersError);
         // If orders table doesn't exist or has permission issues, return empty data
         return {
           totalRevenue: 0,
@@ -339,7 +340,10 @@ export default function Analytics() {
         };
       }
 
-      console.log("Found orders:", orders?.length || 0);
+      console.log("✅ Found orders:", orders?.length || 0);
+      if (orders && orders.length > 0) {
+        console.log("Order details:", orders.map(o => ({ id: o.id, total: o.total_amount })));
+      }
 
       const totalRevenue =
         orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
