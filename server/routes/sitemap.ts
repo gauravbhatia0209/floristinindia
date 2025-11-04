@@ -61,30 +61,40 @@ Allow: /api/meta`;
 // Generate XML sitemap
 router.get("/sitemap.xml", async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // Build base URL handling both domain variants
+    const host = req.get("host") || "floristinindia.com";
+    const protocol = req.protocol || "https";
+    const baseUrl = `${protocol}://${host}`;
+    const normalizedHost = host.replace("www.", "");
+    const canonicalUrl = `${protocol}://www.${normalizedHost}`;
 
     // Set cache headers for AI crawlers
     res.setHeader("Cache-Control", "public, max-age=3600"); // 1 hour cache
     res.setHeader("X-Content-Source", "real-time-database");
     res.setHeader("X-Admin-Configurable", "true");
+    res.setHeader("X-Generated-At", new Date().toISOString());
 
     // Fetch active products with latest updates
     const { data: products } = await supabase
       .from("products")
       .select("slug, updated_at")
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false });
 
     // Fetch active categories with latest updates
     const { data: categories } = await supabase
       .from("product_categories")
       .select("slug, updated_at")
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false });
 
-    // Fetch active pages
+    // Fetch published pages only
     const { data: pages } = await supabase
       .from("pages")
       .select("slug, updated_at")
-      .eq("is_active", true);
+      .eq("status", "published")
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false });
 
     // Fetch site settings and additional sitemap URLs
     const { data: settings } = await supabase
@@ -107,14 +117,23 @@ router.get("/sitemap.xml", async (req, res) => {
       return res.status(404).send("Sitemap disabled");
     }
 
-    // Generate sitemap XML with AI-readable metadata
+    // Count total URLs for sitemap index decision
+    const totalUrls = 1 + (products?.length || 0) + (categories?.length || 0) + (pages?.length || 0) + 7;
+
+    // If too many URLs, generate sitemap index instead
+    if (totalUrls > 50000) {
+      return generateSitemapIndex(res, baseUrl, products?.length || 0, categories?.length || 0, pages?.length || 0);
+    }
+
+    // Generate sitemap XML with SEO-optimized metadata
     const lastSettingsUpdate =
       settings?.[0]?.updated_at || new Date().toISOString();
 
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<!-- AI-Readable Sitemap - Data reflects real-time admin settings -->
-<!-- Last Settings Update: ${lastSettingsUpdate} -->
-<!-- Generated: ${new Date().toISOString()} -->
+<!-- SEO-Optimized Sitemap for Search Engines & AI Crawlers -->
+<!-- Compatible: Google, Bing, Yahoo, DuckDuckGo, OpenAI, Perplexity -->
+<!-- Last Updated: ${new Date().toISOString()} -->
+<!-- Total URLs: ${totalUrls} -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -122,47 +141,68 @@ router.get("/sitemap.xml", async (req, res) => {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
-  <!-- Homepage - Content based on current admin settings -->
+  <!-- Homepage - Daily updates, highest priority -->
   <url>
-    <loc>${baseUrl}</loc>
+    <loc>${canonicalUrl}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Static application pages -->
+  <!-- Static Pages - Daily updates, medium-high priority -->
   <url>
-    <loc>${baseUrl}/about</loc>
+    <loc>${canonicalUrl}/about</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>${baseUrl}/contact</loc>
+    <loc>${canonicalUrl}/contact</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>${baseUrl}/cart</loc>
+    <loc>${canonicalUrl}/privacy-policy</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
 
+  <url>
+    <loc>${canonicalUrl}/terms-and-conditions</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>${canonicalUrl}/refund-policy</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>${canonicalUrl}/delivery-info</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 `;
 
-    // Add dynamic pages from database
-    if (pages) {
+    // Add admin-created dynamic pages (published only)
+    if (pages && pages.length > 0) {
       pages.forEach((page) => {
         const lastmod = page.updated_at
-          ? new Date(page.updated_at).toISOString()
-          : new Date().toISOString();
+          ? new Date(page.updated_at).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
         sitemap += `  <!-- Dynamic Page: ${page.slug} -->
   <url>
-    <loc>${baseUrl}/pages/${page.slug}</loc>
+    <loc>${canonicalUrl}/pages/${page.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -171,35 +211,35 @@ router.get("/sitemap.xml", async (req, res) => {
       });
     }
 
-    // Add category pages
-    if (categories) {
+    // Add category pages - Daily updates, high priority
+    if (categories && categories.length > 0) {
       categories.forEach((category) => {
         const lastmod = category.updated_at
-          ? new Date(category.updated_at).toISOString()
-          : new Date().toISOString();
+          ? new Date(category.updated_at).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
         sitemap += `  <!-- Category: ${category.slug} -->
   <url>
-    <loc>${baseUrl}/category/${category.slug}</loc>
+    <loc>${canonicalUrl}/category/${category.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+`;
+      });
+    }
+
+    // Add product pages - Weekly updates, medium priority
+    if (products && products.length > 0) {
+      products.forEach((product) => {
+        const lastmod = product.updated_at
+          ? new Date(product.updated_at).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
+        sitemap += `  <!-- Product: ${product.slug} -->
+  <url>
+    <loc>${canonicalUrl}/product/${product.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-`;
-      });
-    }
-
-    // Add product pages
-    if (products) {
-      products.forEach((product) => {
-        const lastmod = product.updated_at
-          ? new Date(product.updated_at).toISOString()
-          : new Date().toISOString();
-        sitemap += `  <!-- Product: ${product.slug} -->
-  <url>
-    <loc>${baseUrl}/product/${product.slug}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
   </url>
 `;
       });
@@ -212,14 +252,13 @@ router.get("/sitemap.xml", async (req, res) => {
       urls.forEach((url) => {
         const cleanUrl = url.trim();
         if (cleanUrl) {
-          // Handle both relative and absolute URLs
           const fullUrl = cleanUrl.startsWith("http")
             ? cleanUrl
-            : `${baseUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
-          sitemap += `  <!-- Admin Added URL -->
+            : `${canonicalUrl}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
+          sitemap += `  <!-- Admin Configured URL -->
   <url>
     <loc>${fullUrl}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -230,13 +269,51 @@ router.get("/sitemap.xml", async (req, res) => {
 
     sitemap += "</urlset>";
 
-    res.setHeader("Content-Type", "application/xml");
+    res.setHeader("Content-Type", "application/xml; charset=UTF-8");
     res.send(sitemap);
   } catch (error) {
     console.error("Error generating sitemap:", error);
     res.status(500).send("Error generating sitemap");
   }
 });
+
+// Helper function to generate sitemap index for large sitemaps
+async function generateSitemapIndex(res: any, baseUrl: string, productCount: number, categoryCount: number, pageCount: number) {
+  const normalizedHost = baseUrl.replace(/^https?:\/\/(www\.)?/, "");
+  const protocol = baseUrl.split("://")[0];
+  const canonicalUrl = `${protocol}://www.${normalizedHost}`;
+
+  let sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${canonicalUrl}/sitemap-main.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+`;
+
+  // Add sitemap indexes for products if many
+  if (productCount > 10000) {
+    const productSitemaps = Math.ceil(productCount / 10000);
+    for (let i = 1; i <= productSitemaps; i++) {
+      sitemapIndex += `  <sitemap>
+    <loc>${canonicalUrl}/sitemap-products-${i}.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+`;
+    }
+  } else if (productCount > 0) {
+    sitemapIndex += `  <sitemap>
+    <loc>${canonicalUrl}/sitemap-products.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+`;
+  }
+
+  sitemapIndex += `</sitemapindex>`;
+
+  res.setHeader("Content-Type", "application/xml; charset=UTF-8");
+  res.send(sitemapIndex);
+}
 
 // Generate text sitemap for simple AI parsing
 router.get("/sitemap.txt", async (req, res) => {
