@@ -61,10 +61,20 @@ export default function Dashboard() {
     delivered: 0,
     cancelled: 0,
   });
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     fetchDashboardData();
     fetchTodayAndTomorrowOrders();
+  }, []);
+
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   async function fetchTodayAndTomorrowOrders() {
