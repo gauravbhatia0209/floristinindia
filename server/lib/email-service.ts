@@ -34,6 +34,8 @@ const processTemplateVariables = (html: string, variables: Record<string, any>):
   let result = html;
   Object.entries(variables).forEach(([key, value]) => {
     const placeholder = new RegExp(`{${key}}`, "g");
+    // For HTML content (like PRODUCTS_HTML), don't escape it
+    // For regular text, it's already string so no escaping needed
     result = result.replace(placeholder, String(value || ""));
   });
   return result;
