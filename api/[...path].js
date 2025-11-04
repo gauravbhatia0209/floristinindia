@@ -1,21 +1,26 @@
 // Catch-all handler for API and root routes
-const path = require("path");
-
 let app;
+let serverPromise;
 
-async function getServer() {
-  if (!app) {
+function getServer() {
+  if (serverPromise) {
+    return serverPromise;
+  }
+
+  serverPromise = (async () => {
     try {
-      const serverPath = path.resolve(__dirname, "../server/dist/index.js");
-      const serverModule = await import(serverPath);
-      app = serverModule.createServer();
+      // Use dynamic import to load ES6 module from CommonJS
+      const { createServer } = await import("../server/dist/index.js");
+      app = createServer();
       console.log("✅ Express server created successfully");
+      return app;
     } catch (error) {
       console.error("❌ Failed to create server:", error);
       throw error;
     }
-  }
-  return app;
+  })();
+
+  return serverPromise;
 }
 
 module.exports = async (req, res) => {
@@ -35,7 +40,7 @@ module.exports = async (req, res) => {
       res.json({
         success: false,
         error: "Server initialization error",
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
       });
     }
   }
