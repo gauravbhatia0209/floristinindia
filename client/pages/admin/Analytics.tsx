@@ -123,6 +123,18 @@ export default function Analytics() {
         case "90d":
           startDate = subDays(endDate, 90);
           break;
+        case "1y":
+          startDate = startOfYear(new Date());
+          break;
+        case "custom":
+          if (customStartDate && customEndDate) {
+            startDate = new Date(customStartDate);
+            endDate = new Date(customEndDate);
+          } else {
+            // Fallback to last 7 days if custom dates not set
+            startDate = subDays(endDate, 7);
+          }
+          break;
         default:
           startDate = subDays(endDate, 7);
       }
