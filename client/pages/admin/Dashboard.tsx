@@ -367,8 +367,13 @@ export default function Dashboard() {
               <Card
                 className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  navigate(`/admin/orders?date=${today}&status=confirmed`);
+                  const today = new Date();
+                  const todayDateString = today.getFullYear() +
+                    "-" +
+                    String(today.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(today.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${todayDateString}&status=confirmed`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -390,8 +395,13 @@ export default function Dashboard() {
               <Card
                 className="border-l-4 border-l-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  navigate(`/admin/orders?date=${today}&status=processing`);
+                  const today = new Date();
+                  const todayDateString = today.getFullYear() +
+                    "-" +
+                    String(today.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(today.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${todayDateString}&status=processing`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -413,8 +423,13 @@ export default function Dashboard() {
               <Card
                 className="border-l-4 border-l-orange-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  navigate(`/admin/orders?date=${today}&status=shipped`);
+                  const today = new Date();
+                  const todayDateString = today.getFullYear() +
+                    "-" +
+                    String(today.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(today.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${todayDateString}&status=shipped`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -434,8 +449,13 @@ export default function Dashboard() {
               <Card
                 className="border-l-4 border-l-purple-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  navigate(`/admin/orders?date=${today}&status=delivered`);
+                  const today = new Date();
+                  const todayDateString = today.getFullYear() +
+                    "-" +
+                    String(today.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(today.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${todayDateString}&status=delivered`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -457,8 +477,13 @@ export default function Dashboard() {
               <Card
                 className="border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  navigate(`/admin/orders?date=${today}&status=cancelled`);
+                  const today = new Date();
+                  const todayDateString = today.getFullYear() +
+                    "-" +
+                    String(today.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(today.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${todayDateString}&status=cancelled`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -488,7 +513,12 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  navigate(`/admin/orders?date=${tomorrow.toISOString().split("T")[0]}`);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
+                  navigate(`/admin/orders?date=${tomorrowDateString}`);
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -508,8 +538,13 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=confirmed`
+                    `/admin/orders?date=${tomorrowDateString}&status=confirmed`
                   );
                 }}
               >
@@ -534,8 +569,13 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDateString = tomorrow.getFullYear() +
+                    "-" +
+                    String(tomorrow.getMonth() + 1).padStart(2, "0") +
+                    "-" +
+                    String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrow.toISOString().split("T")[0]}&status=processing`
+                    `/admin/orders?date=${tomorrowDateString}&status=processing`
                   );
                 }}
               >
