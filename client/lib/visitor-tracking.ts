@@ -235,7 +235,10 @@ class VisitorTracker {
           .limit(1);
 
         if (error) {
-          console.error("Error recording page time:", error);
+          console.error(
+            "Error recording page time:",
+            error.message || JSON.stringify(error)
+          );
         }
       }
     } catch (error) {
