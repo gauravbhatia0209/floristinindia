@@ -1362,23 +1362,49 @@ export default function Checkout() {
         console.log("📦 createOrderBeforePayment(): Inserting order items...");
         console.log("Cart items structure:", items[0]);
 
-        const orderItems = items.map((item: any) => {
-          // Try different possible property names for product name
-          const productName =
-            item.name ||
-            item.product_name ||
-            item.title ||
-            item.productName ||
-            "Unknown Product";
+        const orderItems = await Promise.all(
+          items.map(async (item: any) => {
+            // Try different possible property names for product name
+            let productName =
+              item.product_name ||
+              item.name ||
+              item.title ||
+              item.productName;
 
-          return {
-            order_id: order.id,
-            product_id: item.product_id || item.productId || item.id,
-            product_name: productName,
-            quantity: item.quantity || 1,
-            price: item.price || item.unit_price || 0,
-          };
-        });
+            // If product name is still not found, fetch from database
+            if (!productName && item.product_id) {
+              try {
+                const { data: product } = await supabase
+                  .from("products")
+                  .select("name, title")
+                  .eq("id", item.product_id)
+                  .single();
+
+                if (product) {
+                  productName = product.name || product.title || "Unknown Product";
+                }
+              } catch (err) {
+                console.warn(
+                  "⚠️ Could not fetch product name for product_id:",
+                  item.product_id,
+                );
+              }
+            }
+
+            // Final fallback
+            if (!productName) {
+              productName = "Unknown Product";
+            }
+
+            return {
+              order_id: order.id,
+              product_id: item.product_id || item.productId || item.id,
+              product_name: productName,
+              quantity: item.quantity || 1,
+              price: item.price || item.unit_price || 0,
+            };
+          }),
+        );
 
         console.log("Order items to insert:", orderItems);
 
