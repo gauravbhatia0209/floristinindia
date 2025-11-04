@@ -36,6 +36,9 @@ ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public to insert visitor sessions" ON visitor_sessions
   FOR INSERT WITH CHECK (true);
 
+CREATE POLICY "Allow public to read visitor sessions" ON visitor_sessions
+  FOR SELECT USING (true);
+
 CREATE POLICY "Allow public to update visitor sessions" ON visitor_sessions
   FOR UPDATE USING (true) WITH CHECK (true);
 
