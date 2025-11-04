@@ -86,14 +86,24 @@ function App() {
   // Add error handling for navigation issues
   React.useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      console.error("App Error:", event.error);
-      if (event.error?.message?.includes("IP address could not be found")) {
-        console.warn("URL Resolution Error - may be due to malformed URLs");
+      // Only log errors that have meaningful content
+      if (event.error !== null && event.error !== undefined) {
+        console.error("App Error:", event.error);
+        if (event.error?.message?.includes("IP address could not be found")) {
+          console.warn("URL Resolution Error - may be due to malformed URLs");
+        }
+      } else if (event.message) {
+        // Log the error message if error object is null
+        console.error("App Error:", event.message);
       }
+      // Suppress null/empty errors to reduce noise
     };
 
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.error("Unhandled Promise Rejection:", event.reason);
+      // Only log if reason is not null/undefined
+      if (event.reason !== null && event.reason !== undefined) {
+        console.error("Unhandled Promise Rejection:", event.reason);
+      }
     };
 
     window.addEventListener("error", handleError);
