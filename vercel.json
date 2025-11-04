@@ -9,25 +9,19 @@
   },
   "routes": [
     {
-      "src": "/assets/.*",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/robots.txt",
+      "src": "/robots\\.txt",
       "dest": "/api/[...path].js"
     },
     {
-      "src": "/sitemap.xml",
+      "src": "/sitemap\\.xml",
       "dest": "/api/[...path].js"
     },
     {
-      "src": "/sitemap.txt",
+      "src": "/sitemap\\.txt",
       "dest": "/api/[...path].js"
     },
     {
-      "src": "/sitemap",
+      "src": "/sitemap$",
       "dest": "/api/[...path].js"
     },
     {
@@ -39,7 +33,7 @@
       "dest": "/api/[...path].js"
     },
     {
-      "src": "/(.*)",
+      "src": "^/(?!assets|favicon|404\\.html).*$",
       "dest": "/index.html"
     }
   ]
