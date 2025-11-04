@@ -479,7 +479,7 @@ CREATE POLICY "Allow authenticated full access" ON pages
                 title: "Delivery Charges",
                 intro: "Transparent pricing for delivery:",
                 points: [
-                  "Free delivery on orders above ₹999",
+                  "Free delivery on orders above ���999",
                   "Standard delivery: ₹99 within city limits",
                   "Express delivery: ₹199 (same-day)",
                   "Remote area delivery: ₹149 additional",
@@ -1741,6 +1741,80 @@ GRANT DELETE ON order_items TO authenticated;`,
                   . All content is fully editable through{" "}
                   <strong>Admin → Pages</strong> using the content block editor.
                 </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Fix Unknown Products */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
+              Fix Unknown Products in Analytics
+              <Badge variant="outline">Optional - After Migration</Badge>
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              If you see "Unknown Product" in the Revenue by Product analytics chart, run this SQL to fix it
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Info className="h-4 w-4 text-amber-600" />
+                <span className="text-sm">
+                  This updates existing order items with correct product names from the products table
+                </span>
+              </div>
+              <div className="relative">
+                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto max-h-96">
+                  <code>{`-- Update order_items with correct product names from the products table
+UPDATE order_items
+SET product_name = products.name
+FROM products
+WHERE order_items.product_id = products.id
+  AND order_items.product_name = 'Unknown Product';
+
+-- Verify the update
+SELECT COUNT(*) as remaining_unknown_products
+FROM order_items
+WHERE product_name = 'Unknown Product';`}</code>
+                </pre>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() =>
+                    copyToClipboard(
+                      `-- Update order_items with correct product names from the products table
+UPDATE order_items
+SET product_name = products.name
+FROM products
+WHERE order_items.product_id = products.id
+  AND order_items.product_name = 'Unknown Product';
+
+-- Verify the update
+SELECT COUNT(*) as remaining_unknown_products
+FROM order_items
+WHERE product_name = 'Unknown Product';`,
+                      "fixUnknownProducts",
+                    )
+                  }
+                >
+                  <Copy className="h-4 w-4 mr-1" />
+                  {copied === "fixUnknownProducts" ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              <div className="bg-amber-50 p-3 rounded-lg">
+                <p className="text-sm text-amber-800">
+                  <strong>📊 What this does:</strong>
+                </p>
+                <ul className="text-sm text-amber-700 mt-1 space-y-1">
+                  <li>• Updates all "Unknown Product" entries with actual product names</li>
+                  <li>• Matches orders to products by product_id</li>
+                  <li>• Runs a verification query to show remaining unknown products</li>
+                  <li>• Revenue by Product chart will then display correct product names</li>
+                </ul>
               </div>
             </div>
           </CardContent>
