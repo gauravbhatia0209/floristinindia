@@ -431,6 +431,7 @@ export default function Analytics() {
                 .slice(0, 5);
 
               console.log("✅ Processed top products:", topProducts);
+              console.log("📊 All product sales aggregated:", productSales);
             } else {
               console.log("⚠️ No order items found for the given orders");
             }
