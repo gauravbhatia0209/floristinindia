@@ -2111,7 +2111,148 @@ export default function Checkout() {
                     </CardContent>
                   </Card>
 
-                  {/* 3. Message with Order */}
+                  {/* 3. Billing Address (Optional) */}
+                  <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                    <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center gap-3 text-xl">
+                        <div className="bg-white/20 rounded-lg p-2">
+                          <MapPin className="w-6 h-6" />
+                        </div>
+                        Billing Address (Optional)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-4">
+                      <div>
+                        <Label className="text-sm font-semibold text-gray-700 mb-3 block flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={form.useSameAddress}
+                            onChange={(e) =>
+                              setForm({
+                                ...form,
+                                useSameAddress: e.target.checked,
+                              })
+                            }
+                            className="w-4 h-4 cursor-pointer"
+                          />
+                          Same as Delivery Address
+                        </Label>
+                      </div>
+
+                      {!form.useSameAddress && (
+                        <>
+                          <div>
+                            <Label
+                              htmlFor="billingAddressLine1"
+                              className="text-sm font-semibold text-gray-700 mb-2 block"
+                            >
+                              Address Line 1
+                            </Label>
+                            <Input
+                              id="billingAddressLine1"
+                              placeholder="House/Flat No., Building Name"
+                              value={form.billingAddressLine1}
+                              onChange={(e) =>
+                                setForm({
+                                  ...form,
+                                  billingAddressLine1: e.target.value,
+                                })
+                              }
+                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                            />
+                          </div>
+
+                          <div>
+                            <Label
+                              htmlFor="billingAddressLine2"
+                              className="text-sm font-semibold text-gray-700 mb-2 block"
+                            >
+                              Address Line 2 (Optional)
+                            </Label>
+                            <Input
+                              id="billingAddressLine2"
+                              placeholder="Street Name, Area, Landmark"
+                              value={form.billingAddressLine2}
+                              onChange={(e) =>
+                                setForm({
+                                  ...form,
+                                  billingAddressLine2: e.target.value,
+                                })
+                              }
+                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label
+                                htmlFor="billingCity"
+                                className="text-sm font-semibold text-gray-700 mb-2 block"
+                              >
+                                City
+                              </Label>
+                              <Input
+                                id="billingCity"
+                                placeholder="City"
+                                value={form.billingCity}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    billingCity: e.target.value,
+                                  })
+                                }
+                                className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                              />
+                            </div>
+
+                            <div>
+                              <Label
+                                htmlFor="billingState"
+                                className="text-sm font-semibold text-gray-700 mb-2 block"
+                              >
+                                State
+                              </Label>
+                              <Input
+                                id="billingState"
+                                placeholder="State"
+                                value={form.billingState}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    billingState: e.target.value,
+                                  })
+                                }
+                                className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label
+                              htmlFor="billingPincode"
+                              className="text-sm font-semibold text-gray-700 mb-2 block"
+                            >
+                              Postal Code
+                            </Label>
+                            <Input
+                              id="billingPincode"
+                              placeholder="000000"
+                              value={form.billingPincode}
+                              onChange={(e) =>
+                                setForm({
+                                  ...form,
+                                  billingPincode: e.target.value,
+                                })
+                              }
+                              className="py-3 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* 4. Message with Order */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
                     <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
