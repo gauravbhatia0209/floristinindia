@@ -126,7 +126,9 @@ export default function Index() {
       const quantity = 1;
 
       addItem({
+        id: product.id,
         product_id: product.id,
+        product_name: product.name,
         product,
         variant_id: defaultVariant?.id,
         variant: defaultVariant
@@ -139,6 +141,8 @@ export default function Index() {
         quantity,
         unit_price: unitPrice,
         total_price: unitPrice * quantity,
+        image_url: product.images?.[0],
+        name: product.name,
       });
 
       console.log("��� Successfully added to cart:", product.name);
