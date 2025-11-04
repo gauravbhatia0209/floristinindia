@@ -226,19 +226,36 @@ class VisitorTracker {
       const timeOnPage = Math.round((Date.now() - this.pageStartTime) / 1000);
 
       if (timeOnPage > 0 && this.currentPage) {
-        const { error } = await supabase
+        // First fetch the latest page view record for this session and page
+        const { data: pageViews, error: fetchError } = await supabase
           .from("page_views")
-          .update({ time_on_page: timeOnPage })
+          .select("id")
           .eq("session_id", this.sessionId)
           .eq("page_url", this.currentPage)
           .order("created_at", { ascending: false })
           .limit(1);
 
-        if (error) {
+        if (fetchError) {
           console.error(
-            "Error recording page time:",
-            error.message || JSON.stringify(error)
+            "Error fetching page view:",
+            fetchError.message || JSON.stringify(fetchError)
           );
+          return;
+        }
+
+        if (pageViews && pageViews.length > 0) {
+          // Update the latest page view with time on page
+          const { error: updateError } = await supabase
+            .from("page_views")
+            .update({ time_on_page: timeOnPage })
+            .eq("id", pageViews[0].id);
+
+          if (updateError) {
+            console.error(
+              "Error updating page time:",
+              updateError.message || JSON.stringify(updateError)
+            );
+          }
         }
       }
     } catch (error) {
