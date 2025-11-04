@@ -77,6 +77,16 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Auto-refresh dashboard data every 30 seconds
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      fetchDashboardData();
+      fetchTodayAndTomorrowOrders();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(refreshInterval);
+  }, []);
+
   async function fetchTodayAndTomorrowOrders() {
     try {
       // Get today's date in local timezone (YYYY-MM-DD format)
@@ -1239,7 +1249,7 @@ function EmailTestingSection() {
               <li>✅ Order confirmation emails (customer + admin)</li>
               <li>✅ Order status update notifications</li>
               <li>✅ Beautiful HTML email templates</li>
-              <li>✅ Automatic sending on order completion</li>
+              <li>��� Automatic sending on order completion</li>
               <li>✅ Admin notifications for new orders</li>
             </ul>
           </div>
