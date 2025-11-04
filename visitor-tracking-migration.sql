@@ -59,7 +59,7 @@ CREATE POLICY "Allow public to read page views" ON page_views
   FOR SELECT USING (true);
 
 -- Grant permissions
-GRANT INSERT, UPDATE ON visitor_sessions TO anon;
+GRANT INSERT, UPDATE, SELECT ON visitor_sessions TO anon;
 GRANT SELECT ON visitor_sessions TO authenticated;
-GRANT INSERT ON page_views TO anon;
+GRANT INSERT, UPDATE, SELECT ON page_views TO anon;
 GRANT SELECT ON page_views TO authenticated;
