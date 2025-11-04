@@ -256,7 +256,9 @@ export default function ProductDetail() {
       : 0;
 
     addItem({
+      id: product.id,
       product_id: product.id,
+      product_name: product.name,
       product,
       variant_id: selectedVariant?.id,
       variant: combinedVariant,
@@ -264,6 +266,8 @@ export default function ProductDetail() {
       uploaded_file: uploadedFile || undefined,
       unit_price: unitPrice,
       total_price: unitPrice * quantity,
+      image_url: product.images?.[0],
+      name: product.name,
     });
 
     // Show enhanced success notification
