@@ -107,7 +107,7 @@ export default function Analytics() {
       console.log("Starting analytics data fetch for date range:", dateRange);
 
       // Calculate date range
-      const endDate = new Date();
+      let endDate = new Date();
       let startDate = new Date();
 
       switch (dateRange) {
