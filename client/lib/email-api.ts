@@ -92,16 +92,13 @@ export const emailAPI = {
    */
   sendOrderCreatedNotification: async (orderNumber: string) => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/email/order-created`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ orderNumber }),
+      const response = await fetch(`${API_BASE_URL}/api/email/order-created`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ orderNumber }),
+      });
 
       let data;
       try {

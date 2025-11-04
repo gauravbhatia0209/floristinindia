@@ -146,9 +146,7 @@ router.post("/order-created", async (req, res) => {
       });
     }
 
-    console.log(
-      `📧 Sending admin notification for new order: ${orderNumber}`,
-    );
+    console.log(`📧 Sending admin notification for new order: ${orderNumber}`);
 
     // Fetch complete order data
     const { data: order, error: orderError } = await supabase
