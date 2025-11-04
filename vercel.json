@@ -3,29 +3,34 @@
   "outputDirectory": "client/dist",
   "functions": {
     "api/[...path].js": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "memory": 1024
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/robots.txt",
-      "destination": "/api/[...path]"
+      "src": "/robots.txt",
+      "dest": "/api/[...path].js"
     },
     {
-      "source": "/sitemap.xml",
-      "destination": "/api/[...path]"
+      "src": "/sitemap.xml",
+      "dest": "/api/[...path].js"
     },
     {
-      "source": "/sitemap.txt",
-      "destination": "/api/[...path]"
+      "src": "/sitemap.txt",
+      "dest": "/api/[...path].js"
     },
     {
-      "source": "/sitemap",
-      "destination": "/api/[...path]"
+      "src": "/sitemap",
+      "dest": "/api/[...path].js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/api/(.*)",
+      "dest": "/api/[...path].js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
