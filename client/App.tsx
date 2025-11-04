@@ -265,6 +265,7 @@ function App() {
                 path="contact-submissions"
                 element={<ContactSubmissions />}
               />
+              <Route path="email-templates" element={<EmailTemplates />} />
               <Route path="database-setup" element={<DatabaseSetup />} />
               <Route path="database-test" element={<DatabaseTest />} />
             </Route>
