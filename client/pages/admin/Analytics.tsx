@@ -349,7 +349,11 @@ export default function Analytics() {
       if (orders && orders.length > 0) {
         console.log(
           "Order details:",
-          orders.map((o) => ({ id: o.id, total: o.total_amount, status: o.status })),
+          orders.map((o) => ({
+            id: o.id,
+            total: o.total_amount,
+            status: o.status,
+          })),
         );
       }
 
@@ -359,13 +363,19 @@ export default function Analytics() {
           (order) =>
             order.status !== "pending" &&
             order.status !== "refunded" &&
-            order.status !== "cancelled"
+            order.status !== "cancelled",
         ) || [];
 
-      console.log("✅ Confirmed orders (excluding pending, refunded, cancelled):", confirmedOrders.length);
+      console.log(
+        "✅ Confirmed orders (excluding pending, refunded, cancelled):",
+        confirmedOrders.length,
+      );
 
       const totalRevenue =
-        confirmedOrders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+        confirmedOrders?.reduce(
+          (sum, order) => sum + (order.total_amount || 0),
+          0,
+        ) || 0;
       const totalOrders = confirmedOrders?.length || 0;
       const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
@@ -382,9 +392,15 @@ export default function Analytics() {
 
       if (confirmedOrders && confirmedOrders.length > 0) {
         try {
-          console.log("📦 Fetching order items for", confirmedOrders.length, "confirmed orders");
+          console.log(
+            "📦 Fetching order items for",
+            confirmedOrders.length,
+            "confirmed orders",
+          );
 
-          const orderIds = confirmedOrders.map((order: any) => order.id).filter(Boolean);
+          const orderIds = confirmedOrders
+            .map((order: any) => order.id)
+            .filter(Boolean);
           console.log("Order IDs to fetch items for:", orderIds);
 
           if (orderIds.length > 0) {
@@ -430,20 +446,24 @@ export default function Analytics() {
 
             // Process items from orders.items JSON for orders without order_items records
             const dbOrderIds = new Set(
-              orderItems?.map((i: any) => i.order_id) || []
+              orderItems?.map((i: any) => i.order_id) || [],
             );
             const ordersWithoutDbItems = confirmedOrders.filter(
-              (order: any) => !dbOrderIds.has(order.id)
+              (order: any) => !dbOrderIds.has(order.id),
             );
 
             if (ordersWithoutDbItems.length > 0) {
               console.log(
                 "📋 Processing items from JSON for",
                 ordersWithoutDbItems.length,
-                "orders without DB records"
+                "orders without DB records",
               );
               ordersWithoutDbItems.forEach((order: any) => {
-                if (order.items && Array.isArray(order.items) && order.items.length > 0) {
+                if (
+                  order.items &&
+                  Array.isArray(order.items) &&
+                  order.items.length > 0
+                ) {
                   order.items.forEach((item: any) => {
                     const productId = item.product_id || item.id || "unknown";
                     const productName =
@@ -477,7 +497,7 @@ export default function Analytics() {
               console.log("🔍 Product Sales Breakdown:");
               Object.entries(productSales).forEach(([productId, data]) => {
                 console.log(
-                  `  - ${data.name} (ID: ${productId}): ${data.sales} sold, ₹${data.revenue.toFixed(2)} revenue`
+                  `  - ${data.name} (ID: ${productId}): ${data.sales} sold, ₹${data.revenue.toFixed(2)} revenue`,
                 );
               });
             } else {
@@ -601,7 +621,10 @@ export default function Analytics() {
 
   async function fetchProductData(startDate: Date, endDate: Date) {
     try {
-      console.log("Fetching product data for date range:", { startDate, endDate });
+      console.log("Fetching product data for date range:", {
+        startDate,
+        endDate,
+      });
 
       // Fetch orders within date range
       const { data: ordersInRange, error: ordersError } = await supabase
@@ -725,8 +748,12 @@ export default function Analytics() {
       console.log("Found all orders:", orders?.length || 0);
 
       // Filter to only confirmed orders (exclude pending)
-      const confirmedOrders = orders?.filter((order) => order.status !== "pending") || [];
-      console.log("Confirmed orders (excluding pending):", confirmedOrders.length);
+      const confirmedOrders =
+        orders?.filter((order) => order.status !== "pending") || [];
+      console.log(
+        "Confirmed orders (excluding pending):",
+        confirmedOrders.length,
+      );
 
       return {
         totalOrders: confirmedOrders.length,
@@ -810,31 +837,40 @@ export default function Analytics() {
         .from("order_items")
         .select("order_id");
 
-      const ordersWithItems = new Set(dbOrderItems?.map((i: any) => i.order_id) || []);
+      const ordersWithItems = new Set(
+        dbOrderItems?.map((i: any) => i.order_id) || [],
+      );
 
       // Find orders without order_items records
       const ordersWithoutItems = allOrders.filter(
-        (order) => !ordersWithItems.has(order.id)
+        (order) => !ordersWithItems.has(order.id),
       );
 
-      console.log(`✅ Orders with items in order_items table: ${ordersWithItems.size}`);
-      console.log(`❌ Orders WITHOUT items in order_items table: ${ordersWithoutItems.length}`);
+      console.log(
+        `✅ Orders with items in order_items table: ${ordersWithItems.size}`,
+      );
+      console.log(
+        `❌ Orders WITHOUT items in order_items table: ${ordersWithoutItems.length}`,
+      );
 
       if (ordersWithoutItems.length > 0) {
-        console.log("📋 Orders without items:", ordersWithoutItems.map(o => ({
-          id: o.id,
-          status: o.status,
-          items: o.items,
-          total: o.total_amount,
-          created: o.created_at
-        })));
+        console.log(
+          "📋 Orders without items:",
+          ordersWithoutItems.map((o) => ({
+            id: o.id,
+            status: o.status,
+            items: o.items,
+            total: o.total_amount,
+            created: o.created_at,
+          })),
+        );
 
         // Try to populate missing items from orders.items JSON
         const confirmPopulate = window.confirm(
           `Found ${ordersWithoutItems.length} orders without items in the order_items table.\n\n` +
-          "This can happen when orders are created without properly saving the items.\n\n" +
-          "Would you like to attempt to populate the missing order items from the order data?\n\n" +
-          "This will create order_items records for orders that have item data but no order_items records."
+            "This can happen when orders are created without properly saving the items.\n\n" +
+            "Would you like to attempt to populate the missing order items from the order data?\n\n" +
+            "This will create order_items records for orders that have item data but no order_items records.",
         );
 
         if (confirmPopulate) {
@@ -848,7 +884,9 @@ export default function Analytics() {
 
   const populateMissingOrderItems = async (ordersWithoutItems: any[]) => {
     try {
-      console.log(`🔧 Attempting to populate ${ordersWithoutItems.length} orders...`);
+      console.log(
+        `🔧 Attempting to populate ${ordersWithoutItems.length} orders...`,
+      );
 
       // First, fetch all existing products to validate product_ids
       const { data: allProducts } = await supabase
@@ -868,7 +906,11 @@ export default function Analytics() {
       let errorDetails: any[] = [];
 
       for (const order of ordersWithoutItems) {
-        if (!order.items || !Array.isArray(order.items) || order.items.length === 0) {
+        if (
+          !order.items ||
+          !Array.isArray(order.items) ||
+          order.items.length === 0
+        ) {
           console.log(`⏭️  Skipping order ${order.id} - no items data`);
           console.log(`   Order items field:`, order.items);
           skippedCount++;
@@ -883,14 +925,20 @@ export default function Analytics() {
               const isValidProduct = validProductIds.has(productId);
 
               if (!isValidProduct) {
-                console.warn(`⚠️  Order ${order.id} - Product ID ${productId} not found in products table`);
+                console.warn(
+                  `⚠️  Order ${order.id} - Product ID ${productId} not found in products table`,
+                );
                 return null;
               }
 
               return {
                 order_id: order.id,
                 product_id: productId,
-                product_name: item.product_name || item.name || productNameMap[productId] || "Unknown Product",
+                product_name:
+                  item.product_name ||
+                  item.name ||
+                  productNameMap[productId] ||
+                  "Unknown Product",
                 quantity: parseInt(item.quantity || "1", 10),
                 price: parseFloat(item.price || "0"),
               };
@@ -898,12 +946,17 @@ export default function Analytics() {
             .filter((item: any) => item !== null);
 
           if (itemsToInsert.length === 0) {
-            console.log(`⏭️  Skipping order ${order.id} - no valid products found`);
+            console.log(
+              `⏭️  Skipping order ${order.id} - no valid products found`,
+            );
             skippedCount++;
             continue;
           }
 
-          console.log(`📦 Order ${order.id} - inserting ${itemsToInsert.length} items:`, itemsToInsert);
+          console.log(
+            `📦 Order ${order.id} - inserting ${itemsToInsert.length} items:`,
+            itemsToInsert,
+          );
 
           const { data: insertData, error: insertError } = await supabase
             .from("order_items")
@@ -923,7 +976,9 @@ export default function Analytics() {
               itemCount: itemsToInsert.length,
             });
           } else {
-            console.log(`✅ Populated order ${order.id} with ${itemsToInsert.length} items`);
+            console.log(
+              `✅ Populated order ${order.id} with ${itemsToInsert.length} items`,
+            );
             populatedCount++;
           }
         } catch (error: any) {
@@ -940,22 +995,28 @@ export default function Analytics() {
         }
       }
 
-      console.log(`\n📈 Populate complete: ${populatedCount} orders updated, ${skippedCount} skipped`);
+      console.log(
+        `\n📈 Populate complete: ${populatedCount} orders updated, ${skippedCount} skipped`,
+      );
 
       if (errorDetails.length > 0) {
         console.log("\n❌ Error Details:");
-        errorDetails.forEach(err => {
+        errorDetails.forEach((err) => {
           console.log(`  Order ${err.orderId}: ${err.error}`);
         });
       }
 
       // Refresh analytics after population
       if (populatedCount > 0) {
-        alert(`Successfully populated ${populatedCount} orders.\n\nRefreshing analytics...`);
+        alert(
+          `Successfully populated ${populatedCount} orders.\n\nRefreshing analytics...`,
+        );
         fetchAnalyticsData();
       } else if (errorDetails.length > 0) {
         console.log("\n💡 Check the console for detailed error information");
-        alert(`Failed to populate orders. Check the browser console (F12) for detailed error messages.`);
+        alert(
+          `Failed to populate orders. Check the browser console (F12) for detailed error messages.`,
+        );
       }
     } catch (error: any) {
       console.error("Error during population:", {
@@ -1073,13 +1134,16 @@ export default function Analytics() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Select value={dateRange} onValueChange={(value) => {
-              if (value === "custom") {
-                setShowCustomDatePicker(true);
-              } else {
-                setDateRange(value);
-              }
-            }}>
+            <Select
+              value={dateRange}
+              onValueChange={(value) => {
+                if (value === "custom") {
+                  setShowCustomDatePicker(true);
+                } else {
+                  setDateRange(value);
+                }
+              }}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue
                   placeholder={
@@ -1114,10 +1178,14 @@ export default function Analytics() {
           <Card className="mb-6 border-blue-200 bg-blue-50">
             <CardContent className="p-6">
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Select Custom Date Range</h3>
+                <h3 className="font-semibold text-lg">
+                  Select Custom Date Range
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Start Date</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Start Date
+                    </label>
                     <input
                       type="date"
                       value={customStartDate}
@@ -1126,7 +1194,9 @@ export default function Analytics() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">End Date</label>
+                    <label className="block text-sm font-medium mb-2">
+                      End Date
+                    </label>
                     <input
                       type="date"
                       value={customEndDate}

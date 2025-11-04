@@ -1451,7 +1451,8 @@ VALUES (
                 <Badge variant="outline">Required for Analytics</Badge>
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                This table stores individual items from orders and is required for the Revenue by Product analytics to work correctly
+                This table stores individual items from orders and is required
+                for the Revenue by Product analytics to work correctly
               </p>
             </CardHeader>
             <CardContent>
@@ -1459,7 +1460,8 @@ VALUES (
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-orange-500" />
                   <span className="text-sm">
-                    Run this SQL if "Revenue by Product" shows no data in Analytics
+                    Run this SQL if "Revenue by Product" shows no data in
+                    Analytics
                   </span>
                 </div>
                 <div className="relative">
@@ -1578,11 +1580,26 @@ GRANT DELETE ON order_items TO authenticated;`,
                     <strong>📊 What this creates:</strong>
                   </p>
                   <ul className="text-sm text-orange-700 mt-1 space-y-1">
-                    <li>• <strong>order_items table</strong> - Stores line items from each order</li>
-                    <li>• <strong>Product relationships</strong> - Links items to products and orders</li>
-                    <li>• <strong>Performance indexes</strong> - Fast lookups by order_id or product_id</li>
-                    <li>• <strong>Public read access</strong> - Both anonymous and authenticated users can read</li>
-                    <li>• <strong>Write protection</strong> - Only during checkout (anon insert) and admin updates</li>
+                    <li>
+                      • <strong>order_items table</strong> - Stores line items
+                      from each order
+                    </li>
+                    <li>
+                      • <strong>Product relationships</strong> - Links items to
+                      products and orders
+                    </li>
+                    <li>
+                      • <strong>Performance indexes</strong> - Fast lookups by
+                      order_id or product_id
+                    </li>
+                    <li>
+                      • <strong>Public read access</strong> - Both anonymous and
+                      authenticated users can read
+                    </li>
+                    <li>
+                      • <strong>Write protection</strong> - Only during checkout
+                      (anon insert) and admin updates
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -1755,7 +1772,8 @@ GRANT DELETE ON order_items TO authenticated;`,
               <Badge variant="outline">Optional - After Migration</Badge>
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              If you see "Unknown Product" in the Revenue by Product analytics chart, run this SQL to fix it
+              If you see "Unknown Product" in the Revenue by Product analytics
+              chart, run this SQL to fix it
             </p>
           </CardHeader>
           <CardContent>
@@ -1763,7 +1781,8 @@ GRANT DELETE ON order_items TO authenticated;`,
               <div className="flex items-center gap-2">
                 <Info className="h-4 w-4 text-amber-600" />
                 <span className="text-sm">
-                  This updates existing order items with correct product names from the products table
+                  This updates existing order items with correct product names
+                  from the products table
                 </span>
               </div>
               <div className="relative">
@@ -1810,10 +1829,19 @@ WHERE product_name = 'Unknown Product';`,
                   <strong>📊 What this does:</strong>
                 </p>
                 <ul className="text-sm text-amber-700 mt-1 space-y-1">
-                  <li>• Updates all "Unknown Product" entries with actual product names</li>
+                  <li>
+                    • Updates all "Unknown Product" entries with actual product
+                    names
+                  </li>
                   <li>• Matches orders to products by product_id</li>
-                  <li>• Runs a verification query to show remaining unknown products</li>
-                  <li>• Revenue by Product chart will then display correct product names</li>
+                  <li>
+                    • Runs a verification query to show remaining unknown
+                    products
+                  </li>
+                  <li>
+                    • Revenue by Product chart will then display correct product
+                    names
+                  </li>
                 </ul>
               </div>
             </div>
