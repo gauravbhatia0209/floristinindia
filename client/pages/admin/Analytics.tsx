@@ -750,6 +750,116 @@ export default function Analytics() {
     }).format(amount);
   };
 
+  const handleDatabaseDiagnostics = async () => {
+    try {
+      console.log("🔍 Starting database diagnostics for order items...");
+
+      // Get ALL orders in system
+      const { data: allOrders } = await supabase
+        .from("orders")
+        .select("id, customer_id, items, total_amount, status, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+      if (!allOrders) {
+        console.log("No orders found");
+        return;
+      }
+
+      console.log(`📊 Total orders found: ${allOrders.length}`);
+
+      // Check which orders have items in order_items table
+      const { data: dbOrderItems } = await supabase
+        .from("order_items")
+        .select("order_id");
+
+      const ordersWithItems = new Set(dbOrderItems?.map((i: any) => i.order_id) || []);
+
+      // Find orders without order_items records
+      const ordersWithoutItems = allOrders.filter(
+        (order) => !ordersWithItems.has(order.id)
+      );
+
+      console.log(`✅ Orders with items in order_items table: ${ordersWithItems.size}`);
+      console.log(`❌ Orders WITHOUT items in order_items table: ${ordersWithoutItems.length}`);
+
+      if (ordersWithoutItems.length > 0) {
+        console.log("📋 Orders without items:", ordersWithoutItems.map(o => ({
+          id: o.id,
+          status: o.status,
+          items: o.items,
+          total: o.total_amount,
+          created: o.created_at
+        })));
+
+        // Try to populate missing items from orders.items JSON
+        const confirmPopulate = window.confirm(
+          `Found ${ordersWithoutItems.length} orders without items in the order_items table.\n\n` +
+          "This can happen when orders are created without properly saving the items.\n\n" +
+          "Would you like to attempt to populate the missing order items from the order data?\n\n" +
+          "This will create order_items records for orders that have item data but no order_items records."
+        );
+
+        if (confirmPopulate) {
+          await populateMissingOrderItems(ordersWithoutItems);
+        }
+      }
+    } catch (error) {
+      console.error("Error running diagnostics:", error);
+    }
+  };
+
+  const populateMissingOrderItems = async (ordersWithoutItems: any[]) => {
+    try {
+      console.log(`🔧 Attempting to populate ${ordersWithoutItems.length} orders...`);
+
+      let populatedCount = 0;
+      let skippedCount = 0;
+
+      for (const order of ordersWithoutItems) {
+        if (!order.items || !Array.isArray(order.items) || order.items.length === 0) {
+          console.log(`⏭️  Skipping order ${order.id} - no items data`);
+          skippedCount++;
+          continue;
+        }
+
+        try {
+          // Create order_items records from the items array
+          const itemsToInsert = order.items.map((item: any) => ({
+            order_id: order.id,
+            product_id: item.product_id || item.id,
+            product_name: item.product_name || item.name,
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+          }));
+
+          const { error: insertError } = await supabase
+            .from("order_items")
+            .insert(itemsToInsert);
+
+          if (insertError) {
+            console.error(`❌ Failed to populate order ${order.id}:`, insertError);
+          } else {
+            console.log(`✅ Populated order ${order.id} with ${itemsToInsert.length} items`);
+            populatedCount++;
+          }
+        } catch (error) {
+          console.error(`❌ Error processing order ${order.id}:`, error);
+        }
+      }
+
+      console.log(`\n📈 Populate complete: ${populatedCount} orders updated, ${skippedCount} skipped`);
+
+      // Refresh analytics after population
+      if (populatedCount > 0) {
+        alert(`Successfully populated ${populatedCount} orders.\n\nRefreshing analytics...`);
+        fetchAnalyticsData();
+      }
+    } catch (error) {
+      console.error("Error during population:", error);
+    }
+  };
+
   const handleExport = () => {
     if (!data) return;
 
