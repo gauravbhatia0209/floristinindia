@@ -713,7 +713,7 @@ export const sendOrderStatusUpdateEmail = async (
 
   try {
     // Try to fetch custom template from database for this status
-    let statusEmail = null;
+    let statusEmail: { subject: string; html: string } | null = null;
     const customTemplate = await fetchEmailTemplate("status_update", newStatus);
 
     if (customTemplate) {
