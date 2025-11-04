@@ -370,7 +370,7 @@ export default function Analytics() {
               .in("order_id", orderIds);
 
             if (itemsError) {
-              console.error("Error fetching order items:", itemsError);
+              console.error("Error fetching order items:", itemsError.message || itemsError.details || JSON.stringify(itemsError));
             } else if (orderItems && orderItems.length > 0) {
               console.log("Found order items:", orderItems.length);
 
