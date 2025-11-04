@@ -104,7 +104,9 @@ export default function Dashboard() {
       const { data: orders } = await supabase
         .from("orders")
         .select("total_amount, status")
-        .not("status", "in", '("pending", "refunded", "cancelled")');
+        .neq("status", "pending")
+        .neq("status", "refunded")
+        .neq("status", "cancelled");
 
       const totalRevenue = orders?.reduce(
         (sum, order) => sum + order.total_amount,
