@@ -1908,14 +1908,14 @@ export default function Checkout() {
                     </CardContent>
                   </Card>
 
-                  {/* 2. Delivery Address */}
+                  {/* 2. Billing Address (Optional) */}
                   <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-                    <CardHeader className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-t-lg">
+                    <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-t-lg">
                       <CardTitle className="flex items-center gap-3 text-xl">
                         <div className="bg-white/20 rounded-lg p-2">
                           <MapPin className="w-6 h-6" />
                         </div>
-                        Delivery Address
+                        Billing Address (Optional)
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
