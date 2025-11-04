@@ -748,56 +748,74 @@ export default function Orders() {
         {/* Filters */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search orders by number, customer name, or email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Orders</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                    <SelectItem value="processing">Processing</SelectItem>
+                    <SelectItem value="shipped">Shipped</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                    <SelectItem value="refunded">Refunded</SelectItem>
+                  </SelectContent>
+                </Select>
+                {(deliveryDateFilter || orderPlacedDateFilter || statusFilter !== "all") && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setDeliveryDateFilter("");
+                      setOrderPlacedDateFilter("");
+                      setStatusFilter("all");
+                    }}
+                    className="px-3"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">
+                    Order Placed Date
+                  </label>
                   <Input
-                    placeholder="Search orders by number, customer name, or email..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    type="date"
+                    value={orderPlacedDateFilter}
+                    onChange={(e) => setOrderPlacedDateFilter(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-muted-foreground block mb-1">
+                    Delivery Date
+                  </label>
+                  <Input
+                    type="date"
+                    value={deliveryDateFilter}
+                    onChange={(e) => setDeliveryDateFilter(e.target.value)}
+                    className="w-full"
                   />
                 </div>
               </div>
-              <div className="w-48">
-                <Input
-                  type="date"
-                  placeholder="Filter by delivery date"
-                  value={deliveryDateFilter}
-                  onChange={(e) => setDeliveryDateFilter(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Orders</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="shipped">Shipped</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                  <SelectItem value="refunded">Refunded</SelectItem>
-                </SelectContent>
-              </Select>
-              {(deliveryDateFilter || statusFilter !== "all") && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setDeliveryDateFilter("");
-                    setStatusFilter("all");
-                  }}
-                  className="px-3"
-                >
-                  <X className="w-4 h-4 mr-1" />
-                  Clear
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>
@@ -1208,7 +1226,7 @@ export default function Orders() {
                                   ₹{item.total_price.toLocaleString()}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                  ���{item.unit_price} each
+                                  ₹{item.unit_price} each
                                 </p>
                               </div>
                             </div>
