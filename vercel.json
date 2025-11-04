@@ -1,22 +1,22 @@
 {
-  "buildCommand": "npm run build:client",
+  "buildCommand": "npm run build:server && npm run build:client",
   "outputDirectory": "client/dist",
   "rewrites": [
     {
       "source": "/robots.txt",
-      "destination": "/api/robots.txt"
+      "destination": "/api/[...path]?path=robots.txt"
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/sitemap.xml"
+      "destination": "/api/[...path]?path=sitemap.xml"
     },
     {
       "source": "/sitemap.txt",
-      "destination": "/api/sitemap.txt"
+      "destination": "/api/[...path]?path=sitemap.txt"
     },
     {
-      "source": "/sitemap$",
-      "destination": "/api/sitemap"
+      "source": "/sitemap",
+      "destination": "/api/[...path]?path=sitemap"
     },
     {
       "source": "/(.*)",
