@@ -389,11 +389,10 @@ router.get("/sitemap", async (req, res) => {
       .eq("is_active", true)
       .order("name", { ascending: true });
 
-    // Fetch published pages
+    // Fetch active pages
     const { data: pages } = await supabase
       .from("pages")
       .select("slug, title")
-      .eq("status", "published")
       .eq("is_active", true)
       .order("title", { ascending: true });
 
@@ -650,7 +649,6 @@ router.get("/sitemap.txt", async (req, res) => {
     const { data: pages } = await supabase
       .from("pages")
       .select("slug")
-      .eq("status", "published")
       .eq("is_active", true)
       .order("slug", { ascending: true });
 
@@ -774,7 +772,6 @@ router.post("/api/sitemap/verify", async (req, res) => {
     const { data: pages } = await supabase
       .from("pages")
       .select("id")
-      .eq("status", "published")
       .eq("is_active", true);
 
     const stats = {
