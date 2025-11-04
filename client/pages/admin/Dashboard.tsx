@@ -71,7 +71,8 @@ export default function Dashboard() {
     try {
       // Get today's date in local timezone (YYYY-MM-DD format)
       const today = new Date();
-      const todayDateString = today.getFullYear() +
+      const todayDateString =
+        today.getFullYear() +
         "-" +
         String(today.getMonth() + 1).padStart(2, "0") +
         "-" +
@@ -80,7 +81,8 @@ export default function Dashboard() {
       // Get tomorrow's date in local timezone
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowDateString = tomorrow.getFullYear() +
+      const tomorrowDateString =
+        tomorrow.getFullYear() +
         "-" +
         String(tomorrow.getMonth() + 1).padStart(2, "0") +
         "-" +
@@ -89,7 +91,8 @@ export default function Dashboard() {
       // Get day after tomorrow for the upper bound
       const dayAfterTomorrow = new Date(tomorrow);
       dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
-      const dayAfterTomorrowDateString = dayAfterTomorrow.getFullYear() +
+      const dayAfterTomorrowDateString =
+        dayAfterTomorrow.getFullYear() +
         "-" +
         String(dayAfterTomorrow.getMonth() + 1).padStart(2, "0") +
         "-" +
@@ -112,21 +115,35 @@ export default function Dashboard() {
       // Process today's orders
       const todayOrderCounts = {
         total: todayData?.length || 0,
-        confirmed: todayData?.filter((o: any) => o.status === "confirmed").length || 0,
-        processing: todayData?.filter((o: any) => o.status === "processing").length || 0,
-        shipped: todayData?.filter((o: any) => o.status === "shipped").length || 0,
-        delivered: todayData?.filter((o: any) => o.status === "delivered").length || 0,
-        cancelled: todayData?.filter((o: any) => o.status === "cancelled").length || 0,
+        confirmed:
+          todayData?.filter((o: any) => o.status === "confirmed").length || 0,
+        processing:
+          todayData?.filter((o: any) => o.status === "processing").length || 0,
+        shipped:
+          todayData?.filter((o: any) => o.status === "shipped").length || 0,
+        delivered:
+          todayData?.filter((o: any) => o.status === "delivered").length || 0,
+        cancelled:
+          todayData?.filter((o: any) => o.status === "cancelled").length || 0,
       };
 
       // Process tomorrow's orders
       const tomorrowOrderCounts = {
         total: tomorrowData?.length || 0,
-        confirmed: tomorrowData?.filter((o: any) => o.status === "confirmed").length || 0,
-        processing: tomorrowData?.filter((o: any) => o.status === "processing").length || 0,
-        shipped: tomorrowData?.filter((o: any) => o.status === "shipped").length || 0,
-        delivered: tomorrowData?.filter((o: any) => o.status === "delivered").length || 0,
-        cancelled: tomorrowData?.filter((o: any) => o.status === "cancelled").length || 0,
+        confirmed:
+          tomorrowData?.filter((o: any) => o.status === "confirmed").length ||
+          0,
+        processing:
+          tomorrowData?.filter((o: any) => o.status === "processing").length ||
+          0,
+        shipped:
+          tomorrowData?.filter((o: any) => o.status === "shipped").length || 0,
+        delivered:
+          tomorrowData?.filter((o: any) => o.status === "delivered").length ||
+          0,
+        cancelled:
+          tomorrowData?.filter((o: any) => o.status === "cancelled").length ||
+          0,
       };
 
       setTodayOrders(todayOrderCounts);
@@ -344,7 +361,8 @@ export default function Dashboard() {
                 className="border-l-4 border-l-slate-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
@@ -368,12 +386,15 @@ export default function Dashboard() {
                 className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(today.getDate()).padStart(2, "0");
-                  navigate(`/admin/orders?date=${todayDateString}&status=confirmed`);
+                  navigate(
+                    `/admin/orders?date=${todayDateString}&status=confirmed`,
+                  );
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -396,12 +417,15 @@ export default function Dashboard() {
                 className="border-l-4 border-l-blue-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(today.getDate()).padStart(2, "0");
-                  navigate(`/admin/orders?date=${todayDateString}&status=processing`);
+                  navigate(
+                    `/admin/orders?date=${todayDateString}&status=processing`,
+                  );
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -424,12 +448,15 @@ export default function Dashboard() {
                 className="border-l-4 border-l-orange-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(today.getDate()).padStart(2, "0");
-                  navigate(`/admin/orders?date=${todayDateString}&status=shipped`);
+                  navigate(
+                    `/admin/orders?date=${todayDateString}&status=shipped`,
+                  );
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -440,9 +467,7 @@ export default function Dashboard() {
                   <div className="text-2xl font-bold text-orange-600">
                     {todayOrders.shipped}
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    On the way
-                  </p>
+                  <p className="text-xs text-muted-foreground">On the way</p>
                 </CardContent>
               </Card>
 
@@ -450,12 +475,15 @@ export default function Dashboard() {
                 className="border-l-4 border-l-purple-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(today.getDate()).padStart(2, "0");
-                  navigate(`/admin/orders?date=${todayDateString}&status=delivered`);
+                  navigate(
+                    `/admin/orders?date=${todayDateString}&status=delivered`,
+                  );
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -478,12 +506,15 @@ export default function Dashboard() {
                 className="border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => {
                   const today = new Date();
-                  const todayDateString = today.getFullYear() +
+                  const todayDateString =
+                    today.getFullYear() +
                     "-" +
                     String(today.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(today.getDate()).padStart(2, "0");
-                  navigate(`/admin/orders?date=${todayDateString}&status=cancelled`);
+                  navigate(
+                    `/admin/orders?date=${todayDateString}&status=cancelled`,
+                  );
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -513,7 +544,8 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
@@ -528,7 +560,9 @@ export default function Dashboard() {
                   <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{tomorrowOrders.total}</div>
+                  <div className="text-2xl font-bold">
+                    {tomorrowOrders.total}
+                  </div>
                   <p className="text-xs text-muted-foreground">All statuses</p>
                 </CardContent>
               </Card>
@@ -538,13 +572,14 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrowDateString}&status=confirmed`
+                    `/admin/orders?date=${tomorrowDateString}&status=confirmed`,
                   );
                 }}
               >
@@ -569,13 +604,14 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrowDateString}&status=processing`
+                    `/admin/orders?date=${tomorrowDateString}&status=processing`,
                   );
                 }}
               >
@@ -600,13 +636,14 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrowDateString}&status=shipped`
+                    `/admin/orders?date=${tomorrowDateString}&status=shipped`,
                   );
                 }}
               >
@@ -618,9 +655,7 @@ export default function Dashboard() {
                   <div className="text-2xl font-bold text-orange-600">
                     {tomorrowOrders.shipped}
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    On the way
-                  </p>
+                  <p className="text-xs text-muted-foreground">On the way</p>
                 </CardContent>
               </Card>
 
@@ -629,13 +664,14 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrowDateString}&status=delivered`
+                    `/admin/orders?date=${tomorrowDateString}&status=delivered`,
                   );
                 }}
               >
@@ -660,13 +696,14 @@ export default function Dashboard() {
                 onClick={() => {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
-                  const tomorrowDateString = tomorrow.getFullYear() +
+                  const tomorrowDateString =
+                    tomorrow.getFullYear() +
                     "-" +
                     String(tomorrow.getMonth() + 1).padStart(2, "0") +
                     "-" +
                     String(tomorrow.getDate()).padStart(2, "0");
                   navigate(
-                    `/admin/orders?date=${tomorrowDateString}&status=cancelled`
+                    `/admin/orders?date=${tomorrowDateString}&status=cancelled`,
                   );
                 }}
               >

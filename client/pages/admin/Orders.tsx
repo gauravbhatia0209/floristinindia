@@ -62,8 +62,10 @@ export default function Orders() {
 
   const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
   const [searchQuery, setSearchQuery] = useState("");
-  const [deliveryDateFilter, setDeliveryDateFilter] = useState<string>(initialDate);
-  const [orderPlacedDateFilter, setOrderPlacedDateFilter] = useState<string>("");
+  const [deliveryDateFilter, setDeliveryDateFilter] =
+    useState<string>(initialDate);
+  const [orderPlacedDateFilter, setOrderPlacedDateFilter] =
+    useState<string>("");
   const [productImages, setProductImages] = useState<Record<string, string>>(
     {},
   );
@@ -75,7 +77,13 @@ export default function Orders() {
 
   useEffect(() => {
     filterOrders();
-  }, [orders, statusFilter, searchQuery, deliveryDateFilter, orderPlacedDateFilter]);
+  }, [
+    orders,
+    statusFilter,
+    searchQuery,
+    deliveryDateFilter,
+    orderPlacedDateFilter,
+  ]);
 
   async function fetchOrders() {
     try {
@@ -774,7 +782,9 @@ export default function Orders() {
                     <SelectItem value="refunded">Refunded</SelectItem>
                   </SelectContent>
                 </Select>
-                {(deliveryDateFilter || orderPlacedDateFilter || statusFilter !== "all") && (
+                {(deliveryDateFilter ||
+                  orderPlacedDateFilter ||
+                  statusFilter !== "all") && (
                   <Button
                     variant="outline"
                     size="sm"
