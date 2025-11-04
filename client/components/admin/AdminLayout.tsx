@@ -109,6 +109,11 @@ const navigation = [
     icon: Mail,
   },
   {
+    name: "Email Templates",
+    href: "/admin/email-templates",
+    icon: Mail,
+  },
+  {
     name: "Database Setup",
     href: "/admin/database-setup",
     icon: Settings,
