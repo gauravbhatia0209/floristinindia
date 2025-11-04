@@ -88,6 +88,44 @@ export const emailAPI = {
   },
 
   /**
+   * Send admin notification for new order
+   */
+  sendOrderCreatedNotification: async (orderNumber: string) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/email/order-created`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ orderNumber }),
+        },
+      );
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error(
+          `Failed to parse response: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP ${response.status}: ${data.error || data.message || "Unknown error"}`,
+        );
+      }
+
+      return data;
+    } catch (error) {
+      console.error("❌ Error sending order created notification:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Send test email (development only)
    */
   sendTestEmail: async (to: string, subject: string, message: string) => {
