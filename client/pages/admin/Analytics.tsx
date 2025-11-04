@@ -594,7 +594,7 @@ export default function Analytics() {
 
       const { data: orders, error } = await supabase
         .from("orders")
-        .select("id, created_at")
+        .select("id, created_at, status")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString());
 
@@ -605,10 +605,14 @@ export default function Analytics() {
         };
       }
 
-      console.log("Found orders:", orders?.length || 0);
+      console.log("Found all orders:", orders?.length || 0);
+
+      // Filter to only confirmed orders (exclude pending)
+      const confirmedOrders = orders?.filter((order) => order.status !== "pending") || [];
+      console.log("Confirmed orders (excluding pending):", confirmedOrders.length);
 
       return {
-        totalOrders: orders?.length || 0,
+        totalOrders: confirmedOrders.length,
       };
     } catch (error) {
       console.error("Error fetching orders data:", error.message || error);
