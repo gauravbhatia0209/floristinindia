@@ -400,10 +400,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       }
 
-      // Temporary admin bypass - remove in production
-      const isValidPassword =
-        (email === "admin@floristinindia.com" && password === "admin123") ||
-        (await verifyPassword(password, userData.password_hash));
+      const isValidPassword = await verifyPassword(
+        password,
+        userData.password_hash,
+      );
 
       if (!isValidPassword) {
         // Increment failed attempts
